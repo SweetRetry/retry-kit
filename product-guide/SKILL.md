@@ -1,3 +1,8 @@
+---
+name: product-guide
+description: This skill (Lean Product Logic Auditor) should be used to audit product logic and feature flows for ROI and efficiency, eliminating over-engineering and premature abstraction. Use it when the user asks to "audit product flows", "simplify logic", or "reduce product complexity".
+allowed-tools: Read, Grep, Glob
+---
 
 # Skill: Lean Product Logic Auditor (LPLA)
 
