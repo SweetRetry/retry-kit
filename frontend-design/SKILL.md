@@ -1,8 +1,12 @@
 ---
 name: frontend-design
-description: UI design review and enforcement. Use this skill to review React/Next.js components for design consistency, semantic tokens, accessibility, and shadcn/ui patterns.
-allowed-tools: Read, Grep, Glob
+description: Strict UI Design implementation Review. Enforces shadcn/ui, Tailwind CSS (Design Tokens), and Framer Motion compliance to prevent "adhoc" styling and reinvented UI components.
+allowed-tools: view_file, view_file_outline, grep_search
 ---
+
+## CORE PHILOSOPHY
+
+Your mission is to prevent "Design Drift" and "UI Pollution". AI code often takes the path of least resistance by using raw tags (`div`, `button`) or arbitrary Tailwind values. You must proactively steer implementation toward the established design system (shadcn/ui) and token scale.
 
 ## OUTPUT FORMAT (MANDATORY)
 
@@ -18,95 +22,45 @@ SUGGESTION: <how-to-fix>
 
 **If no issues:** `FILE: <file_path>\nSTATUS: PASSED\n---`
 
-## CRITICAL CHECKS
+## REVIEW DIMENSIONS
 
-**Run all Grep searches in parallel for performance.**
+### 1. Token Integrity (Tailwind Scalability)
 
-### 1. Magic Numbers (Arbitrary Values)
+* **Arbitrary Values:** Proactively flag any usage of `-[...]` (e.g., `p-[9px]`, `w-[325px]`). These break site-wide consistency.
+  * *Scan Strategy:* `grep_search` for `-\[`.
+* **Raw Color Hardcoding:** Flag hex codes, RGB, or specific Tailwind color shades (e.g., `text-slate-400`). Encourage semantic tokens like `text-muted-foreground`, `bg-primary`, etc.
+* **Spacing Balance:** Look for uneven padding/margins that deviate from the 4px/8px grid system.
 
-```bash
-Grep("w-\[|h-\[|p-\[|m-\[|text-\[|gap-\[|top-\[|left-\[|right-\[|bottom-\[", path="<file>", output_mode="content", -n=true)
-```
+### 2. Design System Enforcement (No Reinventing the Wheel)
 
-- `w-[350px]` → CRITICAL: `magic-number` - Use `w-full max-w-sm` (384px) or `max-w-md` (448px)
-- `p-[13px]` → CRITICAL: `magic-number` - Use `p-3` (12px) or `p-4` (16px)
-- `text-[14px]` → CRITICAL: `magic-number` - Use `text-sm`
+* **Primitive Leakage:** Proactively find raw `<button>`, `<input>`, `<table`, `<select>`, `<dialog>`, etc. These MUST be replaced by equivalents from the project's component library (e.g., shadcn/ui) to ensure theme support and accessibility.
+* **Discovery:** Before suggesting imports, verify the location of components (e.g., often in `@/components/ui`, `src/components/ui`, or `packages/ui`).
+* **Shadow Implementations:** Look for custom components or complex `div` structures that mimic `Tabs`, `Accordion`, `Popover`, `Badge`, or `Modal`. If it looks like a standard UI element, it should BE a component library element.
+* **Variant Misuse:** Flag cases where a developer adds 10+ utility classes to a system component to change its base look (e.g., `<Button className="bg-red-500 rounded-none shadow-none ...">`) instead of adding a new `variant` or using an existing one.
 
-### 2. Raw Colors
+### 3. Motion & Interaction (Framer Motion)
 
-```bash
-Grep("bg-gray-|bg-blue-|bg-red-|bg-green-|bg-yellow-|text-gray-|text-blue-|text-red-|border-gray-|#[0-9a-fA-F]{3,6}|rgb\(|rgba\(", path="<file>", output_mode="content", -n=true)
-```
+* **Raw Transitions:** Identify elements with simple CSS `transition` if the project uses `framer-motion`. Suggest `motion.div` for more premium, spring-based interactions.
+* **Missing Polish:** Proactively suggest `AnimatePresence` for exit animations or `whileHover`/`whileTap` for interactive elements to improve the "premium" feel.
+* **Interaction Accessibility:** Ensure `motion` elements that act as buttons have proper keyboard listeners or are wrapped in a semantic focusable element.
 
-**Semantic mappings:**
+### 4. Code Hygiene for Styles
 
-- `bg-gray-50` → `bg-background` | `bg-gray-100` → `bg-muted` | `text-gray-500` → `text-muted-foreground`
-- `text-gray-900` → `text-foreground` | `bg-red-500` → `bg-destructive` | `bg-blue-500` → `bg-primary`
-- `border-gray-200` → `border-border` | `#F5F5F5` → Use CSS variables
-
-### 3. Grid Violations (4px/8px system)
-
-```bash
-Grep("p-\[.*[1357]px\]|m-\[.*[1357]px\]|gap-\[.*[1357]px\]", path="<file>", output_mode="content", -n=true)
-```
-
-- `p-[7px]` → WARNING: `grid-violation` - Use `p-2` (8px)
-- Spacing scale: `0.5`=2px, `1`=4px, `1.5`=6px, `2`=8px, `3`=12px, `4`=16px, `6`=24px
-
-### 4. shadcn/ui Primitives & Component replacement
-
-```bash
-# HTML primitives
-Grep("<button|<input|<textarea|<select|<dialog|<label|<table|<hr", path="<file>", output_mode="content", -n=true)
-# Custom components shadowing shadcn names
-Grep("const (Modal|Tabs|Accordion|Popover|Tooltip|Badge|Checkbox|Switch|Separator|ScrollArea|Dialog|Sheet|Drawer) = ", path="<file>", output_mode="content", -n=true)
-```
-
-- Raw `<button>` / `<input>` → WARNING: `primitive-usage` - Use shadcn equivalents (`Button`, `Input`).
-- Raw `<table>` → WARNING: `primitive-usage` - Use shadcn `@/components/ui/table`.
-- Raw `<hr>` → INFO: `primitive-usage` - Use shadcn `<Separator />`.
-- Custom implementation of `Tabs/Accordion/Modal/Tooltip` → WARNING: `reinventing-the-wheel` - Replace with shadcn/ui equivalents. Benefits: Accessibility (ARIA), keyboard support, and consistent design language.
-- Re-implementing `Badge/Checkbox/Switch` → INFO: `component-standardization` - Use shadcn components to maintain visual consistency across the app.
-
-### 5. Responsive (Mobile-First)
-
-```bash
-Grep("w-1/2 sm:|w-1/3 sm:|flex-row sm:flex-col", path="<file>", output_mode="content", -n=true)
-```
-
-- `w-1/2 sm:w-full` → WARNING: `responsive-order` - Use `w-full md:w-1/2`
-
-### 6. Accessibility
-
-```bash
-Grep("<button|<a href|<input|onClick=", path="<file>", output_mode="content", -B=1, -A=1)
-```
-
-- Icon-only button without `aria-label` → INFO: `accessibility` - Add descriptive label
-- Click on `<div>` → WARNING: `accessibility` - Use `<button>` or add keyboard support
-
-### 7. className Merging
-
-```bash
-Grep('className=\{`.*\$\{|className=\{.*\?', path="<file>", output_mode="content", -n=true)
-```
-
-- Template literal without `cn()` → INFO: `className-merge` - Use `cn()` for proper Tailwind merging
-
-### 8. Excessive className Overrides (Common LLM Pattern)
-
-```bash
-Grep("<[A-Z][a-zA-Z]*.*className=.*(rounded-|h-|w-|px-|py-|text-)", path="<file>", output_mode="content", -n=true)
-```
-
-- `<Button className="rounded-md px-4 py-2 h-10 ...">` → WARNING: `excessive-styling` - `shadcn/ui` components (like `Button`) already have default styles and variants. Avoid mindlessly adding classNames that replicate or override the internal design of the library.
-- Rule: Trust the component's default styles and use provided variants (e.g., `variant="outline"`, `size="sm"`) instead of manually overriding with utility classes unless it's a specific, justified layout requirement.
+* **Template Literal Bloat:** Flag messy conditional class strings. Enforce the use of `cn(...)` from `@/lib/utils` for clean Tailwind merging.
+* **Inlined Style Tags:** CRITICAL violation. Flag `style={{ ... }}` except for truly dynamic values (like coordinates from a mouse event).
 
 ## WORKFLOW
 
-1. Read file(s) with `Read()`
-2. Run all 8 Grep checks **in parallel** (single message, multiple tool calls)
-3. Analyze findings and output in mandatory format
-4. Do NOT make changes unless explicitly asked
-5. Prioritize CRITICAL for magic numbers and raw colors
-6. **Proactive Replacement**: Even if a pattern isn't caught by Grep, if you notice complex DIV/SPAN structures mimicking components like Tabs, Accordion, or Tooltips, suggest using shadcn/ui to improve accessibility and maintainability.
+1. **Structural Visual Scan:** Use `view_file` to look at the JSX structure. Does it look like a "generic" implementation (lots of primitives) or a "systemic" one (using library components)?
+2. **Proactive Replacement Search:**
+    * Search for raw HTML primitives (`<button`, `<input`, etc).
+    * Search for "ad-hoc" styling patterns: `grep_search` for `-\[`, `#[0-9a-f]`, `style=\{\{`.
+3. **Motion Review:** Check if interactive elements feel "static". Suggest Framer Motion enhancements where appropriate.
+4. **Synthesize Findings:** Provide specific code replacements using shadcn/ui syntax.
+
+## RULES OF THUMB
+
+* **Critical:** Raw hex/RGB colors, inline `style={...}` tags, arbitrary `-[...]` values.
+
+* **Warning:** Using raw HTML tags instead of shadcn/ui components, complex manual CSS transitions instead of motion.
+* **Info:** Improving `cn()` usage, adding subtle hover micro-animations.
