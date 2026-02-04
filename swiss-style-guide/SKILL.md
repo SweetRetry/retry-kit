@@ -1,7 +1,6 @@
 ---
 name: swiss-style-guide
-description: 针对高密度数据 SaaS 的"新瑞士风格 (Neo-Swiss)"设计规范。强制使用 shadcn/ui, Tailwind CSS 与 Framer Motion。
-allowed-tools: view_file, grep_search, multi_replace_file_content
+description: 针对高密度数据 SaaS 的"新瑞士风格 (Neo-Swiss)"设计规范。强制使用 shadcn/ui, Tailwind CSS 与 Framer Motion。使用场景：(1) 用户要求创建 dashboard、数据密集型界面、SaaS 产品，(2) 审查 UI 代码是否符合设计系统规范，(3) 用户提到瑞士风格、极简主义、网格系统、国际主义设计风格时。
 ---
 
 ## 核心指令 (Core Mandate)
@@ -115,3 +114,8 @@ allowed-tools: view_file, grep_search, multi_replace_file_content
 * [ ] **Check 3: Typography Logic** - 数字是否使用了 Mono 字体？标题是否使用了流体缩放或正确的比例？
 * [ ] **Check 4: Color Function** - 彩色是否仅用于 Action 或 Status？是否存在装饰性的背景色块？
 * [ ] **Check 5: Contrast Safety** - 所有的文本 (尤其是 Muted) 对比度是否 > 4.5:1？Dark Mode 下的主色是否进行了光谱偏移？
+
+## 参考资源
+
+- **设计理论深度报告**: 如需了解新瑞士风格的历史渊源、理论框架和完整设计原则，请参阅 [reference.md](reference.md)
+- **示例项目**: `example/` 目录包含一个完整的 Neo-Swiss 风格示例应用，展示了规范的实际实现，包括布局组件、页面模板和动效配置

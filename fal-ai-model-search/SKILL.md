@@ -1,6 +1,6 @@
 ---
 name: fal-ai-model-search
-description: Search and integrate Fal AI models. Use when the user wants to (1) search for models on Fal AI platform, (2) get detailed information about a specific Fal AI model, (3) integrate a Fal AI model into the project, or (4) explore available AI models on fal.ai.
+description: Search and integrate Fal AI models from fal.ai platform. Use when the user wants to (1) search for models on Fal AI platform, (2) get detailed information about a specific Fal AI model, (3) integrate a Fal AI model into the project, (4) explore available AI models on fal.ai, or mentions "fal.ai", "图像生成", "AI video model", "text to image", "text-to-speech".
 ---
 
 # Fal AI Model Search & Integration
@@ -11,7 +11,7 @@ Guide for searching and integrating Fal AI models from fal.ai platform.
 
 ### 1. Search Models
 
-When user wants to find a model, use FetchURL to search:
+When user wants to find a model, use WebFetch to search:
 
 ```
 https://fal.ai/explore/search?q=<search-query>
@@ -97,13 +97,34 @@ Always confirm with user at these stages:
 | Video | `fal-ai/ltx-video`, `fal-ai/veo2` | Generate video content |
 | Audio | `fal-ai/playht`, `fal-ai/xtts` | Text-to-speech, audio generation |
 
+## Example Output Format
+
+When presenting search results to the user, use this format:
+
+```
+Found 3 models matching "flux":
+
+1. **fal-ai/flux-schnell** (Text to Image)
+   - Fastest Flux model for high-quality image generation
+   - [Playground](https://fal.ai/models/fal-ai/flux-schnell) | [API Docs](https://fal.ai/models/fal-ai/flux-schnell/api)
+
+2. **fal-ai/flux-pro/v1.1** (Text to Image)
+   - Professional-grade image generation with superior quality
+   - [Playground](https://fal.ai/models/fal-ai/flux-pro/v1.1) | [API Docs](https://fal.ai/models/fal-ai/flux-pro/v1.1/api)
+
+Which model would you like to use?
+```
+
 ## Error Handling
 
-- **No search results**: Inform user no models found, suggest alternative search terms
-- **Model not found (404)**: 
-  - Check if model starts with `xai/` → use `/models/xai/...` URL
-  - For other models → use `/models/fal-ai/...` URL
-- **llms.txt returns empty**: The model may be deprecated
+| Error | Cause | Solution |
+|-------|-------|----------|
+| **No search results** | Query too specific or no matching models | Suggest broader search terms or alternative keywords |
+| **Model not found (404)** | Wrong URL pattern | Check if model starts with `xai/` → use `/models/xai/...` URL; otherwise use `/models/fal-ai/...` |
+| **llms.txt returns empty** | Model deprecated or unavailable | Inform user the model may be deprecated; suggest alternatives |
+| **API key error (401)** | Missing or invalid `FAL_KEY` | Check environment variable or prompt user to set `FAL_KEY` |
+| **Rate limit (429)** | Too many requests | Implement exponential backoff; suggest retry after delay |
+| **Timeout** | Model inference taking too long | For async models, use `fal.queue.submit` pattern with polling |
 
 ## Notes
 

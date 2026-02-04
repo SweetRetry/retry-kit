@@ -1,7 +1,6 @@
 ---
 name: pragmatic-architecture
-description: This skill should be used when the user asks to "review architecture", "simplify code structure", "reduce over-engineering", "evaluate abstractions", or mentions premature abstraction, interface proliferation, factory patterns, YAGNI, or enterprise-grade complexity.
-allowed-tools: Read, Grep, Glob
+description: Audit code architecture for over-engineering and unnecessary abstractions. Use when user asks to "review architecture", "simplify code structure", "reduce over-engineering", "evaluate abstractions", or mentions premature abstraction, interface proliferation, factory patterns, YAGNI, or enterprise-grade complexity.
 ---
 
 ## OUTPUT FORMAT

@@ -1,7 +1,6 @@
 ---
 name: product-guide
-description: This skill (Product Efficacy & Logic Auditor) should be used to audit product logic and feature flows for impact, ROI, and efficiency. It balances immediate value delivery with long-term system health, identifying over-engineering and logic gaps.
-allowed-tools: Read, Grep, Glob
+description: Audit product logic and feature flows for impact, ROI, and efficiency. Use when user asks to "review product logic", "audit feature flow", "evaluate ROI", or needs assessment of user value vs implementation cost.
 ---
 
 # Skill: Product Efficacy & Logic Auditor (PELA)

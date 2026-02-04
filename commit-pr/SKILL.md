@@ -1,7 +1,6 @@
 ---
 name: commit-pr
-description: Commit staged changes and create or update a pull request.
-allowed-tools: Read, Grep, Glob, Bash
+description: Commit staged changes and create or update a pull request. Use when user asks to "commit changes", "create PR", "submit pull request", or wants to stage, commit, and push code to GitHub.
 ---
 
 ## Pre-flight Validation
