@@ -477,3 +477,32 @@ const skeletonPulse = {
 
 - **设计理论深度报告**: 如需了解新瑞士风格的历史渊源、理论框架和完整设计原则，请参阅 [reference.md](reference.md)
 - **示例项目**: `example/` 目录包含一个完整的 Neo-Swiss 风格示例应用，展示了规范的实际实现，包括布局组件、页面模板和动效配置
+
+---
+
+## 合成笔记 (Composition Notes)
+
+> 本节供 `design-director` 技能在多风格融合场景中使用。定义本风格指南中哪些属性是**硬约束**（即使在混合模式下也不可覆盖），哪些是**软约束**（可由 Director 根据项目需求调整）。
+
+### 硬约束 (Hard Constraints — 不可覆盖)
+
+| ID | 属性 | 规范值 | 理由 |
+|----|------|--------|------|
+| **S.H1** | 8-Point Grid | 所有间距（margin / padding / gap）为 8px 倍数 | 数学秩序是瑞士风格的核心身份，破坏网格等于破坏风格本质 |
+| **S.H2** | Token 化 | 禁止硬编码 Hex，组件层使用语义 Token | 跨风格融合的基础设施，所有风格共享此约束 |
+| **S.H3** | 色彩空间 | oklch | 感知均匀色彩空间，混合项目的标准 |
+| **S.H4** | 禁用投影 | `shadow-none` 全局，深度通过边框层级表达 (Level 0/1/2) | 投影在直角系统中制造视觉矛盾；瑞士式深度模型的核心原则 |
+| **S.H5** | 动效时长 | <300ms，Expo Out 缓动 | 功能性交互的核心节奏——超过 300ms 在数据操作中产生"拖拽感" |
+| **S.H6** | 对比度 | WCAG AA (≥4.5:1) | 无障碍强制要求 |
+| **S.H7** | 功能性色彩 | 彩色仅用于 Action (`--primary`) 和 Status (`--destructive`)，禁止装饰性色块 | 信息编码的核心原则——色彩必须携带语义 |
+
+### 软约束 (Soft Constraints — 可由 Director 覆盖)
+
+| ID | 属性 | 默认值 | Director 可调整范围 | 触发条件 |
+|----|------|--------|-------------------|----------|
+| **S.S1** | 圆角 | `rounded-none` (0px) 全局默认，交互热区 `rounded-sm` (2px) | 非 Dashboard 区域可放宽至 `rounded-md` (6px) / `rounded-lg` (8px) | 当 Minimal 为辅助风格，内容阅读区域需要更柔和的视觉感受时 |
+| **S.S2** | 排版：大写标签 | `text-xs uppercase tracking-widest` 用于所有 Label | 内容区域可放弃 uppercase，使用 Sentence case | 当 Minimal 为辅助风格，文章/博客区域不适合全大写标签时 |
+| **S.S3** | 网格列数 | Desktop 12 列 | 内容区域可简化为 8 或 6 列 | 当非数据密集区域不需要完整 12 列精度时 |
+| **S.S4** | OLED 暗色背景 | `oklch(0.145 0 0)` ≈ #1A1A1A | Expressive 区域可暗化至 `oklch(0.08 0 0)` | 当 Expressive 为辅助风格，需要更深的影院画布时 |
+| **S.S5** | 信息密度 | 高密度（数据表格、KPI 卡片） | 非 Dashboard 区域可降低密度 | 当区域的功能是阅读或浏览而非操作数据时 |
+| **S.S6** | 边框厚度 | 1px 默认，2px 用于叠加层 (Modal/Drawer) | 可统一为 1px | 当 Minimal 为主风格，整体视觉需要更轻的触感时 |
