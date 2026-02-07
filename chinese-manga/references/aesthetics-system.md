@@ -357,3 +357,5 @@
 | 8 | **构图拥挤** | 画面塞满元素没有呼吸空间 | 加入 `breathing room, negative space, clean composition`，减少装饰性元素 |
 | 9 | **动态僵硬** | 人物动作像摆拍，缺乏动势 | 加入 `dynamic pose, weight shift, wind-blown fabric, hair in motion, action mid-movement` |
 | 10 | **情绪矛盾** | 光影说"紧张"但色彩说"温馨"，信号冲突 | 统一情绪基调：确保光型、色温、饱和度、构图指向同一情绪方向 |
+
+> 以上为画面美学层面的常见修正。关于 **AI 模型能力边界**的深层避坑（光影因果链、多体交互、精确重复结构、文化联想劫持、指令自洽性等），请查阅 [Prompt 避坑指南](prompt-pitfalls.md)。

@@ -20,6 +20,7 @@
 - **视觉特征**: 色块分明、阴影边缘锐利、线条干净均匀、动画感强烈
 - **最佳搭配题材**: 热血战斗、都市奇幻、校园青春
 - **排斥项**: soft gradient, painterly, watercolor bleeding, textured brush
+- **⚠️ 文化联想警告**: 赛璐璐与日本动画强关联，使用时必须在正面 prompt 中用具体中式元素强锚定（交领右衽汉服、中式刀具、青砖飞檐等），否则极易跑偏为日式风格。更安全的替代方案：直接描述视觉效果 "flat color blocks with hard shadow edges, clean even outlines" 而不写 "cel-shading"。详见 [避坑指南](prompt-pitfalls.md) 第 6 条。
 
 ## 厚涂 Impasto Digital Painting
 
