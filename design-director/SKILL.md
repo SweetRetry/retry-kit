@@ -25,7 +25,7 @@ description: 设计总监 (Design Director) — 多风格编排与融合规范�
 - **融合理论与冲突解决** → [references/blending-theory.md](references/blending-theory.md) — 设计方言与语系、认知一致性理论（5 秒心智模型 / 认知断裂）、视觉重量平衡、属性分类学（硬/软/中性约束）、优先级仲裁 5 条规则、oklch 色彩空间统一的数学原理与 HSL 转换表
 - **接缝设计理论** → [references/seam-design.md](references/seam-design.md) — 建筑阈限空间理论、五种接缝策略的设计原理与性能考量与失败模式、张力-释放模型与区域序列编排
 - **案例分析** → [references/case-studies.md](references/case-studies.md) — Spotify（Expressive+Swiss）、Linear（Minimal+Swiss）、Apple（Expressive+Minimal）三个真实产品的风格配比、区域策略和接缝处理拆解
-- **实施指南** → [references/implementation-guide.md](references/implementation-guide.md) — 项目启动 6 步清单、Tailwind v4 CSS-First 区域作用域配置（@theme + @custom-variant + CSS Variables）、Framer Motion ZoneProvider 配置（React Context + 动效参数）、参考文献
+- **实施指南** → [references/implementation-guide.md](references/implementation-guide.md) — 项目启动 6 步清单、Tailwind v4 CSS-First Token 配置（@theme inline + :root/.dark）、Framer Motion 动效配置（React Context + 区域动效参数）、参考文献
 
 ---
 
@@ -223,14 +223,25 @@ Zone Map 应以**项目架构**为粒度，而非单页布局：
 
 ### 3.2 Token 统一策略 (Token Unification Strategy)
 
-混合项目中，所有色彩必须在 CSS Variables 层使用 **oklch** 色彩空间定义。
+> **核心原则：一个项目只有一套 Design Token。** Token 与风格区域无关。不同区域的视觉差异通过组件选择和布局模式体现，而非通过 Token 覆盖。
 
 #### 核心规则
 
-1. **Token 是项目基础设施**：所有 CSS Variables（设计 Token）必须定义在项目的**全局 CSS 文件**（`app.css` / `globals.css`）中。禁止在组件级、页面级或局部 CSS 文件中定义 Token（反模式 #12 Token Isolation）
-2. **全局共享 Token**：`--primary`、`--destructive`、`--foreground`、`--muted-foreground` 等品牌/语义 Token 在所有区域中保持**同一值**
-3. **区域可变 Token**：`--background`、`--card`、`--border` 等表面 Token 通过 `[data-zone="..."]` 选择器在**全局 CSS 文件**中实现区域级覆盖
-4. **色彩空间统一**：Expressive 风格原始使用 HSL，混合项目中必须转换为 oklch
+1. **Token 是项目基础设施**：所有 CSS Variables（设计 Token）必须定义在项目的**全局 CSS 文件**（`app.css` / `globals.css`）中，以 `:root` + `.dark` 两套值为全部。禁止在组件级、页面级或局部 CSS 文件中定义 Token（反模式 #12 Token Isolation）
+2. **全局唯一一套 Token**：`--background`、`--foreground`、`--primary`、`--card`、`--border` 等所有语义 Token 在整个项目中只有**一个值**（light 一套 + dark 一套）。不存在"区域可变 Token"或"区域级覆盖"的概念
+3. **Token 反映项目品牌**：Token 值由 Director 根据项目诊断结果**统一设定一次**（如赛博朋克暗夜项目的 `--background: oklch(0.08 0.02 260)`），所有路由/区域共用
+4. **色彩空间统一**：混合项目统一使用 oklch 色彩空间。Expressive 风格原始使用 HSL，混合项目中必须转换为 oklch
+
+#### 区域差异的正确表达
+
+不同风格区域共享同一套 Token，视觉差异通过以下方式体现：
+
+| 差异维度 | 正确做法 | 错误做法 |
+|----------|---------|---------|
+| **背景层次** | Expressive 区域使用 `bg-background`，Swiss 区域使用 `bg-card` / `bg-muted` 等已有 Token 的不同层级 | ~~为不同区域定义不同的 `--background` 值~~ |
+| **圆角** | Expressive 组件使用 `rounded-lg`，Swiss 组件使用 `rounded-none`，通过组件代码直接指定 | ~~通过 CSS Variable `--zone-radius` 覆盖~~ |
+| **信息密度** | Swiss Dashboard 使用紧凑网格布局，Minimal 内容区使用宽松留白，通过布局类实现 | ~~通过 Token 覆盖间距变量~~ |
+| **深度表达** | Expressive 组件使用 `shadow-lg`，Swiss 组件使用 `border`，在组件代码中直接写 | ~~通过 Token 切换深度策略~~ |
 
 #### Expressive HSL → oklch 转换参考
 
@@ -241,13 +252,61 @@ Zone Map 应以**项目架构**为粒度，而非单页布局：
 | `hsl(0 0% 8%)` | `oklch(0.205 0 0)` | 卡片/表面提亮 |
 | `hsl(0 0% 98%)` | `oklch(0.985 0 0)` | 近白前景 |
 
-#### 区域作用域机制
+#### Token 基础设施模板
 
-- 使用 `data-zone="expressive"` / `data-zone="minimal"` / `data-zone="swiss"` HTML 属性标记区域
-- 在 CSS 层通过属性选择器 `[data-zone="..."]` 覆盖区域内的表面 Token
-- Tailwind v4 中通过 `@theme` 和 `@custom-variant` 在 CSS 文件中直接定义区域变体，无需 JS 配置文件
+项目的全局 CSS 文件结构（参考 shadcn/ui 标准模式）：
 
-> 具体的 CSS Variables 定义、Tailwind v4 配置和代码实现模式参见 [references/implementation-guide.md](references/implementation-guide.md)
+```css
+/* globals.css */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* 唯一一套 Token — :root（Light）+ .dark */
+:root {
+  --background: oklch(...);
+  --foreground: oklch(...);
+  --primary: oklch(...);
+  --primary-foreground: oklch(...);
+  --card: oklch(...);
+  --card-foreground: oklch(...);
+  --secondary: oklch(...);
+  --muted: oklch(...);
+  --muted-foreground: oklch(...);
+  --border: oklch(...);
+  --input: oklch(...);
+  --ring: oklch(...);
+  --destructive: oklch(...);
+  --radius: ...;
+  /* ... 其他 Token */
+}
+
+.dark {
+  --background: oklch(...);
+  --foreground: oklch(...);
+  /* ... 暗色模式覆盖 */
+}
+
+/* @theme inline 将 CSS Variables 映射为 Tailwind 工具类 */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  /* ... 映射所有 Token */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+}
+```
+
+> Director 在策略文档中应**为项目确定一套具体的 Token 值**（基于品牌调性），而非为每个区域分别定义 Token。具体的 Framer Motion 动效配置参见 [references/implementation-guide.md](references/implementation-guide.md)
 
 ### 3.3 动效统一策略 (Motion Unification Strategy)
 
@@ -334,7 +393,7 @@ Zone Map 应以**项目架构**为粒度，而非单页布局：
 | 9 | **No Primary** | 两种风格 50/50 平分，没有明确的主次 | 用户无法建立统一的品牌/产品认知 | 必须建立 70/30 或 80/20 的主次层级 |
 | 10 | **Seam-less Transition** | 两种风格的区域直接相邻，没有任何接缝设计 | 突兀的视觉断裂，认知冲击 | 使用第四章定义的接缝策略 |
 | 11 | **Token Drift** | 不同区域的 `--primary` 品牌色值不一致 | 品牌识别碎片化 | `--primary` 全局唯一一致 |
-| 12 | **Token Isolation** | CSS Variables（设计 Token）定义在组件级、页面级或局部 CSS 文件中，而非项目全局 CSS | Token 系统是**项目基础设施**，不是页面的私有状态。局部定义导致 Token 碎片化、覆盖冲突、无法全局切换暗色模式 | 所有 Token 定义必须在项目全局 CSS 文件（`app.css` / `globals.css`）中，通过 `@theme` + `:root` + `[data-zone]` 统一管理 |
+| 12 | **Token Isolation** | CSS Variables（设计 Token）定义在组件级、页面级或局部 CSS 文件中，而非项目全局 CSS | Token 系统是**项目基础设施**，不是页面的私有状态。局部定义导致 Token 碎片化、覆盖冲突、无法全局切换暗色模式 | 所有 Token 定义必须在项目全局 CSS 文件（`app.css` / `globals.css`）中，通过 `:root` + `.dark` 统一管理。整个项目只有一套 Token |
 | 13 | **Single-Page Patchwork** | 在同一页面的滚动流中堆叠 3+ 种不同风格的 Section，用复杂的视觉接缝（渐变帘幕、sticky 过渡）拼接 | 真实产品几乎不会在同一滚动流中混合多种风格。用户在滚动中不预期视觉语言突变，复杂的同页接缝实现容易变成 hack | 将不同风格的区域拆到不同路由/视图中，用导航结构（路由切换、Tab、登录墙）天然分隔 |
 
 ### 检测方法
@@ -342,13 +401,13 @@ Zone Map 应以**项目架构**为粒度，而非单页布局：
 Director 可通过以下方式检测反模式：
 
 ```text
-1. Radius Soup → 搜索同一 Section 内的所有 rounded-* 类，检查是否多于一种
+1. Radius Soup → 搜索同一路由/页面组件内的所有 rounded-* 类，检查同一风格区域内是否多于一种
 2. Color Space Split → 搜索 CSS 文件中的 hsl() 和 oklch() 共存
-3. Shadow Leak → 搜索 data-zone="swiss" 或 data-zone="minimal" 区域内的 shadow-* 类
-4. Typography Contamination → 搜索 data-zone="minimal" 内的 font-mono 和 uppercase
-5. Token Drift → 比较不同区域的 --primary 值是否一致
+3. Shadow Leak → 搜索 Swiss 或 Minimal 风格路由内的组件是否包含 shadow-* 类
+4. Typography Contamination → 搜索 Minimal 风格路由内的组件是否包含 font-mono 和 uppercase
+5. Token Drift → 检查全局 CSS 中是否只有一套 :root + .dark Token 定义，禁止出现多套 Token 覆盖
 6. Token Isolation → 搜索组件/页面目录中的 .css 文件是否包含 --background / --foreground 等 Token 定义
-7. Single-Page Patchwork → 检查单个 page.tsx 是否包含 3+ 个不同 data-zone 的 ZoneProvider
+7. Single-Page Patchwork → 检查单个 page.tsx 是否在同一滚动流中堆叠 3+ 种风格
 ```
 
 ---
@@ -589,11 +648,12 @@ Director 覆盖:
     ✓ 每条过渡的类型（优先结构性接缝，必要时才用视觉性接缝）
 ────────────────────────────────────────────────────────
     ↓
-[4] 基础设施阶段 — 配置项目级 Token 和区域变体
+[4] 基础设施阶段 — 配置项目级 Token
     → 在项目全局 CSS 文件（app.css / globals.css）中定义：
-      · @theme 注册语义色彩 Token
-      · @custom-variant 注册区域变体
-      · :root 和 [data-zone="..."] 的 CSS Variables
+      · :root 定义唯一一套 Light Token
+      · .dark 定义唯一一套 Dark Token
+      · @theme inline 将 CSS Variables 映射为 Tailwind 工具类
+    → 整个项目只有一套 Token，与区域无关
     → 禁止在组件级或页面级文件中定义 Token（反模式 #12 Token Isolation）
     ↓
 [5] 区域实现阶段 — 按区域逐一委派给具体 style guide skill
