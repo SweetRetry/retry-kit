@@ -11,10 +11,12 @@ description: 为中国漫剧市场生成美学至上的图像生成 prompt。支
 
 **像一个顶级概念美术师在脑中构图**，而不是填模板：
 
+- **少即是多** — prompt 不是越长越好，≤800 字符以内只写决定性的视觉锚点，让模型自由补全剩余细节
+- **信任模型** — 模型对常见场景有内建认知，不必事无巨细地描写，留白会带来意想不到的惊喜
 - **先抓画面感** — 脑中先浮现一幅完整的画，再用语言精准还原
-- **细节即叙事** — 每个细节都要服务于情绪或故事，拒绝无意义堆砌
-- **光影即情绪** — 光源设计是 prompt 的灵魂，永远显式描写光从哪来、什么色温、投射什么阴影
-- **材质即真实** — 丝绸的透光、金属的反射、皮革的磨损，材质描写让画面可触
+- **细节即取舍** — 每个细节都要服务于情绪或故事，写三个精准的锚点胜过十个泛泛的描写
+- **光影即情绪** — 光源设计是 prompt 的灵魂，永远显式描写光从哪来、什么色温
+- **材质即真实** — 丝绸的透光、金属的反射、皮革的磨损，关键物体点到即止
 - **留白即构图** — 不是所有空间都要填满，懂得用空白制造呼吸感
 
 ## 工作流程
@@ -29,14 +31,15 @@ description: 为中国漫剧市场生成美学至上的图像生成 prompt。支
 
 ## 出稿自检
 
-有任何一条不过关就返工。前 7 条检查画面美学，后 3 条检查 AI 模型避坑。
+有任何一条不过关就返工。前 8 条检查画面美学，后 3 条检查 AI 模型避坑。
 
 **画面美学**：
 - **焦点缺失** — 画面是否有一眼能看到的核心视觉锤？
-- **光影缺失** — 是否显式描写了光源方向、色温、阴影？
+- **光影缺失** — 是否显式描写了光源方向、色温？
 - **情绪空洞** — 画面是否传递了某种情感或叙事张力？
 - **文化穿帮** — 服饰、建筑、道具是否符合题材时代？文化方向是否靠正面 prompt 的具体服饰/建筑/器物锁死？（negative 只是辅助）
-- **堆砌感** — 是否每个细节都有存在的理由？
+- **字符超限** — prompt 正文是否 ≤800 字符？超限时砍装饰细节层，保留核心锚点和情绪氛围
+- **堆砌感** — 是否每个细节都有存在的理由？能砍掉后画面不塌的描写一律砍掉
 - **构图失衡** — 是否选择了合适的构图法？元素的视觉重量是否平衡？
 - **材质模糊** — 关键物体的材质是否有具体描写？材质名是否直写视觉效果而非依赖隐含色彩认知？
 
@@ -119,12 +122,15 @@ description: 为中国漫剧市场生成美学至上的图像生成 prompt。支
 
 ## 写作要领
 
+- **≤800 字符硬约束** — prompt 正文（不含 negative 和 meta）必须控制在 800 英文字符以内，超限即返工精简
+- **三层筛选** — 核心锚点（构图/人物动作/光影 → 必写）→ 情绪氛围（色调/气氛 → 选写）→ 装饰细节（小饰品/重复材质/环境填充 → 砍掉）
 - **英文输出** — prompt 和 negative prompt 用英文（图像模型对英文理解最佳），Meta 用中文
 - **拒绝模板腔** — 不要写出"[角色身份]"这种占位符，直接写具体画面
 - **一条到位** — 用户拿到 prompt 就能直接去生图，不需要二次加工
-- **微表情 > 标签** — 写 "slight upturn at corner of lips, half-lidded eyes" 而不是 "smiling"
+- **质量 > 数量** — 写 "slight upturn at corner of lips, half-lidded eyes" 而不是 "smiling"；三个精准描写胜过十个泛泛形容
 - **具体 > 笼统** — 写 "crumbling Tang dynasty courtyard with moss-covered stone lanterns" 而不是 "Chinese temple"
 - **动态 > 静态** — 即使是站立的人物，也要描写重心、风对衣物的影响、发丝的方向
+- **不写质量尾巴** — 禁止在 prompt 末尾追加 "masterpiece, best quality, ultra-detailed" 等无意义标签
 
 ## 示例
 
@@ -138,7 +144,7 @@ description: 为中国漫剧市场生成美学至上的图像生成 prompt。支
 
 #### Prompt
 
-wuxia manhua, semi-realistic digital painting, young female assassin pausing mid-step on rain-soaked ancient town stone street, looking back with sharp cold eyes and faint smirk, rain-drenched black hair clinging to pale cheeks, holding oil-paper umbrella in left hand tilted back, right hand hidden beneath dark crimson cloak gripping concealed blade, rain streaks slashing diagonally catching dim lantern light, wet stone ground reflecting warm orange lantern glow and her silhouette, traditional Chinese shopfronts with wooden signs lining narrow alley, fog rolling between tiled rooftops, shallow puddles with circular ripples from raindrops, Rembrandt lighting from hanging lantern above right, cool blue ambient fill, tense atmosphere, masterpiece, best quality, ultra-detailed
+wuxia manhua, semi-realistic digital painting, young female assassin pausing mid-step on rain-soaked ancient town stone street, looking back with sharp cold eyes and faint smirk, rain-drenched black hair clinging to pale cheeks, holding oil-paper umbrella in left hand tilted back, right hand hidden beneath dark crimson cloak gripping concealed blade, rain streaks catching dim lantern light, wet stone ground reflecting warm orange glow and her silhouette, traditional Chinese shopfronts with wooden signs lining narrow alley, fog between tiled rooftops, Rembrandt lighting from hanging lantern above right, cool blue ambient fill, tense atmosphere
 
 #### Negative Prompt
 
@@ -155,7 +161,7 @@ low quality, worst quality, blurry, modern clothing, 3d render, neon colors, che
 
 ### 示例 2 — 仙侠 × 水彩（少年与灵狐初遇）
 
-> **避坑亮点**：人-动物交互仅"四目相对"（低难度对视）；白狐坐青石上（稳定姿态，侧面视角）；小饰品"剑穗随风轻摆"写动态不精写实体；浅景深虚化远景竹林避免重复结构精写。
+> **避坑亮点**：人-动物交互仅"四目相对"（低难度对视）；白狐坐青石上（稳定姿态）；剑穗写动态不精写实体；浅景深虚化远景竹林避免重复结构精写；砍掉地面碎细节（露珠折光、野兰花）让模型自由补全。
 
 **输入**: 竹林深处少年剑客遇到三尾白狐
 
@@ -163,7 +169,7 @@ low quality, worst quality, blurry, modern clothing, 3d render, neon colors, che
 
 #### Prompt
 
-xianxia manhua watercolor illustration, transparent pigment washes with visible paper grain texture, early morning bamboo forest shrouded in thin mist, young swordsman kneeling on one knee facing a three-tailed white fox in a quiet gaze, fox sitting elegantly on a moss-covered stone with faint golden glow at tail tips, youth with ink-black hair tied high and a stray lock falling across brow, moon-white cross-collar right-over-left robe with dew-dampened grass clinging to sleeve hems, slender sheathed sword at waist with tassel swaying gently in breeze, slightly leaning forward with gentle reverent eyes and faintest hint of a smile, morning sunlight streaming through bamboo canopy gaps forming golden volumetric light shafts between them, dewdrops on bamboo leaves refracting tiny light speckles, ground carpeted with fallen bamboo leaves and wild orchids, shallow depth of field blurring layered bamboo groves fading into mist behind, analogous palette of verdant greens and moon-white with golden light accents, quiet spiritual atmosphere, masterpiece, best quality, ultra-detailed
+xianxia manhua watercolor illustration, visible paper grain texture, early morning bamboo forest in thin mist, young swordsman kneeling on one knee facing a three-tailed white fox in quiet gaze, fox sitting on moss-covered stone with faint golden glow at tail tips, youth with ink-black hair tied high and stray lock across brow, moon-white cross-collar right-over-left robe, sheathed sword at waist with tassel swaying in breeze, leaning forward with gentle reverent eyes, morning sunlight through bamboo canopy forming golden volumetric light shafts, shallow depth of field blurring bamboo groves fading into mist, verdant greens and moon-white palette with golden light accents, quiet spiritual atmosphere
 
 #### Negative Prompt
 
@@ -180,7 +186,7 @@ low quality, worst quality, blurry, modern clothing, 3d render, neon colors, wat
 
 ### 示例 3 — 武侠 × 厚涂（月夜老剑客独饮）
 
-> **避坑亮点**：显式要求"笔触浓郁可见"的风格一致性（对抗面部美颜）；交互仅"手举酒坛倾倒"（单手握持，可控难度）；"交领右衽"精确锚定中式服装；"无鞘长剑斜靠树干"回避手持武器的交互难度。同 prompt 建议多抽几张筛选。
+> **避坑亮点**：显式要求"笔触浓郁可见"的风格一致性（对抗面部美颜）；交互仅"手举酒坛"（单手握持，可控难度）；"交领右衽"精确锚定中式服装；"无鞘长剑靠树干"回避手持武器的交互难度；砍掉草原延伸到地平线等环境填充，让模型自行补全远景。
 
 **输入**: 月夜枯树下白发老剑客独自饮酒
 
@@ -188,7 +194,7 @@ low quality, worst quality, blurry, modern clothing, 3d render, neon colors, wat
 
 #### Prompt
 
-Chinese wuxia manhua, thick digital oil painting with dense visible brushstrokes, late autumn moonlit night on an open plain beneath a massive dead tree, white-haired old swordsman sitting cross-legged on gnarled tree roots drinking alone, three-quarter side view, white hair loose over shoulders gently stirred by night wind, aged face deeply lined but eyes bright with quiet amusement, one hand raising a rough clay wine jug tilted toward lips, cross-collar right-over-left grey-blue patched old robe covered in mending marks, an unsheathed long sword with chipped blade leaning against tree trunk, scattered dead leaves and empty wine bowls on the ground, cold pale moonlight from upper left illuminating half of face and white hair, bare tree branches stretching skyward forming ink-black silhouettes against the full moon disc, distant empty grassland stretching to the horizon, low-saturation cold grey-blue palette with silver-white moonlight as sole bright accent, rule of thirds composition with figure on left and moon on right, desolate yet liberated atmosphere, masterpiece, best quality, ultra-detailed
+Chinese wuxia manhua, thick digital oil painting with dense visible brushstrokes, moonlit autumn night beneath a massive dead tree, white-haired old swordsman sitting cross-legged on gnarled roots drinking alone, three-quarter side view, white hair loose over shoulders stirred by night wind, aged face deeply lined but eyes bright with quiet amusement, one hand raising rough clay wine jug toward lips, cross-collar right-over-left grey-blue patched robe with mending marks, unsheathed long sword with chipped blade leaning against trunk, cold moonlight from upper left illuminating half of face, bare branches silhouetted against full moon, low-saturation grey-blue palette with silver moonlight accent, rule of thirds with figure on left and moon on right, desolate yet liberated atmosphere
 
 #### Negative Prompt
 
