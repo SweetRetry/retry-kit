@@ -107,22 +107,37 @@ Director 的冲突仲裁规则（覆盖软约束）
 
 ## 二、区域策略 (Zone Strategy)
 
+### 区域粒度原则
+
+> **核心认知：风格的分界线应该对齐用户心智的上下文切换。** 用户在点击导航、切换 Tab、通过登录墙时，自然预期环境变化。在同一滚动流中突然切换视觉语言则会造成认知断裂。
+
+**区域 (Zone)** 的默认粒度是**路由 / 页面 / 独立视图**，而非同一页面内的 Section。
+
+| 粒度层级 | 说明 | 典型场景 | 频率 |
+|----------|------|---------|------|
+| **路由级**（默认） | 不同 URL / 路由使用不同风格 | 营销站 (Minimal) vs. 应用 Dashboard (Swiss) | **最常见** |
+| **视图级** | 同一路由内通过 Tab / 侧边栏切换不同视图 | Spotify: Now Playing (Expressive) ↔ Library (Swiss) | 常见 |
+| **布局级** | 同一视图内的持久分区（如 Sidebar + Main） | 应用 Shell: Swiss Sidebar + Minimal Content Area | 偶尔 |
+| **Section 级** | 同一页面滚动流中的不同 Section | 单页 Landing: Expressive Hero → Minimal Features | **罕见，需要充分理由** |
+
+**Section 级混合的使用条件**（必须同时满足）：
+1. 项目确实只有一个页面（如 Single-Page Landing）
+2. 辅风格 Section 有独立的功能目标（如 Hero 需要影院冲击力，Feature 区需要清晰阅读）
+3. 辅风格 Section 不超过 2 个，且有明确的接缝设计
+
 ### 区域分类法
 
-"区域 (Zone)" 是页面中功能和视觉一致的完整区块。每个区域映射到**单一主风格**。
-
-| 区域类型 | 描述 | 推荐风格 | 理由 |
-|----------|------|----------|------|
-| **Hero / Landing** | 首屏印象区，品牌视觉焦点 | Expressive 或 Minimal | 情绪冲击力 or 排版戏剧性 |
-| **Navigation / Header** | 持久性全局导航 | 跟随**项目主风格** | 全局一致性，用户锚点 |
-| **Content Body** | 长文阅读、文章、文档 | Minimal | 排版 + 留白优化阅读体验 |
-| **Dashboard / Data Panel** | KPI、表格、图表 | Swiss | 网格精度 + 高信息密度 |
-| **Settings / Forms** | 配置面板、表单 | Swiss 或 Minimal | 功能性清晰 |
-| **Footer** | 页脚信息 | 跟随**项目主风格**（简化版） | 一致性，收尾感 |
-| **Modal / Dialog** | 浮层覆盖 | 跟随**父区域风格** | 上下文延续 |
-| **Media Showcase** | 图片画廊、视频播放器 | Expressive | 影院级的媒体内容呈现 |
-| **Sidebar / Tool Panel** | 侧边工具栏 | Swiss | 功能性导航，紧凑布局 |
-| **Empty State / Onboarding** | 空状态、引导流程 | Minimal 或 Expressive | 情绪引导 + 清晰的行动指引 |
+| 区域类型 | 描述 | 推荐风格 | 典型粒度 |
+|----------|------|----------|---------|
+| **营销站 / Landing Page** | 品牌传达、转化引导 | Minimal 或 Expressive | 路由级 |
+| **应用 Dashboard** | KPI、表格、图表、数据操作 | Swiss | 路由级（登录墙分隔） |
+| **文档 / 博客 / 文章** | 长文阅读、知识库 | Minimal | 路由级 |
+| **媒体播放 / 沉浸体验** | 全屏播放器、虚拟展览 | Expressive | 视图级（Tab 切换） |
+| **设置 / 表单** | 配置面板、账户管理 | Swiss 或 Minimal | 路由级 |
+| **Navigation / Header** | 持久性全局导航 | 跟随**项目主风格** | 全局 |
+| **Footer** | 页脚信息 | 跟随**项目主风格** | 全局 |
+| **Modal / Dialog** | 浮层覆盖 | 跟随**触发区域的风格** | 继承 |
+| **Sidebar / Tool Panel** | 侧边工具栏 | Swiss | 布局级 |
 
 ### 区域映射规则
 
@@ -130,41 +145,44 @@ Director 的冲突仲裁规则（覆盖软约束）
 > 一个组件（Card、Button、Input 等）内部只遵循一种风格。禁止在同一个 Card 中混用 Expressive 的圆角 + Swiss 的 Mono 大写标签。
 
 **规则 2：子组件继承**
-> 子组件默认继承父区域的风格。如果需要在某个区域内嵌入不同风格的子区域（如 Content 区域中嵌入一个数据表格），必须使用**内容换框 (Content Wrapper)** 接缝策略（详见第四章）。
+> 子组件默认继承父区域的风格。如果需要在某个区域内嵌入不同风格的子模块（如 Minimal 文章页中嵌入一个 Swiss 数据对比表），必须使用**内容换框 (Content Wrapper)** 接缝策略（详见第四章）。
 
 **规则 3：全局元素跟随主风格**
-> 全局导航、全局 Toast、全局 Modal 跟随**项目主风格**，不因当前页面的区域风格而改变。
+> 全局导航、全局 Toast、全局 Modal 跟随**项目主风格**，不因当前路由的区域风格而改变。
 
-**规则 4：区域边界清晰**
-> 两个不同风格的区域之间必须有**明确的视觉边界**（接缝）。不允许两种风格在同一垂直空间内"渐混"（除非使用第四章定义的渐变过渡策略）。
+**规则 4：优先用导航分隔风格**
+> 不同风格的区域优先通过路由切换、Tab 切换、登录墙等**导航结构**分隔。同一滚动流内的风格切换是最后手段，且必须有充分的接缝设计。
 
 ### 区域地图模板 (Zone Map Template)
 
-为项目绘制区域地图时，使用以下格式：
+Zone Map 应以**项目架构**为粒度，而非单页布局：
 
 ```
-┌─────────────────────────────────────────────┐
-│ Navigation — [主风格]                         │
-├─────────────────────────────────────────────┤
-│                                             │
-│ Hero — [Expressive / Minimal]               │
-│                                             │
-├─── 接缝：[接缝策略] ────────────────────────┤
-│                                             │
-│ Content Body — [Minimal]                    │
-│                                             │
-│  ┌──────────────────────────────┐          │
-│  │ Embedded Data — [Swiss]      │          │
-│  │ (Content Wrapper 接缝)       │          │
-│  └──────────────────────────────┘          │
-│                                             │
-├─── 接缝：[接缝策略] ────────────────────────┤
-│                                             │
-│ Dashboard Panel — [Swiss]                   │
-│                                             │
-├─────────────────────────────────────────────┤
-│ Footer — [主风格]                             │
-└─────────────────────────────────────────────┘
+项目: [项目名]
+风格配比: [主风格] XX% + [辅风格] YY%
+
+路由结构:
+├── / (Marketing Landing) — Minimal
+│   ├── Nav — Minimal
+│   ├── Hero — Minimal (排版比例模式)
+│   ├── Features — Minimal
+│   └── Footer — Minimal
+│
+├── /app (登录墙分隔) — Swiss
+│   ├── Sidebar — Swiss
+│   ├── Dashboard — Swiss
+│   ├── Settings — Minimal (内容换框)
+│   └── Docs — Minimal (内容换框)
+│
+└── 共享基础:
+    ├── oklch 色彩空间
+    ├── 统一 --primary 品牌色
+    └── 8pt 基线网格
+
+区域间过渡:
+- Marketing → App: 登录墙（天然上下文切换）
+- Dashboard → Settings: 路由切换（同一 Shell 内）
+- Dashboard → Docs: 路由切换 + 内容换框（Swiss Shell 包裹 Minimal 内容）
 ```
 
 ---
@@ -209,9 +227,10 @@ Director 的冲突仲裁规则（覆盖软约束）
 
 #### 核心规则
 
-1. **全局共享 Token**：`--primary`、`--destructive`、`--foreground`、`--muted-foreground` 等品牌/语义 Token 在所有区域中保持**同一值**
-2. **区域可变 Token**：`--background`、`--card`、`--border` 等表面 Token 通过 `data-zone` HTML 属性实现区域级覆盖
-3. **色彩空间统一**：Expressive 风格原始使用 HSL，混合项目中必须转换为 oklch
+1. **Token 是项目基础设施**：所有 CSS Variables（设计 Token）必须定义在项目的**全局 CSS 文件**（`app.css` / `globals.css`）中。禁止在组件级、页面级或局部 CSS 文件中定义 Token（反模式 #12 Token Isolation）
+2. **全局共享 Token**：`--primary`、`--destructive`、`--foreground`、`--muted-foreground` 等品牌/语义 Token 在所有区域中保持**同一值**
+3. **区域可变 Token**：`--background`、`--card`、`--border` 等表面 Token 通过 `[data-zone="..."]` 选择器在**全局 CSS 文件**中实现区域级覆盖
+4. **色彩空间统一**：Expressive 风格原始使用 HSL，混合项目中必须转换为 oklch
 
 #### Expressive HSL → oklch 转换参考
 
@@ -264,34 +283,37 @@ Director 的冲突仲裁规则（覆盖软约束）
 
 ### 接缝定义
 
-**接缝 (Seam)** 是两个不同风格区域之间的视觉过渡设计。好的接缝让用户自然地从一种视觉语言过渡到另一种，而不产生认知断裂。
+**接缝 (Seam)** 是两个不同风格区域之间的过渡设计。最好的接缝是**用户自己预期的上下文切换**——点击导航、切换 Tab、通过登录墙。
 
-### 五种接缝策略
+### 接缝策略分层
 
-| # | 接缝类型 | 视觉效果 | 适用场景 | 关键参数 | 注意事项 |
-|---|---------|----------|---------|----------|---------|
-| 1 | **硬边界 (Hard Boundary)** | 干脆利落的"换场" | 风格差异较小的区域（Swiss ↔ Minimal）；结构性明确的分区 | 全宽 1px 分割线 (`bg-border`) | 两侧留白应为区域内部标准留白的 1.5-2 倍 |
-| 2 | **渐变过渡 (Gradient Fade)** | 柔和的"渐入"感，像电影转场 | 明度差异大的过渡（Minimal 亮色 → Expressive 暗色） | 垂直空间 200-400px；oklch 色彩空间插值 | 渐变区域不放置关键内容；过短 (<100px) 像 bug，过长 (>500px) 感觉拖沓 |
-| 3 | **留白缓冲 (Whitespace Buffer)** | 呼吸感，给用户"换挡"的心理空间 | 任意两种风格之间的通用接缝 | 桌面 128px+；移动端可折半至 64-96px | 在高留白的 Minimal 区域后可用短分割线打破单调 |
-| 4 | **内容换框 (Content Wrapper)** | "画中画"，主风格包裹辅风格 | 在主风格区域内嵌入辅风格功能模块 | 内层容器有明确视觉边界（边框/背景色差异）+ `data-zone` 属性切换 | 内层面积不超过外层的 50%；内层样式完全遵循辅风格 |
-| 5 | **全屏截断 (Full-Screen Break)** | 强烈的"场景切换"，像走进电影院 | 从克制风格切入 Expressive 影院区域 | 全出血 100vw × ≥100vh；完全不同的背景色 | 不宜频繁使用；暗→亮过渡底部建议加 50-100px 渐变缓冲 |
+> **原则：优先使用结构性接缝（导航 / 路由），其次才是视觉性接缝（渐变 / 留白）。** 如果你发现自己在一个页面里需要复杂的渐变帘幕过渡，这通常意味着你应该把两个区域拆到不同的路由中。
+
+| 层级 | 接缝类型 | 说明 | 适用粒度 |
+|------|---------|------|---------|
+| **L1 结构性** | **导航 / 路由切换** | 点击链接进入不同页面，浏览器完成上下文切换 | 路由级（最常用） |
+| **L1 结构性** | **Tab / 视图切换** | 同一 Shell 内 Tab 或侧边栏切换不同内容面板 | 视图级 |
+| **L1 结构性** | **登录墙 / 权限墙** | 公开页面与授权应用之间的天然分隔 | 路由级 |
+| **L2 布局性** | **内容换框 (Content Wrapper)** | 主风格 Shell 包裹辅风格内容面板 | 布局级 |
+| **L2 布局性** | **硬边界 (Hard Boundary)** | 1px 分割线，清晰的结构性分区 | 布局级 / Section 级 |
+| **L3 视觉性** | **留白缓冲 (Whitespace Buffer)** | 128px+ 空白区域提供心理换挡空间 | Section 级（罕见） |
+| **L3 视觉性** | **渐变过渡 (Gradient Fade)** | 200-400px 背景色渐变 | Section 级（罕见） |
+| **L3 视觉性** | **全屏截断 (Full-Screen Break)** | 100vw × ≥100vh 完全环境切换 | Section 级（极罕见） |
 
 ### 接缝推荐矩阵
 
-| 起始风格 → 目标风格 | 推荐接缝 | 备选接缝 | 说明 |
-|---------------------|----------|----------|------|
-| **Minimal → Expressive** | 全屏截断 | 渐变过渡 | Expressive 区域应像"走进电影院"一样有明确入口 |
-| **Expressive → Minimal** | 渐变过渡 | 留白缓冲 | 从影院感中"呼出"到阅读空间，需要减压 |
-| **Minimal → Swiss** | 硬边界 | 内容换框 | 两者都是浅色/克制，结构性分隔即可 |
-| **Swiss → Minimal** | 硬边界 | 留白缓冲 | 从精密网格到自由排版，清晰断开 |
-| **Expressive → Swiss** | 留白缓冲 + 硬边界 | 全屏截断 | 视觉对比最大（暗→亮，有机→精密），需要最大分隔 |
-| **Swiss → Expressive** | 全屏截断 | 留白缓冲 + 渐变过渡 | 从精密进入影院，用全屏暗色区块做强截断 |
+| 风格组合 | 推荐接缝（按优先级） | 说明 |
+|---------|---------------------|------|
+| **Minimal ↔ Swiss** | 路由切换 > 内容换框 > 硬边界 | 两者视觉差异小，轻量分隔即可 |
+| **Minimal ↔ Expressive** | 路由切换 > Tab 切换 > 全屏截断 | 明度差异大，尽量用导航结构分隔 |
+| **Swiss ↔ Expressive** | 路由切换 > Tab 切换 | 视觉对比最大，强烈建议用导航结构分隔 |
+| **同一页面内嵌入辅风格模块** | 内容换框 | 如 Minimal 文章页内嵌 Swiss 数据对比表 |
 
 ### 接缝处的动效规则
 
-接缝区域的动效**不属于**任何一侧的风格，使用跨区域通用过渡：`duration: 0.3s, ease: [0.16, 1, 0.3, 1]` (Expo Out)。
+跨区域的过渡动效使用通用曲线：`duration: 0.3s, ease: [0.16, 1, 0.3, 1]` (Expo Out)。
 
-> 接缝的建筑阈限理论与视觉节奏序列编排参见 [references/seam-design.md](references/seam-design.md)
+> 接缝的建筑阈限理论与视觉性接缝的详细设计参数参见 [references/seam-design.md](references/seam-design.md)
 
 ---
 
@@ -312,6 +334,8 @@ Director 的冲突仲裁规则（覆盖软约束）
 | 9 | **No Primary** | 两种风格 50/50 平分，没有明确的主次 | 用户无法建立统一的品牌/产品认知 | 必须建立 70/30 或 80/20 的主次层级 |
 | 10 | **Seam-less Transition** | 两种风格的区域直接相邻，没有任何接缝设计 | 突兀的视觉断裂，认知冲击 | 使用第四章定义的接缝策略 |
 | 11 | **Token Drift** | 不同区域的 `--primary` 品牌色值不一致 | 品牌识别碎片化 | `--primary` 全局唯一一致 |
+| 12 | **Token Isolation** | CSS Variables（设计 Token）定义在组件级、页面级或局部 CSS 文件中，而非项目全局 CSS | Token 系统是**项目基础设施**，不是页面的私有状态。局部定义导致 Token 碎片化、覆盖冲突、无法全局切换暗色模式 | 所有 Token 定义必须在项目全局 CSS 文件（`app.css` / `globals.css`）中，通过 `@theme` + `:root` + `[data-zone]` 统一管理 |
+| 13 | **Single-Page Patchwork** | 在同一页面的滚动流中堆叠 3+ 种不同风格的 Section，用复杂的视觉接缝（渐变帘幕、sticky 过渡）拼接 | 真实产品几乎不会在同一滚动流中混合多种风格。用户在滚动中不预期视觉语言突变，复杂的同页接缝实现容易变成 hack | 将不同风格的区域拆到不同路由/视图中，用导航结构（路由切换、Tab、登录墙）天然分隔 |
 
 ### 检测方法
 
@@ -323,147 +347,154 @@ Director 可通过以下方式检测反模式：
 3. Shadow Leak → 搜索 data-zone="swiss" 或 data-zone="minimal" 区域内的 shadow-* 类
 4. Typography Contamination → 搜索 data-zone="minimal" 内的 font-mono 和 uppercase
 5. Token Drift → 比较不同区域的 --primary 值是否一致
+6. Token Isolation → 搜索组件/页面目录中的 .css 文件是否包含 --background / --foreground 等 Token 定义
+7. Single-Page Patchwork → 检查单个 page.tsx 是否包含 3+ 个不同 data-zone 的 ZoneProvider
 ```
 
 ---
 
 ## 六、合成配方 (Composition Templates)
 
+> 以下配方均以**路由/视图**为区域粒度。注意每个配方中风格切换是通过导航结构（路由、Tab、登录墙）实现的，而非同一页面内的滚动流接缝。
+
 ### 配方 1：SaaS 全栈（营销 + 应用）— 最常见
 
 ```
 风格配比: Swiss 60% (App) + Minimal 30% (Marketing) + Expressive 10% (Hero)
+分隔方式: 登录墙（Marketing ↔ App）
 
-区域地图:
-┌─────────────────────────────────────────┐
-│ Marketing Nav — Minimal                  │
-├─────────────────────────────────────────┤
-│ Hero — Expressive (全屏截断接缝)          │
-├─── 渐变过渡 ────────────────────────────┤
-│ Features / Pricing — Minimal             │
-├─── 硬边界 ──────────────────────────────┤
-│ Footer — Minimal                         │
-└─────────────────────────────────────────┘
+路由结构:
+├── / (Marketing) — Minimal
+│   ├── Nav, Features, Pricing, Footer — Minimal
+│   └── Hero Section — Expressive (唯一的 Section 级混合，全屏影院首屏)
+│
+├── /app (登录墙分隔) — Swiss
+│   ├── App Shell (Sidebar + Header) — Swiss
+│   ├── /app/dashboard — Swiss
+│   ├── /app/analytics — Swiss
+│   ├── /app/settings — Minimal (内容换框: Swiss Shell 包裹 Minimal 内容面板)
+│   └── /app/docs — Minimal (内容换框: Swiss Shell 包裹 Minimal 内容面板)
+│
+└── 共享基础: oklch · --primary 品牌色 · 8pt 基线 · Inter 字体族
 
-┌─────────────────────────────────────────┐
-│ App Shell Sidebar — Swiss                │
-├──────┬──────────────────────────────────┤
-│      │ Dashboard KPIs — Swiss            │
-│ Side │ Data Tables — Swiss               │
-│ bar  ├──────────────────────────────────┤
-│      │ Settings — Minimal (内容换框接缝)  │
-│      │ Docs — Minimal (内容换框接缝)      │
-└──────┴──────────────────────────────────┘
-
-共享基础:
-- oklch 色彩空间
-- 统一 --primary 品牌色
-- 8pt 基线网格（Minimal 区域也对齐到 8pt）
-- Inter 字体族（Swiss 数据区加 JetBrains Mono）
+区域间过渡:
+- Marketing → App: 登录墙（天然上下文切换，无需视觉接缝）
+- Dashboard → Settings: 路由切换（Shell 不变，内容面板切换风格）
+- Marketing Hero → Features: 同页唯一的视觉接缝（渐变过渡 200px）
 ```
 
 ### 配方 2：创意作品集
 
 ```
 风格配比: Expressive 80% + Minimal 20%
+分隔方式: 路由切换
 
-区域地图:
-┌─────────────────────────────────────────┐
-│ Nav — Expressive (透明覆盖)               │
-├─────────────────────────────────────────┤
-│ Hero Reel — Expressive (全屏影院)         │
-├─────────────────────────────────────────┤
-│ Project Gallery — Expressive (Bento)     │
-├─── 渐变过渡 (暗→亮) ───────────────────┤
-│ About / Bio — Minimal (排版比例模式)      │
-├─── 渐变过渡 (亮→暗) ───────────────────┤
-│ Contact — Expressive                     │
-└─────────────────────────────────────────┘
+路由结构:
+├── / (Home) — Expressive
+│   ├── Nav — Expressive (透明覆盖)
+│   ├── Hero Reel — Expressive (全屏影院)
+│   └── Project Gallery — Expressive (Bento)
+│
+├── /about — Minimal
+│   └── Bio, Philosophy, Contact — Minimal (排版比例模式)
+│
+├── /project/:id — Expressive
+│   └── 项目详情 — Expressive (影院级案例展示)
+│
+└── 共享基础: oklch · --primary · Expressive 圆角 8-12px / Minimal 8px
+
+区域间过渡:
+- Home → About: 路由切换（暗→亮的上下文切换自然发生）
+- Home → Project: 路由切换（暗→暗，同风格无需接缝）
 
 Director 覆盖:
-- Expressive 色彩空间 → oklch（从 HSL 转换）
-- Minimal 区域留白率维持 40%+
-- Expressive 圆角保持 8-12px，Minimal 区域跟随 8px
+- E.S3 色彩空间 → oklch（从 HSL 转换）
+- M.S2 留白率维持 40%+
 ```
 
 ### 配方 3：编辑 / 博客平台
 
 ```
 风格配比: Minimal 80% + Expressive 20%
+分隔方式: 路由切换
 
-区域地图:
-┌─────────────────────────────────────────┐
-│ Nav — Minimal                            │
-├─────────────────────────────────────────┤
-│ Featured Article Hero — Expressive       │
-│ (全屏截断接缝, 影院级大图 + 运动标题)     │
-├─── 渐变过渡 ────────────────────────────┤
-│ Article Grid — Minimal (Bento 网格)      │
-├─── 硬边界 ──────────────────────────────┤
-│ Article Body — Minimal (排版比例 + 分割线) │
-├─────────────────────────────────────────┤
-│ Footer — Minimal                         │
-└─────────────────────────────────────────┘
+路由结构:
+├── / (Home) — Minimal
+│   ├── Nav — Minimal
+│   ├── Featured Article Banner — Expressive (唯一的 Section 级混合)
+│   └── Article Grid — Minimal (Bento 网格)
+│
+├── /article/:id — Minimal
+│   └── Article Body — Minimal (排版比例 + 分割线)
+│
+├── /featured/:id — Expressive (特色长文的影院级阅读体验)
+│   └── 全屏封面 + 沉浸阅读 — Expressive
+│
+└── 共享基础: oklch · --primary · Inter
+
+区域间过渡:
+- Home → Article: 路由切换（同风格 Minimal）
+- Home → Featured: 路由切换（Minimal → Expressive，亮→暗切换自然发生）
 
 Director 覆盖:
-- Expressive Hero 动效时长上限降至 0.8s（匹配 Minimal 整体节奏）
-- Expressive 暗色背景使用 oklch(0.08 0 0)
+- E.S2 动效时长上限降至 0.8s（匹配 Minimal 整体节奏）
+- E.S4 暗色背景 oklch(0.08 0 0)
 ```
 
 ### 配方 4：电商平台
 
 ```
 风格配比: Minimal 70% + Swiss 30%
+分隔方式: 路由切换 + 内容换框
 
-区域地图:
-┌─────────────────────────────────────────┐
-│ Nav — Minimal (含搜索)                    │
-├─────────────────────────────────────────┤
-│ Hero Banner — Minimal (排版比例模式)      │
-├─── 留白缓冲 ────────────────────────────┤
-│ Product Grid — Minimal (Bento 网格)      │
-├─────────────────────────────────────────┤
-│ Product Detail — Minimal                 │
-│  ┌──────────────────────────────┐       │
-│  │ Specs / Compare — Swiss       │       │
-│  │ (内容换框接缝)                │       │
-│  └──────────────────────────────┘       │
-├─── 硬边界 ──────────────────────────────┤
-│ Cart / Checkout — Swiss                  │
-├─────────────────────────────────────────┤
-│ Footer — Minimal                         │
-└─────────────────────────────────────────┘
+路由结构:
+├── / (Home) — Minimal
+│   ├── Nav (含搜索) — Minimal
+│   ├── Hero Banner — Minimal
+│   └── Product Grid — Minimal (Bento)
+│
+├── /product/:id — Minimal
+│   ├── 产品介绍、图片 — Minimal
+│   └── Specs / Compare 表格 — Swiss (内容换框: Minimal 页面内嵌 Swiss 对比模块)
+│
+├── /cart — Swiss
+│   └── 购物车、结算流程 — Swiss (数据精度 + 功能性操作)
+│
+└── 共享基础: oklch · --primary · 8pt 基线
+
+区域间过渡:
+- Product → Cart: 路由切换
+- Product 介绍 → Specs 表格: 内容换框（Swiss 表格有明确边框容器）
 
 Director 覆盖:
-- Swiss 区域圆角放宽至 6px（匹配 Minimal 整体柔和感）
-- Swiss 边框厚度统一为 1px
-- Minimal 区域 Bento 网格对齐到 8pt 基线
+- S.S1 圆角放宽至 6px（匹配 Minimal 整体柔和感）
+- S.S6 边框厚度统一为 1px
+- M.S5 Bento 网格对齐到 8pt 基线
 ```
 
 ### 配方 5：音乐 / 媒体应用
 
 ```
 风格配比: Expressive 80% + Swiss 20%
+分隔方式: Tab / 视图切换（同一 Shell 内）
 
-区域地图:
-┌─────────────────────────────────────────┐
-│ App Shell — Expressive (暗色)             │
-├──────┬──────────────────────────────────┤
-│      │ Now Playing — Expressive          │
-│      │ (全屏影院, Spotlight + 氛围渐变)   │
-│ Mini ├──────────────────────────────────┤
-│ Side │ Library / Browse — Swiss          │
-│ bar  │ (Sidebar Shell + Data Grid)       │
-│      ├──────────────────────────────────┤
-│      │ Search Results — Swiss            │
-│      ├──────────────────────────────────┤
-│      │ Playlist Detail — Expressive      │
-└──────┴──────────────────────────────────┘
+路由结构:
+├── App Shell — Expressive (暗色全局 Shell + Mini Sidebar)
+│   ├── Now Playing (视图) — Expressive (全屏影院, Spotlight + 氛围渐变)
+│   ├── Library (视图) — Swiss (Data Grid + 高密度曲目列表)
+│   ├── Search (视图) — Swiss (搜索结果表格)
+│   └── Playlist (视图) — Expressive (播放列表氛围)
+│
+└── 共享基础: oklch · --primary · 暗色统一基调
+
+区域间过渡:
+- Now Playing ↔ Library: Tab/侧边栏切换（不在同一滚动流中）
+- Library ↔ Search: Tab 切换（同风格 Swiss）
+- 所有视图切换使用 Expo Out 通用过渡动画
 
 Director 覆盖:
-- Swiss 区域暗色背景可暗化至 oklch(0.12 0 0)（与 Expressive 整体暗色调和谐）
-- Swiss 区域圆角维持 0px（在暗色环境中直角更显精密）
-- 跨区域导航使用 Expo Out 通用过渡
+- S.S4 Swiss 暗色背景暗化至 oklch(0.12 0 0)（与 Expressive 暗色调和谐）
+- S.S1 Swiss 圆角维持 0px（暗色环境中直角更显精密）
 ```
 
 ---
@@ -533,22 +564,43 @@ Director 覆盖:
 
 ### Director 工作流
 
+> **强制规则：在完成阶段 [1]–[3] 并输出完整策略文档之前，禁止编写任何组件代码或页面布局代码。** 跳过诊断直接写代码会导致信息架构混乱、接缝 hack、Token 碎片化等问题。
+
 ```
 用户描述项目需求
     ↓
 [1] 诊断阶段 — 运行项目诊断矩阵（第一章）
-    → 输出：推荐主辅风格 + 配比
+    → 必须输出：推荐主辅风格 + 配比 + 简要理由
     ↓
 [2] 区域映射阶段 — 定义区域策略（第二章）
-    → 输出：Zone Map（ASCII 图 + data-zone 属性方案）
+    → 必须输出：Zone Map（ASCII 图），标注每个区域的风格归属和接缝类型
     ↓
-[3] 策略输出阶段 — 为每个区域生成委派指令
-    → 输出：每个区域的风格归属 + 软约束覆盖参数 + 接缝策略
+[3] 委派指令阶段 — 为每个区域生成完整的委派指令
+    → 必须输出：每个区域的软约束覆盖参数（引用约束 ID）+ 接缝策略
     ↓
-[4] 实现委派阶段 — 按区域委派给具体 style guide skill
-    → 指令格式见下方
+── CHECKPOINT ──────────────────────────────────────────
+    以上三个阶段的输出构成「策略文档」。
+    在策略文档完成之前，不得进入下一阶段。
+    策略文档必须包含：
+    ✓ 风格配比（含百分比）
+    ✓ 完整 Zone Map（路由结构图，标注每个路由/视图的风格归属）
+    ✓ 分隔方式（路由切换 / Tab 切换 / 登录墙，而非同页滚动流接缝）
+    ✓ 每个区域的委派指令（含约束 ID 引用）
+    ✓ 每条过渡的类型（优先结构性接缝，必要时才用视觉性接缝）
+────────────────────────────────────────────────────────
     ↓
-[5] 审查阶段 — 运行 Director 审查清单（第七章）
+[4] 基础设施阶段 — 配置项目级 Token 和区域变体
+    → 在项目全局 CSS 文件（app.css / globals.css）中定义：
+      · @theme 注册语义色彩 Token
+      · @custom-variant 注册区域变体
+      · :root 和 [data-zone="..."] 的 CSS Variables
+    → 禁止在组件级或页面级文件中定义 Token（反模式 #12 Token Isolation）
+    ↓
+[5] 区域实现阶段 — 按区域逐一委派给具体 style guide skill
+    → 每个区域严格遵循阶段 [3] 的委派指令
+    → 接缝组件按阶段 [2] 的标注实现
+    ↓
+[6] 审查阶段 — 运行 Director 审查清单（第七章）
     → 随后可运行 frontend-design 进行技术合规审查
 ```
 
@@ -569,22 +621,54 @@ Director 覆盖:
 - 下方接缝: [接缝类型]，连接 [下方区域风格]
 ```
 
-**示例：**
+**示例 — 策展平台 Exhibition 路由的委派指令：**
 
 ```
-区域: Hero
+区域: /exhibition/:id (虚拟展览沉浸体验)
 委派 Skill: expressive-style-guide
 
 软约束覆盖:
 - E.S3 色彩空间: oklch ← 原因: 混合项目统一色彩空间
 - E.S4 暗色背景: oklch(0.08 0 0) ← 原因: 影院画布
-- E.S2 动效时长上限: 0.8s ← 原因: 匹配 Minimal 主风格的整体节奏
+- E.S2 动效时长上限: 0.8s ← 原因: 匹配项目整体节奏
 - E.S5 Bento 网格: 对齐 8pt 基线 ← 原因: 项目中包含 Swiss 区域
-- E.S6 Stagger 间隔: 0.06s ← 原因: 项目节奏偏快
 
 相邻区域的接缝:
-- 上方: 无（Hero 是首屏）
-- 下方: 渐变过渡 (Gradient Fade)，连接 Minimal Content Body
+- 与 Bidding 页面通过路由切换分隔（无需视觉接缝）
+```
+
+**示例 — 完整 Zone Map 输出（策展平台）：**
+
+```
+项目: Galerie — 线上策展平台
+风格配比: Expressive 70% + Swiss 30%
+分隔方式: 路由切换 + Tab 切换
+
+路由结构:
+├── / (Home) — Expressive
+│   ├── Nav — Expressive (透明覆盖)
+│   ├── Hero — Expressive (全屏影院)
+│   └── Exhibition Grid — Expressive (Bento 画廊)
+│
+├── /exhibition/:id — Expressive
+│   └── 虚拟展览沉浸浏览 — Expressive (全屏暗色, 作品大图)
+│
+├── /auction (Tab: Live Bidding) — Swiss
+│   ├── Bidding Panel — Swiss (竞拍数据表, 实时出价)
+│   └── Lot Detail — Swiss (规格, 出价历史)
+│
+├── /collection (Tab: My Collection) — Swiss
+│   └── 藏品管理 — Swiss (数据表格, 物流状态)
+│
+├── /about — Expressive
+│   └── 策展人介绍 — Expressive (排版 + 影院级人像)
+│
+└── 共享基础: oklch · --primary · 暗色全局基调
+
+区域间过渡:
+- Exhibition → Auction: Tab 切换（Expressive 暗 → Swiss 暗, Expo Out 过渡）
+- Home → Exhibition: 路由切换（同风格 Expressive）
+- 所有 Swiss 区域暗色背景统一为 oklch(0.12 0 0)
 ```
 
 ### 职责边界
