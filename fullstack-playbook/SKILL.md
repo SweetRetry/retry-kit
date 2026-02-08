@@ -104,12 +104,14 @@ project-root/
 - 组件导出名：**PascalCase** → `export function UserProfile()`
 - 目录组织：**feature-based** → `features/auth/`、`features/billing/`、`features/user/`
 - 聚合视图（如 dashboard）是多个 feature 的组合，放在 `app/` 路由层，不作为 feature
+- **强制语义化命名**：文件名、变量名、函数名、属性名、CSS class 必须清晰表达意图。禁止 `data`、`info`、`temp`、`item`、`handleClick`、`res`、`val` 等模糊命名，用 `userProfile`、`invoiceList`、`onSubmitPayment` 等具体名称
 
 ### TypeScript
 
 - **strict mode** 必须开启
 - 禁止 `as` 和 `any`（除非有充分注释说明原因）
 - 端到端类型安全链路：`Drizzle schema → Zod v4 → Eden Treaty → 前端`
+- **优先从已有定义推导类型**：写新代码前先检查项目中已有的类型、Zod schema、Drizzle schema，用 `z.infer`、`typeof`、`ReturnType` 等推导，禁止重复手写已存在的类型定义
 
 ### 样式
 
@@ -147,6 +149,12 @@ project-root/
 | WARNING | CSS `transition` 替代 Motion | `motion.div` + spring 动画 |
 | WARNING | 条件类名字符串拼接 | `cn()` 工具函数 |
 | WARNING | 筛选/分页状态放 Zustand | `searchParams` URL 驱动 |
+
+## 行为纪律
+
+- **严守作用域**：只修改用户要求的文件和逻辑，不要"顺手"重构周边代码、重命名无关变量、或调整未提及的文件
+- **改完必验证**：每次修改后运行 `tsc --noEmit` 和 `biome check` 确认零错误，不允许留下类型错误后声称"完成"
+- **新增依赖需审批**：安装任何新 npm 包前必须征求用户同意，说明为什么现有依赖无法满足需求
 
 ## 深度参考
 
