@@ -36,6 +36,14 @@
 - **最佳搭配题材**: 古风、都市言情、校园青春、仙侠
 - **排斥项**: sharp digital lines, neon glow, heavy contrast, metallic texture
 
+## 漫剧 CG Manhua CG Render
+
+- **Prompt 关键词**: Chinese donghua CG render, high-quality 3D-stylized character rendering, cinematic dynamic manga panel composition, dramatic particle effects and energy VFX, volumetric lighting with lens flare, depth of field with motion blur on action, polished skin and hair rendering between 2D and 3D, dramatic camera angles
+- **视觉特征**: 介于 2D 手绘和 3D CG 之间的高质感渲染、强粒子特效和光效、电影分镜感的动态构图、角色皮肤头发有 3D 体积但保留手绘美型五官、背景有景深虚化和运动模糊
+- **最佳搭配题材**: 修仙、仙侠、热血战斗、武侠
+- **排斥项**: flat illustration, watercolor texture, ink wash, sketch lines, pure 2D cel-shading
+- **与半写实的区别**: 半写实追求"像真人但略有美化"；漫剧 CG 追求"动态漫画的高质感渲染"，更强调特效、粒子、镜头语言，人物更偏美型而非写实
+
 ## 半写实 Semi-Realistic
 
 - **Prompt 关键词**: semi-realistic digital painting, detailed facial features with stylized proportions, realistic skin texture and subsurface scattering, accurate fabric draping, cinematic lighting, photographic depth of field with illustrated elements

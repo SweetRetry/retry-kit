@@ -2,10 +2,23 @@
 
 ## 仙侠 Xianxia
 
-- **关键词**: ink wash painting fusion, flowing celestial robes, qi energy auras, cloud sea, immortal realm architecture, brush stroke textures, jade ornaments, spiritual swords, divine light beams, ethereal translucency
-- **色彩**: 翠玉绿、朱砂红、金箔、水墨渐变、丝绸质感的半透明层次、月白、霜蓝
-- **参考作品**: 天官赐福、魔道祖师、斗破苍穹、完美世界
-- **构图特征**: 竖幅卷轴式、人物悬浮于云海、书法式动态轨迹、仙气飘渺的大留白
+> ⚠️ **仙侠 ≠ 修仙**。仙侠的核心是**人间江湖里有超自然力量**——角色行走于山川城镇，偶尔施展术法。不是满屏仙云神殿。参考天官赐福、魔道祖师：大部分画面是人物在人间场景中的情感互动，仙术/灵力只是点缀。
+
+- **关键词**: Chinese xianxia manhua, characters in human-world settings with supernatural elements, cross-collar right-over-left robes, sword at waist, qi energy as subtle accent (not overwhelming), ancient town streets, mountain wilderness, sect courtyards, lantern-lit night scenes, spiritual sword with faint glow, talisman paper
+- **色彩**: 以人间自然色为主底（青灰、石白、木棕、苔绿），灵力/术法作为局部高饱和点缀（翠玉绿光、朱砂红符、金色法阵）
+- **参考作品**: 天官赐福、魔道祖师、少年歌行、画江湖系列
+- **构图特征**: 角色情绪特写为主、人间场景纵深、术法效果作为画面局部亮点而非满屏铺开
+- **常见误区**: 不要默认加云海/仙界/飞升/悬浮——除非用户明确要求修仙/仙界场景
+
+## 修仙 Xiuzhen (Cultivation)
+
+> ⚠️ **修仙 ≠ 仙侠**。修仙的核心是**体系感和力量等级**——渡劫、炼丹、法宝、境界压制、逆天改命。视觉上比仙侠更"重"：大场面特效、能量爆发、天劫雷罚、虚空裂缝。仙侠偏"人情味"，修仙偏"爽感和压迫感"。
+
+- **关键词**: cultivation fantasy, tribulation lightning striking down, energy aura with visible power level, pill cauldron with swirling flames, spiritual treasure with ancient runes, void cracks in sky, golden core radiance from chest, sect grand hall with towering pillars, mountain peak above clouds, power suppression aura crushing ground, breakthrough energy shockwave
+- **色彩**: 天劫紫金、丹火赤橙、灵力幽蓝、虚空裂缝的深紫黑、金丹金光、雷罚白紫交织；整体比仙侠更高饱和、更强对比
+- **参考作品**: 斗破苍穹、凡人修仙传、遮天、完美世界、吞噬星空
+- **构图特征**: 极端仰视（渡劫/飞升）、能量爆发放射线构图、巨物对比（天劫云层 vs 渺小人物）、力量碾压的俯视视角
+- **与仙侠的关键区别**: 修仙画面通常有明确的"力量可视化"（灵气漩涡、境界光环、法宝激活），仙侠画面更多是人物情感互动中偶尔点缀灵力
 
 ## 武侠 Wuxia
 
