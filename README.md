@@ -1,4 +1,4 @@
-# sweetretry-skills
+# Skills
 
 Claude Code 技能集合。为 AI 编码助手提供领域专业知识、工程规范和设计系统。
 
