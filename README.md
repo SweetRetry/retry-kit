@@ -17,10 +17,7 @@ Claude Code 技能集合。为 AI 编码助手提供领域专业知识、工程�
 
 | 技能 | 说明 |
 | --- | --- |
-| **design-director** | 设计总监 — 多风格编排与融合，诊断项目类型、分配风格比例、解决冲突 |
-| **expressive-style-guide** | 影院级质感 (Cinematic UI) 设计规范 |
-| **minimal-style-guide** | 极简主义 UI 设计规范，内容优先、高信噪比 |
-| **swiss-style-guide** | 新瑞士风格 (Neo-Swiss) 设计规范，面向高密度数据 SaaS |
+| **web-style-guideline** | Web 设计风格治理 — 风格诊断、原型选择（Swiss/Minimal/Organic）、多风格混合编排、Token 与组件规范生成 |
 
 ### 领域技能
 
