@@ -117,8 +117,7 @@ project-root/
 
 - 严格使用 Tailwind utility classes，禁止 CSS Modules 和 inline `style={{}}`
 - 使用 `cn()` 工具函数（`clsx` + `tailwind-merge`）处理条件类名
-- 禁止任意值 `-[...]`（如 `p-[9px]`），使用 Tailwind 标准 scale
-- 禁止硬编码颜色（hex/RGB），使用语义 token（`text-muted-foreground` 等）
+- 具体的 token 选择、色值规范、间距系统等视觉层面的约束由 web-style-guideline 管理
 
 ### React
 
@@ -146,13 +145,12 @@ project-root/
 | CRITICAL | inline `style={{}}` | Tailwind utility class |
 | CRITICAL | throw 做常规错误处理 | `{ data, error }` 返回值模式 |
 | WARNING | `as` / `any` 类型断言 | 正确的泛型 / 类型守卫 |
-| WARNING | CSS `transition` 替代 Motion | `motion.div` + spring 动画 |
+| WARNING | 复杂交互动画用 CSS `transition` | 需要 spring 物理 / exit 动画 / 编排时用 Motion |
 | WARNING | 条件类名字符串拼接 | `cn()` 工具函数 |
 | WARNING | 筛选/分页状态放 Zustand | `searchParams` URL 驱动 |
 
 ## 行为纪律
 
-- **严守作用域**：只修改用户要求的文件和逻辑，不要"顺手"重构周边代码、重命名无关变量、或调整未提及的文件
 - **改完必验证**：每次修改后运行 `tsc --noEmit` 和 `biome check` 确认零错误，不允许留下类型错误后声称"完成"
 - **新增依赖需审批**：安装任何新 npm 包前必须征求用户同意，说明为什么现有依赖无法满足需求
 
