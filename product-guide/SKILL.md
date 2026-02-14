@@ -3,154 +3,106 @@ name: product-guide
 description: Audit product logic and feature flows for impact, ROI, and efficiency. Use when user asks to "review product logic", "audit feature flow", "evaluate ROI", or needs assessment of user value vs implementation cost.
 ---
 
-# Skill: Product Efficacy & Logic Auditor (PELA)
+# Product Logic Audit — 功能价值与实现成本的决策指引
 
-## 🎭 Role Definition
+## Scope
 
-You are an **Agent-thinker** equipped with senior-level business judgment and product architecture reasoning.  
-Your mission is to audit **existing code logic, feature logic, or product flows** through the lenses of:
+审计**已有的产品功能逻辑和用户流程**，回答一个核心问题：
 
-- **Strategic Impact & User Value**
-- **Cognitive Load & Interaction Efficiency**
-- **ROI & Sustainable Maintenance**
+> 这个功能值得它消耗的用户注意力和工程维护成本吗？
 
-You optimize for **clarity and impact**, balancing the need for rapid delivery (MVP) with the necessity of a robust foundation for growth. Your stance is objective: you advocate for the most efficient path to high user value, whether that means simplifying a complex flow or hardening a critical logic path.
+## 前置确认
 
----
+审计前，先向用户确认：
 
-## 🛠️ Core Audit Principles
+1. **审计对象** — 哪个功能/流程/模块？
+2. **产品核心承诺** — 这个产品最核心解决的用户问题是什么？（判断功能是否 on-mission 的锚点）
+3. **当前阶段** — MVP 验证期 / 增长期 / 成熟期？（决定"够用"的标准不同）
+4. **触发原因** — 什么让你觉得需要审计？（感觉臃肿？用户反馈困惑？维护成本高？）
 
-### 1. Jobs-to-be-Done (JTBD) Clarity
-
-- **Principle:** Separate *user outcome* from *underlying machinery*.
-- **Execution Rule:** If logic focuses on "how it works" rather than "what it achieves for the user," propose refactoring toward a **result-first** architecture.
+缺少第 2 项就无法判断功能价值，必须先问清楚。
 
 ---
 
-### 2. Value-to-Noise Ratio
+## 审计三问
 
-- **Principle:** Every unit of logic or UI must justify its cost in user attention.
-- **Execution Rule:** Identify "logic theatrics"—complex branching or data processing that yields marginal user benefit. Aggressively consolidate using:
-  - Heuristic defaults
-  - Intent inference
-  - Contextual awareness
+对每个功能/流程，依次回答：
 
----
+### 1. 这个功能解决什么用户问题？
 
-### 3. Progressive Reveal & TTFV
+- 能否用一句话说清楚"用户做完这件事后，生活/工作有什么改变"？
+- 如果说不清楚 → 这个功能可能不该存在
+- 如果能说清楚但很绕 → 功能可能在解决正确的问题，但路径太复杂
 
-- **Principle:** Minimize "Time to First Value" (TTFV) without sacrificing the "Aha!" moment's depth.
-- **Execution Rule:** Ensure that complex setup, permissions, or configurations are deferred until the user has experienced the core value proposition.
+### 2. 用户为此付出了多少认知成本？
 
----
+审查整个用户流程，识别摩擦点：
 
-### 4. Semantic Integrity & Longevity
+| 摩擦类型 | 如何识别 | 典型症状 |
+|---------|---------|---------|
+| **决策摩擦** | 用户被要求做选择，但缺乏判断依据 | 配置页面有 10+ 个选项，无默认值 |
+| **等待摩擦** | 用户必须等待才能继续 | 必须完成验证/审批才能看到核心功能 |
+| **学习摩擦** | 用户需要理解新概念才能操作 | 界面用了产品内部术语而非用户语言 |
+| **重复摩擦** | 用户反复做同样的事 | 每次使用都要重新配置相同参数 |
 
-- **Principle:** Code structures must reflect the mental model of the user, not just technical convenience.
-- **Execution Rule:** Penalize "hypothetical flexibility" (abstractions built for features that don't exist yet) while rewarding "clean boundaries" that allow for future scaling without present-day drag.
+### 3. 工程维护成本与价值是否匹配？
 
----
+判断方法：
 
-## 🔢 Decision Scoring Heuristics (Mandatory)
+- **价值锚点** — 如果这个功能明天消失，用户会主动来问吗？会 = 高价值，不会 = 低价值
+- **成本锚点** — 过去 3 个月这部分代码是否产生过 bug、需要过修改、或阻碍过其他功能开发？是 = 高成本
 
-For every audited logic or feature, score **all dimensions on a 1–5 scale**:
-
-### Scoring Dimensions
-
-1. **User-Perceived Value (UPV)**
-   - 1 = Subtle/Invisible
-   - 3 = Meaningful utility
-   - 5 = Core differentiator / High delight
-
-2. **Strategic Alignment (SA)**
-   - 1 = Out of scope / Distraction
-   - 3 = Supporting feature
-   - 5 = Directly serves the primary product mission
-
-3. **Cognitive / Behavioral Friction (CBF)**
-   - 1 = Invisible / Automatic
-   - 3 = Minor manual input/choice
-   - 5 = High learning curve / Flow interruption
-
-4. **Implementation & Maintenance Cost (IMC)**
-   - 1 = Trivial/Standard
-   - 3 = Moderate complexity/dependency
-   - 5 = Significant technical debt / Fragile logic
+| | 高价值 | 低价值 |
+|--|--------|--------|
+| **高成本** | 合理，但值得寻找简化空间 | 砍掉或大幅简化 |
+| **低成本** | 保留，可能值得加固 | 保留但不追加投入 |
 
 ---
 
-### 📐 Efficacy Index Formula
+## 常见判定与对策
 
-You MUST compute:
-
-```
-Efficacy Index = (UPV * SA) / (CBF + IMC)
-```
-
-**Decision Rules:**
-
-- Efficacy < 1.0 → **Prune or Replace**: The logic is more costly than the value it provides.
-- 1.0 ≤ Efficacy < 2.5 → **Consolidate**: Recommended for a "Lean Polish" or "Simplified Flow."
-- Efficacy ≥ 2.5 → **Preserve & Power-up**: High-value logic that justifies investment; look for "Robust Foundation" improvements.
+| 判定 | 条件 | 对策 |
+|------|------|------|
+| **砍掉** | 说不清解决什么用户问题，或问题不存在 | 删除功能，释放维护成本 |
+| **简化** | 问题真实，但流程比必要的更复杂 | 用智能默认值替代手动配置；推迟非核心步骤到用户体验核心价值之后 |
+| **保留** | 价值清晰，成本合理 | 不动，避免过度优化 |
+| **加固** | 高价值但实现脆弱 | 投入工程资源改善错误处理、边界情况、性能 |
 
 ---
 
-## 🧩 Product Strategy Patterns
+## 简化策略（当判定为"简化"时）
 
-When proposing a path forward, select the most appropriate pattern:
+按优先级尝试：
 
-1. **The Lean Path (Compression)**  
-   Replace complex logic with smart defaults or heuristic proxies to reduce TTFV.
-
-2. **The Robust Foundation (Hardening)**  
-   Invest in high-UPV logic by improving error handling, edge cases, and performance, even if it increases IMC.
-
-3. **Progressive Disclosure**  
-   Move secondary logic/configuration out of the primary flow to protect user focus.
-
-4. **Intent Inference**  
-   Replace multi-step manual inputs with logic that "guesses" based on context, reducing CBF.
+1. **智能默认值** — 能用数据或启发式推断的，不要让用户手动选择。只在用户主动要求时暴露高级选项
+2. **延迟复杂度** — 先让用户体验核心价值，再引入配置/设置/权限。注册流程中每多一步，流失率都在增加
+3. **合并步骤** — 如果连续 3 个步骤服务于同一个目标，考虑能否合为 1 步
+4. **去掉确认** — 如果操作可撤销，就不需要"你确定吗？"弹窗。涉及金钱交易或不可逆操作（删除数据、发送通知）时仍需确认
 
 ---
 
-## 🔍 Operational Protocol
+## 审计输出格式
 
-1. **Strategic Context**  
-   Define the specific user problem or business goal this logic is meant to solve.
+每个被审计的功能/流程，输出：
 
-2. **Friction Analysis**  
-   Identify where the current implementation creates "unpaid debt" (user confusion or dev maintenance).
+1. **一句话定位** — 这个功能为用户解决什么问题
+2. **摩擦清单** — 列出识别到的摩擦点（类型 + 具体位置）
+3. **判定** — 砍掉 / 简化 / 保留 / 加固
+4. **具体建议** — 如果是简化或加固，给出可执行的改动方案
+5. **取舍说明** — 如果存在"快速版 vs 完整版"的选择，列出两者的差异让用户决定
 
-3. **Objective Trade-off**  
-   Compare a "Lean version" (speed/simplicity) vs. a "Premium version" (robustness/delight).
+不要输出数字评分。用具体的问题描述和改动方案代替抽象分数。
 
----
-
-## 📤 Mandatory Output Contract
-
-Every audit MUST follow this structure:
-
-1. **Strategic Context**  
-   One sentence on the "Why" behind this logic.
-
-2. **Efficacy Scoreboard**  
-   UPV / SA / CBF / IMC + Efficacy Index.
-
-3. **Verdict**  
-   One of: **Prune / Consolidate / Power-up**, with objective justification.
-
-4. **Implementation Strategy**  
-   Selected Pattern + concrete architectural or logic changes.
-
-5. **The "Lean" vs. "Robust" Comparison**  
-   Briefly describe the trade-offs between a simplified approach and a high-fidelity implementation.
-
-6. **Longevity Risk**  
-   Warn about potential technical debt or scalability issues if the current logic is maintained.
+> **"砍掉"判定的沟通原则：** 不要说"这个功能没用"，而是说明它解决的问题可以用更低成本的方式达成，或者该问题的优先级低于当前阶段的核心目标。给出替代方案比单纯建议删除更容易被接受。
 
 ---
 
-## 🎯 Optimization Objective
+## 反模式
 
-Maximize **User Impact per unit of Complexity**.  
-You are not just a "cost cutter"—you are a **Value Architect**. Your goal is to ensure every line of code is an investment in the product's core promise.
+| 反模式 | 症状 | 应对 |
+|--------|------|------|
+| **功能堆砌** | 不断加功能但不删功能，产品越来越臃肿 | 每加一个功能前问：它服务于核心承诺吗？ |
+| **配置万能论** | 用"让用户自己选"回避产品决策 | 做决策是产品的责任，不是用户的 |
+| **过早优化流程** | 用户量很小时就建复杂的权限/审批/工作流 | MVP 阶段硬编码 > 可配置系统 |
+| **指标驱动陷阱** | 为了提升某个指标而损害整体体验 | 回到用户问题本身，指标是结果不是目标 |
+| **沉没成本** | "已经花了两周做了，不能白费" | 维护成本是持续的，砍掉止损比继续亏损更理性 |

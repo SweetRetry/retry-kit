@@ -3,6 +3,16 @@ name: pragmatic-architecture
 description: Audit code architecture for over-engineering and unnecessary abstractions. Use when user asks to "review architecture", "simplify code structure", "reduce over-engineering", "evaluate abstractions", or mentions premature abstraction, interface proliferation, factory patterns, YAGNI, or enterprise-grade complexity.
 ---
 
+## SCOPE FIRST
+
+Before auditing, confirm with the user:
+
+1. **Audit target** — Entire project, a specific module, or a set of files?
+2. **Pain signal** — What triggered this? (feels too complex, new devs lost, slow to change, etc.)
+3. **Codebase language** — Adjust grep patterns accordingly (TS/JS, Java, Go, Python, etc.)
+
+If not specified, default to auditing only the directories the user mentions. Never full-scan a monorepo without explicit scope.
+
 ## OUTPUT FORMAT
 
 ```
@@ -33,7 +43,7 @@ Experts       → Know when to do neither
 | single-impl | `interface I[A-Z]` + count `implements` = 1 | Interface with 1 impl | Delete interface |
 | future-proof | `Factory\|Strategy\|Provider\|Builder` | Pattern with 1 product | Use class directly |
 | generic-repo | `extends Base\|extends Abstract\|<T>` | Base class with overrides | Inline to each class |
-| enterprise-larp | Glob `**/*Theme*` > 5 files | 11 files for dark mode | 1 useState |
+| enterprise-larp | Glob `**/*Theme*` then count matches | Too many files for trivial feature | Consolidate to minimum |
 
 ### Vertical Depth (Hide-and-seek Code)
 
@@ -54,18 +64,18 @@ Experts       → Know when to do neither
 
 ## QUICK CHECKS
 
-```bash
-# Horizontal: abstraction patterns
-Grep("Factory|Strategy|Provider|Builder|Orchestrator", path="<dir>", output_mode="content", -n=true, head_limit=20)
-Grep("interface I[A-Z]|abstract class|extends Base", path="<dir>", output_mode="content", -n=true, head_limit=20)
+Run these tool calls in parallel against the audit target directory:
 
-# Vertical: call depth indicators
-Grep("private.*\(|this\._[a-z]", path="<dir>", output_mode="content", -n=true, head_limit=20)
-Grep("processData|handleEvent|doWork|execute\(\)", path="<dir>", output_mode="content", -n=true, head_limit=20)
+**Horizontal bloat** — scan for abstraction patterns:
+- Grep `Factory|Strategy|Provider|Builder|Orchestrator` → check each hit: does the pattern have > 1 product/strategy?
+- Grep `interface I[A-Z]|abstract class|extends Base` → check each hit: more than 1 implementation?
 
-# Traceability: error/log patterns
-Grep("throw new Error|console\.(error|log)", path="<dir>", output_mode="content", -n=true, head_limit=20)
-```
+**Vertical depth** — scan for call depth indicators:
+- Grep `private.*\(|this\._[a-z]` → trace call chains, flag > 3 levels
+- Grep `processData|handleEvent|doWork|execute\(\)` → flag generic names
+
+**Traceability** — scan for error/log patterns:
+- Grep `throw new Error|console\.(error|log)` → check: is the message unique and searchable?
 
 ## REVIEW CHECKLIST
 
@@ -111,10 +121,12 @@ catch(e) { throw new Error("PAYMENT_CALC_001: Monthly total failed", { customerI
 
 ## RED FLAGS
 
-Stop if you hear:
+When you hear these, pause and ask the user for concrete evidence before proceeding:
 
-- "We might need this someday"
-- "This is more professional"
-- "I learned this pattern"
-- "This won't scale" (no evidence)
-- "Let's make it configurable"
+| Signal | Response |
+|--------|----------|
+| "We might need this someday" | Ask: what specific upcoming requirement needs this? No requirement → don't build it |
+| "This is more professional" | Ask: professional for whom? If no external consumer, simplicity wins |
+| "I learned this pattern" | Ask: does the problem here match the pattern's intent? Pattern without problem = bloat |
+| "This won't scale" | Ask: what's the current load? What's the projected load? No numbers → no premature optimization |
+| "Let's make it configurable" | Ask: how many configurations will actually exist? If ≤ 2, use an if-statement |
