@@ -67,14 +67,17 @@ Experts       → Know when to do neither
 Run these tool calls in parallel against the audit target directory:
 
 **Horizontal bloat** — scan for abstraction patterns:
+
 - Grep `Factory|Strategy|Provider|Builder|Orchestrator` → check each hit: does the pattern have > 1 product/strategy?
 - Grep `interface I[A-Z]|abstract class|extends Base` → check each hit: more than 1 implementation?
 
 **Vertical depth** — scan for call depth indicators:
+
 - Grep `private.*\(|this\._[a-z]` → trace call chains, flag > 3 levels
 - Grep `processData|handleEvent|doWork|execute\(\)` → flag generic names
 
 **Traceability** — scan for error/log patterns:
+
 - Grep `throw new Error|console\.(error|log)` → check: is the message unique and searchable?
 
 ## REVIEW CHECKLIST
