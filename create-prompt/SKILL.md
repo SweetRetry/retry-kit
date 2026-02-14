@@ -1,17 +1,17 @@
 ---
 name: create-prompt
-description: 基于 PTCF 模型（Persona-Task-Context-Format）和 Google 五大黄金准则的 System Prompt 工程规范。帮助用户构建高质量、结构化的 System Prompt。使用场景：(1) 用户要求编写、优化或审查 System Prompt，(2) 用户提到"prompt 工程"、"系统提示词"、"PTCF"、"角色设定"、"提示词模板"，(3) 用户需要为 AI 应用设计指令系统，(4) 用户的 prompt 存在指令偏移、幻觉、格式不稳定等问题需要诊断修复。
+description: 基于四要素结构（Persona / Task / Context / Format）和五条核心实践的 System Prompt 工程规范。帮助用户构建高质量、结构化的 System Prompt。使用场景：(1) 用户要求编写、优化或审查 System Prompt，(2) 用户提到"prompt 工程"、"系统提示词"、"角色设定"、"提示词模板"，(3) 用户需要为 AI 应用设计指令系统，(4) 用户的 prompt 存在指令偏移、幻觉、格式不稳定等问题需要诊断修复。
 ---
 
 # Prompt 工程规范
 
-基于 PTCF 模型和 Google 五大黄金准则，构建高质量 System Prompt。
+基于四要素结构和五条核心实践，构建高质量 System Prompt。
 
 ## 核心理念
 
 **写指令如同写代码**：结构清晰、职责单一、可测试、可迭代。
 
-## PTCF 模型速查
+## 四要素结构速查
 
 | 模块 | 作用 | 关键问题 |
 |------|------|----------|
@@ -22,11 +22,11 @@ description: 基于 PTCF 模型（Persona-Task-Context-Format）和 Google 五�
 
 推荐组装顺序：`Persona → Context → Task → Format`
 
-详细的模块写作指南、反模式和优先级权重 → [references/ptcf-framework.md](references/ptcf-framework.md)
+详细的模块写作指南、反模式和优先级权重 → [references/four-elements.md](references/four-elements.md)
 
-## 五大黄金准则
+## 五条核心实践
 
-| # | 准则 | 一句话要点 |
+| # | 实践 | 一句话要点 |
 |---|------|-----------|
 | 1 | XML 标签结构化 | 用 `<persona>` `<task>` `<context>` 等标签分隔指令，抵抗指令偏移 |
 | 2 | 正面指令优先 | "回答保持简洁" 优于 "不要写废话"；负面指令仅用于安全红线 |
@@ -34,14 +34,20 @@ description: 基于 PTCF 模型（Persona-Task-Context-Format）和 Google 五�
 | 4 | 链式思考 CoT | 在系统层级植入推理步骤，比单次 "Think step by step" 更持久 |
 | 5 | 默认兜底策略 | 规定模型遇到未知问题时如何优雅拒绝，防止幻觉 |
 
-每条准则的深度解析、模板和示例 → [references/golden-rules.md](references/golden-rules.md)
+每条实践的深度解析、模板和示例 → [references/core-practices.md](references/core-practices.md)
+
+## 适用范围
+
+本规范聚焦 **System Prompt 的初始设定**（单轮指令层）。多轮对话中的状态管理（function calling 编排、对话记忆策略等）不在本规范范围内。
 
 ## 工作流程
 
+### 从零创建
+
 1. **理解需求**：用户想让 AI 做什么？目标受众是谁？
    - 如果需求模糊，先提出 2-3 个澄清问题
-2. **构建 PTCF**：按 Persona → Context → Task → Format 顺序填充
-3. **应用黄金准则**：
+2. **构建四要素**：按 Persona → Context → Task → Format 顺序填充
+3. **应用核心实践**：
    - 用 XML 标签包裹每个模块
    - 将负面指令转为正面指令
    - 如果需要稳定输出风格，注入 Few-Shot 示例
@@ -49,6 +55,12 @@ description: 基于 PTCF 模型（Persona-Task-Context-Format）和 Google 五�
    - 添加兜底策略处理边界情况
 4. **自检**：逐条过自检清单
 5. **输出**：交付完整的 System Prompt
+
+### 审查/优化已有 Prompt
+
+1. **诊断**：逐条过自检清单，标记每条不合格项
+2. **定位优先级**：按 Task > Context > Format > Persona 排序，先修最高优先级
+3. **输出 Before/After 对照**：对每处修改给出原文 → 修改后的对比，并简述修改理由
 
 ## 输出骨架
 
@@ -97,27 +109,27 @@ description: 基于 PTCF 模型（Persona-Task-Context-Format）和 Google 五�
 
 **结构完整性**：
 
-- PTCF 四个模块是否都有覆盖？（Persona 可选，其余三个必须）
+- Task、Context、Format 三个必选模块是否都有覆盖？（Persona 可选）
 - 每个模块是否用 XML 标签包裹？
-- 标签之间是否有清晰的语义边界，无内容交叉？
+- 标签之间是否有清晰的语义边界？判定：同一句话是否可以无歧义地归入唯一标签
 
 **指令质量**：
 
-- 负面指令是否已转为正面指令？（安全红线除外）
-- Task 是否用祈使句开头，动作明确？
-- 复杂任务是否拆解为有序步骤？
+- 负面指令数量是否 ≤ 总指令数的 20%？（安全红线除外的"不要"都应转为正面指令）
+- Task 是否用祈使句开头，首个词是否为动词？
+- 超过 2 步的任务是否拆解为有序步骤？
 
 **健壮性**：
 
-- 是否有兜底策略处理"不知道"和"不应该回答"的情况？
-- Context 是否提供了足够的边界信息，避免模型猜测？
-- Format 是否给出了具体的输出骨架，而非模糊描述？
+- 是否显式定义了"不知道"和"不应该回答"两种情况的回复模板？
+- Context 是否覆盖了三要素（任务背景、目标受众、关键约束）？缺任何一项需补充
+- Format 是否给出了具体的输出骨架（含字段名和数据类型），而非模糊描述？
 
 **效率**：
 
-- 是否有冗余信息可以删除？（模型已知的常识不必重复）
-- Few-Shot 示例是否必要？（简单任务可省略）
-- Prompt 总长度是否合理？（越短越好，但不牺牲清晰度）
+- 逐句检查：是否有信息可通过 Persona 或 Context 推断？可推断的即为冗余，删除
+- Few-Shot 示例：任务输出格式是否简单且无歧义？是 → 省略示例；否 → 保留 3-5 个
+- Prompt 总 token 数是否 < 2000？超过时标记可精简的段落
 
 ## 完整示例
 
