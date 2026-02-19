@@ -42,6 +42,7 @@
 | 稳定器滑移 | gimbal smooth glide | 流畅穿越、梦幻感 |
 | 急速推进 | crash zoom / snap zoom | 震惊、发现、喜剧效果 |
 | 无人机视角 | drone shot / aerial sweep | 宏大场景、追逐、航拍 |
+| 转台旋转 | turntable rotation / product spin | 产品 360° 展示、角色全身展示 |
 | 慢动作 | slow motion / 120fps slow-mo | 关键动作、情感放大、战斗细节 |
 | 延时 | time-lapse | 时间流逝、环境变化 |
 
@@ -103,3 +104,5 @@
 | 紧张弦乐 | tense strings, suspenseful score | 悬疑、追踪、倒计时 |
 | 寂静无声 | silence / ambient noise only | 震撼前的静默、孤独 |
 | 渐强爆发 | build-up to drop, rising intensity | 蓄力到爆发的过渡 |
+| 企业明快 | corporate upbeat, positive pop | 产品宣传、品牌广告、功能演示 |
+| 自然环境音 | ambient nature sounds, wind/water/birds | 纪录片、风光、冥想、氛围片 |
