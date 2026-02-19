@@ -1,0 +1,2106 @@
+{
+  "乳白": {
+    "group": "yellow",
+    "oklch": "oklch(0.96 0.032 97.3)"
+  },
+  "杏仁黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.94 0.055 92.5)"
+  },
+  "茉莉黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.90 0.132 96.7)"
+  },
+  "麦秆黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.90 0.134 96.9)"
+  },
+  "油菜花黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.89 0.165 96.4)"
+  },
+  "佛手黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.89 0.178 95.3)"
+  },
+  "篾黄": {
+    "group": "orange",
+    "oklch": "oklch(0.91 0.092 90.6)"
+  },
+  "葵扇黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.89 0.134 93.3)"
+  },
+  "柠檬黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.88 0.166 93.2)"
+  },
+  "金瓜黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.87 0.176 93.9)"
+  },
+  "藤黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.87 0.177 92.8)"
+  },
+  "酪黄": {
+    "group": "orange",
+    "oklch": "oklch(0.91 0.069 84.9)"
+  },
+  "香水玫瑰黄": {
+    "group": "orange",
+    "oklch": "oklch(0.90 0.094 87.9)"
+  },
+  "淡密黄": {
+    "group": "orange",
+    "oklch": "oklch(0.88 0.133 90.1)"
+  },
+  "大豆黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.86 0.165 90.9)"
+  },
+  "素馨黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.86 0.173 90.7)"
+  },
+  "向日葵黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.86 0.174 90.5)"
+  },
+  "雅梨黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.85 0.164 88.5)"
+  },
+  "黄连黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.85 0.170 87.8)"
+  },
+  "金盏黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.84 0.172 87.1)"
+  },
+  "蛋壳黄": {
+    "group": "orange",
+    "oklch": "oklch(0.85 0.098 69.4)"
+  },
+  "肉色": {
+    "group": "orange",
+    "oklch": "oklch(0.84 0.114 75.3)"
+  },
+  "鹅掌黄": {
+    "group": "orange",
+    "oklch": "oklch(0.83 0.161 80.9)"
+  },
+  "鸡蛋黄": {
+    "group": "orange",
+    "oklch": "oklch(0.82 0.167 80.5)"
+  },
+  "鼬黄": {
+    "group": "orange",
+    "oklch": "oklch(0.82 0.168 80.9)"
+  },
+  "榴萼黄": {
+    "group": "orange",
+    "oklch": "oklch(0.79 0.155 69.7)"
+  },
+  "淡橘橙": {
+    "group": "orange",
+    "oklch": "oklch(0.79 0.166 70.8)"
+  },
+  "枇杷黄": {
+    "group": "orange",
+    "oklch": "oklch(0.78 0.169 69.4)"
+  },
+  "橙皮黄": {
+    "group": "orange",
+    "oklch": "oklch(0.78 0.169 69.5)"
+  },
+  "北瓜黄": {
+    "group": "orange",
+    "oklch": "oklch(0.75 0.171 56.6)"
+  },
+  "杏黄": {
+    "group": "orange",
+    "oklch": "oklch(0.75 0.171 59.5)"
+  },
+  "雄黄": {
+    "group": "orange",
+    "oklch": "oklch(0.77 0.174 64.5)"
+  },
+  "万寿菊黄": {
+    "group": "orange",
+    "oklch": "oklch(0.74 0.176 58.7)"
+  },
+  "菊蕾白": {
+    "group": "yellow",
+    "oklch": "oklch(0.90 0.053 93.0)"
+  },
+  "秋葵黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.86 0.155 96.6)"
+  },
+  "硫华黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.86 0.167 95.3)"
+  },
+  "柚黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.85 0.170 94.5)"
+  },
+  "芒果黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.83 0.110 96.2)"
+  },
+  "蒿黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.82 0.145 96.0)"
+  },
+  "姜黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.81 0.158 95.2)"
+  },
+  "香蕉黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.81 0.164 94.6)"
+  },
+  "草黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.77 0.147 95.8)"
+  },
+  "新禾绿": {
+    "group": "yellow",
+    "oklch": "oklch(0.77 0.154 95.1)"
+  },
+  "月灰": {
+    "group": "yellow",
+    "oklch": "oklch(0.75 0.044 93.8)"
+  },
+  "淡灰绿": {
+    "group": "yellow",
+    "oklch": "oklch(0.70 0.096 98.0)"
+  },
+  "草灰绿": {
+    "group": "yellow",
+    "oklch": "oklch(0.60 0.074 95.0)"
+  },
+  "苔绿": {
+    "group": "brown",
+    "oklch": "oklch(0.56 0.101 94.0)"
+  },
+  "碧螺春绿": {
+    "group": "brown",
+    "oklch": "oklch(0.55 0.104 93.9)"
+  },
+  "燕羽灰": {
+    "group": "brown",
+    "oklch": "oklch(0.49 0.036 86.4)"
+  },
+  "蟹壳灰": {
+    "group": "brown",
+    "oklch": "oklch(0.49 0.040 87.0)"
+  },
+  "潭水绿": {
+    "group": "brown",
+    "oklch": "oklch(0.46 0.075 96.8)"
+  },
+  "橄榄绿": {
+    "group": "yellow",
+    "oklch": "oklch(0.44 0.081 99.0)"
+  },
+  "蚌肉白": {
+    "group": "orange",
+    "oklch": "oklch(0.96 0.030 90.4)"
+  },
+  "豆汁黄": {
+    "group": "orange",
+    "oklch": "oklch(0.93 0.054 88.4)"
+  },
+  "淡茧黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.89 0.128 91.4)"
+  },
+  "乳鸭黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.86 0.174 88.8)"
+  },
+  "荔肉白": {
+    "group": "orange",
+    "oklch": "oklch(0.93 0.034 84.6)"
+  },
+  "象牙黄": {
+    "group": "orange",
+    "oklch": "oklch(0.88 0.088 88.7)"
+  },
+  "炒米黄": {
+    "group": "orange",
+    "oklch": "oklch(0.86 0.127 89.0)"
+  },
+  "鹦鹉冠黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.84 0.160 88.4)"
+  },
+  "木瓜黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.84 0.168 86.9)"
+  },
+  "浅烙黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.83 0.168 85.0)"
+  },
+  "莲子白": {
+    "group": "orange",
+    "oklch": "oklch(0.87 0.058 87.1)"
+  },
+  "谷黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.79 0.161 85.4)"
+  },
+  "栀子黄": {
+    "group": "orange",
+    "oklch": "oklch(0.79 0.161 84.4)"
+  },
+  "芥黄": {
+    "group": "orange",
+    "oklch": "oklch(0.75 0.151 84.8)"
+  },
+  "银鼠灰": {
+    "group": "orange",
+    "oklch": "oklch(0.74 0.038 87.8)"
+  },
+  "尘灰": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.066 89.1)"
+  },
+  "枯绿": {
+    "group": "brown",
+    "oklch": "oklch(0.67 0.132 86.6)"
+  },
+  "鲛青": {
+    "group": "brown",
+    "oklch": "oklch(0.56 0.075 87.9)"
+  },
+  "粽叶绿": {
+    "group": "brown",
+    "oklch": "oklch(0.53 0.100 85.8)"
+  },
+  "灰绿": {
+    "group": "brown",
+    "oklch": "oklch(0.54 0.104 85.3)"
+  },
+  "鹤灰": {
+    "group": "brown",
+    "oklch": "oklch(0.38 0.023 69.7)"
+  },
+  "淡松烟": {
+    "group": "brown",
+    "oklch": "oklch(0.38 0.031 72.4)"
+  },
+  "暗海水绿": {
+    "group": "brown",
+    "oklch": "oklch(0.41 0.069 89.2)"
+  },
+  "棕榈绿": {
+    "group": "brown",
+    "oklch": "oklch(0.41 0.074 89.8)"
+  },
+  "米色": {
+    "group": "orange",
+    "oklch": "oklch(0.92 0.037 56.9)"
+  },
+  "淡肉色": {
+    "group": "orange",
+    "oklch": "oklch(0.91 0.067 84.4)"
+  },
+  "麦芽糖黄": {
+    "group": "orange",
+    "oklch": "oklch(0.88 0.113 85.5)"
+  },
+  "琥珀黄": {
+    "group": "orange",
+    "oklch": "oklch(0.83 0.170 81.8)"
+  },
+  "甘草黄": {
+    "group": "orange",
+    "oklch": "oklch(0.83 0.142 84.0)"
+  },
+  "初熟杏黄": {
+    "group": "orange",
+    "oklch": "oklch(0.83 0.158 83.1)"
+  },
+  "浅驼色": {
+    "group": "orange",
+    "oklch": "oklch(0.82 0.095 84.9)"
+  },
+  "沙石黄": {
+    "group": "orange",
+    "oklch": "oklch(0.80 0.130 84.6)"
+  },
+  "虎皮黄": {
+    "group": "orange",
+    "oklch": "oklch(0.78 0.157 82.1)"
+  },
+  "土黄": {
+    "group": "orange",
+    "oklch": "oklch(0.74 0.145 83.0)"
+  },
+  "百灵鸟灰": {
+    "group": "orange",
+    "oklch": "oklch(0.74 0.034 85.5)"
+  },
+  "山鸡黄": {
+    "group": "orange",
+    "oklch": "oklch(0.66 0.124 83.4)"
+  },
+  "龟背黄": {
+    "group": "brown",
+    "oklch": "oklch(0.54 0.058 77.5)"
+  },
+  "苍黄": {
+    "group": "brown",
+    "oklch": "oklch(0.52 0.076 78.9)"
+  },
+  "莱阳梨黄": {
+    "group": "brown",
+    "oklch": "oklch(0.51 0.086 77.8)"
+  },
+  "蜴蜊绿": {
+    "group": "brown",
+    "oklch": "oklch(0.51 0.093 77.4)"
+  },
+  "松鼠灰": {
+    "group": "brown",
+    "oklch": "oklch(0.38 0.031 64.7)"
+  },
+  "橄榄灰": {
+    "group": "brown",
+    "oklch": "oklch(0.38 0.040 69.1)"
+  },
+  "蟹壳绿": {
+    "group": "brown",
+    "oklch": "oklch(0.37 0.051 73.1)"
+  },
+  "古铜绿": {
+    "group": "brown",
+    "oklch": "oklch(0.37 0.058 74.3)"
+  },
+  "焦茶绿": {
+    "group": "brown",
+    "oklch": "oklch(0.37 0.062 71.9)"
+  },
+  "粉白": {
+    "group": "orange",
+    "oklch": "oklch(0.96 0.022 80.7)"
+  },
+  "落英淡粉": {
+    "group": "orange",
+    "oklch": "oklch(0.94 0.037 76.6)"
+  },
+  "瓜瓤粉": {
+    "group": "orange",
+    "oklch": "oklch(0.87 0.096 75.1)"
+  },
+  "蜜黄": {
+    "group": "orange",
+    "oklch": "oklch(0.83 0.137 74.6)"
+  },
+  "金叶黄": {
+    "group": "orange",
+    "oklch": "oklch(0.79 0.169 70.7)"
+  },
+  "金莺黄": {
+    "group": "orange",
+    "oklch": "oklch(0.79 0.149 71.7)"
+  },
+  "鹿角棕": {
+    "group": "orange",
+    "oklch": "oklch(0.82 0.077 72.9)"
+  },
+  "凋叶棕": {
+    "group": "orange",
+    "oklch": "oklch(0.76 0.138 72.3)"
+  },
+  "玳瑁黄": {
+    "group": "orange",
+    "oklch": "oklch(0.75 0.112 73.4)"
+  },
+  "软木黄": {
+    "group": "orange",
+    "oklch": "oklch(0.74 0.129 72.5)"
+  },
+  "风帆黄": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.145 70.2)"
+  },
+  "桂皮淡棕": {
+    "group": "orange",
+    "oklch": "oklch(0.69 0.100 75.4)"
+  },
+  "猴毛灰": {
+    "group": "orange",
+    "oklch": "oklch(0.62 0.042 73.4)"
+  },
+  "山鸡褐": {
+    "group": "brown",
+    "oklch": "oklch(0.55 0.103 68.7)"
+  },
+  "驼色": {
+    "group": "brown",
+    "oklch": "oklch(0.42 0.061 61.2)"
+  },
+  "茶褐": {
+    "group": "brown",
+    "oklch": "oklch(0.39 0.061 60.7)"
+  },
+  "古铜褐": {
+    "group": "brown",
+    "oklch": "oklch(0.38 0.068 57.5)"
+  },
+  "荷花白": {
+    "group": "orange",
+    "oklch": "oklch(0.95 0.025 65.5)"
+  },
+  "玫瑰粉": {
+    "group": "orange",
+    "oklch": "oklch(0.82 0.105 57.6)"
+  },
+  "橘橙": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.179 51.2)"
+  },
+  "美人焦橙": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.178 50.5)"
+  },
+  "润红": {
+    "group": "orange",
+    "oklch": "oklch(0.88 0.053 43.2)"
+  },
+  "淡桃红": {
+    "group": "orange",
+    "oklch": "oklch(0.88 0.049 38.7)"
+  },
+  "海螺橙": {
+    "group": "orange",
+    "oklch": "oklch(0.75 0.132 50.5)"
+  },
+  "桃红": {
+    "group": "red",
+    "oklch": "oklch(0.81 0.081 31.2)"
+  },
+  "颊红": {
+    "group": "red",
+    "oklch": "oklch(0.80 0.083 31.9)"
+  },
+  "淡罂粟红": {
+    "group": "red",
+    "oklch": "oklch(0.78 0.098 35.0)"
+  },
+  "晨曦红": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.135 46.6)"
+  },
+  "蟹壳红": {
+    "group": "orange",
+    "oklch": "oklch(0.70 0.171 45.3)"
+  },
+  "金莲花橙": {
+    "group": "orange",
+    "oklch": "oklch(0.69 0.191 44.0)"
+  },
+  "草莓红": {
+    "group": "red",
+    "oklch": "oklch(0.69 0.167 37.5)"
+  },
+  "龙睛鱼红": {
+    "group": "orange",
+    "oklch": "oklch(0.67 0.185 40.2)"
+  },
+  "蜻蜓红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.215 33.6)"
+  },
+  "大红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.208 34.5)"
+  },
+  "柿红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.213 34.7)"
+  },
+  "榴花红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.215 34.8)"
+  },
+  "银朱": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.224 34.4)"
+  },
+  "朱红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.200 35.6)"
+  },
+  "鲑鱼红": {
+    "group": "orange",
+    "oklch": "oklch(0.76 0.130 57.3)"
+  },
+  "金黄": {
+    "group": "orange",
+    "oklch": "oklch(0.71 0.173 51.4)"
+  },
+  "鹿皮褐": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.115 58.8)"
+  },
+  "醉瓜肉": {
+    "group": "orange",
+    "oklch": "oklch(0.70 0.134 56.6)"
+  },
+  "麂棕": {
+    "group": "orange",
+    "oklch": "oklch(0.67 0.157 53.4)"
+  },
+  "淡银灰": {
+    "group": "orange",
+    "oklch": "oklch(0.77 0.027 67.4)"
+  },
+  "淡赭": {
+    "group": "orange",
+    "oklch": "oklch(0.65 0.105 58.5)"
+  },
+  "槟榔综": {
+    "group": "orange",
+    "oklch": "oklch(0.60 0.142 53.3)"
+  },
+  "银灰": {
+    "group": "gray",
+    "oklch": "oklch(0.61 0.029 61.7)"
+  },
+  "海鸥灰": {
+    "group": "orange",
+    "oklch": "oklch(0.64 0.032 63.8)"
+  },
+  "淡咖啡": {
+    "group": "brown",
+    "oklch": "oklch(0.52 0.095 51.0)"
+  },
+  "岩石棕": {
+    "group": "brown",
+    "oklch": "oklch(0.50 0.113 48.3)"
+  },
+  "芒果棕": {
+    "group": "brown",
+    "oklch": "oklch(0.48 0.123 46.0)"
+  },
+  "石板灰": {
+    "group": "brown",
+    "oklch": "oklch(0.43 0.037 38.4)"
+  },
+  "珠母灰": {
+    "group": "brown",
+    "oklch": "oklch(0.43 0.043 42.4)"
+  },
+  "丁香棕": {
+    "group": "brown",
+    "oklch": "oklch(0.41 0.091 42.5)"
+  },
+  "咖啡": {
+    "group": "brown",
+    "oklch": "oklch(0.40 0.103 40.3)"
+  },
+  "筍皮棕": {
+    "group": "brown",
+    "oklch": "oklch(0.39 0.105 40.7)"
+  },
+  "燕颔红": {
+    "group": "orange",
+    "oklch": "oklch(0.69 0.202 41.6)"
+  },
+  "玉粉红": {
+    "group": "orange",
+    "oklch": "oklch(0.81 0.070 47.8)"
+  },
+  "金驼": {
+    "group": "orange",
+    "oklch": "oklch(0.66 0.171 44.3)"
+  },
+  "铁棕": {
+    "group": "orange",
+    "oklch": "oklch(0.62 0.175 43.0)"
+  },
+  "蛛网灰": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.034 55.1)"
+  },
+  "淡可可棕": {
+    "group": "brown",
+    "oklch": "oklch(0.56 0.146 43.9)"
+  },
+  "中红灰": {
+    "group": "orange",
+    "oklch": "oklch(0.53 0.063 46.4)"
+  },
+  "淡土黄": {
+    "group": "brown",
+    "oklch": "oklch(0.49 0.096 42.0)"
+  },
+  "淡豆沙": {
+    "group": "brown",
+    "oklch": "oklch(0.45 0.108 38.9)"
+  },
+  "椰壳棕": {
+    "group": "brown",
+    "oklch": "oklch(0.45 0.114 39.5)"
+  },
+  "淡铁灰": {
+    "group": "brown",
+    "oklch": "oklch(0.40 0.037 38.4)"
+  },
+  "中灰驼": {
+    "group": "brown",
+    "oklch": "oklch(0.40 0.054 41.1)"
+  },
+  "淡栗棕": {
+    "group": "red",
+    "oklch": "oklch(0.39 0.078 38.1)"
+  },
+  "可可棕": {
+    "group": "red",
+    "oklch": "oklch(0.37 0.088 35.6)"
+  },
+  "柞叶棕": {
+    "group": "red",
+    "oklch": "oklch(0.37 0.094 34.7)"
+  },
+  "野蔷薇红": {
+    "group": "orange",
+    "oklch": "oklch(0.77 0.134 46.7)"
+  },
+  "菠萝红": {
+    "group": "orange",
+    "oklch": "oklch(0.72 0.180 45.9)"
+  },
+  "藕荷": {
+    "group": "orange",
+    "oklch": "oklch(0.85 0.056 48.0)"
+  },
+  "陶瓷红": {
+    "group": "orange",
+    "oklch": "oklch(0.65 0.170 45.3)"
+  },
+  "晓灰": {
+    "group": "orange",
+    "oklch": "oklch(0.83 0.025 61.5)"
+  },
+  "余烬红": {
+    "group": "orange",
+    "oklch": "oklch(0.65 0.130 48.2)"
+  },
+  "火砖红": {
+    "group": "orange",
+    "oklch": "oklch(0.62 0.153 45.9)"
+  },
+  "火泥棕": {
+    "group": "orange",
+    "oklch": "oklch(0.59 0.093 45.6)"
+  },
+  "绀红": {
+    "group": "brown",
+    "oklch": "oklch(0.54 0.122 43.5)"
+  },
+  "橡树棕": {
+    "group": "red",
+    "oklch": "oklch(0.43 0.084 32.8)"
+  },
+  "海报灰": {
+    "group": "red",
+    "oklch": "oklch(0.34 0.031 21.8)"
+  },
+  "玫瑰灰": {
+    "group": "red",
+    "oklch": "oklch(0.50 0.166 26.6)"
+  },
+  "火山棕": {
+    "group": "red",
+    "oklch": "oklch(0.31 0.054 25.8)"
+  },
+  "豆沙": {
+    "group": "red",
+    "oklch": "oklch(0.30 0.065 24.6)"
+  },
+  "淡米粉": {
+    "group": "orange",
+    "oklch": "oklch(0.96 0.021 65.3)"
+  },
+  "初桃粉红": {
+    "group": "orange",
+    "oklch": "oklch(0.91 0.034 50.1)"
+  },
+  "介壳淡粉红": {
+    "group": "orange",
+    "oklch": "oklch(0.88 0.053 49.3)"
+  },
+  "淡藏花红": {
+    "group": "orange",
+    "oklch": "oklch(0.81 0.096 43.2)"
+  },
+  "瓜瓤红": {
+    "group": "orange",
+    "oklch": "oklch(0.75 0.142 42.8)"
+  },
+  "芙蓉红": {
+    "group": "orange",
+    "oklch": "oklch(0.71 0.178 40.7)"
+  },
+  "莓酱红": {
+    "group": "orange",
+    "oklch": "oklch(0.68 0.204 39.7)"
+  },
+  "法螺红": {
+    "group": "orange",
+    "oklch": "oklch(0.71 0.147 41.5)"
+  },
+  "落霞红": {
+    "group": "orange",
+    "oklch": "oklch(0.58 0.180 38.4)"
+  },
+  "淡玫瑰灰": {
+    "group": "orange",
+    "oklch": "oklch(0.70 0.049 43.7)"
+  },
+  "蟹蝥红": {
+    "group": "orange",
+    "oklch": "oklch(0.54 0.142 38.7)"
+  },
+  "火岩棕": {
+    "group": "red",
+    "oklch": "oklch(0.43 0.122 32.6)"
+  },
+  "赭石": {
+    "group": "red",
+    "oklch": "oklch(0.42 0.133 31.7)"
+  },
+  "暗驼棕": {
+    "group": "red",
+    "oklch": "oklch(0.34 0.077 28.6)"
+  },
+  "酱棕": {
+    "group": "red",
+    "oklch": "oklch(0.33 0.088 26.8)"
+  },
+  "栗棕": {
+    "group": "red",
+    "oklch": "oklch(0.33 0.092 27.8)"
+  },
+  "洋水仙红": {
+    "group": "red",
+    "oklch": "oklch(0.87 0.055 36.6)"
+  },
+  "谷鞘红": {
+    "group": "red",
+    "oklch": "oklch(0.71 0.155 29.1)"
+  },
+  "苹果红": {
+    "group": "red",
+    "oklch": "oklch(0.66 0.194 30.3)"
+  },
+  "铁水红": {
+    "group": "red",
+    "oklch": "oklch(0.63 0.227 31.6)"
+  },
+  "桂红": {
+    "group": "red",
+    "oklch": "oklch(0.67 0.190 30.0)"
+  },
+  "极光红": {
+    "group": "red",
+    "oklch": "oklch(0.63 0.223 31.6)"
+  },
+  "粉红": {
+    "group": "red",
+    "oklch": "oklch(0.84 0.067 26.5)"
+  },
+  "舌红": {
+    "group": "red",
+    "oklch": "oklch(0.77 0.110 24.7)"
+  },
+  "曲红": {
+    "group": "red",
+    "oklch": "oklch(0.66 0.188 30.4)"
+  },
+  "红汞红": {
+    "group": "red",
+    "oklch": "oklch(0.63 0.220 31.5)"
+  },
+  "淡绯": {
+    "group": "red",
+    "oklch": "oklch(0.87 0.045 19.7)"
+  },
+  "无花果红": {
+    "group": "red",
+    "oklch": "oklch(0.81 0.075 20.8)"
+  },
+  "榴子红": {
+    "group": "red",
+    "oklch": "oklch(0.75 0.118 22.8)"
+  },
+  "胭脂红": {
+    "group": "red",
+    "oklch": "oklch(0.63 0.217 31.6)"
+  },
+  "合欢红": {
+    "group": "red",
+    "oklch": "oklch(0.79 0.094 13.6)"
+  },
+  "春梅红": {
+    "group": "red",
+    "oklch": "oklch(0.76 0.114 13.9)"
+  },
+  "香叶红": {
+    "group": "red",
+    "oklch": "oklch(0.72 0.143 18.1)"
+  },
+  "珊瑚红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.205 29.4)"
+  },
+  "萝卜红": {
+    "group": "red",
+    "oklch": "oklch(0.63 0.220 31.4)"
+  },
+  "淡茜红": {
+    "group": "red",
+    "oklch": "oklch(0.71 0.133 10.3)"
+  },
+  "艳红": {
+    "group": "red",
+    "oklch": "oklch(0.66 0.181 19.2)"
+  },
+  "淡菽红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.202 25.9)"
+  },
+  "鱼鳃红": {
+    "group": "red",
+    "oklch": "oklch(0.62 0.216 28.8)"
+  },
+  "樱桃红": {
+    "group": "red",
+    "oklch": "oklch(0.62 0.223 30.1)"
+  },
+  "淡蕊香红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.201 14.6)"
+  },
+  "石竹红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.201 15.7)"
+  },
+  "草茉莉红": {
+    "group": "red",
+    "oklch": "oklch(0.64 0.203 17.8)"
+  },
+  "茶花红": {
+    "group": "red",
+    "oklch": "oklch(0.63 0.210 21.6)"
+  },
+  "枸枢红": {
+    "group": "red",
+    "oklch": "oklch(0.62 0.221 26.6)"
+  },
+  "秋海棠红": {
+    "group": "red",
+    "oklch": "oklch(0.61 0.227 28.5)"
+  },
+  "丽春红": {
+    "group": "red",
+    "oklch": "oklch(0.60 0.229 29.4)"
+  },
+  "夕阳红": {
+    "group": "red",
+    "oklch": "oklch(0.58 0.216 30.2)"
+  },
+  "鹤顶红": {
+    "group": "red",
+    "oklch": "oklch(0.56 0.210 29.8)"
+  },
+  "鹅血石红": {
+    "group": "red",
+    "oklch": "oklch(0.51 0.153 27.8)"
+  },
+  "覆盆子红": {
+    "group": "red",
+    "oklch": "oklch(0.48 0.177 28.8)"
+  },
+  "貂紫": {
+    "group": "red",
+    "oklch": "oklch(0.37 0.064 20.6)"
+  },
+  "暗玉紫": {
+    "group": "red",
+    "oklch": "oklch(0.34 0.085 21.8)"
+  },
+  "栗紫": {
+    "group": "red",
+    "oklch": "oklch(0.32 0.095 22.6)"
+  },
+  "葡萄酱紫": {
+    "group": "red",
+    "oklch": "oklch(0.31 0.103 22.8)"
+  },
+  "牡丹粉红": {
+    "group": "red",
+    "oklch": "oklch(0.79 0.091 17.6)"
+  },
+  "山茶红": {
+    "group": "red",
+    "oklch": "oklch(0.66 0.187 15.8)"
+  },
+  "海棠红": {
+    "group": "red",
+    "oklch": "oklch(0.63 0.218 18.8)"
+  },
+  "玉红": {
+    "group": "red",
+    "oklch": "oklch(0.57 0.154 19.1)"
+  },
+  "高粱红": {
+    "group": "red",
+    "oklch": "oklch(0.53 0.183 22.2)"
+  },
+  "满江红": {
+    "group": "red",
+    "oklch": "oklch(0.55 0.111 16.2)"
+  },
+  "枣红": {
+    "group": "red",
+    "oklch": "oklch(0.39 0.134 20.8)"
+  },
+  "葡萄紫": {
+    "group": "red",
+    "oklch": "oklch(0.31 0.068 15.1)"
+  },
+  "酱紫": {
+    "group": "red",
+    "oklch": "oklch(0.28 0.090 17.9)"
+  },
+  "淡曙红": {
+    "group": "red",
+    "oklch": "oklch(0.61 0.228 20.2)"
+  },
+  "唐菖蒲红": {
+    "group": "red",
+    "oklch": "oklch(0.58 0.221 23.8)"
+  },
+  "鹅冠红": {
+    "group": "red",
+    "oklch": "oklch(0.55 0.211 24.0)"
+  },
+  "莓红": {
+    "group": "red",
+    "oklch": "oklch(0.60 0.136 15.7)"
+  },
+  "枫叶红": {
+    "group": "red",
+    "oklch": "oklch(0.53 0.195 22.8)"
+  },
+  "苋菜红": {
+    "group": "red",
+    "oklch": "oklch(0.47 0.172 22.7)"
+  },
+  "烟红": {
+    "group": "red",
+    "oklch": "oklch(0.49 0.080 13.8)"
+  },
+  "暗紫苑红": {
+    "group": "red",
+    "oklch": "oklch(0.41 0.132 19.4)"
+  },
+  "殷红": {
+    "group": "red",
+    "oklch": "oklch(0.39 0.145 21.8)"
+  },
+  "猪肝紫": {
+    "group": "red",
+    "oklch": "oklch(0.32 0.081 16.2)"
+  },
+  "金鱼紫": {
+    "group": "red",
+    "oklch": "oklch(0.28 0.100 17.8)"
+  },
+  "草珠红": {
+    "group": "orange",
+    "oklch": "oklch(0.95 0.016 42.2)"
+  },
+  "淡绛红": {
+    "group": "pink",
+    "oklch": "oklch(0.71 0.148 4.4)"
+  },
+  "品红": {
+    "group": "pink",
+    "oklch": "oklch(0.63 0.222 6.9)"
+  },
+  "凤仙花红": {
+    "group": "pink",
+    "oklch": "oklch(0.70 0.151 4.4)"
+  },
+  "粉团花红": {
+    "group": "red",
+    "oklch": "oklch(0.77 0.099 5.1)"
+  },
+  "夹竹桃红": {
+    "group": "pink",
+    "oklch": "oklch(0.65 0.193 6.1)"
+  },
+  "榲桲红": {
+    "group": "pink",
+    "oklch": "oklch(0.62 0.223 9.3)"
+  },
+  "姜红": {
+    "group": "red",
+    "oklch": "oklch(0.83 0.064 4.9)"
+  },
+  "莲瓣红": {
+    "group": "pink",
+    "oklch": "oklch(0.65 0.191 5.7)"
+  },
+  "水红": {
+    "group": "red",
+    "oklch": "oklch(0.86 0.052 4.7)"
+  },
+  "报春红": {
+    "group": "pink",
+    "oklch": "oklch(0.74 0.122 3.4)"
+  },
+  "月季红": {
+    "group": "pink",
+    "oklch": "oklch(0.61 0.152 11.3)"
+  },
+  "豇豆红": {
+    "group": "pink",
+    "oklch": "oklch(0.78 0.098 2.5)"
+  },
+  "霞光红": {
+    "group": "pink",
+    "oklch": "oklch(0.73 0.137 3.4)"
+  },
+  "松叶牡丹红": {
+    "group": "pink",
+    "oklch": "oklch(0.63 0.211 8.4)"
+  },
+  "喜蛋红": {
+    "group": "pink",
+    "oklch": "oklch(0.62 0.224 10.9)"
+  },
+  "鼠鼻红": {
+    "group": "red",
+    "oklch": "oklch(0.81 0.055 12.6)"
+  },
+  "尖晶玉红": {
+    "group": "red",
+    "oklch": "oklch(0.54 0.208 19.4)"
+  },
+  "山黎豆红": {
+    "group": "red",
+    "oklch": "oklch(0.66 0.088 8.5)"
+  },
+  "锦葵红": {
+    "group": "red",
+    "oklch": "oklch(0.54 0.174 12.7)"
+  },
+  "鼠背灰": {
+    "group": "gray",
+    "oklch": "oklch(0.49 0.038 6.6)"
+  },
+  "甘蔗紫": {
+    "group": "red",
+    "oklch": "oklch(0.33 0.108 14.9)"
+  },
+  "石竹紫": {
+    "group": "red",
+    "oklch": "oklch(0.32 0.122 16.7)"
+  },
+  "苍蝇灰": {
+    "group": "red",
+    "oklch": "oklch(0.29 0.022 4.1)"
+  },
+  "卵石紫": {
+    "group": "red",
+    "oklch": "oklch(0.24 0.043 6.0)"
+  },
+  "李紫": {
+    "group": "red",
+    "oklch": "oklch(0.22 0.041 10.9)"
+  },
+  "茄皮紫": {
+    "group": "red",
+    "oklch": "oklch(0.21 0.055 10.0)"
+  },
+  "吊钟花红": {
+    "group": "pink",
+    "oklch": "oklch(0.63 0.149 357.5)"
+  },
+  "兔眼红": {
+    "group": "pink",
+    "oklch": "oklch(0.66 0.199 1.0)"
+  },
+  "紫荆红": {
+    "group": "pink",
+    "oklch": "oklch(0.63 0.229 3.8)"
+  },
+  "菜头紫": {
+    "group": "pink",
+    "oklch": "oklch(0.45 0.158 5.2)"
+  },
+  "鹞冠紫": {
+    "group": "pink",
+    "oklch": "oklch(0.35 0.102 3.6)"
+  },
+  "葡萄酒红": {
+    "group": "pink",
+    "oklch": "oklch(0.33 0.116 4.7)"
+  },
+  "磨石紫": {
+    "group": "pink",
+    "oklch": "oklch(0.28 0.038 357.3)"
+  },
+  "檀紫": {
+    "group": "pink",
+    "oklch": "oklch(0.26 0.051 358.7)"
+  },
+  "火鹅紫": {
+    "group": "pink",
+    "oklch": "oklch(0.24 0.052 1.3)"
+  },
+  "墨紫": {
+    "group": "pink",
+    "oklch": "oklch(0.23 0.057 0.6)"
+  },
+  "晶红": {
+    "group": "red",
+    "oklch": "oklch(0.80 0.087 3.7)"
+  },
+  "扁豆花红": {
+    "group": "pink",
+    "oklch": "oklch(0.66 0.208 0.4)"
+  },
+  "白芨红": {
+    "group": "pink",
+    "oklch": "oklch(0.70 0.130 1.6)"
+  },
+  "嫩菱红": {
+    "group": "pink",
+    "oklch": "oklch(0.62 0.200 1.8)"
+  },
+  "菠根红": {
+    "group": "pink",
+    "oklch": "oklch(0.59 0.190 2.2)"
+  },
+  "酢酱草红": {
+    "group": "pink",
+    "oklch": "oklch(0.65 0.111 0.3)"
+  },
+  "洋葱紫": {
+    "group": "pink",
+    "oklch": "oklch(0.53 0.136 358.8)"
+  },
+  "海象紫": {
+    "group": "pink",
+    "oklch": "oklch(0.31 0.071 358.4)"
+  },
+  "绀紫": {
+    "group": "pink",
+    "oklch": "oklch(0.28 0.077 358.6)"
+  },
+  "古铜紫": {
+    "group": "pink",
+    "oklch": "oklch(0.27 0.085 358.7)"
+  },
+  "石蕊红": {
+    "group": "red",
+    "oklch": "oklch(0.87 0.045 7.5)"
+  },
+  "芍药耕红": {
+    "group": "red",
+    "oklch": "oklch(0.78 0.092 2.8)"
+  },
+  "藏花红": {
+    "group": "pink",
+    "oklch": "oklch(0.63 0.227 3.2)"
+  },
+  "初荷红": {
+    "group": "pink",
+    "oklch": "oklch(0.68 0.152 359.2)"
+  },
+  "马鞭草紫": {
+    "group": "pink",
+    "oklch": "oklch(0.92 0.012 350.6)"
+  },
+  "丁香淡紫": {
+    "group": "pink",
+    "oklch": "oklch(0.90 0.022 348.6)"
+  },
+  "丹紫红": {
+    "group": "pink",
+    "oklch": "oklch(0.63 0.165 355.8)"
+  },
+  "玫瑰红": {
+    "group": "pink",
+    "oklch": "oklch(0.59 0.201 357.6)"
+  },
+  "淡牵牛紫": {
+    "group": "pink",
+    "oklch": "oklch(0.83 0.029 322.1)"
+  },
+  "凤信紫": {
+    "group": "pink",
+    "oklch": "oklch(0.78 0.044 330.8)"
+  },
+  "萝兰紫": {
+    "group": "pink",
+    "oklch": "oklch(0.70 0.075 339.5)"
+  },
+  "玫瑰紫": {
+    "group": "pink",
+    "oklch": "oklch(0.54 0.188 351.8)"
+  },
+  "藤萝紫": {
+    "group": "purple",
+    "oklch": "oklch(0.59 0.069 294.4)"
+  },
+  "槿紫": {
+    "group": "purple",
+    "oklch": "oklch(0.57 0.077 301.8)"
+  },
+  "蕈紫": {
+    "group": "purple",
+    "oklch": "oklch(0.54 0.095 313.6)"
+  },
+  "桔梗紫": {
+    "group": "pink",
+    "oklch": "oklch(0.47 0.136 325.3)"
+  },
+  "魏紫": {
+    "group": "pink",
+    "oklch": "oklch(0.42 0.168 334.1)"
+  },
+  "芝兰紫": {
+    "group": "red",
+    "oklch": "oklch(0.87 0.034 1.4)"
+  },
+  "菱锰红": {
+    "group": "pink",
+    "oklch": "oklch(0.68 0.126 350.3)"
+  },
+  "龙须红": {
+    "group": "pink",
+    "oklch": "oklch(0.62 0.166 349.6)"
+  },
+  "蓟粉红": {
+    "group": "red",
+    "oklch": "oklch(0.88 0.023 7.1)"
+  },
+  "电气石红": {
+    "group": "pink",
+    "oklch": "oklch(0.61 0.154 349.0)"
+  },
+  "樱草紫": {
+    "group": "pink",
+    "oklch": "oklch(0.64 0.114 349.1)"
+  },
+  "芦穗灰": {
+    "group": "gray",
+    "oklch": "oklch(0.76 0.017 22.0)"
+  },
+  "隐红灰": {
+    "group": "pink",
+    "oklch": "oklch(0.71 0.037 357.4)"
+  },
+  "苋菜紫": {
+    "group": "pink",
+    "oklch": "oklch(0.47 0.171 352.0)"
+  },
+  "芦灰": {
+    "group": "gray",
+    "oklch": "oklch(0.56 0.031 4.0)"
+  },
+  "暮云灰": {
+    "group": "pink",
+    "oklch": "oklch(0.37 0.034 1.6)"
+  },
+  "斑鸠灰": {
+    "group": "pink",
+    "oklch": "oklch(0.32 0.050 353.5)"
+  },
+  "淡藤萝紫": {
+    "group": "red",
+    "oklch": "oklch(0.94 0.012 29.6)"
+  },
+  "淡青紫": {
+    "group": "pink",
+    "oklch": "oklch(0.86 0.029 352.9)"
+  },
+  "青蛤壳紫": {
+    "group": "pink",
+    "oklch": "oklch(0.68 0.084 340.7)"
+  },
+  "豆蔻紫": {
+    "group": "pink",
+    "oklch": "oklch(0.60 0.114 338.7)"
+  },
+  "扁豆紫": {
+    "group": "pink",
+    "oklch": "oklch(0.57 0.114 338.4)"
+  },
+  "芥花紫": {
+    "group": "pink",
+    "oklch": "oklch(0.50 0.156 338.6)"
+  },
+  "青莲": {
+    "group": "pink",
+    "oklch": "oklch(0.45 0.158 340.0)"
+  },
+  "芓紫": {
+    "group": "pink",
+    "oklch": "oklch(0.49 0.118 338.5)"
+  },
+  "葛巾紫": {
+    "group": "pink",
+    "oklch": "oklch(0.42 0.149 340.6)"
+  },
+  "牵牛紫": {
+    "group": "pink",
+    "oklch": "oklch(0.36 0.131 341.1)"
+  },
+  "紫灰": {
+    "group": "pink",
+    "oklch": "oklch(0.41 0.050 342.8)"
+  },
+  "龙睛鱼紫": {
+    "group": "pink",
+    "oklch": "oklch(0.34 0.062 343.5)"
+  },
+  "荸荠紫": {
+    "group": "pink",
+    "oklch": "oklch(0.29 0.068 341.2)"
+  },
+  "古鼎灰": {
+    "group": "gray",
+    "oklch": "oklch(0.30 0.022 349.0)"
+  },
+  "乌梅紫": {
+    "group": "pink",
+    "oklch": "oklch(0.21 0.026 329.5)"
+  },
+  "深牵牛紫": {
+    "group": "pink",
+    "oklch": "oklch(0.19 0.035 331.8)"
+  },
+  "银白": {
+    "group": "gray",
+    "oklch": "oklch(0.96 0.004 91.6)"
+  },
+  "芡食白": {
+    "group": "gray",
+    "oklch": "oklch(0.91 0.004 300.8)"
+  },
+  "远山紫": {
+    "group": "gray",
+    "oklch": "oklch(0.85 0.014 286.0)"
+  },
+  "淡蓝紫": {
+    "group": "blue",
+    "oklch": "oklch(0.74 0.030 283.4)"
+  },
+  "山梗紫": {
+    "group": "blue",
+    "oklch": "oklch(0.53 0.092 280.5)"
+  },
+  "螺甸紫": {
+    "group": "blue",
+    "oklch": "oklch(0.58 0.058 283.2)"
+  },
+  "玛瑙灰": {
+    "group": "gray",
+    "oklch": "oklch(0.85 0.005 67.5)"
+  },
+  "野菊紫": {
+    "group": "blue",
+    "oklch": "oklch(0.46 0.087 282.5)"
+  },
+  "满天星紫": {
+    "group": "blue",
+    "oklch": "oklch(0.36 0.125 276.3)"
+  },
+  "锌灰": {
+    "group": "gray",
+    "oklch": "oklch(0.56 0.009 7.2)"
+  },
+  "野葡萄紫": {
+    "group": "blue",
+    "oklch": "oklch(0.32 0.049 284.9)"
+  },
+  "剑锋紫": {
+    "group": "gray",
+    "oklch": "oklch(0.35 0.017 314.5)"
+  },
+  "龙葵紫": {
+    "group": "gray",
+    "oklch": "oklch(0.31 0.022 296.6)"
+  },
+  "暗龙胆紫": {
+    "group": "blue",
+    "oklch": "oklch(0.25 0.026 290.9)"
+  },
+  "晶石紫": {
+    "group": "blue",
+    "oklch": "oklch(0.26 0.059 280.1)"
+  },
+  "暗蓝紫": {
+    "group": "blue",
+    "oklch": "oklch(0.19 0.038 287.1)"
+  },
+  "景泰蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.55 0.126 248.0)"
+  },
+  "尼罗蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.54 0.126 247.7)"
+  },
+  "远天蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.89 0.019 227.4)"
+  },
+  "星蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.76 0.053 241.4)"
+  },
+  "羽扇豆蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.66 0.086 241.0)"
+  },
+  "花青": {
+    "group": "blue",
+    "oklch": "oklch(0.55 0.127 247.1)"
+  },
+  "睛蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.65 0.093 239.0)"
+  },
+  "虹蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.55 0.128 246.5)"
+  },
+  "湖水蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.85 0.041 216.0)"
+  },
+  "秋波蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.77 0.061 225.8)"
+  },
+  "涧石蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.70 0.083 230.2)"
+  },
+  "潮蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.58 0.119 241.1)"
+  },
+  "群青": {
+    "group": "blue",
+    "oklch": "oklch(0.54 0.130 246.6)"
+  },
+  "霁青": {
+    "group": "cyan",
+    "oklch": "oklch(0.75 0.090 215.3)"
+  },
+  "碧青": {
+    "group": "cyan",
+    "oklch": "oklch(0.72 0.091 219.0)"
+  },
+  "宝石蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.59 0.116 237.1)"
+  },
+  "天蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.55 0.125 243.0)"
+  },
+  "柏林蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.51 0.131 248.0)"
+  },
+  "海青": {
+    "group": "cyan",
+    "oklch": "oklch(0.66 0.114 220.6)"
+  },
+  "钴蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.62 0.114 226.8)"
+  },
+  "鸢尾蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.60 0.116 231.1)"
+  },
+  "牵牛花蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.54 0.122 241.2)"
+  },
+  "飞燕草蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.46 0.139 253.9)"
+  },
+  "品蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.54 0.118 247.5)"
+  },
+  "银鱼白": {
+    "group": "gray",
+    "oklch": "oklch(0.86 0.005 229.3)"
+  },
+  "安安蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.53 0.108 247.9)"
+  },
+  "鱼尾灰": {
+    "group": "gray",
+    "oklch": "oklch(0.49 0.019 274.5)"
+  },
+  "鲸鱼灰": {
+    "group": "blue",
+    "oklch": "oklch(0.43 0.034 263.2)"
+  },
+  "海参灰": {
+    "group": "yellow",
+    "oklch": "oklch(1.00 0.005 95.3)"
+  },
+  "沙鱼灰": {
+    "group": "gray",
+    "oklch": "oklch(0.33 0.016 295.6)"
+  },
+  "钢蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.19 0.031 269.3)"
+  },
+  "云水蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.84 0.027 239.2)"
+  },
+  "晴山蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.75 0.051 237.2)"
+  },
+  "靛青": {
+    "group": "blue",
+    "oklch": "oklch(0.49 0.137 252.8)"
+  },
+  "大理石灰": {
+    "group": "gray",
+    "oklch": "oklch(0.84 0.010 232.6)"
+  },
+  "海涛蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.45 0.129 254.2)"
+  },
+  "蝶翅蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.57 0.077 244.0)"
+  },
+  "海军蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.52 0.097 246.9)"
+  },
+  "水牛灰": {
+    "group": "black",
+    "oklch": "oklch(0.31 0.011 285.7)"
+  },
+  "牛角灰": {
+    "group": "black",
+    "oklch": "oklch(0.30 0.014 279.8)"
+  },
+  "燕颔蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.21 0.025 266.8)"
+  },
+  "云峰白": {
+    "group": "cyan",
+    "oklch": "oklch(0.91 0.013 221.7)"
+  },
+  "井天蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.87 0.024 223.8)"
+  },
+  "云山蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.62 0.107 230.6)"
+  },
+  "釉蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.57 0.119 237.2)"
+  },
+  "鸥蓝": {
+    "group": "gray",
+    "oklch": "oklch(0.86 0.012 210.1)"
+  },
+  "搪磁蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.49 0.112 243.6)"
+  },
+  "月影白": {
+    "group": "gray",
+    "oklch": "oklch(0.82 0.005 180.6)"
+  },
+  "星灰": {
+    "group": "gray",
+    "oklch": "oklch(0.79 0.011 219.9)"
+  },
+  "淡蓝灰": {
+    "group": "blue",
+    "oklch": "oklch(0.56 0.038 230.9)"
+  },
+  "鷃蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.40 0.090 246.6)"
+  },
+  "嫩灰": {
+    "group": "gray",
+    "oklch": "oklch(0.57 0.006 229.2)"
+  },
+  "战舰灰": {
+    "group": "blue",
+    "oklch": "oklch(0.46 0.032 238.3)"
+  },
+  "瓦罐灰": {
+    "group": "gray",
+    "oklch": "oklch(0.40 0.007 274.8)"
+  },
+  "青灰": {
+    "group": "blue",
+    "oklch": "oklch(0.32 0.023 256.4)"
+  },
+  "鸽蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.28 0.033 252.5)"
+  },
+  "钢青": {
+    "group": "blue",
+    "oklch": "oklch(0.25 0.038 252.4)"
+  },
+  "暗蓝": {
+    "group": "blue",
+    "oklch": "oklch(0.24 0.039 252.6)"
+  },
+  "月白": {
+    "group": "green",
+    "oklch": "oklch(0.97 0.012 162.5)"
+  },
+  "海天蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.90 0.034 201.3)"
+  },
+  "清水蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.83 0.067 204.4)"
+  },
+  "瀑布蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.76 0.105 207.1)"
+  },
+  "蔚蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.72 0.116 209.6)"
+  },
+  "孔雀蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.70 0.120 212.7)"
+  },
+  "甸子蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.69 0.117 209.5)"
+  },
+  "石绿": {
+    "group": "cyan",
+    "oklch": "oklch(0.75 0.099 194.5)"
+  },
+  "竹篁绿": {
+    "group": "green",
+    "oklch": "oklch(0.87 0.048 160.4)"
+  },
+  "粉绿": {
+    "group": "green",
+    "oklch": "oklch(0.79 0.085 165.4)"
+  },
+  "美蝶绿": {
+    "group": "cyan",
+    "oklch": "oklch(0.66 0.115 184.5)"
+  },
+  "毛绿": {
+    "group": "green",
+    "oklch": "oklch(0.74 0.117 156.5)"
+  },
+  "蔻梢绿": {
+    "group": "green",
+    "oklch": "oklch(0.73 0.120 158.0)"
+  },
+  "麦苗绿": {
+    "group": "green",
+    "oklch": "oklch(0.72 0.120 160.2)"
+  },
+  "蛙绿": {
+    "group": "green",
+    "oklch": "oklch(0.70 0.126 162.2)"
+  },
+  "铜绿": {
+    "group": "green",
+    "oklch": "oklch(0.67 0.126 166.9)"
+  },
+  "竹绿": {
+    "group": "cyan",
+    "oklch": "oklch(0.65 0.123 170.2)"
+  },
+  "蓝绿": {
+    "group": "cyan",
+    "oklch": "oklch(0.63 0.119 172.2)"
+  },
+  "穹灰": {
+    "group": "cyan",
+    "oklch": "oklch(0.86 0.021 193.1)"
+  },
+  "翠蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.64 0.106 212.1)"
+  },
+  "胆矾蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.62 0.108 217.1)"
+  },
+  "樫鸟蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.61 0.103 214.7)"
+  },
+  "闪蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.71 0.051 206.0)"
+  },
+  "冰山蓝": {
+    "group": "gray",
+    "oklch": "oklch(0.74 0.011 159.1)"
+  },
+  "虾壳青": {
+    "group": "gray",
+    "oklch": "oklch(0.68 0.026 196.7)"
+  },
+  "晚波蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.62 0.047 205.4)"
+  },
+  "蜻蜓蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.56 0.072 209.1)"
+  },
+  "玉鈫蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.50 0.084 217.2)"
+  },
+  "垩灰": {
+    "group": "gray",
+    "oklch": "oklch(0.58 0.011 189.1)"
+  },
+  "夏云灰": {
+    "group": "gray",
+    "oklch": "oklch(0.54 0.019 201.3)"
+  },
+  "苍蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.37 0.059 220.8)"
+  },
+  "黄昏灰": {
+    "group": "gray",
+    "oklch": "oklch(0.41 0.006 214.6)"
+  },
+  "灰蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.32 0.030 216.9)"
+  },
+  "深灰蓝": {
+    "group": "cyan",
+    "oklch": "oklch(0.28 0.033 218.3)"
+  },
+  "玉簪绿": {
+    "group": "green",
+    "oklch": "oklch(0.81 0.049 162.2)"
+  },
+  "青矾绿": {
+    "group": "green",
+    "oklch": "oklch(0.61 0.106 169.9)"
+  },
+  "草原远绿": {
+    "group": "green",
+    "oklch": "oklch(0.77 0.044 168.0)"
+  },
+  "梧枝绿": {
+    "group": "green",
+    "oklch": "oklch(0.68 0.071 172.8)"
+  },
+  "浪花绿": {
+    "group": "green",
+    "oklch": "oklch(0.74 0.041 167.7)"
+  },
+  "海王绿": {
+    "group": "green",
+    "oklch": "oklch(0.54 0.094 170.8)"
+  },
+  "亚丁绿": {
+    "group": "cyan",
+    "oklch": "oklch(0.57 0.075 175.1)"
+  },
+  "镍灰": {
+    "group": "gray",
+    "oklch": "oklch(0.71 0.014 126.6)"
+  },
+  "明灰": {
+    "group": "gray",
+    "oklch": "oklch(0.67 0.022 154.8)"
+  },
+  "淡绿灰": {
+    "group": "gray",
+    "oklch": "oklch(0.60 0.032 165.9)"
+  },
+  "飞泉绿": {
+    "group": "green",
+    "oklch": "oklch(0.53 0.053 173.6)"
+  },
+  "狼烟灰": {
+    "group": "gray",
+    "oklch": "oklch(0.50 0.014 153.6)"
+  },
+  "绿灰": {
+    "group": "green",
+    "oklch": "oklch(0.39 0.033 175.2)"
+  },
+  "苍绿": {
+    "group": "green",
+    "oklch": "oklch(0.34 0.037 173.8)"
+  },
+  "深海绿": {
+    "group": "green",
+    "oklch": "oklch(0.32 0.042 173.6)"
+  },
+  "长石灰": {
+    "group": "gray",
+    "oklch": "oklch(0.33 0.003 48.4)"
+  },
+  "苷蓝绿": {
+    "group": "black",
+    "oklch": "oklch(0.26 0.011 167.8)"
+  },
+  "莽丛绿": {
+    "group": "green",
+    "oklch": "oklch(0.22 0.016 174.5)"
+  },
+  "淡翠绿": {
+    "group": "green",
+    "oklch": "oklch(0.88 0.041 147.6)"
+  },
+  "明绿": {
+    "group": "green",
+    "oklch": "oklch(0.80 0.067 153.6)"
+  },
+  "田园绿": {
+    "group": "green",
+    "oklch": "oklch(0.72 0.101 159.5)"
+  },
+  "翠绿": {
+    "group": "green",
+    "oklch": "oklch(0.63 0.143 155.9)"
+  },
+  "淡绿": {
+    "group": "green",
+    "oklch": "oklch(0.68 0.096 159.8)"
+  },
+  "葱绿": {
+    "group": "green",
+    "oklch": "oklch(0.64 0.117 158.6)"
+  },
+  "孔雀绿": {
+    "group": "green",
+    "oklch": "oklch(0.59 0.139 152.9)"
+  },
+  "艾绿": {
+    "group": "green",
+    "oklch": "oklch(0.86 0.024 131.3)"
+  },
+  "蟾绿": {
+    "group": "green",
+    "oklch": "oklch(0.60 0.112 157.3)"
+  },
+  "宫殿绿": {
+    "group": "green",
+    "oklch": "oklch(0.56 0.131 153.0)"
+  },
+  "松霜绿": {
+    "group": "green",
+    "oklch": "oklch(0.69 0.055 153.5)"
+  },
+  "蛋白石绿": {
+    "group": "green",
+    "oklch": "oklch(0.62 0.084 158.0)"
+  },
+  "薄荷绿": {
+    "group": "green",
+    "oklch": "oklch(0.53 0.118 154.8)"
+  },
+  "瓦松绿": {
+    "group": "gray",
+    "oklch": "oklch(0.61 0.048 151.0)"
+  },
+  "荷叶绿": {
+    "group": "green",
+    "oklch": "oklch(0.46 0.099 156.1)"
+  },
+  "田螺绿": {
+    "group": "gray",
+    "oklch": "oklch(0.50 0.020 137.2)"
+  },
+  "白屈菜绿": {
+    "group": "gray",
+    "oklch": "oklch(0.45 0.033 153.1)"
+  },
+  "河豚灰": {
+    "group": "gray",
+    "oklch": "oklch(0.34 0.007 84.6)"
+  },
+  "蒽油绿": {
+    "group": "gray",
+    "oklch": "oklch(0.34 0.007 118.3)"
+  },
+  "槲寄生绿": {
+    "group": "black",
+    "oklch": "oklch(0.31 0.012 150.4)"
+  },
+  "云杉绿": {
+    "group": "green",
+    "oklch": "oklch(0.24 0.025 158.9)"
+  },
+  "嫩菊绿": {
+    "group": "green",
+    "oklch": "oklch(0.96 0.022 121.1)"
+  },
+  "艾背绿": {
+    "group": "green",
+    "oklch": "oklch(0.93 0.034 131.5)"
+  },
+  "嘉陵水绿": {
+    "group": "green",
+    "oklch": "oklch(0.83 0.081 139.0)"
+  },
+  "玉髓绿": {
+    "group": "green",
+    "oklch": "oklch(0.68 0.178 144.4)"
+  },
+  "鲜绿": {
+    "group": "green",
+    "oklch": "oklch(0.68 0.180 143.4)"
+  },
+  "宝石绿": {
+    "group": "green",
+    "oklch": "oklch(0.66 0.182 142.6)"
+  },
+  "海沬绿": {
+    "group": "yellow",
+    "oklch": "oklch(0.91 0.053 113.3)"
+  },
+  "姚黄": {
+    "group": "green",
+    "oklch": "oklch(0.88 0.070 120.1)"
+  },
+  "橄榄石绿": {
+    "group": "green",
+    "oklch": "oklch(0.82 0.101 126.4)"
+  },
+  "水绿": {
+    "group": "green",
+    "oklch": "oklch(0.76 0.132 134.2)"
+  },
+  "芦苇绿": {
+    "group": "green",
+    "oklch": "oklch(0.82 0.115 122.2)"
+  },
+  "槐花黄绿": {
+    "group": "yellow",
+    "oklch": "oklch(0.86 0.119 112.3)"
+  },
+  "苹果绿": {
+    "group": "green",
+    "oklch": "oklch(0.82 0.134 118.8)"
+  },
+  "芽绿": {
+    "group": "green",
+    "oklch": "oklch(0.76 0.153 127.2)"
+  },
+  "蝶黄": {
+    "group": "yellow",
+    "oklch": "oklch(0.87 0.159 105.3)"
+  },
+  "橄榄黄绿": {
+    "group": "yellow",
+    "oklch": "oklch(0.80 0.163 113.8)"
+  },
+  "鹦鹉绿": {
+    "group": "green",
+    "oklch": "oklch(0.67 0.186 136.1)"
+  },
+  "油绿": {
+    "group": "green",
+    "oklch": "oklch(0.33 0.052 143.4)"
+  },
+  "象牙白": {
+    "group": "yellow",
+    "oklch": "oklch(1.00 0.008 99.0)"
+  },
+  "汉白玉": {
+    "group": "orange",
+    "oklch": "oklch(0.97 0.010 81.8)"
+  },
+  "雪白": {
+    "group": "yellow",
+    "oklch": "oklch(1.00 0.007 97.5)"
+  },
+  "鱼肚白": {
+    "group": "orange",
+    "oklch": "oklch(0.97 0.010 87.5)"
+  },
+  "珍珠灰": {
+    "group": "orange",
+    "oklch": "oklch(0.91 0.012 79.8)"
+  },
+  "浅灰": {
+    "group": "orange",
+    "oklch": "oklch(0.87 0.014 78.2)"
+  },
+  "铅灰": {
+    "group": "gray",
+    "oklch": "oklch(0.78 0.014 78.2)"
+  },
+  "中灰": {
+    "group": "gray",
+    "oklch": "oklch(0.70 0.016 70.8)"
+  },
+  "瓦灰": {
+    "group": "gray",
+    "oklch": "oklch(0.60 0.015 67.5)"
+  },
+  "夜灰": {
+    "group": "gray",
+    "oklch": "oklch(0.59 0.015 67.5)"
+  },
+  "雁灰": {
+    "group": "gray",
+    "oklch": "oklch(0.57 0.017 61.1)"
+  },
+  "深灰": {
+    "group": "gray",
+    "oklch": "oklch(0.58 0.018 64.4)"
+  }
+}
