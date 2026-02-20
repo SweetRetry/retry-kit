@@ -107,6 +107,7 @@ description: >
 | 克制高级 | Radix | 中性 | 极低 C<0.03 | 0.35-0.50 | AAA |
 
 **修正规则**：
+
 - 产品类型为 SaaS / 工具 → 对比度升一级（AA→AAA），饱和度降一档
 - 目标用户为 B 端专业用户 → 背景 L ≥ 0.95（更白），减少视觉疲劳
 - 目标用户为开发者 → dark mode 为主模式，优先验证 dark 配色
@@ -188,7 +189,6 @@ description: >
 | `--border` / `--input` | 中性色（L 0.80-0.88） |
 | `--ring` | 同 primary |
 | `--destructive` | 红系色（从选定来源取红色系），若主色为红系则选更深/更饱和的红色以区分 |
-| `--destructive-foreground` | 极浅色，与 destructive 对比 ≥ 4.5:1 |
 | `--chart-1` ~ `--chart-5` | 按角色取色：主色 → 强调色 → 辅色 → 互补色 → 中性色变体，确保相邻色相差 ≥ 30° |
 | `--sidebar-background` | 辅色浅色版本 |
 | `--sidebar-foreground` | 同 foreground |
