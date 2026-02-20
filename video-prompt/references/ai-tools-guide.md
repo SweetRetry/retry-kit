@@ -38,16 +38,19 @@ AI 视频工具通常对 prompt 开头的描述赋予更高权重。按重要性
 ### 通用 Prompt 示例
 
 **角色类（动漫/真人叙事）：**
+
 ```
 [Shot type]. [Subject description] [performing action] in [environment]. [Camera movement]. [Lighting and atmosphere]. [Visual style]. [Additional effects].
 ```
 
 **产品类（产品广告/展示）：**
+
 ```
 [Shot type]. [Product description with material/finish] [motion: rotating/floating/assembling] on [background/surface]. [Camera movement]. [Studio lighting setup]. [Visual style].
 ```
 
 **场景类（纪录片/风光/氛围）：**
+
 ```
 [Shot type]. [Environment description with weather/season] [natural motion: waves/clouds/wildlife]. [Camera movement]. [Natural lighting]. [Color grade/mood].
 ```
@@ -65,12 +68,15 @@ AI 视频工具目前难以自动保持主体一致。以下策略按主体类�
 为每个主体建立固定描述短语，在每个镜头 prompt 中严格复用。
 
 **角色锚点：**
+
 - 例：`a young man, age 20, sharp jawline, long black hair tied in a high ponytail, wearing white silk celestial robes with gold trim`
 
 **产品锚点：**
+
 - 例：`matte black wireless earbuds with rose-gold accent ring, compact oval charging case with LED indicator strip`
 
 **场景锚点：**
+
 - 例：`misty alpine lake at dawn, snow-capped peaks reflected in still water, sparse pine forest along shoreline`
 
 ### 2. 参考图策略
@@ -78,11 +84,13 @@ AI 视频工具目前难以自动保持主体一致。以下策略按主体类�
 用户提供图片时，根据用途采用不同策略：
 
 **模式 A — 视觉参考（风格/特征提取）：**
+
 - 从图片中提取关键视觉特征（色调、材质、构图、光影）
 - 将提取的特征融入主体锚点描述
 - 适用于：希望视频风格与参考图一致，但不需要完全还原画面
 
 **模式 B — 首帧输入（Image-to-Video）：**
+
 - 图片直接作为视频生成的起始帧
 - Prompt 描述后续运动和变化，而非重复描述画面内容
 - 适用于：希望从静态图片"动起来"，进入 image-to-video 工作流
@@ -104,31 +112,37 @@ AI 视频工具目前难以自动保持主体一致。以下策略按主体类�
 输出语言跟随用户自然语言或用户明确指定，不做 CN/EN 双语拆分。
 
 **角色模板：**
+
 ```
 [称呼/性别/年龄], [面部特征], [发型发色], [服装主体], [服装细节/配饰], [标志性道具]
 ```
 
 示例：
+
 ```
 二十出头的青年男子，五官棱角分明，眼神锐利，黑色长发束成高马尾，身穿白色丝质仙袍，衣领和袖口绣有精致金色花纹，颈戴玉坠，手持发光玉剑
 ```
 
 **产品模板：**
+
 ```
 [产品名称/类别], [材质/表面处理], [核心外观特征], [尺寸/比例印象], [品牌标识元素]
 ```
 
 示例：
+
 ```
 无线耳机，磨砂黑聚合物外壳搭配玫瑰金装饰环，椭圆紧凑充电盒，前缘一条细长 LED 指示灯带，盒盖压印极简 logo
 ```
 
 **场景模板：**
+
 ```
 [地理环境], [天气/时间/季节], [核心自然元素], [氛围关键词], [色彩基调]
 ```
 
 示例：
+
 ```
 海拔 3000 米的高山湖泊，薄雾黎明中第一缕阳光越过雪山山脊，静水倒映山峰剪影，岩石岸线上稀疏松林，宁静原始氛围
 ```
