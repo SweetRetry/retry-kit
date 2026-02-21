@@ -14,7 +14,7 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 3. **处理图片输入**（如有）— 确认用途并融入工作流
 4. **设计分镜** — 按叙事节奏拆分镜头，规划景别、运动、转场
 5. **生成 Prompt** — 按紧凑流式格式输出
-6. **审查优化** — 检查主体一致性、节奏连贯性、特效合理性
+6. **审查优化** — 完整性自查 + AI 可生成性逐镜头评估，🔴 镜头必须重写
 
 ## 信息收集清单
 
@@ -118,9 +118,29 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 
 ## 分镜设计规范
 
+### AI 工具空间能力边界
+
+AI 视频工具对空间的理解以**画面构图**（屏幕上谁在哪、多大）为主，对**主体朝向和相对空间关系**理解极弱。写 prompt 时必须基于这个认知。
+
+**可靠的（AI 能执行）：**
+
+- 屏幕方位：frame-left / frame-right / center
+- 景深层次：foreground / midground / background
+- 主体尺寸暗示："towering figure" / "small silhouette in distance"
+- 视觉侧影：side profile / silhouette / back view（单主体时成功率较高）
+
+**不可靠的（AI 高概率忽略或误解）：**
+
+- 主体间朝向关系："facing each other" / "back to back" / "面朝对方"
+- 相对距离："fifty meters apart" / "相距百步"
+- 背对镜头："back to camera" — AI 倾向将主体正面朝向镜头
+- 复杂空间指令："A 站在 B 的左后方，面向东南"
+
+**核心原则：用构图位置和视觉特征传达叙事关系，不依赖朝向指令。**
+
 ### 空间布局
 
-多主体同框时，必须明确每个主体的屏幕方位和朝向，否则 AI 视频工具会随机放置主体。
+多主体同框时，必须明确每个主体的**屏幕方位和景深层次**。用画面构图传达关系，不依赖朝向描述。
 
 **方位描述词速查：**
 
@@ -134,14 +154,18 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 | 背景 | background | 远离镜头，通常较小 |
 | 对角线构图 | diagonal composition | 主体分布在对角线两端 |
 
-**多主体交互空间模板：**
+**多主体交互构图模板：**
 
-- **对峙型**（双人对立）：A frame-left facing right, B frame-right facing left
-- **追逐型**（前后追击）：A foreground running toward camera, B background chasing
-- **包围型**（一对多）：A center, B/C/D surrounding from multiple angles
-- **并行型**（同方向）：A and B side by side, moving in same direction
+- **对峙型**（双人对立）：A frame-left side profile in shadow, B frame-right side profile lit — 用侧身轮廓 + 光影对比传达对立，不写 "facing each other"
+- **追逐型**（前后追击）：A foreground large, B background small — 用前景/背景尺寸差传达追击，不写朝向
+- **包围型**（一对多）：A center, B/C/D at frame edges — 用画面边缘分布传达围逼
+- **并行型**（同方向）：A and B side by side, both in profile moving frame-right — 用 profile + 运动方向传达同向
 
-**规则：** 当 2+ 主体同框时，prompt 必须包含每个主体的相对位置（屏幕方位）和朝向。
+**规则：**
+
+- 当 2+ 主体同框时，prompt 必须包含每个主体的**屏幕方位**和**景深层次**。
+- **不写朝向指令**（facing left/right/each other），改用侧身轮廓（side profile）、剪影（silhouette）、光影对比等视觉手段传达关系。
+- 多主体场景的 Shot 01 建议用静态或慢速镜头建立构图关系，后续镜头保持一致的左右/前后布局。
 
 ### 节奏参考
 
@@ -201,7 +225,7 @@ Shot 03 (8-12s): [Medium tracking orbit] She turns, strides toward rooftop door 
 Style: Chinese xianxia fantasy, cinematic anime, ethereal lighting, volumetric god rays, particle effects
 Mood: transcendent, awe-inspiring
 
-Shot 01 (0-3s): [Extreme wide slow push in] White-robed youth with golden embroidery, high ponytail, holding jade sword -> stands at cliff edge facing away. Sea of clouds churning below, floating peaks in distance. Golden sunset piercing through clouds.
+Shot 01 (0-3s): [Extreme wide slow push in] White-robed youth with golden embroidery, high ponytail, holding jade sword -> stands at cliff edge, silhouette against golden sunset. Sea of clouds churning below, floating peaks in distance. God rays piercing through clouds.
 Shot 02 (3-7s): [Medium close orbit then rapid pull back] Youth raises jade sword skyward -> cyan spiritual aura erupts, rocks cracking beneath feet. Sword tip gathers intensifying light. Particle burst.
 Shot 03 (7-10s): [Full shot following upward then hold] Youth launches on glowing sword -> streak of cyan-white light into clouds. Hair and robes streaming. Figure shrinks into golden cloud layer. Fade out with dissipating particles.
 ```
@@ -245,7 +269,7 @@ Shot 03 (10-15s): [Wide slow crane up] Rising from lakeside rocks -> revealing f
 Style: Chinese xianxia fantasy, cinematic anime, dramatic lighting, volumetric dust and sparks
 Mood: fierce, confrontational, escalating tension
 
-Shot 01 (0-4s): [Wide slow push in] 凌霄 frame-left facing right, white silk robes with gold trim, jade sword lowered at side — 夜无殇 frame-right facing left, black armor with crimson runes, flame greatsword resting on shoulder. Barren rocky plateau between them, wind swirling dust. Distant storm clouds. Tension held in stillness.
+Shot 01 (0-4s): [Wide slow push in] 凌霄 frame-left, side profile silhouette, white silk robes with gold trim, jade sword lowered at side — 夜无殇 frame-right, side profile in shadow, black armor with crimson runes, flame greatsword resting on shoulder. Barren rocky plateau between them, wind swirling dust. Distant storm clouds. Tension held in stillness.
 Shot 02 (4-7s): [Medium tracking left to right] 凌霄 foreground lunges right, jade sword trailing cyan arc — 夜无殇 background braces, flame greatsword sweeps upward -> blades clash at center frame + shockwave ring bursting outward. Sparks and energy fragments scatter. Ground cracks radially from impact point.
 Shot 03 (7-10s): [Close-up rapid cut between two faces] 凌霄 frame-left, cyan aura reflecting in narrowed eyes, high ponytail whipping — cut to 夜无殇 frame-right, crimson glow illuminating scar, teeth gritted. Camera shakes on each cut. Lightning flashes in background.
 Shot 04 (10-14s): [Extreme wide crane up] 凌霄 center-left launches into air trailing cyan light — 夜无殇 center-right leaps to meet him, flame trail spiraling. Both figures collide at frame center midair -> massive energy dome expands outward. Rocks lifting from ground. Camera pulls back revealing shattered plateau. Flash to white.
@@ -259,9 +283,11 @@ Shot 04 (10-14s): [Extreme wide crane up] 凌霄 center-left launches into air t
 - **[references/camera-and-effects.md](references/camera-and-effects.md)** — 镜头景别、镜头运动、转场方式、光影氛围、特效类型的中英对照速查表。
 - **[references/ai-tools-guide.md](references/ai-tools-guide.md)** — AI 视频工具通用 Prompt 原则、主体一致性策略与描述模板。
 
-## 质量检查清单
+## 质量检查
 
-每次生成完成后自查：
+### 完整性自查
+
+每次生成完成后逐项确认：
 
 - [ ] 每个镜头包含主体锚点关键特征
 - [ ] 镜头之间叙事逻辑连贯
@@ -271,4 +297,33 @@ Shot 04 (10-14s): [Extreme wide crane up] 凌霄 center-left launches into air t
 - [ ] 单个 prompt ≤ 1000 字符
 - [ ] 否定词已避免（不使用 "no"/"without"/"不要"）
 - [ ] 图片输入已按用户确认的模式正确处理（如适用）
-- [ ] 多主体镜头已标注空间方位（屏幕位置 + 朝向）
+- [ ] 多主体镜头已标注屏幕方位 + 景深层次（无朝向指令）
+- [ ] 单镜头内同时运动的独立主体/群体不超过 2-3 组（超出时考虑拆分镜头或让部分主体静止）
+
+### AI 可生成性评估
+
+对每个镜头逐条评估以下三个维度，标注 🟢 / 🟡 / 🔴：
+
+| 维度 | 🟢 高可生成性 | 🟡 有风险 | 🔴 大概率翻车 |
+|------|-------------|----------|-------------|
+| **主体复杂度** | 1 个主体或 2 个主体清晰分区 | 3 个主体同框 | 4+ 主体同框，或群体各有独立动作 |
+| **运动复杂度** | 单一主动作 + 镜头运动 | 2 组并行动作（如主体动 + 特效动） | 3+ 组独立运动同时发生 |
+| **空间清晰度** | 每个主体有明确屏幕方位 + 景深 | 有方位但层次较密（多主体挤在同一景深） | 依赖朝向关系、相对距离或背对镜头 |
+
+**处理规则：**
+
+- 全 🟢：直接输出
+- 含 🟡：在该镜头 prompt 后加 `⚠️ 建议备选：[简化方案]`，给用户降级选项
+- 含 🔴：**必须重写**，拆分镜头或简化至 🟡 以内，不允许输出 🔴 镜头
+
+**评估输出格式（附在 prompt 输出之后）：**
+
+```
+## AI 可生成性评估
+
+| Shot | 主体 | 运动 | 空间 | 备注 |
+|------|------|------|------|------|
+| 01   | 🟢   | 🟢   | 🟢   |      |
+| 02   | 🟡   | 🟢   | 🟢   | 3 主体同框，已分区 |
+| 03   | 🟢   | 🟡   | 🟢   | ⚠️ 建议备选：去掉粒子特效，聚焦主体动作 |
+```

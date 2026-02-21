@@ -34,7 +34,7 @@ AI 视频工具通常对 prompt 开头的描述赋予更高权重。按重要性
 - 使用具体数量、颜色、方向等明确描述
 - 每个 prompt 聚焦单一主要动作，避免过多并行事件
 - 时长越短，prompt 越聚焦；时长越长，可加入更多动态变化
-- 多主体同框时，必须明确描述每个主体的空间位置（如 "on the left side" / "in the foreground"）和朝向（如 "facing right" / "facing each other"），否则 AI 工具会随机放置主体
+- 多主体同框时，必须明确描述每个主体的屏幕方位（如 "frame-left" / "foreground"）和景深层次，用构图位置传达关系。**避免依赖朝向指令**（如 "facing right" / "facing each other" / "back to camera"），AI 工具对主体朝向的执行极不可靠，应改用侧身轮廓（side profile）、剪影（silhouette）、光影对比等视觉手段
 
 ### 通用 Prompt 示例
 
