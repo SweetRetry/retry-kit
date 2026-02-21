@@ -118,6 +118,31 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 
 ## 分镜设计规范
 
+### 空间布局
+
+多主体同框时，必须明确每个主体的屏幕方位和朝向，否则 AI 视频工具会随机放置主体。
+
+**方位描述词速查：**
+
+| 中文 | 英文 | 说明 |
+|------|------|------|
+| 画面左侧 | frame-left | 主体位于画面左 1/3 |
+| 画面右侧 | frame-right | 主体位于画面右 1/3 |
+| 画面中央 | center | 主体位于画面中心 |
+| 前景 | foreground | 靠近镜头，通常较大 |
+| 中景 | midground | 画面中层 |
+| 背景 | background | 远离镜头，通常较小 |
+| 对角线构图 | diagonal composition | 主体分布在对角线两端 |
+
+**多主体交互空间模板：**
+
+- **对峙型**（双人对立）：A frame-left facing right, B frame-right facing left
+- **追逐型**（前后追击）：A foreground running toward camera, B background chasing
+- **包围型**（一对多）：A center, B/C/D surrounding from multiple angles
+- **并行型**（同方向）：A and B side by side, moving in same direction
+
+**规则：** 当 2+ 主体同框时，prompt 必须包含每个主体的相对位置（屏幕方位）和朝向。
+
 ### 节奏参考
 
 根据用户指定的总时长和镜头数灵活分配。以下为通用节奏参考：
@@ -204,6 +229,28 @@ Shot 02 (5-10s): [Medium tracking at water level] Camera glides above lake surfa
 Shot 03 (10-15s): [Wide slow crane up] Rising from lakeside rocks -> revealing full panorama of lake, mountains, and sky. Clouds tinged pink and gold. Time-lapse cloud movement. Fade to white.
 ```
 
+### 示例 5：动漫对抗（双人武斗）
+
+**角色锚点：**
+
+```
+称呼：凌霄
+描述：青年男子，二十出头，剑眉星目面容冷峻，黑色长发束高马尾，白色丝质仙袍金色云纹刺绣，腰佩青玉坠，右手持寒光玉剑
+
+称呼：夜无殇
+描述：中年男子，三十余岁，刀疤横贯左颊，赤红短发向后梳起，黑色铠甲覆刻血色符文，双手持焰形阔刃重剑
+```
+
+```markdown
+Style: Chinese xianxia fantasy, cinematic anime, dramatic lighting, volumetric dust and sparks
+Mood: fierce, confrontational, escalating tension
+
+Shot 01 (0-4s): [Wide slow push in] 凌霄 frame-left facing right, white silk robes with gold trim, jade sword lowered at side — 夜无殇 frame-right facing left, black armor with crimson runes, flame greatsword resting on shoulder. Barren rocky plateau between them, wind swirling dust. Distant storm clouds. Tension held in stillness.
+Shot 02 (4-7s): [Medium tracking left to right] 凌霄 foreground lunges right, jade sword trailing cyan arc — 夜无殇 background braces, flame greatsword sweeps upward -> blades clash at center frame + shockwave ring bursting outward. Sparks and energy fragments scatter. Ground cracks radially from impact point.
+Shot 03 (7-10s): [Close-up rapid cut between two faces] 凌霄 frame-left, cyan aura reflecting in narrowed eyes, high ponytail whipping — cut to 夜无殇 frame-right, crimson glow illuminating scar, teeth gritted. Camera shakes on each cut. Lightning flashes in background.
+Shot 04 (10-14s): [Extreme wide crane up] 凌霄 center-left launches into air trailing cyan light — 夜无殇 center-right leaps to meet him, flame trail spiraling. Both figures collide at frame center midair -> massive energy dome expands outward. Rocks lifting from ground. Camera pulls back revealing shattered plateau. Flash to white.
+```
+
 ## 参考资料
 
 根据需要加载以下参考文档：
@@ -224,3 +271,4 @@ Shot 03 (10-15s): [Wide slow crane up] Rising from lakeside rocks -> revealing f
 - [ ] 单个 prompt ≤ 1000 字符
 - [ ] 否定词已避免（不使用 "no"/"without"/"不要"）
 - [ ] 图片输入已按用户确认的模式正确处理（如适用）
+- [ ] 多主体镜头已标注空间方位（屏幕位置 + 朝向）
