@@ -4,6 +4,7 @@
 
 1. [通用 Prompt 原则](#通用-prompt-原则)
 2. [主体一致性策略](#主体一致性策略)
+3. [AIGC 词汇可生成性指导](#aigc-词汇可生成性指导)
 
 ---
 
@@ -30,30 +31,30 @@ AI 视频工具通常对 prompt 开头的描述赋予更高权重。按重要性
 
 ### 注意事项
 
-- 避免否定词（"no"、"without"、"don't"），AI 难以理解否定
+- 避免否定词（"不要"/"没有"等否定式描述），AI 难以理解否定
 - 使用具体数量、颜色、方向等明确描述
 - 每个 prompt 聚焦单一主要动作，避免过多并行事件
 - 时长越短，prompt 越聚焦；时长越长，可加入更多动态变化
-- 多主体同框时，必须明确描述每个主体的屏幕方位（如 "frame-left" / "foreground"）和景深层次，用构图位置传达关系。**避免依赖朝向指令**（如 "facing right" / "facing each other" / "back to camera"），AI 工具对主体朝向的执行极不可靠，应改用侧身轮廓（side profile）、剪影（silhouette）、光影对比等视觉手段
+- 多主体同框时，必须明确描述每个主体的屏幕方位（如"画面左侧"/"前景"）和景深层次，用构图位置传达关系。**避免依赖朝向指令**（如"面朝右"/"面对面"/"背对镜头"），AI 工具对主体朝向的执行极不可靠，应改用侧身轮廓、剪影、光影对比等视觉手段
 
-### 通用 Prompt 示例
+### 通用 Prompt 结构模板
 
 **角色类（动漫/真人叙事）：**
 
 ```
-[Shot type]. [Subject description] [performing action] in [environment]. [Camera movement]. [Lighting and atmosphere]. [Visual style]. [Additional effects].
+[景别]. [主体描述] 在 [环境] 中 [执行动作]. [镜头运动]. [光影与氛围]. [视觉风格]. [附加特效].
 ```
 
 **产品类（产品广告/展示）：**
 
 ```
-[Shot type]. [Product description with material/finish] [motion: rotating/floating/assembling] on [background/surface]. [Camera movement]. [Studio lighting setup]. [Visual style].
+[景别]. [产品描述（材质/表面处理）] 在 [背景/台面] 上 [运动：旋转/悬浮/组装]. [镜头运动]. [棚拍灯光]. [视觉风格].
 ```
 
 **场景类（纪录片/风光/氛围）：**
 
 ```
-[Shot type]. [Environment description with weather/season] [natural motion: waves/clouds/wildlife]. [Camera movement]. [Natural lighting]. [Color grade/mood].
+[景别]. [环境描述（天气/季节）] [自然运动：波浪/云层/野生动物]. [镜头运动]. [自然光线]. [色调/情绪].
 ```
 
 ---
@@ -68,17 +69,23 @@ AI 视频工具目前难以自动保持主体一致。以下策略按主体类�
 
 为每个主体建立固定描述短语，在每个镜头 prompt 中严格复用。
 
-**角色锚点：**
+**角色锚点示例：**
 
-- 例：`a young man, age 20, sharp jawline, long black hair tied in a high ponytail, wearing white silk celestial robes with gold trim`
+```
+二十出头的青年男子，五官棱角分明，黑色长发束成高马尾，白色丝质仙袍金色滚边
+```
 
-**产品锚点：**
+**产品锚点示例：**
 
-- 例：`matte black wireless earbuds with rose-gold accent ring, compact oval charging case with LED indicator strip`
+```
+磨砂黑无线耳机，玫瑰金装饰环，椭圆紧凑充电盒，前缘 LED 指示灯带
+```
 
-**场景锚点：**
+**场景锚点示例：**
 
-- 例：`misty alpine lake at dawn, snow-capped peaks reflected in still water, sparse pine forest along shoreline`
+```
+薄雾黎明中的高山湖泊，雪山倒映静水，岩石岸线稀疏松林
+```
 
 ### 2. 参考图策略
 
@@ -90,27 +97,25 @@ AI 视频工具目前难以自动保持主体一致。以下策略按主体类�
 - 将提取的特征融入主体锚点描述
 - 适用于：希望视频风格与参考图一致，但不需要完全还原画面
 
-**模式 B — 首帧输入（Image-to-Video）：**
+**模式 B — 首帧输入（图生视频）：**
 
 - 图片直接作为视频生成的起始帧
 - Prompt 描述后续运动和变化，而非重复描述画面内容
-- 适用于：希望从静态图片"动起来"，进入 image-to-video 工作流
+- 适用于：希望从静态图片"动起来"，进入图生视频工作流
 
 ### 3. 特征锚点标记
 
 - 选择 2-3 个最显著的视觉特征在每个 prompt 中重复
-- 角色例：始终提及 "white robes with gold trim" + "high ponytail" + "jade sword"
-- 产品例：始终提及 "matte black finish" + "rose-gold ring" + "LED strip"
-- 场景例：始终提及 "misty lake" + "snow-capped peaks" + "pine forest"
+- 角色例：始终提及"白色仙袍金色滚边"+"高马尾"+"玉剑"
+- 产品例：始终提及"磨砂黑外壳"+"玫瑰金装饰环"+"LED 灯带"
+- 场景例：始终提及"高山湖泊"+"雪山倒影"+"松林"
 
 ### 4. 分镜连接语
 
-- 使用 "same character as before" / "continuing from previous shot"
+- 可使用"同一角色"/"延续上一镜头"等连接提示
 - 虽然工具可能不完全理解，但有助于保持描述一致性
 
 ### 主体描述模板
-
-输出语言跟随用户自然语言或用户明确指定，不做 CN/EN 双语拆分。
 
 **角色模板：**
 
@@ -133,7 +138,7 @@ AI 视频工具目前难以自动保持主体一致。以下策略按主体类�
 示例：
 
 ```
-无线耳机，磨砂黑聚合物外壳搭配玫瑰金装饰环，椭圆紧凑充电盒，前缘一条细长 LED 指示灯带，盒盖压印极简 logo
+无线耳机，磨砂黑聚合物外壳搭配玫瑰金装饰环，椭圆紧凑充电盒，前缘一条细长 LED 指示灯带，盒盖压印极简标志
 ```
 
 **场景模板：**
@@ -162,7 +167,7 @@ AI 视频工具对词汇的理解能力参差不齐。以下不是"一律替换"
 - 画面模糊或需要文化背景才能理解 → 考虑拆分
 - 一个词塞了多层概念 → 必须拆分
 
-### 🟢 AI 可直接理解 — 保持原样
+### 🟢 可直接使用 — 保持原样
 
 AI 对以下类型词汇有较好识别度，无需替换：
 
@@ -181,13 +186,13 @@ AI 对以下类型词汇有较好识别度，无需替换：
 | 类型 | 原始 | 改写建议 | 原因 |
 |------|------|----------|------|
 | 复合幻想词 | 血色符文 | 红色发光纹路 | "血色"+"符文"两层概念叠加，AI 可能只渲染其一 |
-| 多重修饰堆叠 | 焰形阔刃重剑 | 火焰形宽刃大剑 | 拆解为 AI 可逐一渲染的属性 |
+| 多重修饰堆叠 | 焰形阔刃重剑 | 火焰形宽刃大剑 | 拆解为可逐一渲染的属性 |
 | 文言复合词 | 覆刻 | 表面刻有 | 直译更明确 |
 | 纯情绪词用作锚点 | 面容冷峻（写在锚点中） | 移至具体镜头描述 | 锚点应聚焦可视特征，情绪/表情适合在镜头中按需使用 |
 
 **注意**：短小、常见的情绪词（如"面容冷峻"）放在镜头 prompt 中是可以的，只是不建议作为永久锚点的核心特征。
 
-### 🔴 必须替换 — AI 大概率无法正确渲染
+### 🔴 必须替换 — 大概率无法正确渲染
 
 | 类型 | 原始 | 改写方法 |
 |------|------|----------|
