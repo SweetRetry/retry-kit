@@ -82,9 +82,9 @@
 
 | 特效 | 英文 Prompt | 用途 |
 |------|------------|------|
-| 粒子效果 | particle effects (sparks/embers/dust) | 战斗火花、灵气粒子、灰尘 |
+| 粒子效果 | particle effects — sparks, embers, dust | 战斗火花、灵气粒子、灰尘 |
 | 能量光环 | energy aura / power glow | 觉醒、蓄力、力量展示 |
-| 元素特效 | elemental effects (fire/water/ice/lightning) | 法术、招式、自然力 |
+| 元素特效 | elemental effects — fire, water, ice, lightning | 法术、招式、自然力 |
 | 速度线 | speed lines / motion blur streaks | 快速移动、战斗冲击 |
 | 冲击波 | shockwave / impact ring | 爆炸、撞击、力量释放 |
 | 魔法阵 | magic circle / runic formation | 咒术、召唤、结界 |

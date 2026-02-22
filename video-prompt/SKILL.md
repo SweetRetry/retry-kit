@@ -54,13 +54,13 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 **模式 A — 视觉参考：**
 
 1. 分析图片的色调、光影、构图、材质、氛围
-2. 将提取的视觉特征写入 Style 行和主体锚点
+2. 将提取的视觉特征写入风格行和主体锚点
 3. 正常生成完整多镜头 prompt
 
-**模式 B — 首帧输入（Image-to-Video）：**
+**模式 B — 首帧输入（图生视频）：**
 
 1. 分析图片内容，建立主体锚点
-2. Shot 01 的 prompt 描述"从当前画面开始"的运动和变化，不重复描述静态内容
+2. 镜头 01 的 prompt 描述"从当前画面开始"的运动和变化，不重复描述静态内容
 3. 后续镜头正常生成
 
 ## 主体锚点模板
@@ -115,6 +115,7 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 - 特写聚焦核心细节，全景聚焦整体轮廓与环境关系
 - 2-3 个最显著特征在所有镜头中必须出现
 - **字符限制**：单个 prompt 不超过 1000 字符
+- **词汇注意**：避免复合幻想词汇（如"血色符文"→"红色发光纹路"），锚点用词应确保 AI 能直接渲染为明确视觉画面。详见 [ai-tools-guide.md § AIGC 词汇可生成性指导](references/ai-tools-guide.md#aigc-词汇可生成性指导)
 
 ## 分镜设计规范
 
@@ -124,16 +125,16 @@ AI 视频工具对空间的理解以**画面构图**（屏幕上谁在哪、多�
 
 **可靠的（AI 能执行）：**
 
-- 屏幕方位：frame-left / frame-right / center
-- 景深层次：foreground / midground / background
-- 主体尺寸暗示："towering figure" / "small silhouette in distance"
-- 视觉侧影：side profile / silhouette / back view（单主体时成功率较高）
+- 屏幕方位：画面左侧 / 画面右侧 / 画面中央
+- 景深层次：前景 / 中景 / 背景
+- 主体尺寸暗示：高大身影 / 远处小小的剪影
+- 视觉侧影：侧身轮廓 / 剪影 / 背影（单主体时成功率较高）
 
 **不可靠的（AI 高概率忽略或误解）：**
 
-- 主体间朝向关系："facing each other" / "back to back" / "面朝对方"
-- 相对距离："fifty meters apart" / "相距百步"
-- 背对镜头："back to camera" — AI 倾向将主体正面朝向镜头
+- 主体间朝向关系：面对面 / 背靠背 / 面朝对方
+- 相对距离：相距五十米 / 相距百步
+- 背对镜头 — AI 倾向将主体正面朝向镜头
 - 复杂空间指令："A 站在 B 的左后方，面向东南"
 
 **核心原则：用构图位置和视觉特征传达叙事关系，不依赖朝向指令。**
@@ -144,28 +145,28 @@ AI 视频工具对空间的理解以**画面构图**（屏幕上谁在哪、多�
 
 **方位描述词速查：**
 
-| 中文 | 英文 | 说明 |
-|------|------|------|
-| 画面左侧 | frame-left | 主体位于画面左 1/3 |
-| 画面右侧 | frame-right | 主体位于画面右 1/3 |
-| 画面中央 | center | 主体位于画面中心 |
-| 前景 | foreground | 靠近镜头，通常较大 |
-| 中景 | midground | 画面中层 |
-| 背景 | background | 远离镜头，通常较小 |
-| 对角线构图 | diagonal composition | 主体分布在对角线两端 |
+| 词汇 | 说明 |
+|------|------|
+| 画面左侧 | 主体位于画面左 1/3 |
+| 画面右侧 | 主体位于画面右 1/3 |
+| 画面中央 | 主体位于画面中心 |
+| 前景 | 靠近镜头，通常较大 |
+| 中景 | 画面中层 |
+| 背景 | 远离镜头，通常较小 |
+| 对角线构图 | 主体分布在对角线两端 |
 
 **多主体交互构图模板：**
 
-- **对峙型**（双人对立）：A frame-left side profile in shadow, B frame-right side profile lit — 用侧身轮廓 + 光影对比传达对立，不写 "facing each other"
-- **追逐型**（前后追击）：A foreground large, B background small — 用前景/背景尺寸差传达追击，不写朝向
-- **包围型**（一对多）：A center, B/C/D at frame edges — 用画面边缘分布传达围逼
-- **并行型**（同方向）：A and B side by side, both in profile moving frame-right — 用 profile + 运动方向传达同向
+- **对峙型**（双人对立）：A 画面左侧侧身剪影处于阴影中，B 画面右侧侧身轮廓被光照亮 — 用侧身轮廓 + 光影对比传达对立
+- **追逐型**（前后追击）：A 前景大，B 背景小 — 用前景/背景尺寸差传达追击
+- **包围型**（一对多）：A 画面中央，B/C/D 分布在画面边缘 — 用画面边缘分布传达围逼
+- **并行型**（同方向）：A 和 B 并排侧身，向画面右侧移动 — 用侧身轮廓 + 运动方向传达同向
 
 **规则：**
 
 - 当 2+ 主体同框时，prompt 必须包含每个主体的**屏幕方位**和**景深层次**。
-- **不写朝向指令**（facing left/right/each other），改用侧身轮廓（side profile）、剪影（silhouette）、光影对比等视觉手段传达关系。
-- 多主体场景的 Shot 01 建议用静态或慢速镜头建立构图关系，后续镜头保持一致的左右/前后布局。
+- **不写朝向指令**（面朝左/面朝右/面对面），改用侧身轮廓、剪影、光影对比等视觉手段传达关系。
+- 多主体场景的第一个镜头建议用静态或慢速镜头建立构图关系，后续镜头保持一致的左右/前后布局。
 
 ### 节奏参考
 
@@ -177,7 +178,7 @@ AI 视频工具对空间的理解以**画面构图**（屏幕上谁在哪、多�
 | 展开/互动 | 中景/全景/产品特写 | 25-35% |
 | 铺垫/转折 | 中近景/近景/细节微距 | 20-30% |
 | 高潮/核心 | 特写+多景别/核心卖点 | 20-30% |
-| 收束/定格 | 远景/特写/Logo 定帧 | 10-15% |
+| 收束/定格 | 远景/特写/品牌标志定帧 | 10-15% |
 
 **注意：** 镜头数少于 5 时可合并功能，多于 5 时可拆分展开和高潮段。
 
@@ -186,74 +187,29 @@ AI 视频工具对空间的理解以**画面构图**（屏幕上谁在哪、多�
 **标准输出格式：**
 
 ```markdown
-Style: [全局视觉风格]
-Mood: [整体情绪基调]
+风格: [全局视觉风格]
+情绪: [整体情绪基调]
 
-Shot 01 (开始s-结束s): [景别+运动] 主体描述 -> 动作触发特效. 补充细节.
-Shot 02 (开始s-结束s): [景别+运动] 主体动作 + 同时特效. 转场提示.
-Shot 03 (开始s-结束s): [景别+运动] 主体动作. 收尾特效.
+镜头 01 (开始s-结束s): [景别+运动] 主体描述 -> 动作触发特效. 补充细节.
+镜头 02 (开始s-结束s): [景别+运动] 主体动作 + 同时特效. 转场提示.
+镜头 03 (开始s-结束s): [景别+运动] 主体动作. 收尾特效.
 ```
 
 **格式说明：**
 
 | 元素 | 含义 | 示例 |
 |------|------|------|
-| `Style:` | 全局风格定义（只出现一次） | `Style: Cinematic live-action, anamorphic, teal-orange grade` |
-| `Mood:` | 情绪基调（帮助 AI 理解氛围） | `Mood: epic, triumphant` |
-| `Shot XX` | 镜头序号 | `Shot 01`, `Shot 02` |
+| `风格:` | 全局风格定义（只出现一次） | `风格: 电影实拍，变形宽银幕，青橙色调` |
+| `情绪:` | 情绪基调（帮助 AI 理解氛围） | `情绪: 史诗、激昂` |
+| `镜头 XX` | 镜头序号 | `镜头 01`, `镜头 02` |
 | `(Xs-Ys)` | 时间轴 | `(0-3s)`, `(3-7s)` |
-| `[景别+运动]` | 画面范围+镜头运动 | `[Close-up tracking]`, `[Wide shot panning]` |
-| `->` | 动作触发/结果 | `raises sword -> cyan aura erupts` |
-| `+` | 同时发生 | `sparks flying + shockwave ring` |
+| `[景别+运动]` | 画面范围+镜头运动 | `[近景 跟拍]`, `[远景 横摇]` |
+| `->` | 动作触发/结果 | `举剑 -> 青色灵气爆发` |
+| `+` | 同时发生 | `火花飞溅 + 冲击波扩散` |
 
 ## 输出示例
 
-### 示例 1：电影叙事（真人实拍）
-
-```markdown
-Style: Cinematic live-action, 35mm anamorphic, shallow depth of field, teal-orange color grade
-Mood: tense, determined, building to triumph
-
-Shot 01 (0-4s): [Extreme wide slow push in] A woman in her 30s, dark trench coat, cropped silver hair -> stands alone on rain-soaked rooftop at night. City lights blurred in background. Wind whipping coat. Thunder rumbles.
-Shot 02 (4-8s): [Close-up rack focus] Her steel-grey eyes narrowing -> pulls out worn photograph from pocket. Rain drops hitting photo surface. Backlit rim light on jawline. Subtle breath mist.
-Shot 03 (8-12s): [Medium tracking orbit] She turns, strides toward rooftop door -> pushes through with force + coat billowing behind. Camera follows then holds as door slams. Fade to black.
-```
-
-### 示例 2：动漫短片（仙侠飞升）
-
-```markdown
-Style: Chinese xianxia fantasy, cinematic anime, ethereal lighting, volumetric god rays, particle effects
-Mood: transcendent, awe-inspiring
-
-Shot 01 (0-3s): [Extreme wide slow push in] White-robed youth with golden embroidery, high ponytail, holding jade sword -> stands at cliff edge, silhouette against golden sunset. Sea of clouds churning below, floating peaks in distance. God rays piercing through clouds.
-Shot 02 (3-7s): [Medium close orbit then rapid pull back] Youth raises jade sword skyward -> cyan spiritual aura erupts, rocks cracking beneath feet. Sword tip gathers intensifying light. Particle burst.
-Shot 03 (7-10s): [Full shot following upward then hold] Youth launches on glowing sword -> streak of cyan-white light into clouds. Hair and robes streaming. Figure shrinks into golden cloud layer. Fade out with dissipating particles.
-```
-
-### 示例 3：产品广告（耳机展示）
-
-```markdown
-Style: Product hero shot, dark gradient studio backdrop, sleek reflections, premium feel
-Mood: sleek, modern, desirable
-
-Shot 01 (0-3s): [Close-up static then slow push in] Matte black wireless earbuds with rose-gold accent ring resting on dark reflective surface. Soft edge lighting revealing material texture. Subtle light sweep across surface.
-Shot 02 (3-6s): [Medium turntable rotation] Charging case slowly rotating 180° -> lid opens smoothly revealing earbuds seated inside. LED indicator strip glows blue. Clean white light from above.
-Shot 03 (6-9s): [Extreme close-up macro] Camera pushes into earbud tip -> reveals micro-perforated mesh detail + rose-gold ring catching light. Shallow depth of field. Background dissolves to pure black.
-Shot 04 (9-12s): [Wide pull back] Both earbuds floating mid-air with soft glow -> brand logo fades in below. Minimal, centered composition. Fade out.
-```
-
-### 示例 4：纪录片风光（高山湖泊）
-
-```markdown
-Style: Documentary nature, 4K aerial, rich natural colors, serene atmosphere
-Mood: peaceful, vast, meditative
-
-Shot 01 (0-5s): [Extreme wide drone descending] Alpine lake at dawn, snow-capped peaks reflected in mirror-still water. Thin mist layer hovering above surface. First golden light touching mountain ridge.
-Shot 02 (5-10s): [Medium tracking at water level] Camera glides above lake surface -> mist parting gently. Pine trees along shoreline emerging from fog. Bird silhouette crossing frame. Ambient water ripples.
-Shot 03 (10-15s): [Wide slow crane up] Rising from lakeside rocks -> revealing full panorama of lake, mountains, and sky. Clouds tinged pink and gold. Time-lapse cloud movement. Fade to white.
-```
-
-### 示例 5：动漫对抗（双人武斗）
+### 示例 1：动漫对抗（双人武斗）
 
 **角色锚点：**
 
@@ -262,26 +218,26 @@ Shot 03 (10-15s): [Wide slow crane up] Rising from lakeside rocks -> revealing f
 描述：青年男子，二十出头，剑眉星目面容冷峻，黑色长发束高马尾，白色丝质仙袍金色云纹刺绣，腰佩青玉坠，右手持寒光玉剑
 
 称呼：夜无殇
-描述：中年男子，三十余岁，刀疤横贯左颊，赤红短发向后梳起，黑色铠甲覆刻血色符文，双手持焰形阔刃重剑
+描述：中年男子，三十余岁，刀疤横贯左颊，赤红短发向后梳起，黑色铠甲表面刻有红色发光纹路，双手持火焰形宽刃大剑
 ```
 
 ```markdown
-Style: Chinese xianxia fantasy, cinematic anime, dramatic lighting, volumetric dust and sparks
-Mood: fierce, confrontational, escalating tension
+风格: 中国仙侠奇幻，影院级动漫，戏剧性光影，体积感烟尘与火花
+情绪: 凶猛、对峙、张力递增
 
-Shot 01 (0-4s): [Wide slow push in] 凌霄 frame-left, side profile silhouette, white silk robes with gold trim, jade sword lowered at side — 夜无殇 frame-right, side profile in shadow, black armor with crimson runes, flame greatsword resting on shoulder. Barren rocky plateau between them, wind swirling dust. Distant storm clouds. Tension held in stillness.
-Shot 02 (4-7s): [Medium tracking left to right] 凌霄 foreground lunges right, jade sword trailing cyan arc — 夜无殇 background braces, flame greatsword sweeps upward -> blades clash at center frame + shockwave ring bursting outward. Sparks and energy fragments scatter. Ground cracks radially from impact point.
-Shot 03 (7-10s): [Close-up rapid cut between two faces] 凌霄 frame-left, cyan aura reflecting in narrowed eyes, high ponytail whipping — cut to 夜无殇 frame-right, crimson glow illuminating scar, teeth gritted. Camera shakes on each cut. Lightning flashes in background.
-Shot 04 (10-14s): [Extreme wide crane up] 凌霄 center-left launches into air trailing cyan light — 夜无殇 center-right leaps to meet him, flame trail spiraling. Both figures collide at frame center midair -> massive energy dome expands outward. Rocks lifting from ground. Camera pulls back revealing shattered plateau. Flash to white.
+镜头 01 (0-4s): [远景 缓推] 凌霄画面左侧，侧身剪影，白色丝质仙袍金色滚边，玉剑垂于身侧 — 夜无殇画面右侧，侧身处于阴影中，黑色铠甲红色发光纹路，火焰大剑扛于肩上。两人之间荒凉岩石高台，风卷尘土。远处风暴云层。静止中凝聚张力。
+镜头 02 (4-7s): [中景 从左向右跟拍] 凌霄前景向右突进，玉剑拖出青色弧光 — 夜无殇背景持剑架挡，火焰大剑向上横扫 -> 双剑在画面中央碰撞 + 冲击波向外扩散。火花飞溅。
+镜头 03 (7-10s): [近景 快速切换两张面孔] 凌霄画面左侧，青色灵气映在微眯双眼中，高马尾飞扬 — 切至夜无殇画面右侧，赤红光芒照亮刀疤，咬紧牙关。每次切换镜头震动。背景闪电。
+镜头 04 (10-14s): [大远景 摇臂上升] 凌霄偏左腾空而起拖出青色光尾 — 夜无殇偏右跃起迎击，身后拖曳火焰。双方在画面中央半空碰撞 -> 巨大能量光罩向外扩展。镜头拉远露出荒凉高台。闪白。
 ```
 
 ## 参考资料
 
 根据需要加载以下参考文档：
 
-- **[references/visual-styles.md](references/visual-styles.md)** — 10 种通用视觉风格分类（电影实拍、动漫、国风、产品摄影、扁平插画、纪录片、赛博朋克、复古、极简、超现实），含中英文视觉关键词、典型主题、色彩基调和推荐光影。
-- **[references/camera-and-effects.md](references/camera-and-effects.md)** — 镜头景别、镜头运动、转场方式、光影氛围、特效类型的中英对照速查表。
-- **[references/ai-tools-guide.md](references/ai-tools-guide.md)** — AI 视频工具通用 Prompt 原则、主体一致性策略与描述模板。
+- **[references/visual-styles.md](references/visual-styles.md)** — 10 种通用视觉风格分类（电影实拍、动漫、国风、产品摄影、扁平插画、纪录片、赛博朋克、复古、极简、超现实），含视觉关键词、典型主题、色彩基调和推荐光影。
+- **[references/camera-and-effects.md](references/camera-and-effects.md)** — 镜头景别、镜头运动、转场方式、光影氛围、特效类型速查表。
+- **[references/ai-tools-guide.md](references/ai-tools-guide.md)** — AI 视频工具通用 Prompt 原则、主体一致性策略、描述模板与词汇可生成性指导。
 
 ## 质量检查
 
@@ -295,7 +251,7 @@ Shot 04 (10-14s): [Extreme wide crane up] 凌霄 center-left launches into air t
 - [ ] 镜头运动与情绪匹配
 - [ ] 时间轴总和等于总时长
 - [ ] 单个 prompt ≤ 1000 字符
-- [ ] 否定词已避免（不使用 "no"/"without"/"不要"）
+- [ ] 否定词已避免（不使用"不要"/"没有"等否定式描述）
 - [ ] 图片输入已按用户确认的模式正确处理（如适用）
 - [ ] 多主体镜头已标注屏幕方位 + 景深层次（无朝向指令）
 - [ ] 单镜头内同时运动的独立主体/群体不超过 2-3 组（超出时考虑拆分镜头或让部分主体静止）
@@ -321,7 +277,7 @@ Shot 04 (10-14s): [Extreme wide crane up] 凌霄 center-left launches into air t
 ```
 ## AI 可生成性评估
 
-| Shot | 主体 | 运动 | 空间 | 备注 |
+| 镜头 | 主体 | 运动 | 空间 | 备注 |
 |------|------|------|------|------|
 | 01   | 🟢   | 🟢   | 🟢   |      |
 | 02   | 🟡   | 🟢   | 🟢   | 3 主体同框，已分区 |
