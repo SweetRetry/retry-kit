@@ -87,7 +87,7 @@ project-root/
 ### 样式
 
 - 严格 Tailwind utility classes。❌ CSS Modules、❌ inline `style={{}}`、❌ 硬编码颜色/任意值
-- 条件类名用 `cn()`。视觉 token/色值约束由 web-style-guideline 管理
+- 条件类名用 `cn()`。视觉 token/色值约束由 visual-design 管理
 
 ### React
 

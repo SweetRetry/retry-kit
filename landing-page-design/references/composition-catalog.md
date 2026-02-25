@@ -1,6 +1,6 @@
 # 构图目录 (Composition Catalog)
 
-> 本文件只描述布局结构和空间关系。色值、字号、间距、动效曲线交给 web-style-guideline。
+> 本文件只描述布局结构和空间关系。色值、字号、间距、动效曲线交给 visual-design。
 
 ---
 
