@@ -5,7 +5,6 @@ description: >
   触发场景：(1) 用户需要设计或实现 Web UI（页面、组件、布局），(2) 用户提到设计系统、UI 风格、视觉规范，
   (3) 审查 UI 代码的视觉质量（层级、密度、一致性），(4) 构建新组件或页面时需要确定视觉参数，
   (5) 用户要求评审或优化 UI 的视觉表现。
-  协作关系：本 skill 只管视觉参数（字号/间距/圆角/动效/色彩用法）；色值选择与 globals.css token 输出由 color-palette skill 负责；页面动线与功能分区结构由 ui-blueprint skill 负责（落地页任务除外——落地页由 landing-page-design skill 自带结构规划，不经过 ui-blueprint）。
 ---
 
 ## I. 角色

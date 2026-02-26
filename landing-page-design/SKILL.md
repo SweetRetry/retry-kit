@@ -3,7 +3,6 @@ name: landing-page-design
 description: >
   互联网产品落地页 (Landing Page) 设计与实现规范。覆盖转化驱动的页面架构、功能介绍叙事、视觉构图、交互动效、社会证明、表单优化与性能基线。强制使用 shadcn/ui + Tailwind CSS + Framer Motion。
   使用场景：(1) 用户要求构建产品落地页、营销页 (marketing page)、注册页 (signup page)，(2) 审查落地页代码是否符合转化优化 (conversion) 规范，(3) 用户提到"Landing Page"、"落地页"、"转化率"、"Hero Section"、"CTA"、"功能介绍"等关键词，(4) 需要将产品功能转化为面向用户的利益叙事时。
-  协作关系：本 skill 是落地页任务的一站式入口，自带页面结构规划与视觉节奏决策，不依赖 ui-blueprint skill。视觉参数（字号/间距/圆角/动效具体参数）由 visual-design skill 补充；色值选择与 globals.css token 由 color-palette skill 负责。
 ---
 
 # Landing Page Design — 转化驱动的落地页设计指引
