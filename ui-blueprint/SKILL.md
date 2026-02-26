@@ -36,10 +36,22 @@ The blueprint makes the intent→structure mapping explicit. Users can correct c
 
 ## Workflow
 
-1. Clarify scope: page count, platform (desktop/mobile/responsive), and core user goal
-2. Output blueprint in the format below
-3. Present to user for confirmation — the blueprint is a **contract**, not a suggestion
-4. Only proceed to design (Pencil) or code after user approves
+1. Check skip conditions (see below) — if matched, execute directly without a blueprint
+2. Diagnose user intent with the questions below — ask only what's missing
+3. Output blueprint in the format below
+4. Present to user for confirmation — the blueprint is a **contract**, not a suggestion
+5. Only proceed to design (Pencil) or code after user approves
+
+### When to skip blueprint
+
+Skip and execute directly when ANY of these conditions are true:
+
+| Condition | Reason |
+|-----------|--------|
+| Single component with clear spec (e.g., "add a submit button") | No structural ambiguity |
+| User provides a complete design spec or mockup | Blueprint already exists |
+| User is amending an already-confirmed blueprint | Amend in place, don't regenerate |
+| Micro-interaction or style-only change | No layout decision needed |
 
 ### Complexity-based routing
 
@@ -48,6 +60,18 @@ The blueprint makes the intent→structure mapping explicit. Users can correct c
 | Single component (button, card) | Skip blueprint, execute directly |
 | Single-screen page | Output blueprint, then proceed |
 | Multi-screen / complex flow | Output blueprint per screen + flow overview |
+
+### Intent diagnosis
+
+Before generating a blueprint, confirm these — ask only the ones not already clear from context. Prefer asking 1–2 at a time, not all at once.
+
+| Question | Why it matters |
+|----------|---------------|
+| 这个界面的核心用户任务是什么？（用户来这里完成什么目标） | 决定信息层级和主操作位置 |
+| 目标平台？Desktop / Mobile / Responsive | 决定布局骨架 |
+| 是新建还是改版现有界面？ | 改版需要了解现有结构约束 |
+| 有现有设计系统或组件库吗？（shadcn、Ant Design、自建…） | 决定组件命名和复用策略 |
+| 数据是静态的还是异步加载的？ | 决定是否需要骨架屏和空状态 |
 
 ## Blueprint Format
 
@@ -77,14 +101,35 @@ Use indented Markdown list. Each node = one UI element.
 | `[scroll]` / `[sticky-top]` | Scroll behavior |
 | `[active]` | Current state |
 | `icon:name` | Icon placeholder |
-| `[required]` / `[optional]` | Form field validation |
-| `[primary]` / `[ghost]` | Button variant |
+| `[required]` / `[optional]` | Form field validation / component can be omitted |
+| `[primary]` / `[ghost]` / `[destructive]` | Button variant |
 | `[flex:2]` | Flex proportion |
-| `[space-between]` / `[center]` | Alignment |
-| `[fixed-left]` / `[fixed-bottom]` | Position |
-| `[w:240]` / `[h:56]` / `[max-w:480]` | Dimension hints |
+| `[space-between]` / `[center]` / `[end]` | Alignment |
+| `[fixed-left]` / `[fixed-bottom]` / `[fixed-right]` | Position |
+| `[w:240]` / `[max-w:480]` | Layout-critical dimension hints — only when the value directly constrains the surrounding layout (e.g., sidebar width, modal width). Omit for decorative sizing. |
+| `[h:fixed]` | Fixed-height element (e.g., top bar, tab bar) — use `[h:fixed]` not a specific value unless the exact height is a layout dependency |
+| `[hidden]` / `[collapsed]` | Visibility state — element exists in DOM but not shown |
+| `[visible-on-hover]` | Element only appears on hover interaction |
+| `[P0]` / `[P1]` | Implementation priority — P0 = must-have for MVP, P1 = should-have |
 
-Notations are hints, not prescriptions. Use only what aids clarity. Do not add visual parameters (colors, font sizes, specific spacing values) — those belong to downstream skills.
+Notations are hints, not prescriptions. Use only what aids clarity.
+
+**Boundary rule — structural vs visual:**
+
+| Allowed (structural decisions) | Forbidden (visual parameters) |
+|--------------------------------|-------------------------------|
+| `[w:240]` — layout-critical width | `px:16`, `p:24`, `gap:8` — spacing/padding |
+| `[h:fixed]` — fixed-height element | `h:56`, `h:48` — specific height values |
+| `[fixed-left]`, `[sticky-top]` — position | `border-top`, `border-right` — decorative borders |
+| `[flex:1]`, `[col]`, `[row]` — layout | `color:success`, `bg:muted` — colors |
+| `[active]`, `[disabled]`, `[loading]` — semantic state | `opacity:50`, `shadow-md` — visual effects |
+| `[success]`, `[error]`, `[warning]` — semantic variant | `text-sm`, `font-bold` — typography |
+| `[hidden]`, `[collapsed]`, `[visible-on-hover]` — visibility | `rounded`, `rounded-full` — border radius |
+| `[slide-in-right]`, `[slide-in-bottom]` — entry direction | `animate:fade`, `duration:200` — animation parameters |
+
+**Entry direction** (`[slide-in-right]`) is structural — it tells implementers which side the element appears from, affecting layout expectation. Animation parameters (easing, duration) are visual.
+
+**Decision test:** ask "does this constrain the layout structure or user flow?" If yes, include it. If it only affects visual appearance, omit it — that belongs to downstream skills.
 
 ### Multi-screen flows
 
@@ -134,10 +179,26 @@ Once the user confirms a blueprint:
 - Any deviation requires explicit explanation
 - If implementation reveals structural problems, propose amendments to the blueprint before changing
 
-## Examples
+## Self-check before delivering
 
-See [references/examples.md](references/examples.md) for full examples covering:
-- SaaS Landing Page
-- Analytics Dashboard
-- Mobile App
-- Multi-step Form Flow
+After drafting a blueprint, verify:
+
+| Check | Question |
+|-------|----------|
+| **Coverage** | Does every interactive entry point have a target screen/state defined? |
+| **Empty states** | Does every list, table, or data view have an empty state? |
+| **Async states** | If data is async, is there a skeleton or loading placeholder? |
+| **Form validation** | Does every form define valid / invalid / loading states? |
+| **Error paths** | Are error states (load failure, submit failure) covered? |
+| **Priority clarity** | Are P0 / P1 / optional components marked where implementation order matters? |
+| **Platform completeness** | If responsive, are both desktop and mobile layouts described? |
+
+Not every check applies to every blueprint — skip checks that aren't relevant to the current scope.
+
+## References
+
+| File | Content | When to load |
+|------|---------|--------------|
+| [references/examples.md](references/examples.md) | Full examples: Landing Page, Dashboard, Mobile App, Form Flow, Responsive, State Variants | Need a complete blueprint example |
+| [references/component-patterns.md](references/component-patterns.md) | Component-level patterns: Empty State, Skeleton, Modal, Drawer, Toast, Inspector Panel, Pagination vs Infinite Scroll, Form Field States | Need standardized notation for a specific component type |
+| [references/page-structure.md](references/page-structure.md) | Page type standard flows, 3-layer functional zoning, navigation selection, CTA hierarchy, state placement | Confirming page structure and user flow before generating blueprint |

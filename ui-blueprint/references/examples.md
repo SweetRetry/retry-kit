@@ -19,8 +19,8 @@
   - H1 → "用 AI 让写作提速 10 倍"
   - Subtitle → "从初稿到终稿，AI 全程协助你完成高质量内容创作"
   - CTA Group [row]
-    - Primary Button → "免费开始"
-    - Ghost Button → "观看演示"
+    - Button [primary] → "免费开始"
+    - Button [ghost] → "观看演示"
   - Hero Image [product screenshot]
 
 - Social Proof [row, center]
@@ -70,7 +70,7 @@
 ### Output
 
 ```
-## Screen: Analytics Dashboard (Desktop 1440×900)
+## Screen: Analytics Dashboard (Desktop 1440)
 
 - Sidebar [col, w:240, fixed-left]
   - Logo [compact]
@@ -84,7 +84,7 @@
     - User Avatar + Name + "设置"
 
 - Main [col, flex:1]
-  - Top Bar [row, space-between, h:56]
+  - Top Bar [row, space-between, h:fixed]
     - Breadcrumb → "仪表盘"
     - Actions [row]
       - Date Picker → "最近 7 天"
@@ -123,7 +123,7 @@
 ### Output
 
 ```
-## Screen: Home — Food Delivery (Mobile 390×844)
+## Screen: Home — Food Delivery (Mobile 390)
 
 - Status Bar [system]
 
@@ -161,7 +161,7 @@
 
 ---
 
-## Example 4: Form Page
+## Example 4: Multi-step Form Flow
 
 **User request**: "设计一个多步骤注册表单"
 
@@ -207,4 +207,126 @@
   - Subtitle → "欢迎加入，我们已向你的邮箱发送确认信"
   - Button → "进入控制台" [primary]
   - Link → "稍后设置，先看看文档"
+```
+
+---
+
+## Example 5: Responsive Layout (Desktop → Mobile)
+
+**User request**: "设计一个内容管理后台，要支持桌面和移动端"
+
+### Output
+
+```
+## Screen: CMS Dashboard (Responsive: Desktop 1440 → Mobile 390)
+
+### Desktop Layout (≥ 768px)
+
+- App Shell [row]
+  - Sidebar [col, w:240, fixed-left]
+    - Logo [row]
+    - Nav [col, flex:1]
+      - NavItem → icon:home "内容列表" [active]
+      - NavItem → icon:plus "新建内容"
+      - NavItem → icon:settings "设置"
+    - User Card [row]
+      - Avatar [circle, w:32]
+      - Name → "张三"
+  - Main [col, flex:1]
+    - Top Bar [row, space-between, h:fixed]
+      - Breadcrumb → "内容列表"
+      - Button [primary] → "新建文章"
+    - Content [col, scroll]
+      - Table [cols: 标题 / 状态 / 作者 / 更新时间 / 操作]
+        - Row × 10
+      - Pagination [row, center]
+
+### Mobile Layout (< 768px)
+
+- App Shell [col]
+  - Top Bar [row, space-between, h:fixed, sticky-top]
+    - Hamburger Button → icon:menu [opens drawer]
+    - Logo [center]
+    - Button [icon-only] → icon:plus
+  - Content [col, flex:1, scroll]
+    - Article Card × 10 [col]  ← Table → Card list on mobile
+      - Title → "文章标题"
+      - Meta [row] → Status Badge + "张三" + "2026-02-01"
+      - Actions [row, end]
+        - Button [ghost] → "编辑"
+        - Button [ghost, destructive] → "删除"
+  - Bottom Tab Bar [row:4, fixed-bottom]  ← Sidebar → Bottom tabs on mobile
+    - Tab → icon:home "列表" [active]
+    - Tab → icon:plus "新建"
+    - Tab → icon:search "搜索"
+    - Tab → icon:user "我的"
+
+### Responsive Transformation Rules (for this screen)
+
+| Desktop | Mobile |
+|---------|--------|
+| Sidebar [fixed-left] | Drawer [hidden-default, opens on hamburger] |
+| Table view | Card list |
+| Top bar actions | Bottom tab bar |
+| Inline pagination | Load-more button |
+```
+
+---
+
+## Example 6: State Variants
+
+**User request**: "设计一个用户邀请功能，要覆盖所有状态"
+
+### Output
+
+```
+## Screen: Invite Members — State Variants (Desktop, Modal)
+
+### State 1: Default (empty form)
+- Modal [col, w:560]
+  - Header → "邀请团队成员"
+  - Body [col]
+    - Email Input [default] → placeholder "colleague@company.com"
+    - Role Select [default] → "选择权限"
+    - Tag List [empty] → placeholder "输入邮箱后按回车添加"
+  - Footer [row, end]
+    - Button [ghost] → "取消"
+    - Button [primary, disabled] → "发送邀请"  ← disabled until valid input
+
+### State 2: Input in progress (1 email added, typing second)
+- Modal [col, w:560]
+  - Body [col]
+    - Tag List [row, wrap]
+      - Tag → "alice@company.com" + icon:x
+      - Input [focus] → "bob@comp..."
+    - Role Select → "编辑者" [selected]
+  - Footer
+    - Button [primary] → "发送邀请（1）"
+
+### State 3: Submitting
+- Modal [col, w:560]
+  - Body [disabled]  ← form locked during submit
+  - Footer
+    - Button [primary, loading] → icon:spinner "发送中..."
+
+### State 4: Success
+- Modal [col, w:560]
+  - Success State [col, center]
+    - Icon → icon:check-circle [large, success]
+    - Title → "邀请已发送"
+    - Body → "已向 3 位成员发送邀请邮件"
+  - Footer [center]
+    - Button [primary] → "完成"
+    - Link → "继续邀请更多成员"
+
+### State 5: Partial failure (some emails failed)
+- Modal [col, w:560]
+  - Alert [warning] → "2 封邀请发送成功，1 封失败"
+  - Failed List [col]
+    - Failed Item [row, space-between]
+      - Email → "invalid-email"
+      - Reason → "邮箱格式无效" [error]
+  - Footer
+    - Button [ghost] → "忽略并关闭"
+    - Button [primary] → "修正并重试"
 ```

@@ -7,6 +7,7 @@ description: >
   (2) 用户提到"配色"、"color palette"、"design tokens"、"globals.css"、"主题色"等关键词，
   (3) 用户希望基于特定色彩来源（中国传统色、Radix、Open Color、Tailwind）生成方案，
   (4) 用户需要将配色方案映射为 shadcn/ui globals.css。
+  协作关系：本 skill 只负责色值选择与 token 输出；色彩在 UI 中的用法规则（90/10 法则、状态色、渐变约束、暗色模式）由 visual-design skill 负责。两者配合使用：先用 color-palette 定色，再用 visual-design 规范用法。
 ---
 
 # Color Palette
