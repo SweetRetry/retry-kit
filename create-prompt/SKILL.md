@@ -1,6 +1,6 @@
 ---
 name: create-prompt
-description: 基于四要素结构（Persona / Task / Context / Format）和五条核心实践的 System Prompt 工程规范。帮助用户构建高质量、结构化的 System Prompt。使用场景：(1) 用户要求编写、优化或审查 System Prompt，(2) 用户提到"prompt 工程"、"系统提示词"、"角色设定"、"提示词模板"，(3) 用户需要为 AI 应用设计指令系统，(4) 用户的 prompt 存在指令偏移、幻觉、格式不稳定等问题需要诊断修复。
+description: 基于四要素结构（Persona / Task / Context / Format）、五条核心实践和工程优化层（缓存设计、注意力机制设计）的 System Prompt 工程规范。帮助用户构建高质量、结构化的 System Prompt。使用场景：(1) 用户要求编写、优化或审查 System Prompt，(2) 用户提到"prompt 工程"、"系统提示词"、"角色设定"、"提示词模板"，(3) 用户需要为 AI 应用设计指令系统，(4) 用户的 prompt 存在指令偏移、幻觉、格式不稳定等问题需要诊断修复，(5) 用户关注 prompt caching、token 成本、TTFT 延迟、注意力分布等生产优化问题。
 ---
 
 # Prompt 工程规范
@@ -36,6 +36,23 @@ description: 基于四要素结构（Persona / Task / Context / Format）和五�
 
 每条实践的深度解析、模板和示例 → [references/core-practices.md](references/core-practices.md)
 
+## 工程优化层
+
+在四要素结构基础上，高质量的 System Prompt 还需关注两个工程维度：
+
+| 维度 | 核心问题 | 关键技术 |
+|------|----------|----------|
+| **缓存设计** | 如何最大化 prompt caching 命中率，降低成本和延迟？ | 稳定内容前置、动态内容隔离、cache_control 断点设置 |
+| **注意力机制设计** | 如何利用 Transformer 注意力分布规律提升指令执行率？ | 重要指令首尾锚定、长文档路标注释、关键约束多位置重复、Token 预算管理 |
+| **安全性设计** | 如何防止 Prompt Injection、Jailbreak 和 PII 泄露？ | 用户输入隔离分隔符、角色稳定性声明、拒绝话术模板、最小信息原则 |
+| **工具描述设计** | 如何让模型准确选择并调用工具？ | name 动词命名、description 三段式、参数含义+约束+示例、工具分组声明 |
+
+缓存与注意力维度详解 → [references/engineering-optimizations.md](references/engineering-optimizations.md)
+
+安全性设计详解 → [references/security.md](references/security.md)
+
+工具描述写法详解 → [references/tool-use.md](references/tool-use.md)
+
 ## 适用范围
 
 本规范聚焦 **System Prompt 的初始设定**（单轮指令层）。多轮对话中的状态管理（function calling 编排、对话记忆策略等）不在本规范范围内。
@@ -53,7 +70,12 @@ description: 基于四要素结构（Persona / Task / Context / Format）和五�
    - 如果需要稳定输出风格，注入 Few-Shot 示例
    - 如果任务需要推理，植入 CoT 指令
    - 添加兜底策略处理边界情况
-4. **自检**：逐条过自检清单
+4. **工程优化**（生产场景必做）：
+   - 缓存设计：稳定内容（Persona、Examples、固定文档）前置，动态内容后置
+   - 注意力设计：核心任务/格式要求放首尾；必须遵守的约束重复 2 次以上；长文档加路标注释
+   - 安全设计（面向外部用户时）：用分隔符隔离用户输入；Persona 声明角色稳定性；定义拒绝话术
+   - 工具描述（有 function calling 时）：每个工具 description 写明触发场景；参数含义+约束+示例齐全
+5. **自检**：逐条过自检清单
 5. **输出**：交付完整的 System Prompt
 
 ### 审查/优化已有 Prompt
@@ -130,6 +152,34 @@ description: 基于四要素结构（Persona / Task / Context / Format）和五�
 - 逐句检查：是否有信息可通过 Persona 或 Context 推断？可推断的即为冗余，删除
 - Few-Shot 示例：任务输出格式是否简单且无歧义？是 → 省略示例；否 → 保留 3-5 个
 - Prompt 总 token 数是否 < 2000？超过时标记可精简的段落
+
+**缓存设计**（生产场景）：
+
+- 稳定内容（Persona、固定规则、Examples）是否集中在 prompt 顶部？
+- 动态内容（用户数据、时间戳、当轮 history）是否隔离到底部或 user message？
+- 固定内容中是否混入了会随请求变化的动态值？
+
+**注意力机制设计**（生产场景）：
+
+- 最重要的任务指令和 Format 要求是否位于 prompt 首部或尾部（避免放中间）？
+- 必须严格遵守的约束是否在 prompt 中重复出现了 2 次以上？
+- 大量文档/RAG 内容是否有明确的开始/结束路标注释？
+- 当 prompt 包含用户输入插槽时，是否有分隔符防止 prompt injection？
+
+**安全性设计**（面向外部用户时）：
+
+- 用户输入插槽是否有分隔符（`--- 开始 ---` 或 XML 标签）物理隔离？
+- Persona 中是否声明角色身份不随用户请求改变？
+- Constraints 中是否定义了统一的拒绝话术？
+- 安全红线是否覆盖了角色扮演、假设情景等常见 jailbreak 模式？
+
+**工具描述设计**（有 function calling 时）：
+
+- 所有工具 name 是否使用 `snake_case` + 动词开头？
+- 每个工具 description 是否包含触发场景（"何时用"），而非只描述功能？
+- 功能相似的工具是否在 description 中声明了彼此的边界？
+- 每个参数 description 是否包含含义 + 约束 + 示例值？
+- 工具数超过 8 个时，是否在 System Prompt 中对工具进行了分组声明？
 
 ## 完整示例
 
