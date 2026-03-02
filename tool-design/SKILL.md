@@ -43,7 +43,7 @@ batch_get(
 )
 ```
 
-`readDepth`/`limit`/`filter` 是必选参数——LLM 的 context window 是稀缺资源，无深度控制的查询返回完整嵌套树会撑爆上下文。
+查询接口必须至少提供一种返回量控制机制（如 `readDepth` / `limit` / `cursor` / `fields`）——LLM 的 context window 是稀缺资源，无控制的全量嵌套返回会撑爆上下文。
 
 ## 原则三：滑动窗口（Sliding Window）优先
 
@@ -195,3 +195,12 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 | `get_by_id`, `get_by_name`, `get_by_type`, `search` 各一个 tool | 查询 tool 碎片化 | 统一为 `batch_get(nodeIds, patterns)` |
 | 写接口重试后重复创建资源 | 缺少幂等键 | 增加 `idempotencyKey` 并在服务端去重 |
 | 错误只返回自然语言，agent 无法判断是否重试 | 错误语义缺失 | 返回稳定 error code + retryable + retryAfterMs |
+
+## 输出契约（评审结果格式）
+
+当使用本 skill 评审 tool 设计时，输出固定为 4 段：
+
+1. **现状拓扑**：现有 tool 列表与职责分层（读/写/辅助）。
+2. **反模式清单**：按严重级别列出问题（含 round-trip、原子性、返回量控制、错误语义）。
+3. **目标 schema 草案**：给出 batch 接口与错误结构建议（含 retryable、operationIndex、idempotencyKey）。
+4. **迁移步骤**：按迭代顺序给出最小可落地改造路径与回滚点。
