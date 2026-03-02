@@ -45,7 +45,39 @@ batch_get(
 
 `readDepth`/`limit`/`filter` 是必选参数——LLM 的 context window 是稀缺资源，无深度控制的查询返回完整嵌套树会撑爆上下文。
 
-## 原则三：参数即 DSL
+## 原则三：滑动窗口（Sliding Window）优先
+
+Agent 不是一次性读完全部上下文，而是「分块读取 → 局部推理 → 必要时继续读取」。tool 需要原生支持这种工作流。
+
+```
+# 反模式 — 一次性全量读取，token 爆炸
+batch_get(parentId="root", readDepth=99)
+
+# 正确 — 滑动窗口增量读取
+batch_get(
+  parentId="root",
+  cursor="",
+  limit=50,
+  readDepth=2,
+  sortBy="updatedAt",
+  sortOrder="desc"
+) -> {items:[...], nextCursor:"abc"}
+
+batch_get(
+  parentId="root",
+  cursor="abc",
+  limit=50,
+  readDepth=2
+) -> {items:[...], nextCursor:"def"}
+```
+
+设计要点：
+- **稳定排序 + cursor 分页**：避免 offset 翻页导致漏读/重读
+- **窗口可回放**：返回 `nextCursor`/`hasMore`，让 agent 可中断后续跑
+- **局部摘要友好**：每页字段尽量精简，支持 `fields` 参数只取必要信息
+- **窗口大小可调**：`limit` 可按任务复杂度动态缩放（如 20/50/100）
+
+## 原则四：参数即 DSL
 
 batch 参数不是扁平 key-value，而是小型 DSL：
 
@@ -63,6 +95,47 @@ G(card+"/heroImage", "stock", "modern office workspace")
 - **单字母操作符**（`I/U/D/R/M/C/G`）— LLM 容易生成也容易校验
 - **合理默认值** — 减少 LLM 需要显式指定的参数量
 - **顺序执行、失败回滚** — 原子性保证
+
+## 原则五：契约稳定性（Schema + Retry + Observability）
+
+高质量 tool 不仅要快，还要「可重试、可演进、可诊断」。
+
+- **严格 schema**：每个字段类型、必填项、枚举值明确；拒绝模糊字符串协议
+- **幂等重试**：写操作支持 `idempotencyKey`，网络抖动重试不产生重复副作用
+- **版本兼容**：通过 `version`/`capabilities` 渐进升级，避免一次性 breaking changes
+- **可观测性**：返回 `operationId`、耗时、失败步骤，便于 agent 自愈和回退
+
+## 原则六：错误语义规范（Retryable vs Non-Retryable）
+
+Agent 不是人类。错误信息必须机器可判定、可分流、可恢复，而不是只返回一段自然语言。
+
+推荐返回结构：
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "RATE_LIMITED",
+    "message": "Too many requests",
+    "retryable": true,
+    "retryAfterMs": 1200,
+    "hint": "reduce_batch_size",
+    "operationIndex": 3
+  },
+  "operationId": "op_7f9c"
+}
+```
+
+错误分层建议：
+- **可重试（retryable=true）**：`RATE_LIMITED`、`TIMEOUT`、`CONFLICT_RETRY`、`TEMPORARY_UNAVAILABLE`
+- **不可重试（retryable=false）**：`VALIDATION_ERROR`、`AUTH_FORBIDDEN`、`NOT_FOUND`、`SCHEMA_MISMATCH`
+- **部分成功**：batch 内允许 `results[]` 标记逐项状态，并明确失败项索引
+
+设计要点：
+- **错误码稳定且枚举化**：避免 agent 依赖 message 文本做脆弱解析
+- **重试指令显式化**：给 `retryAfterMs`、`maxSuggestedRetries`、`hint`
+- **定位信息完整**：返回 `operationIndex`/`path`/`field` 便于最小修复
+- **批处理可恢复**：支持失败后只重放失败子集，而非整批重做
 
 ## 参考架构：Pencil MCP Tool 拓扑
 
@@ -104,6 +177,10 @@ G(card+"/heroImage", "stock", "modern office workspace")
 | 5 | 操作间引用 | batch 内 binding 变量机制，前序结果可被后续引用 |
 | 6 | 错误粒度 | 单操作级精确错误信息，非整个 batch 黑盒失败 |
 | 7 | 幂等性 | update 操作天然幂等，LLM 重试不产生副作用 |
+| 8 | 滑动窗口 | 查询支持 cursor/limit，agent 可增量读取，不依赖全量加载 |
+| 9 | 契约稳定性 | schema 严格、支持 idempotencyKey、可版本化演进 |
+| 10 | 可观测性 | 返回 operationId/耗时/失败步骤，便于诊断与自动恢复 |
+| 11 | 错误语义 | 错误码可枚举、区分 retryable，并含 retryAfter/operationIndex |
 
 ## 反模式速查
 
@@ -112,6 +189,9 @@ G(card+"/heroImage", "stock", "modern office workspace")
 | `create_X`, `read_X`, `update_X`, `delete_X` 四件套 | CRUD 直译 | 合并为 `batch_X(operations=[...])` |
 | `get_node(id)` 只能一次读一个 | 无批量查询 | 支持 `nodeIds=[...]` + `patterns` 模式搜索 |
 | 查询返回完整嵌套树，context 频繁溢出 | 无深度控制 | 加 `readDepth`/`limit` 参数 |
+| 用 `offset + limit` 分页，大数据下漏读/重读 | 分页不稳定 | 改为 `cursor + stable sort` 滑动窗口 |
 | 复杂操作用 20 个平铺参数 | 扁平参数 | 设计结构化 DSL，用对象/数组组织 |
 | batch 内操作不能引用彼此结果，必须拆成多次 call | 无跨操作引用 | 引入 binding 变量机制 |
 | `get_by_id`, `get_by_name`, `get_by_type`, `search` 各一个 tool | 查询 tool 碎片化 | 统一为 `batch_get(nodeIds, patterns)` |
+| 写接口重试后重复创建资源 | 缺少幂等键 | 增加 `idempotencyKey` 并在服务端去重 |
+| 错误只返回自然语言，agent 无法判断是否重试 | 错误语义缺失 | 返回稳定 error code + retryable + retryAfterMs |
