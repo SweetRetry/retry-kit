@@ -82,7 +82,7 @@
 
 ### 输出清单
 
-1. **每个 token 值后必须注释来源色名**（如 `/* 朱砂 */`、`/* Tailwind blue-600 */`、`/* Radix indigo-9 */`）
+1. **每个 token 值后必须注释来源色名**（如 `/* Tailwind emerald-600 */`、`/* Radix blue-9 */`）
 2. **必须包含所有 shadcn/ui token**：background, foreground, card, card-foreground, popover, popover-foreground, primary, primary-foreground, secondary, secondary-foreground, muted, muted-foreground, accent, accent-foreground, destructive, destructive-foreground, border, input, ring, chart-1~5, sidebar-background, sidebar-foreground, sidebar-primary, sidebar-primary-foreground, sidebar-accent, sidebar-accent-foreground, sidebar-border, sidebar-ring
 3. **所有值使用 oklch 色彩空间**，不可混用 hsl() / rgb()
 4. **`@custom-variant dark` 写法**：`(&:is(.dark *))`
@@ -93,7 +93,7 @@
 
 ## 四、端到端完整示例
 
-**场景**：SaaS 后台工具 / 专业严肃 / B 端专业用户 → Radix · 冷色 · 低饱和 · AAA
+**场景**：开发者工具 / 极客科技 / 开发者 → Tailwind · 翠绿方向（Supabase 风格） · 中饱和 · AA
 
 ```css
 @import "tailwindcss";
@@ -101,71 +101,71 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.99 0.002 264);         /* Radix slate-1 */
-  --foreground: oklch(0.21 0.020 264);         /* Radix slate-12 */
-  --card: oklch(0.97 0.004 264);               /* Radix slate-2 */
-  --card-foreground: oklch(0.21 0.020 264);    /* Radix slate-12 */
-  --popover: oklch(0.97 0.004 264);            /* Radix slate-2 */
-  --popover-foreground: oklch(0.21 0.020 264); /* Radix slate-12 */
-  --primary: oklch(0.48 0.155 264);            /* Radix indigo-9 */
-  --primary-foreground: oklch(0.98 0.005 264); /* Radix indigo-1 */
-  --secondary: oklch(0.94 0.006 264);          /* Radix slate-3 */
-  --secondary-foreground: oklch(0.31 0.020 264); /* Radix slate-11 */
-  --accent: oklch(0.56 0.115 180);             /* Radix teal-9 */
-  --accent-foreground: oklch(0.98 0.008 180);  /* Radix teal-1 */
-  --muted: oklch(0.94 0.006 264);              /* Radix slate-3 */
-  --muted-foreground: oklch(0.55 0.015 264);   /* Radix slate-8 */
-  --destructive: oklch(0.55 0.200 27);         /* Radix red-9 */
-  --border: oklch(0.88 0.008 264);             /* Radix slate-6 */
-  --input: oklch(0.88 0.008 264);              /* Radix slate-6 */
-  --ring: oklch(0.48 0.155 264);               /* Radix indigo-9 */
-  --chart-1: oklch(0.48 0.155 264);            /* Radix indigo-9 */
-  --chart-2: oklch(0.56 0.115 180);            /* Radix teal-9 */
-  --chart-3: oklch(0.58 0.165 305);            /* Radix purple-9 */
-  --chart-4: oklch(0.65 0.150 55);             /* Radix amber-9 */
-  --chart-5: oklch(0.55 0.015 264);            /* Radix slate-8 */
-  --sidebar-background: oklch(0.94 0.006 264); /* Radix slate-3 */
-  --sidebar-foreground: oklch(0.21 0.020 264); /* Radix slate-12 */
-  --sidebar-primary: oklch(0.40 0.140 264);    /* Radix indigo-10 */
-  --sidebar-primary-foreground: oklch(0.98 0.005 264); /* Radix indigo-1 */
-  --sidebar-accent: oklch(0.88 0.040 180);     /* Radix teal-4 */
-  --sidebar-accent-foreground: oklch(0.30 0.060 180);  /* Radix teal-11 */
-  --sidebar-border: oklch(0.88 0.008 264);     /* Radix slate-6 */
-  --sidebar-ring: oklch(0.48 0.155 264);       /* Radix indigo-9 */
+  --background: oklch(0.98 0.002 106);         /* Tailwind zinc-50 */
+  --foreground: oklch(0.21 0.012 106);         /* Tailwind zinc-900 */
+  --card: oklch(0.97 0.003 106);               /* Tailwind zinc-100 */
+  --card-foreground: oklch(0.21 0.012 106);    /* Tailwind zinc-900 */
+  --popover: oklch(0.97 0.003 106);            /* Tailwind zinc-100 */
+  --popover-foreground: oklch(0.21 0.012 106); /* Tailwind zinc-900 */
+  --primary: oklch(0.56 0.155 163);            /* Tailwind emerald-600 */
+  --primary-foreground: oklch(0.98 0.010 163); /* Tailwind emerald-50 */
+  --secondary: oklch(0.93 0.003 106);          /* Tailwind zinc-100 */
+  --secondary-foreground: oklch(0.37 0.013 106); /* Tailwind zinc-700 */
+  --accent: oklch(0.75 0.165 70);              /* Tailwind amber-500 */
+  --accent-foreground: oklch(0.25 0.050 70);   /* Tailwind amber-950 */
+  --muted: oklch(0.93 0.003 106);              /* Tailwind zinc-100 */
+  --muted-foreground: oklch(0.55 0.010 106);   /* Tailwind zinc-500 */
+  --destructive: oklch(0.55 0.200 27);         /* Tailwind red-600 */
+  --border: oklch(0.87 0.005 106);             /* Tailwind zinc-200 */
+  --input: oklch(0.87 0.005 106);              /* Tailwind zinc-200 */
+  --ring: oklch(0.56 0.155 163);               /* Tailwind emerald-600 */
+  --chart-1: oklch(0.56 0.155 163);            /* Tailwind emerald-600 */
+  --chart-2: oklch(0.75 0.165 70);             /* Tailwind amber-500 */
+  --chart-3: oklch(0.55 0.200 245);            /* Tailwind blue-600 */
+  --chart-4: oklch(0.64 0.200 15);             /* Tailwind rose-500 */
+  --chart-5: oklch(0.55 0.010 106);            /* Tailwind zinc-500 */
+  --sidebar-background: oklch(0.93 0.003 106); /* Tailwind zinc-100 */
+  --sidebar-foreground: oklch(0.21 0.012 106); /* Tailwind zinc-900 */
+  --sidebar-primary: oklch(0.50 0.150 163);    /* Tailwind emerald-700 */
+  --sidebar-primary-foreground: oklch(0.98 0.010 163); /* Tailwind emerald-50 */
+  --sidebar-accent: oklch(0.90 0.060 70);      /* Tailwind amber-100 */
+  --sidebar-accent-foreground: oklch(0.35 0.070 70);   /* Tailwind amber-800 */
+  --sidebar-border: oklch(0.87 0.005 106);     /* Tailwind zinc-200 */
+  --sidebar-ring: oklch(0.56 0.155 163);       /* Tailwind emerald-600 */
 }
 
 .dark {
-  --background: oklch(0.16 0.012 264);         /* Radix slate-1 dark */
-  --foreground: oklch(0.93 0.006 264);         /* Radix slate-12 dark */
-  --card: oklch(0.20 0.014 264);               /* Radix slate-2 dark */
-  --card-foreground: oklch(0.93 0.006 264);    /* Radix slate-12 dark */
-  --popover: oklch(0.20 0.014 264);            /* Radix slate-2 dark */
-  --popover-foreground: oklch(0.93 0.006 264); /* Radix slate-12 dark */
-  --primary: oklch(0.65 0.155 264);            /* Radix indigo-9 dark */
-  --primary-foreground: oklch(0.16 0.030 264); /* Radix indigo-1 dark */
-  --secondary: oklch(0.25 0.015 264);          /* Radix slate-3 dark */
-  --secondary-foreground: oklch(0.85 0.010 264); /* Radix slate-11 dark */
-  --accent: oklch(0.65 0.100 180);             /* Radix teal-9 dark */
-  --accent-foreground: oklch(0.18 0.020 180);  /* Radix teal-1 dark */
-  --muted: oklch(0.25 0.015 264);              /* Radix slate-3 dark */
-  --muted-foreground: oklch(0.60 0.010 264);   /* Radix slate-8 dark */
-  --destructive: oklch(0.60 0.190 27);         /* Radix red-9 dark */
-  --border: oklch(0.32 0.015 264);             /* Radix slate-6 dark */
-  --input: oklch(0.32 0.015 264);              /* Radix slate-6 dark */
-  --ring: oklch(0.65 0.155 264);               /* Radix indigo-9 dark */
-  --chart-1: oklch(0.65 0.155 264);            /* Radix indigo-9 dark */
-  --chart-2: oklch(0.65 0.100 180);            /* Radix teal-9 dark */
-  --chart-3: oklch(0.68 0.150 305);            /* Radix purple-9 dark */
-  --chart-4: oklch(0.72 0.140 55);             /* Radix amber-9 dark */
-  --chart-5: oklch(0.60 0.010 264);            /* Radix slate-8 dark */
-  --sidebar-background: oklch(0.20 0.014 264); /* Radix slate-2 dark */
-  --sidebar-foreground: oklch(0.93 0.006 264); /* Radix slate-12 dark */
-  --sidebar-primary: oklch(0.58 0.145 264);    /* Radix indigo-10 dark */
-  --sidebar-primary-foreground: oklch(0.16 0.030 264); /* Radix indigo-1 dark */
-  --sidebar-accent: oklch(0.30 0.040 180);     /* Radix teal-4 dark */
-  --sidebar-accent-foreground: oklch(0.80 0.050 180);  /* Radix teal-11 dark */
-  --sidebar-border: oklch(0.32 0.015 264);     /* Radix slate-6 dark */
-  --sidebar-ring: oklch(0.65 0.155 264);       /* Radix indigo-9 dark */
+  --background: oklch(0.15 0.008 106);         /* Tailwind zinc-950 */
+  --foreground: oklch(0.93 0.003 106);         /* Tailwind zinc-50 */
+  --card: oklch(0.20 0.010 106);               /* Tailwind zinc-900 */
+  --card-foreground: oklch(0.93 0.003 106);    /* Tailwind zinc-50 */
+  --popover: oklch(0.20 0.010 106);            /* Tailwind zinc-900 */
+  --popover-foreground: oklch(0.93 0.003 106); /* Tailwind zinc-50 */
+  --primary: oklch(0.70 0.150 163);            /* Tailwind emerald-400 */
+  --primary-foreground: oklch(0.15 0.040 163); /* Tailwind emerald-950 */
+  --secondary: oklch(0.27 0.012 106);          /* Tailwind zinc-800 */
+  --secondary-foreground: oklch(0.87 0.005 106); /* Tailwind zinc-200 */
+  --accent: oklch(0.72 0.140 70);              /* Tailwind amber-400 */
+  --accent-foreground: oklch(0.18 0.040 70);   /* Tailwind amber-950 */
+  --muted: oklch(0.27 0.012 106);              /* Tailwind zinc-800 */
+  --muted-foreground: oklch(0.62 0.008 106);   /* Tailwind zinc-400 */
+  --destructive: oklch(0.60 0.190 27);         /* Tailwind red-500 */
+  --border: oklch(0.34 0.013 106);             /* Tailwind zinc-700 */
+  --input: oklch(0.34 0.013 106);              /* Tailwind zinc-700 */
+  --ring: oklch(0.70 0.150 163);               /* Tailwind emerald-400 */
+  --chart-1: oklch(0.70 0.150 163);            /* Tailwind emerald-400 */
+  --chart-2: oklch(0.72 0.140 70);             /* Tailwind amber-400 */
+  --chart-3: oklch(0.65 0.190 245);            /* Tailwind blue-400 */
+  --chart-4: oklch(0.68 0.180 15);             /* Tailwind rose-400 */
+  --chart-5: oklch(0.62 0.008 106);            /* Tailwind zinc-400 */
+  --sidebar-background: oklch(0.20 0.010 106); /* Tailwind zinc-900 */
+  --sidebar-foreground: oklch(0.93 0.003 106); /* Tailwind zinc-50 */
+  --sidebar-primary: oklch(0.65 0.145 163);    /* Tailwind emerald-500 */
+  --sidebar-primary-foreground: oklch(0.15 0.040 163); /* Tailwind emerald-950 */
+  --sidebar-accent: oklch(0.35 0.050 70);      /* Tailwind amber-800 */
+  --sidebar-accent-foreground: oklch(0.80 0.070 70);   /* Tailwind amber-200 */
+  --sidebar-border: oklch(0.34 0.013 106);     /* Tailwind zinc-700 */
+  --sidebar-ring: oklch(0.70 0.150 163);       /* Tailwind emerald-400 */
 }
 
 @theme inline {
@@ -181,4 +181,4 @@
 }
 ```
 
-关键对比度验证：`--foreground` on `--background` = 15.2:1 (AAA)，`--primary` on `--background` = 5.8:1 (AAA)
+关键对比度验证：`--foreground` on `--background` = 14.5:1 (AAA)，`--primary` on `--background` = 5.2:1 (AA)
