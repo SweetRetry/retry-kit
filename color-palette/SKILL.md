@@ -196,6 +196,23 @@ description: >
 | 中性色 | stone-500 | oklch(0.55 0.010 90) | Tailwind |
 | 背景色 | stone-50 | oklch(0.98 0.003 90) | Tailwind |
 
+**关键 token（light）**：
+
+```css
+--background: oklch(0.98 0.003 90);    /* Tailwind stone-50 */
+--foreground: oklch(0.17 0.008 90);    /* Tailwind stone-950 */
+--primary: oklch(0.64 0.200 15);       /* Tailwind rose-500 */
+--primary-foreground: oklch(1.00 0.000 0);
+--accent: oklch(0.72 0.130 210);       /* Tailwind cyan-500 */
+--accent-foreground: oklch(0.15 0.040 210);
+--destructive: oklch(0.55 0.200 27);   /* Tailwind red-600 */
+--destructive-foreground: oklch(0.97 0.013 17); /* Tailwind red-50 */
+```
+
+关键对比度：`--foreground` on `--background` = 15.8:1 (AAA)，`--primary` on `--background` = 4.6:1 (AA)
+
+---
+
 ### 示例 C：无色相方向
 
 **输入**：SaaS / 后台工具 / 克制高级 / B 端专业用户
@@ -209,3 +226,18 @@ description: >
 | 强调色 | blue-600 | oklch(0.55 0.200 245) | Tailwind |
 | 中性色 | zinc-500 | oklch(0.55 0.010 106) | Tailwind |
 | 背景色 | white | oklch(1.00 0.000 0) | — |
+
+**关键 token（light）**：
+
+```css
+--background: oklch(1.00 0.000 0);     /* white */
+--foreground: oklch(0.24 0.010 106);   /* Tailwind zinc-900 */
+--primary: oklch(0.24 0.010 106);      /* Tailwind zinc-900 */
+--primary-foreground: oklch(0.98 0.002 106); /* Tailwind zinc-50 */
+--accent: oklch(0.55 0.200 245);       /* Tailwind blue-600 */
+--accent-foreground: oklch(1.00 0.000 0);
+--destructive: oklch(0.55 0.200 27);   /* Tailwind red-600 */
+--destructive-foreground: oklch(0.97 0.013 17); /* Tailwind red-50 */
+```
+
+关键对比度：`--foreground` on `--background` = 16.2:1 (AAA)，`--accent` on `--background` = 5.8:1 (AA)

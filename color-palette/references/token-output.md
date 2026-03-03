@@ -23,6 +23,7 @@
 | `--border` / `--input` | 中性色（L 0.80-0.88） |
 | `--ring` | 同 primary |
 | `--destructive` | 红系色（从选定来源取红色系），若主色为红系则选更深/更饱和的红色以区分 |
+| `--destructive-foreground` | 与 destructive 高对比色 |
 | `--chart-1` ~ `--chart-5` | 按角色取色：主色 → 强调色 → 辅色 → 互补色 → 中性色变体，确保相邻色相差 ≥ 30° |
 | `--sidebar-background` | 辅色浅色版本 |
 | `--sidebar-foreground` | 同 foreground |
@@ -70,7 +71,36 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* ... 全部 @theme 映射 ... */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
@@ -116,6 +146,7 @@
   --muted: oklch(0.93 0.003 106);              /* Tailwind zinc-100 */
   --muted-foreground: oklch(0.55 0.010 106);   /* Tailwind zinc-500 */
   --destructive: oklch(0.55 0.200 27);         /* Tailwind red-600 */
+  --destructive-foreground: oklch(0.97 0.013 17); /* Tailwind red-50 */
   --border: oklch(0.87 0.005 106);             /* Tailwind zinc-200 */
   --input: oklch(0.87 0.005 106);              /* Tailwind zinc-200 */
   --ring: oklch(0.56 0.155 163);               /* Tailwind emerald-600 */
@@ -150,6 +181,7 @@
   --muted: oklch(0.27 0.012 106);              /* Tailwind zinc-800 */
   --muted-foreground: oklch(0.62 0.008 106);   /* Tailwind zinc-400 */
   --destructive: oklch(0.60 0.190 27);         /* Tailwind red-500 */
+  --destructive-foreground: oklch(0.26 0.092 26); /* Tailwind red-950 */
   --border: oklch(0.34 0.013 106);             /* Tailwind zinc-700 */
   --input: oklch(0.34 0.013 106);              /* Tailwind zinc-700 */
   --ring: oklch(0.70 0.150 163);               /* Tailwind emerald-400 */
@@ -171,7 +203,36 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* ... 全部 token 按相同模式映射 ... */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {

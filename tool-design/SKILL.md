@@ -89,11 +89,23 @@ U(card+"/titleText", {content: "Dashboard"})
 G(card+"/heroImage", "stock", "modern office workspace")
 ```
 
+操作符语义：
+
+| 操作符 | 全称 | 语义 |
+|--------|------|------|
+| I | Insert | 创建新节点，返回 binding ref |
+| U | Update | 更新已有节点的属性 |
+| D | Delete | 删除节点 |
+| R | Replace | 替换节点内容（保留位置与 ID） |
+| M | Move | 移动节点到新父级 |
+| C | Copy | 复制节点（含子树） |
+| G | Generate | 触发 AI 生成（图片/内容等） |
+
 关键机制：
 - **binding 变量**（`card=I(...)`）— 操作间引用，无需等返回 ID 再发下一个 call
 - **路径表达式**（`card+"/titleText"`）— 嵌套结构访问
 - **单字母操作符**（`I/U/D/R/M/C/G`）— LLM 容易生成也容易校验
-- **合理默认值** — 减少 LLM 需要显式指定的参数量
+- **合理默认值** — 省略可推断参数（如 position、size），减少 LLM 显式指定量；默认值变更视为 breaking change
 - **顺序执行、失败回滚** — 原子性保证
 
 ## 原则五：契约稳定性（Schema + Retry + Observability）
@@ -137,7 +149,19 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 - **定位信息完整**：返回 `operationIndex`/`path`/`field` 便于最小修复
 - **批处理可恢复**：支持失败后只重放失败子集，而非整批重做
 
-## 参考架构：Pencil MCP Tool 拓扑
+## 参考架构
+
+### 通用三层拓扑
+
+```
+查询层：batch_read(ids, filters, depth, cursor, limit)  — 所有读操作的唯一入口
+变更层：batch_write(operations=[I/U/D/...])             — 所有写操作的唯一入口
+辅助层：get_context(topic)                              — 按需加载领域知识子集
+```
+
+判断是否需要拆出专用 tool 的标准：**返回类型本质不同**（结构化 JSON vs 二进制图像 vs 流式输出），而非业务语义不同。
+
+### 实例参考：Pencil MCP Tool 拓扑
 
 ```
 ┌─────────────────────────────────────────┐
@@ -170,7 +194,7 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 
 | # | 检查项 | 通过标准 |
 |---|--------|---------|
-| 1 | Round-trip 数 | 典型用户意图 ≤3 次 tool call 完成 |
+| 1 | Round-trip 数 | 单一用户意图（如"创建一个带标题的卡片"、"批量更新所有节点颜色"）≤3 次 tool call 完成 |
 | 2 | 操作原子性 | 相关变更在一次 call 中原子完成，无中间不一致状态 |
 | 3 | 查询聚合 | 支持批量 ID + 模式匹配，不存在只能单 ID 查询的 tool |
 | 4 | 返回量可控 | 有 depth/limit/filter 参数防止撑爆 context |

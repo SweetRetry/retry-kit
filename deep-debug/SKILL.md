@@ -81,7 +81,12 @@ When new information arrives, re-rank all hypotheses from scratch. Do not retrof
 
 ## After the Fix
 
-Verify against the original symptom — not just that the code compiles or runs. If the fix introduces a new failure, treat it as a separate bug and restart from the top. Never patch on top of a broken fix.
+Verify against the original symptom — not just that the code compiles or runs. If the fix introduces a new failure, first determine causality:
+
+- **Causally linked** (the fix changed behavior it shouldn't have touched) → invalidate the fix, re-diagnose from the root cause declaration
+- **Independent** (unrelated code path, different trigger condition) → treat as a separate bug and restart from the top
+
+Never patch on top of a broken fix.
 
 ---
 
@@ -89,6 +94,7 @@ Verify against the original symptom — not just that the code compiles or runs.
 
 - No fix without a declared root cause and evidence
 - No layer skipped without a stated reason
+- No abandoned hypothesis without explicit discard — state why it fails before forming the next
 - No second fix that contradicts the first without explicitly invalidating the first hypothesis
 
 ---
