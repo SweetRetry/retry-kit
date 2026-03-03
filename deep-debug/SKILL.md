@@ -1,6 +1,6 @@
 ---
 name: deep-debug
-description: Activates expert diagnostic mode for root cause analysis. Use this instead of attempting a direct fix when: the bug is non-obvious, a previous fix attempt failed, the symptom is indirect (visual glitch, wrong value, intermittent crash), or the user explicitly invokes /debug. Shifts Claude from "guess and patch" to "understand then fix" — symptom-driven inference, confirmed root cause before any code change, language-agnostic.
+description: "Activates expert diagnostic mode for root cause analysis. Use this instead of attempting a direct fix when: the bug is non-obvious, a previous fix attempt failed, the symptom is indirect (visual glitch, wrong value, intermittent crash), or the user explicitly invokes /debug. Shifts Claude from \"guess and patch\" to \"understand then fix\" — symptom-driven inference, confirmed root cause before any code change, language-agnostic."
 ---
 
 # Debug
