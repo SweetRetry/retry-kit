@@ -16,6 +16,7 @@ description: >
 | **首屏法则** | 5 秒内回答：这是什么？给谁用？为什么关心？      |
 | **文案策略** | 特性 → 直接利益 → 终极利益（"So What?" 三级跳） |
 | **性能基线** | LCP < 2.5s · CLS < 0.1 · INP < 200ms            |
+| **体验进阶** | A11y 焦点管理 · 多语言自适应 · 完整 SEO/OG 标签 |
 | **移动端**   | tap target ≥ 44×44px · 吸底 CTA · 数字键盘适配  |
 
 > **职责边界：** 本 skill 管页面策略与信息架构。视觉样式（字号、色值、间距、圆角）交给 visual-design 决定。
@@ -236,11 +237,12 @@ description: >
 - 长表单拆分多步，每步 1–2 个字段
 - 表单字段的选择应基于产品实际需求，而非套用模板
 
-## 九、性能与响应式
+## 九、性能、响应式与进阶体验
 
-遵循 Core Web Vitals 基线（LCP < 2.5s · CLS < 0.1 · INP < 200ms）。Hero 主图 `loading="eager"`，其余 `lazy`，格式优先 AVIF > WebP。语义化 HTML（唯一 `<h1>`、`<main>`/`<section>`/`<footer>`），提供 JSON-LD 结构化数据。
-
-Mobile-First 设计：移动端单列堆叠 + 吸底 CTA + 折叠导航。Logo 墙移动端用横向 marquee，Bento Grid 退化为单列。
+- **性能基线**：遵循 Core Web Vitals（LCP < 2.5s · CLS < 0.1 · INP < 200ms）。Hero 主图 `loading="eager"`，其余 `lazy`，格式优先 AVIF > WebP。
+- **SEO 与社媒传播**：除提供 JSON-LD 数据外，**强制生成 Open Graph (OG) 标签和 Twitter Card**，确保社交媒体与工作群聊分享时展示完美的封面图与文本摘要。
+- **响应式与多语言 (i18n)**：Mobile-First（单列堆栈+吸底 CTA）。在构图时必须预判多语言（如德/法文）的文本长度差异，拒绝定高容器，确保宽度弹性自适应避免文本截断或溢出破坏原设计。
+- **无障碍访问 (A11y)**：保持语义化 HTML（唯一 `<h1>`、`<main>`等）。对于互动面板与表单对话框，必须集成 `aria-*` 标签与焦点陷阱 (Focus Trap)，维持高对比度聚焦状态指示。
 
 ## 十、审查清单
 
@@ -253,8 +255,9 @@ Mobile-First 设计：移动端单列堆叠 + 吸底 CTA + 折叠导航。Logo �
 | **文案**   | 每个功能描述是否完成了三级跳？标题是否关于用户而非产品？是否存在空洞的自我定位？                 |
 | **信任**   | 社会证明是否基于真实数据？有没有模块是为了"填满页面"而非服务转化？                               |
 | **动效**   | 首屏是否用了 `animate` 而非 `whileInView`？是否尊重 `prefers-reduced-motion`？                   |
-| **性能**   | Core Web Vitals 是否达标？Hero 图是否 `eager` 加载？是否有唯一 `<h1>`？                          |
-| **响应式** | 移动端是否单列无溢出？吸底 CTA 是否正常工作？tap target 是否 ≥ 44px？                            |
+| **传播体验** | 是否提供了完善的 OG/Twitter Card 标签？卡片容器是否具备应对多语言超长文本的自适应能力？          |
+| **无障碍** | 是否有唯一 `<h1>`？交互弹窗是否有合理的 Focus Trap，关键按钮操作是否有 `aria` 提示保障？         |
+| **终端性能** | LCP 及 Core Web Vitals 是否达标？Hero 首图是否 `eager` 加载？移动端防误触 tap target 是否达标？  |
 
 ## 十一、反模式检测
 
