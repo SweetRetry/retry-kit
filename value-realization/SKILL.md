@@ -19,7 +19,35 @@ Analytical framework for evaluating whether end users can **know** what value th
 
 ---
 
-## I. 诊断 SOP
+## I. Product Type Gate
+
+**在执行诊断 SOP 之前，先判断产品原型。** 原型决定 litmus test 的表述方式和可参考案例范围。
+
+| 原型 | 典型产品 | "End user" 定义 | Litmus test 调整 |
+|------|----------|-----------------|------------------|
+| **A — 消费者产品** | 社交、内容、工具 App | 产品的直接使用者 | 标准 litmus（见各维度） |
+| **B — 开发者工具 / API / SDK** | API、CLI、SDK、框架 | 集成方开发者（同时是用户和 end user） | 将"5个目标用户"改为"5个集成方开发者"；问题改为"用了这个 API/SDK，你的应用能做到什么原来做不到的事？" |
+| **C — 企业 / 内部平台** | B2B SaaS、内网工具 | 具体使用角色（运营、销售、工程师）| 将"截图给朋友"改为"给决策者展示数据大盘或工单完成率"；timeline 可接受更长周期（3-6 个月） |
+
+**如果原型为 B 或 C**，anti-pattern #1 (Consumer Lens Bias) 自动生效 — Instagram / Netflix 等消费者案例不适用，须在 Section VIII 研究硬约束中用 WebSearch 查找同领域案例。
+
+---
+
+## II. 适用范围边界
+
+**本 skill 适用于假设阶段的产品分析。** 在执行诊断 SOP 之前，先判断是否满足适用条件。
+
+| 情境 | 适用？ | 处理方式 |
+|------|--------|----------|
+| 产品概念 / 新功能验证 | ✅ 完全适用 | 正常执行四维分析 |
+| 已上线但缺乏数据（< 100 真实用户） | ✅ 适用 | 正常执行，标注"假设待数据验证" |
+| 已有留存/转化数据但无数据解读 | ⚠️ 部分适用 | 先引导用户解读数据再做框架分析；数据结论优先于假设 |
+| 有完整 cohort / A/B 数据，需要洞察 | ❌ 不适用 | 明确告知：**本 skill 是假设验证框架，不是数据分析工具**。建议转为数据驱动分析：定位留存断崖点（第几天流失）→ 分析断崖前用户行为 → 找到 value gap |
+| 产品已验证，需要增长策略 | ❌ 不适用 | 价值已被验证，问题在分发和转化，本 skill 不覆盖增长渠道分析 |
+
+---
+
+## III. 诊断 SOP
 
 **以下 4 问用于锚定分析方向。** 从用户输入中推断能推断的，仅追问无法推断的关键项（最多 2 问）。推断项必须在分析中标注依据。
 
@@ -66,11 +94,13 @@ Analytical framework for evaluating whether end users can **know** what value th
 
 ---
 
-## II. 分析框架
+## IV. 分析框架
 
-### 分析深度
+### 分析深度与信号冲突规则
 
-分析深度与用户提供的信息量成正比。信息充分时展开完整推理链和案例对比；信息有限时给出简要判断并标注假设。诊断指示的重点维度优先展开。
+**深度切换阈值**：用户输入包含产品名称 + 目标用户 + 至少一个使用场景 → 展开完整推理链和案例对比；否则 → 给出简要判断并在每个维度末尾标注 `[假设: ...]`。诊断指示的重点维度优先展开。
+
+**维度内信号冲突规则**：若同一维度内存在 ≥2 个相互矛盾的信号（例如价值及时但无中间反馈），统一赋予 🟡，并在分析块中明确写出冲突：`[信号冲突: A 指向 🟢，B 指向 🔴，综合判定 🟡]`。不得在指派 indicator 之后再修改，禁止用 indicator 倒推分析。
 
 每个维度的分析包含：(1) 🔴🟡🟢 状态判定，(2) 分析推理，(3) 案例对比（重点维度），(4) 尖锐问题。
 
@@ -138,11 +168,11 @@ Analytical framework for evaluating whether end users can **know** what value th
 
 **Case contrast**: Instagram — end users came for "share photos", discovered "become a photographer" (identity). Discovery through filters + likes + followers, not marketing.
 
-**Scoring notes**: Context determines judgment — same situation may warrant different indicators in different markets. When indicators conflict with analysis, analysis takes precedence. A product may show characteristics of multiple statuses; indicator represents comprehensive judgment.
+**Scoring notes**: Context determines judgment — same situation may warrant different indicators in different markets. Apply the signal conflict rule above before assigning any indicator.
 
 ---
 
-## III. 判定与行动建议
+## V. 判定与行动建议
 
 分析完四个维度后，给出综合判定。
 
@@ -158,7 +188,9 @@ Analytical framework for evaluating whether end users can **know** what value th
 **维度权重规则**:
 - **Value Clarity 🔴 = 自动 Pivot**，不论其他维度状态。用户说不清价值是根本性问题，其他维度的优化无法弥补。
 - 其余三维度等权，按多数 indicator 判定。
-- 当 🟡 和 🔴 数量相同（如 2🟡2🔴）时，以诊断 SOP 中触发原因对应的重点维度为决定因素：重点维度含 🔴 → Pivot；重点维度仅 🟡 → Refine。
+- 当 🟡 和 🔴 数量相同（如 2🟡2🔴）时，按以下优先级决策：
+  1. 查诊断决策表中触发原因对应的重点维度：重点维度含 🔴 → **Pivot**；重点维度仅 🟡 → **Refine**。
+  2. 若触发原因为"不确定方向"（全维度均衡，无重点维度），或重点维度恰好不在平局的维度中 → 默认 **Pivot**（保守原则：存在 🔴 即视为关键阻断）。
 
 ### 行动建议分类
 
@@ -175,7 +207,7 @@ Analytical framework for evaluating whether end users can **know** what value th
 
 ---
 
-## IV. 输出格式
+## VI. 输出格式
 
 ### Analysis
 
@@ -206,6 +238,28 @@ Analytical framework for evaluating whether end users can **know** what value th
 **决策指引**: [帮助用户做下一步决策的建议]
 ```
 
+### Worked Example (calibration anchor)
+
+The following condensed analysis shows the expected depth and format for a product with sufficient context. Use this as a reference for output quality — do not copy phrasing.
+
+---
+
+**Product**: MyFitnessPal · **原型**: A (消费者产品) · **触发原因**: 用户不留存 · **竞争环境**: 有免费替代品（Apple Health、手动记录）
+
+**诊断摘要**: 帮助用户追踪卡路里以实现减重目标 · B2C 大众 · 有免费替代品 · 留存问题
+
+**Value Clarity 🟢** — 用户能一句话说清："我用它记录吃了什么，控制体重。" 目标（减重）和手段（卡路里追踪）均清晰，无需解释品类。**Action**: N/A
+
+**Value Timeline 🟡** — 减重效果需 4-12 周，远长于用户每日追踪的即时反馈。产品提供每日卡路里数字和进度条，但未提供"按当前节奏，N 天后可达目标体重"的预测里程碑，导致长期承诺感不足。[信号冲突：有短期数字反馈 → 🟢，但无中期预测里程碑 → 🔴，综合判定 🟡] **Action**: 调整节奏 — 在 Dashboard 增加"按当前趋势，预计 X 周达到目标"的动态预测，将抽象长期目标转为可感知的进度信号。
+
+**Value Perception 🟢** — 每日卡路里数字、营养图表、周趋势线均可截图，用户可指向具体数字说"我今天控制在 1800 卡以内"。**Action**: N/A
+
+**Value Discovery 🟢** — 用户进入产品时已知道自己想减重，追踪是被理解的手段，无需发现价值，直接上手。**Action**: N/A
+
+**综合判定**: **Refine** — Clarity / Perception / Discovery 均 🟢，Timeline 🟡。**优先行动**: 添加动态预测里程碑（Timeline），减少用户在"看不到终点"时的流失。
+
+---
+
 ### Comparison
 
 When user compares options, asks "should I do X", or needs to choose between directions:
@@ -228,7 +282,7 @@ When user compares options, asks "should I do X", or needs to choose between dir
 
 ---
 
-## V. 分析反模式
+## VII. 分析反模式
 
 使用此 skill 分析时应避免的错误：
 
@@ -242,17 +296,19 @@ When user compares options, asks "should I do X", or needs to choose between dir
 
 ---
 
-## VI. 研究硬约束
+## VIII. 研究硬约束
 
 - 引用产品案例必须基于可验证信息，标注数据来源
 - `references/real-cases.md` 中的案例是模式示例而非通用规则 — 使用前必须评估产品类型、市场、用户行为的匹配度
+- **案例数据时效性**：`real-cases.md` 中的指标数据截止于 2023 年前后。引用具体数字时，在括号内标注数据年份，例如"GitHub 100M+ 开发者 (2023)"。若分析依赖用户规模或市场地位等时效性强的数据，用 WebSearch 验证最新状态。
 - 案例不匹配时，用 WebSearch 搜索同领域可比产品，不要硬套
 - 探索性思考（头脑风暴价值类型）和证据性分析（声称具体模式）必须区分
 
 ---
 
-## VII. 参考索引
+## IX. 参考索引
 
 | 文件 | 内容 | 何时加载 |
 |------|------|----------|
-| [real-cases.md](references/real-cases.md) | 11 个产品案例（Dropbox, Instagram, Duolingo, WeChat, Google Wave, Quibi, GitHub, Notion, MyFitnessPal, Netflix, Slack）含定量数据 | 需要案例对比或数据支撑时 |
+| [real-cases.md](references/real-cases.md) | 15 个产品案例（含 B2B：Stripe, Figma, Salesforce, Linear；消费者：Dropbox, Instagram, Duolingo, WeChat, GitHub, Notion, MyFitnessPal, Netflix, Slack；失败案例：Google Wave, Quibi）含定量数据（截止 2023） | 需要案例对比或数据支撑时 |
+| Section VI Worked Example | MyFitnessPal 完整分析样本，展示输出深度和信号冲突写法 | 校准输出格式和分析详细程度时 |

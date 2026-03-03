@@ -184,13 +184,79 @@ Compact case cards for analysis comparison and data citation. Each card: backgro
 
 ---
 
+## B2B / Developer Cases
+
+### Stripe (2011) — 🟢🟢🟢🟢
+
+- **Type**: B2B developer API · competitive market (Braintree, PayPal, legacy payment processors)
+- **Core value**: "Accept payments on your website in minutes" — developer outcome, not feature
+- **Timeline**: First successful test charge in < 30 min; production integration 1-3 days
+- **Perception**: Successful API response (`charge.succeeded`), dashboard showing real transactions — tangible per call
+- **Discovery**: Natural for developers — they already know they need to accept payments; Stripe's value is friction reduction vs. alternatives ("7 lines of code" vs. weeks of bank integration)
+- **Key metrics**: $35B valuation (2021); 3M+ businesses (2022); processes hundreds of billions annually
+- **Value pattern**: Immediate utility + accumulated asset. Each API call = independent transaction; long-term = transaction history, fraud data, financial analytics
+- **Value communication**: "Payments infrastructure for the internet" (positioning) + concrete code snippet on homepage (proof)
+- **Lesson**: Developer tools win on time-to-first-success. If a developer can get a working response in < 30 min, Value Discovery is solved. Documentation quality IS the product experience.
+- **Applies to**: ✅ Developer APIs, payment/fintech infrastructure, B2B tools where developer is the buyer · ❌ Consumer products, non-technical end users
+- **Sources**: Stripe blog, Crunchbase funding data, public developer documentation
+
+---
+
+### Figma (2016) — 🟢🟢🟢🟡
+
+- **Type**: B2B/B2C design tool · competitive market (Sketch, Adobe XD, InVision)
+- **Core value**: "Design together in real time" — collaboration outcome, not feature
+- **Timeline**: Immediate for individual use; collaboration value apparent in first shared session (< 5 min)
+- **Perception**: Cursor of collaborator visible in real time, comments on designs, share link works without install — tangible per interaction
+- **Discovery**: Guided → Natural. Designers discover collaboration value when they share a link and colleague opens it instantly (no install required). "Aha" moment: first live co-edit session.
+- **Key metrics**: 4M users (2021); $20B Adobe acquisition attempt (blocked 2023); 3M+ organizations; dominant in product design teams by 2022
+- **Value pattern**: Immediate utility (individual design) + network effects (team collaboration). Each design session = independent value; team adoption = compounding collaboration value
+- **Lesson**: Browser-based removes adoption friction for the second user — the person receiving the share link. Product-led growth: individual designer adopts → shares with team → team adopts. Value Discovery is 🟡 because it requires a second user to demonstrate collaborative value.
+- **Applies to**: ✅ PLG (product-led growth) SaaS, collaboration tools, B2B tools with viral adoption loop, design/creative tools · ❌ Single-user tools, no-share workflow products
+- **Sources**: Figma blog, Dylan Field interviews, Adobe acquisition filings (2022-2023)
+
+---
+
+### Salesforce CRM (1999) — 🟢🟡🟢🔴
+
+- **Type**: B2B enterprise SaaS · competitive market (Siebel, SAP CRM, on-premise CRM)
+- **Core value**: "Close more deals, faster" — sales outcome. But communicated to IT/procurement, not salespeople.
+- **Timeline**: Setup 2-8 weeks; ROI visible to management after 3-6 months of data accumulation; individual salesperson value: immediate (contact log) but ROI arguable
+- **Perception**: Pipeline dashboard, deal stages, activity logs — tangible for management; individual rep perception: "more data entry" (negative perception at adoption)
+- **Discovery**: 🔴 Blocked for end users (salespeople). Value is clear to buyers (managers/IT) but not to actual users. Classic B2B split: buyer ≠ user. Salespeople often resist adoption precisely because the value flows to management visibility, not to their own workflow.
+- **Key metrics**: $1B revenue (2009); $26.5B revenue FY2023; #1 CRM globally (IDC 2022); 150K+ customers
+- **Value pattern**: Management reporting value (immediate) + sales pipeline analytics (long-term accumulation). Value accrues to org, not necessarily to individual rep.
+- **Lesson**: In enterprise B2B, buyer value ≠ user value. When the person paying (manager) benefits but the person using (rep) perceives more friction, adoption requires mandates, not enthusiasm. Design must address end-user Value Discovery separately from buyer ROI.
+- **Applies to**: ✅ Enterprise SaaS, buyer ≠ user scenarios, CRM/ERP/compliance tools, top-down adoption · ❌ PLG tools, individual-first adoption, consumer products
+- **Sources**: Salesforce annual reports, IDC CRM market share reports, Gartner Magic Quadrant CRM
+
+---
+
+### Linear (2019) — 🟢🟢🟢🟢
+
+- **Type**: B2B project management for software teams · competitive market (Jira, GitHub Issues, Asana)
+- **Core value**: "Ship software faster with less process overhead" — team velocity outcome
+- **Timeline**: First issue created in < 2 min; team workflow value apparent in first sprint cycle (1-2 weeks)
+- **Perception**: Issue list, cycle progress, velocity charts — tangible per sprint; keyboard-shortcut speed is immediately perceptible vs. Jira
+- **Discovery**: Natural for target users (engineers). Engineers already track issues; Linear's value is visceral speed difference on first use. "Aha" moment: first keyboard navigation vs. clicking through Jira menus.
+- **Key metrics**: $35M Series B (2021); used by Vercel, Loom, Ramp, Arc; grew primarily through word-of-mouth among engineers
+- **Value pattern**: Immediate utility (faster issue management) + accumulated asset (cycle history, velocity trends). Each issue = independent value; history = team performance baseline
+- **Value communication**: Positioned against Jira's complexity explicitly. "Built for the way modern software teams work."
+- **Lesson**: In a crowded B2B market with entrenched incumbents, Value Discovery must be visceral on first use — especially for tools where switching cost is high. Speed and keyboard shortcuts are perception mechanisms, not features.
+- **Applies to**: ✅ Developer/engineering tools, B2B SaaS with Jira/incumbent competition, productivity tools where UX IS the value prop · ❌ Consumer products, tools where speed is not differentiating
+- **Sources**: Linear blog, Crunchbase funding data, founder interviews (Karri Saarinen), public case studies
+
+---
+
 ## Quick Reference: Pattern Summary
 
 | Pattern | Products | Key Trait |
 |---------|----------|-----------|
-| Immediate utility + accumulated asset | Dropbox, GitHub, WeChat, Slack | Each use = complete value; long-term = accumulation byproduct |
-| Immediate utility + value discovery | Instagram, Notion | Entry value → discover deeper value through use |
+| Immediate utility + accumulated asset | Dropbox, GitHub, WeChat, Slack, Stripe, Linear | Each use = complete value; long-term = accumulation byproduct |
+| Immediate utility + value discovery | Instagram, Notion, Figma | Entry value → discover deeper value through use |
 | Instrumental tracking → behavior change | Duolingo, MyFitnessPal | Short-term feedback serves long-term goal |
 | Short-term value dominant | Netflix | Each use = complete value; minimal long-term accumulation |
+| PLG viral loop | Figma | Individual adopts → shares → team adopts → org adopts |
+| Buyer ≠ user split | Salesforce | Management buys for visibility; reps resist for friction |
 | Value clarity failure | Google Wave | Abstract proposition → end users can't articulate value |
 | Differentiation failure | Quibi | No unique value vs free alternatives |
