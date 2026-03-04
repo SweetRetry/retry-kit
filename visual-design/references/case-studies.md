@@ -16,6 +16,8 @@
 
 **关键参数**：`rounded-sm` · System serif 标题 + System sans 正文 · 几乎无动效
 
+**注意**：Notion 的 serif 标题是刻意的内容编辑器特例（文档即内容，排版风格本身是产品功能），不可作为"Tool 场景可用 serif"的依据。通用 SaaS/Dashboard 仍禁用 serif。
+
 ## Spotify — 路由分隔两种情绪
 
 **推理链**：「情感体验 vs 高效管理」两种不可调和的需求 → 用 Tab/路由天然分隔 → 沉浸模式（Now Playing）用动态取色 + 低密度 → 列表模式用紧凑高密度。
@@ -32,7 +34,11 @@
 
 **推理链**：效率工具必须快 → 纯效率缺乏差异化 → Glassmorphism 同时解决深度感知 + 工作流视觉连续性（功能性，非装饰性）→ Squircle 连续圆角统一了插件生态的视觉信任。
 
-**关键参数**：Squircle 全局统一 · Inter + SF Mono · 零延迟响应，用速度中和玻璃材质的「重感」
+**关键参数**：Squircle 全局统一 · 零延迟响应，用速度中和玻璃材质的「重感」
+
+**注意**：Raycast 的 glassmorphism 是 macOS native 浮层的功能性模拟，本质是系统材质语言，不代表 glassmorphism 作为通用 Brand 技法仍然有效。通用 Brand 页面的深色底首选 Grain Texture + Mesh Gradient，全页面 glassmorphism 已过气。
+
+**字体说明**：Raycast 产品本体使用系统字体栈（Inter / SF Pro），这是 macOS native 应用的惯例。Brand 场景禁用 Inter 的规则适用于 Web UI，不适用于 native 应用字体决策——两者不冲突，不可互相作为依据。
 
 ---
 

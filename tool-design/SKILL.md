@@ -117,6 +117,83 @@ G(card+"/heroImage", "stock", "modern office workspace")
 - **版本兼容**：通过 `version`/`capabilities` 渐进升级，避免一次性 breaking changes
 - **可观测性**：返回 `operationId`、耗时、失败步骤，便于 agent 自愈和回退
 
+### 最小 Schema 模板（可直接落到 OpenAPI/JSON Schema）
+
+```json
+{
+  "batch_write.request": {
+    "type": "object",
+    "required": ["version", "context", "operations"],
+    "properties": {
+      "version": { "type": "string", "enum": ["2026-01-01"] },
+      "context": {
+        "type": "object",
+        "required": ["actor", "tenantId", "scopes"],
+        "properties": {
+          "actor": { "type": "string", "minLength": 1 },
+          "tenantId": { "type": "string", "minLength": 1 },
+          "scopes": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "resourcePolicyVersion": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "idempotencyKey": { "type": "string", "minLength": 8 },
+      "operations": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 200,
+        "items": {
+          "type": "object",
+          "required": ["op"],
+          "properties": {
+            "op": { "type": "string", "enum": ["I", "U", "D", "R", "M", "C", "G"] },
+            "target": { "type": "string" },
+            "payload": { "type": "object" },
+            "operationKey": { "type": "string", "minLength": 8 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "capabilities": { "type": "array", "items": { "type": "string" } }
+    },
+    "additionalProperties": false
+  }
+}
+```
+
+```json
+{
+  "batch_read.request": {
+    "type": "object",
+    "required": ["version", "context"],
+    "properties": {
+      "version": { "type": "string", "enum": ["2026-01-01"] },
+      "context": {
+        "type": "object",
+        "required": ["actor", "tenantId", "scopes"],
+        "properties": {
+          "actor": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "scopes": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      },
+      "nodeIds": { "type": "array", "items": { "type": "string" }, "maxItems": 500 },
+      "patterns": { "type": "array", "items": { "type": "object" }, "maxItems": 50 },
+      "cursor": { "type": "string" },
+      "limit": { "type": "integer", "minimum": 1, "maximum": 200 },
+      "readDepth": { "type": "integer", "minimum": 0, "maximum": 5 },
+      "fields": { "type": "array", "items": { "type": "string" }, "maxItems": 100 }
+    },
+    "additionalProperties": false
+  }
+}
+```
+
 ## 原则六：错误语义规范（Retryable vs Non-Retryable）
 
 Agent 不是人类。错误信息必须机器可判定、可分流、可恢复，而不是只返回一段自然语言。
@@ -138,6 +215,15 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 }
 ```
 
+HTTP / Transport 映射建议（避免 message 文本驱动逻辑）：
+- `400`：`VALIDATION_ERROR` / `SCHEMA_MISMATCH`（不可重试）
+- `401`：`AUTH_UNAUTHORIZED`（不可重试，需重新认证）
+- `403`：`AUTH_FORBIDDEN` / `AUTH_SCOPE_MISSING`（不可重试，需提权）
+- `404`：`NOT_FOUND`（通常不可重试）
+- `409`：`CONFLICT_RETRY`（可重试）
+- `429`：`RATE_LIMITED`（可重试，必须带 `retryAfterMs`）
+- `500/503`：`TEMPORARY_UNAVAILABLE` / `TIMEOUT`（可重试）
+
 错误分层建议：
 - **可重试（retryable=true）**：`RATE_LIMITED`、`TIMEOUT`、`CONFLICT_RETRY`、`TEMPORARY_UNAVAILABLE`
 - **不可重试（retryable=false）**：`VALIDATION_ERROR`、`AUTH_FORBIDDEN`、`NOT_FOUND`、`SCHEMA_MISMATCH`
@@ -148,6 +234,40 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 - **重试指令显式化**：给 `retryAfterMs`、`maxSuggestedRetries`、`hint`
 - **定位信息完整**：返回 `operationIndex`/`path`/`field` 便于最小修复
 - **批处理可恢复**：支持失败后只重放失败子集，而非整批重做
+
+部分成功标准结构（必须固定）：
+
+```json
+{
+  "ok": false,
+  "operationId": "op_7f9c",
+  "results": [
+    { "index": 0, "ok": true },
+    {
+      "index": 1,
+      "ok": false,
+      "error": {
+        "code": "AUTH_FORBIDDEN",
+        "retryable": false,
+        "path": "operations[1].target",
+        "field": "target"
+      }
+    }
+  ],
+  "summary": { "total": 2, "success": 1, "failed": 1 }
+}
+```
+
+## 原则七：安全与授权契约（AuthN/AuthZ/Tenant Isolation）
+
+AI Agent tool 默认按公网生产系统要求设计，安全约束不是可选项。
+
+- **调用上下文强制字段**：每次请求必须带 `context.actor`、`context.tenantId`、`context.scopes`、`resourcePolicyVersion`
+- **租户隔离不变式**：任一 `operation.target` 若跨 tenant，整项拒绝并返回 `AUTH_FORBIDDEN` 或 `TENANT_BOUNDARY_VIOLATION`
+- **批内逐项鉴权**：按 `results[index]` 返回授权结果，不允许只给整批失败
+- **最小权限**：`scopes` 必须与操作符绑定（如 `tool.write.node`, `tool.read.node`, `tool.generate.asset`）
+- **审计可追踪**：日志至少落 `operationId`、`actor`、`tenantId`、`deniedScope`、`operationIndex`
+- **游标隔离**：`cursor` 与 `tenantId + actor + queryHash` 绑定，防止越权重放
 
 ## 参考架构
 
@@ -160,6 +280,12 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 ```
 
 判断是否需要拆出专用 tool 的标准：**返回类型本质不同**（结构化 JSON vs 二进制图像 vs 流式输出），而非业务语义不同。
+
+唯一入口原则的例外边界（避免过度集中）：
+- **权限边界不同**：需要不同 scope/审计策略时，应拆为独立 tool
+- **SLO 差异显著**：实时流式与离线批处理延迟模型不同，应拆分
+- **资源模型不同**：例如图像二进制上传/下载与结构化查询应分离
+- **隔离级别不同**：跨租户管理面与租户内数据面必须隔离
 
 ### 实例参考：Pencil MCP Tool 拓扑
 
@@ -205,6 +331,9 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 | 9 | 契约稳定性 | schema 严格、支持 idempotencyKey、可版本化演进 |
 | 10 | 可观测性 | 返回 operationId/耗时/失败步骤，便于诊断与自动恢复 |
 | 11 | 错误语义 | 错误码可枚举、区分 retryable，并含 retryAfter/operationIndex |
+| 12 | 安全契约 | 请求含 actor/tenant/scopes，批内逐项鉴权，可审计可追踪 |
+| 13 | 传输语义 | 错误码与 HTTP 状态映射稳定，部分成功响应结构固定 |
+| 14 | 非幂等控制 | `I/G/C` 支持 `idempotencyKey` 或 `operationKey` 去重语义 |
 
 ## 反模式速查
 
@@ -219,6 +348,39 @@ Agent 不是人类。错误信息必须机器可判定、可分流、可恢复�
 | `get_by_id`, `get_by_name`, `get_by_type`, `search` 各一个 tool | 查询 tool 碎片化 | 统一为 `batch_get(nodeIds, patterns)` |
 | 写接口重试后重复创建资源 | 缺少幂等键 | 增加 `idempotencyKey` 并在服务端去重 |
 | 错误只返回自然语言，agent 无法判断是否重试 | 错误语义缺失 | 返回稳定 error code + retryable + retryAfterMs |
+| batch 无身份上下文，默认信任调用方 | 缺少鉴权契约 | 强制 `context.actor/tenantId/scopes` 并逐项鉴权 |
+| 只支持整批失败或整批成功 | 缺少部分成功语义 | 固定 `results[index]` 结构并支持失败子集重放 |
+
+## 非幂等操作约束（I/G/C 必读）
+
+`U/D/R/M` 在同一目标上通常天然幂等；`I/G/C` 默认非幂等，必须附加去重键。
+
+- **请求级幂等键**：`idempotencyKey` 作用于整批写请求
+- **操作级去重键**：`operationKey` 作用于单条 `I/G/C`，用于子集重放
+- **去重窗口**：服务端至少保留 24h 去重索引（`tenantId + actor + key`）
+- **冲突行为**：命中去重键时返回首次执行结果，不重复创建资源
+- **重放边界**：只允许重放失败项，禁止在未知状态下整批盲重试
+
+## 迁移 Runbook（可执行模板）
+
+1. **盘点与分层**
+   - 输出当前 tool 清单，标注读/写/辅助、返回类型、权限范围、调用频次
+2. **定义目标契约**
+   - 冻结 `batch_read` / `batch_write` schema、错误枚举、HTTP 映射、auth context
+3. **双写与影子流量**
+   - 旧接口继续服务；新 batch 接口接影子请求，仅比对结果不生效
+4. **灰度切换**
+   - 按租户或流量 5% -> 25% -> 50% -> 100% 迁移，观察错误码分布与重试率
+5. **回滚点**
+   - 任一阶段若 `VALIDATION_ERROR` 或 `AUTH_*` 激增超过阈值，立即回切旧接口
+6. **收口与下线**
+   - 固化迁移后 schema 版本，发布废弃窗口，最终下线碎片化 CRUD 工具
+
+推荐观测指标（灰度期间）：
+- round-trip/tool call per task
+- retry success rate 与平均重试次数
+- partial success 占比与失败类型分布
+- auth 拒绝率（按 scope/tenant 维度）
 
 ## 输出契约（评审结果格式）
 

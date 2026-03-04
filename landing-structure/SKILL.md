@@ -1,11 +1,11 @@
 ---
-name: landing-page-design
+name: landing-structure
 description: >
-  互联网产品落地页 (Landing Page) 设计与实现规范。覆盖转化驱动的页面架构、功能介绍叙事、视觉构图、交互动效、社会证明、表单优化与性能基线。强制使用 shadcn/ui + Tailwind CSS + Framer Motion。
-  使用场景：(1) 用户要求构建产品落地页、营销页 (marketing page)、注册页 (signup page)，(2) 审查落地页代码是否符合转化优化 (conversion) 规范，(3) 用户提到"Landing Page"、"落地页"、"转化率"、"Hero Section"、"CTA"、"功能介绍"等关键词，(4) 需要将产品功能转化为面向用户的利益叙事时。
+  落地页页面结构与信息架构规范。管模块组合（Hero / Features / CTA / FAQ 等）、叙事顺序、转化策略、构图骨架选择、信任信号选配与文案策略。不管视觉样式（字号、色彩、间距、动效参数），视觉交给 visual-design。
+  使用场景：(1) 用户要求构建产品落地页、营销页 (marketing page)、注册页 (signup page)，(2) 审查落地页结构是否符合转化优化 (conversion) 规范，(3) 用户提到"Landing Page"、"落地页"、"转化率"、"Hero Section"、"CTA"、"功能介绍"等关键词，(4) 需要将产品功能转化为面向用户的利益叙事时。
 ---
 
-# Landing Page Design — 转化驱动的落地页设计指引
+# Landing Structure — 转化驱动的落地页结构指引
 
 ## 快速参考
 
@@ -19,7 +19,7 @@ description: >
 | **体验进阶** | A11y 焦点管理 · 多语言自适应 · 完整 SEO/OG 标签 |
 | **移动端**   | tap target ≥ 44×44px · 吸底 CTA · 数字键盘适配  |
 
-> **职责边界：** 本 skill 管页面策略与信息架构。视觉样式（字号、色值、间距、圆角）交给 visual-design 决定。
+> **职责边界：** 本 skill 只管常见落地页的**页面结构与信息架构**——模块组合（Hero / Features / CTA / FAQ 等）、叙事顺序、转化策略、构图类型选择。视觉样式（字号、色彩 token、间距数值、圆角、动效参数）完全由 visual-design 决定，本 skill 不输出任何具体视觉参数。两者独立运作，无优先级冲突。
 
 ## 工作流程
 
@@ -177,7 +177,7 @@ description: >
 
 ### 视觉节奏 (Visual Rhythm)
 
-整个页面需要密度交替的视觉节奏，不能所有 Section 密度相同（通用间距参数见 visual-design §IV）。落地页规划时额外考虑三个维度：
+整个页面需要密度交替的节奏，不能所有 Section 密度相同。落地页规划时额外考虑三个维度：
 
 | 维度         | 含义                           | 典型节奏                                                  |
 | ------------ | ------------------------------ | --------------------------------------------------------- |
