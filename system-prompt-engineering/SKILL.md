@@ -1,5 +1,5 @@
 ---
-name: create-prompt
+name: system-prompt-engineering
 description: 基于四要素结构（Persona / Task / Context / Format）、五条核心实践和工程优化层（缓存设计、注意力机制设计）的 System Prompt 工程规范。帮助用户构建高质量、结构化的 System Prompt。使用场景：(1) 用户要求编写、优化或审查 System Prompt，(2) 用户提到"prompt 工程"、"系统提示词"、"角色设定"、"提示词模板"，(3) 用户需要为 AI 应用设计指令系统，(4) 用户的 prompt 存在指令偏移、幻觉、格式不稳定等问题需要诊断修复，(5) 用户关注 prompt caching、token 成本、TTFT 延迟、注意力分布等生产优化问题。
 ---
 
@@ -42,7 +42,7 @@ description: 基于四要素结构（Persona / Task / Context / Format）、五�
 
 | 维度 | 核心问题 | 关键技术 |
 |------|----------|----------|
-| **缓存设计** | 如何最大化 prompt caching 命中率，降低成本和延迟？ | 稳定内容前置、动态内容隔离、cache_control 断点设置 |
+| **缓存设计** | 如何最大化 prompt caching 命中率，降低成本和延迟？ | 稳定内容前置、动态内容隔离、缓存边界设置 |
 | **注意力机制设计** | 如何利用 Transformer 注意力分布规律提升指令执行率？ | 重要指令首尾锚定、长文档路标注释、关键约束多位置重复、Token 预算管理 |
 | **安全性设计** | 如何防止 Prompt Injection、Jailbreak 和 PII 泄露？ | 用户输入隔离分隔符、角色稳定性声明、拒绝话术模板、最小信息原则 |
 | **工具描述设计** | 如何让模型准确选择并调用工具？ | name 动词命名、description 三段式、参数含义+约束+示例、工具分组声明 |
@@ -76,7 +76,7 @@ description: 基于四要素结构（Persona / Task / Context / Format）、五�
    - 安全设计（面向外部用户时）：用分隔符隔离用户输入；Persona 声明角色稳定性；定义拒绝话术
    - 工具描述（有 function calling 时）：每个工具 description 写明触发场景；参数含义+约束+示例齐全
 5. **自检**：逐条过自检清单
-5. **输出**：交付完整的 System Prompt
+6. **输出**：交付完整的 System Prompt
 
 ### 审查/优化已有 Prompt
 
@@ -184,3 +184,18 @@ description: 基于四要素结构（Persona / Task / Context / Format）、五�
 ## 完整示例
 
 代码审查、产品需求分析、数据报告等多领域示例，含设计解析和反面对照 → [references/examples.md](references/examples.md)
+
+## 验证闭环（生产场景建议）
+
+将 Prompt 迭代纳入可量化评测，避免“改了但无法证明更好”：
+
+1. 建立最小评测集（建议 20-50 条）：
+   - 正常样例：覆盖主要任务路径
+   - 边界样例：信息不足、格式冲突、长输入
+   - 对抗样例：prompt injection、角色劫持、越权请求
+2. 定义通过标准（示例）：
+   - 结构合规率 ≥ 95%（输出字段/格式命中）
+   - 任务完成率 ≥ 90%（核心步骤执行完整）
+   - 安全拒答准确率 ≥ 99%（越权场景必须拒绝）
+3. 每次改 Prompt 都跑同一套评测集，记录 Before/After 结果。
+4. 任何核心指标下降即回滚，先修复再发布。

@@ -5,7 +5,7 @@ description: >
   触发场景：设计或审查 onboarding 流程、首次使用体验、新手引导、空状态、aha moment 路径；
   提到"用户留不住"、"激活率低"、"用户不知道怎么开始"、"onboarding"、"新手引导"、"首次体验"等关键词。
   边界说明：本 skill 聚焦于「已知产品价值成立后」的首次体验路径设计。
-  若尚未确认产品价值是否成立，先用 value-realization；若需挖掘用户行为动机，先用 user-research。
+  若尚未确认产品价值是否成立，先用 product-value-validation；若需挖掘用户行为动机，先用 user-research。
 ---
 
 # First-Run Experience

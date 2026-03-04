@@ -119,7 +119,7 @@
 
 ### 在 Prompt 层防止 PII 泄露
 
-System Prompt 中定义模型处理 PII 的行为规则，而非依赖应用层过滤：
+System Prompt 中定义模型处理 PII 的行为规则，帮助模型在回答阶段遵循最小披露与脱敏原则：
 
 ```xml
 <constraints>

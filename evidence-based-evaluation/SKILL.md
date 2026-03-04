@@ -1,5 +1,5 @@
 ---
-name: evaluate
+name: evidence-based-evaluation
 description: >
   Activates evidence-based scoring mode: strip emotional bias, establish a measurable rubric,
   deduct points only from explicit evidence. Universal evaluator for any quantifiable artifact —

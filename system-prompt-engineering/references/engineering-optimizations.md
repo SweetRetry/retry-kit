@@ -11,14 +11,14 @@
 
 ### 核心原理
 
-现代 LLM API（Anthropic、OpenAI）支持将 System Prompt 的前缀部分缓存到服务器端。当后续请求的前缀完全一致时，直接命中缓存，跳过这部分 token 的 prefill 计算。
+现代 LLM API 普遍支持将请求中的稳定前缀缓存到服务端。当后续请求前缀保持一致时，可命中缓存并减少重复 prefill 计算。
 
 **成本收益**：
 
 | 维度 | 效果 |
 |------|------|
-| 输入 token 成本 | 命中缓存的 token 按折扣价计费（Anthropic 约为 10%，OpenAI 约为 50%） |
-| 首 token 延迟 | 命中缓存时 TTFT（Time to First Token）显著降低 |
+| 输入 token 成本 | 命中缓存通常能降低重复前缀的输入成本（具体折扣以平台文档为准） |
+| 首 token 延迟 | 命中缓存通常可降低 TTFT（Time to First Token） |
 | 适用场景 | System Prompt 固定、大量 RAG 文档、长对话 history 重复部分 |
 
 ### 可缓存内容的黄金法则
@@ -43,7 +43,7 @@
 **原则一：稳定内容前置**
 
 ```
-[固定内容 — 可缓存] ← cache_control 断点放在这里
+[固定内容 — 可缓存] ← 缓存边界放在这里
   <persona>...</persona>
   <context>... 固定领域知识 ...</context>
   <examples>... few-shot ...</examples>
@@ -60,9 +60,9 @@
 - 使用参数化插槽而非内联拼接：`用户姓名：{{user_name}}` 放在动态区，Persona 放在静态区
 - 不要在固定内容中插入时间戳、请求 ID 等动态值
 
-**原则三：缓存断点选择**
+**原则三：缓存边界选择**
 
-Anthropic API 通过 `cache_control: {"type": "ephemeral"}` 标记缓存断点：
+不同平台的缓存字段名称不同，但思路一致：在“最大稳定块末尾”标记缓存边界。例如：
 
 ```json
 {
@@ -71,7 +71,7 @@ Anthropic API 通过 `cache_control: {"type": "ephemeral"}` 标记缓存断点�
     {
       "type": "text",
       "text": "[System Prompt 固定部分]",
-      "cache_control": {"type": "ephemeral"}
+      "cache_boundary": true
     },
     {
       "type": "text",
@@ -81,14 +81,14 @@ Anthropic API 通过 `cache_control: {"type": "ephemeral"}` 标记缓存断点�
 }
 ```
 
-最多可设置 **4 个**缓存断点，优先在体积最大的稳定内容末尾设置。
+缓存边界数量与规则因平台而异；实践上优先在体积最大的稳定内容末尾设置边界。
 
 ### 缓存设计自检
 
 - [ ] System Prompt 中是否将稳定内容（Persona、Rules、Examples、文档）集中在顶部？
 - [ ] 动态内容是否隔离到底部或 user message 中？
 - [ ] 固定内容中是否混入了会随请求变化的动态值？
-- [ ] cache_control 断点是否设置在最大稳定块的末尾？
+- [ ] 缓存边界是否设置在最大稳定块的末尾？
 - [ ] 对话 history 是否只缓存了已确认不再变化的部分？
 
 ---
@@ -230,7 +230,7 @@ Transformer 的注意力机制对不同位置 token 的"关注度"不均匀：
 两者并不冲突，可以组合使用：
 
 ```
-[固定前缀 — 可缓存]                    ← cache_control 断点
+[固定前缀 — 可缓存]                    ← 缓存边界
   <persona>...</persona>
   <context> 固定领域文档 </context>     ← 注意：文档有路标注释
   <examples>...</examples>

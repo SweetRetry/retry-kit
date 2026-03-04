@@ -1,9 +1,9 @@
 ---
-name: value-realization
+name: product-value-validation
 description: "Analyze whether end users will discover clear value in product ideas. Use when discussing product concepts, evaluating features, analyzing user adoption, or when users express uncertainty about product direction. 适用于：讨论产品概念、评估功能、分析用户采用问题，或当用户对产品方向不确定时（例如：'evaluate this product idea', 'will users adopt this', '这个想法好吗？', '用户会想要这个吗？', '为什么用户不留下来？'）。"
 ---
 
-# Value Realization
+# Product Value Validation
 
 Analytical framework for evaluating whether end users can **know** what value they'll achieve through a product — even if that value takes time.
 
