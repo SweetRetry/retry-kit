@@ -141,19 +141,23 @@ description: >
 4. 首屏无主焦点（多个 CTA 抢注意力）
 5. 桌面与移动仅缩放，不做节奏重排
 6. 视觉语言不一致（字体/圆角/阴影/动效各说各话）
+7. 脱离语义 token，直接堆砌裸色 Tailwind class，且同屏多主色混用
 
 ---
 
 ## 8) 工程落地规则
 
-1. 优先语义 token：`bg-background` `bg-card` `text-foreground` `border-border`
-2. 仅动画 `transform` 和 `opacity`
-3. 必须处理 `prefers-reduced-motion`
-4. 移动端触控目标 >= `44x44`
-5. 对比度硬门槛：正文 `>= 4.5:1`，大字/图标 `>= 3:1`
-6. 焦点样式硬门槛：必须提供可见 `focus-visible`（推荐：`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-1`）
-7. 不允许因视觉方案破坏可用性与可访问性
-8. 必须提供可回退差异（最小回滚路径）
+1. `Token-First`（硬约束）：默认只使用语义 token（如 `bg-background` `bg-card` `text-foreground` `border-border` `bg-primary text-primary-foreground`）；禁止随意写裸色 Tailwind class（如 `text-zinc-900` `bg-blue-500` `border-rose-300`）。
+2. 裸色白名单（仅限以下场景）：状态语义（success/warning/error）、数据可视化分组色、品牌素材不可替换色。命中白名单时必须在输出中写明“原因 + 范围 + 回退 token”。
+3. 颜色预算（硬约束）：单页面最多 `1` 个品牌主色 + `1` 个强调色（不含状态色）；同屏高饱和色块最多 `3` 处，超出即判定为花哨失控。
+4. 渐变与氛围层必须来自同一色系 token 推导，不允许多品牌色拼接式渐变。
+5. 仅动画 `transform` 和 `opacity`。
+6. 必须处理 `prefers-reduced-motion`。
+7. 移动端触控目标 >= `44x44`。
+8. 对比度硬门槛：正文 `>= 4.5:1`，大字/图标 `>= 3:1`。
+9. 焦点样式硬门槛：必须提供可见 `focus-visible`（推荐：`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-1`）。
+10. 不允许因视觉方案破坏可用性与可访问性。
+11. 必须提供可回退差异（最小回滚路径）。
 
 ---
 
@@ -175,10 +179,13 @@ description: >
 
 工程变更：
 1. <before class/token> -> <after class/token>
+2. Token 对账：<新增/替换 token 列表>
+3. 颜色预算：主色=<token>，强调色=<token|无>，状态色=<是否使用>
 
 验证：
 - 对比度 / focus-visible / 触控目标
 - reduced-motion（如涉及动效）
+- token-first 合规（无裸色 class，或已声明白名单）
 ```
 
 省略：五轴、设计论点、方案A/B、美感评分。
@@ -208,14 +215,18 @@ description: >
 1. 最小回退差异：before -> after
 
 工程变更：
-1. token/class 变更
-2. 影响文件
-3. 兼容说明（继承/覆盖）
+1. token/class 变更（before -> after）
+2. Token 对账（新增/删除/替换）
+3. 颜色预算（主色/强调色/状态色）与是否超预算
+4. 裸色白名单例外（若有）：原因 + 范围 + 回退 token
+5. 影响文件
+6. 兼容说明（继承/覆盖）
 
 验证：
 - Desktop/Mobile
 - focus-visible / 对比度（`4.5:1` & `3:1`）/ 触控目标
 - reduced-motion
+- token-first 合规（无裸色 class，或例外已声明）
 
 美感评分（10分）：
 - 记忆点
@@ -258,6 +269,8 @@ description: >
 1. 同屏重技法超过 `2` 个
 2. 单屏主焦点超过 `1` 个，或 CTA 超过 `2` 个
 3. 对比度或 `focus-visible` 未达到硬门槛
+4. 出现非白名单裸色 class，且未声明原因与回退 token
+5. 同屏品牌主色/强调色超出预算，导致视觉语言失控
 
 ---
 
@@ -270,8 +283,8 @@ description: >
 ### 11.2 最低读取量（不达标即阻塞）
 
 1. `Preserve`：`0-1` 个（按需）。
-2. `Elevate`：至少 `1` 个核心 reference（`visual-patterns` / `techniques` / `case-studies` 三选一）；若涉及 token/class 变更，必须追加 `tokens.md`。
-3. `Forge`：必须读取 `visual-patterns.md` + `techniques.md`；若涉及 token/class 变更，必须追加 `tokens.md`；若做风格对标，追加 `case-studies.md`。
+2. `Elevate`：至少 `1` 个核心 reference（`visual-patterns` / `techniques` / `case-studies` 三选一）；若涉及 token/class 或颜色体系变更，必须追加 `tokens.md`。
+3. `Forge`：必须读取 `visual-patterns.md` + `techniques.md`；若涉及 token/class 或颜色体系变更，必须追加 `tokens.md`；若做风格对标，追加 `case-studies.md`。
 4. `Audit`：至少读取 `1` 个与问题直接相关的 reference；涉及结构问题优先读 `visual-patterns.md`，涉及交互/性能读 `techniques.md`，涉及 token/可访问性读 `tokens.md`。
 
 ### 11.3 最小读取策略（防上下文膨胀）
