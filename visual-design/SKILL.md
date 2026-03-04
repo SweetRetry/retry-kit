@@ -181,7 +181,7 @@ description: >
 - reduced-motion（如涉及动效）
 ```
 
-省略：五轴、设计论点、方案A/B、References实读、美感评分。
+省略：五轴、设计论点、方案A/B、美感评分。
 
 若会话**无已确认档位**，不得使用轻量模式，直接走 §9.1。
 
@@ -212,11 +212,6 @@ description: >
 2. 影响文件
 3. 兼容说明（继承/覆盖）
 
-References 实读：
-1. <file path>
-   - 提取规则：...
-   - 应用位置：...
-
 验证：
 - Desktop/Mobile
 - focus-visible / 对比度（`4.5:1` & `3:1`）/ 触控目标
@@ -242,10 +237,6 @@ References 实读：
 ```md
 [visual-design 审查]
 档位推断：Tool|Brand（依据）
-References 实读：
-1. <file path>
-   - 提取规则：...
-   - 对应问题：...
 严重问题（必须修）：
 1. ...
 建议优化：
@@ -267,7 +258,6 @@ References 实读：
 1. 同屏重技法超过 `2` 个
 2. 单屏主焦点超过 `1` 个，或 CTA 超过 `2` 个
 3. 对比度或 `focus-visible` 未达到硬门槛
-4. `Elevate` / `Forge` / `Audit` 模式未提供 `References 实读` 证据
 
 ---
 
@@ -284,15 +274,7 @@ References 实读：
 3. `Forge`：必须读取 `visual-patterns.md` + `techniques.md`；若涉及 token/class 变更，必须追加 `tokens.md`；若做风格对标，追加 `case-studies.md`。
 4. `Audit`：至少读取 `1` 个与问题直接相关的 reference；涉及结构问题优先读 `visual-patterns.md`，涉及交互/性能读 `techniques.md`，涉及 token/可访问性读 `tokens.md`。
 
-### 11.3 读取证据规范（防“假读取”）
-
-输出中必须包含 `References 实读`，且每个文件都要写：
-1. 提取了哪条规则（不是文件名罗列）
-2. 该规则应用在本次哪一处变更/问题上
-
-只写“参考了某文件”但没有规则映射，视为未读取。
-
-### 11.4 最小读取策略（防上下文膨胀）
+### 11.3 最小读取策略（防上下文膨胀）
 
 按需读取，不批量加载全文；优先读取目标段落并提炼规则。推荐顺序：
 1. 先读 `visual-patterns.md`（结构）

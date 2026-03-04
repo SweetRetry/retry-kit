@@ -167,8 +167,33 @@ Output add-on for all cases:
 
 ## Phase 4: Output
 
-For a fully worked example of this output format applied to a real artifact, see
-[`references/example-evaluation.md`](references/example-evaluation.md).
+Calibration worked example (REST API):
+
+Input sample:
+```txt
+POST /api/v1/orders
+POST /api/v1/orders/cancel
+GET  /api/orders
+POST /api/v1/payment/charge
+Errors: HTTP 200 + { "success": false, "msg": "..." }
+No auth/rate-limit/idempotency docs.
+```
+
+Evidence inventory sample:
+- Present: versioned order endpoints, charge endpoint, explicit error envelope format.
+- Claimed-not-demonstrated: "v1 exists" but no version policy.
+- Absent: idempotency mechanism, auth scheme, rate limiting, response schemas.
+
+Deduction calibration sample:
+1. `GET /api/orders` missing `/v1` prefix while peers are versioned -> URL Consistency -> Functional Gap (`-8`).
+2. Error responses as HTTP 200 -> Error Contract -> Structural Flaw (`-20`).
+3. No idempotency for payment charge -> Idempotency -> Fatal Defect (`-25`, apply 50% if input partial).
+4. Missing auth/rate-limit evidence -> Security Surface -> weighted structural/functional deductions with explicit `[?]`.
+
+Priority fix sample:
+- "Move API error handling to proper HTTP 4xx/5xx semantics and return structured error objects at middleware layer."
+
+Use this worked example to calibrate: evidence granularity, severity mapping, incomplete-input weighting, and priority-fix specificity.
 
 ```
 ## Evaluation Report

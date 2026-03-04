@@ -14,6 +14,7 @@ description: 全栈工程规范手册。定义技术栈选型、monorepo 结构�
 | Monorepo | Turborepo | — | — |
 | 包管理 | bun | pnpm | Bun 运行时不兼容时（如 HocusPocus） |
 | 前端框架 | Next.js (App Router, RSC 优先) | — | — |
+| 路由 | Next.js App Router | TanStack Router | 非 Next.js 项目（Vite/SPA）或需要前端路由强类型搜索参数 |
 | 后端 (轻量) | Next.js Route Handlers / Server Actions | — | 简单 CRUD、表单提交 |
 | 后端 (重度) | Elysia + Eden Treaty (Bun) | Hono (Node) | 复杂业务逻辑；Bun 不兼容时换 Hono |
 | 数据库 ORM | Drizzle + PostgreSQL | Drizzle + SQLite | 本地 demo / 原型 |
@@ -47,6 +48,10 @@ description: 全栈工程规范手册。定义技术栈选型、monorepo 结构�
 数据库？
 ├─ 本地原型 → Drizzle + SQLite + 本地目录（非结构化资源）
 └─ 生产 → 海外 Supabase PG │ 国内 Sealos PG
+
+前端路由？
+├─ Next.js 项目 → App Router（文件路由）
+└─ 非 Next.js（Vite/SPA）→ TanStack Router
 ```
 
 ## Monorepo 结构
@@ -94,7 +99,7 @@ project-root/
 - **RSC 优先**：默认 Server Component。❌ `"use client"` 包裹整页
 - **`useEffect` 需审批**：确需时说明原因并征求用户同意
 - **交互组件优先 shadcn/ui**。❌ 原生 HTML 替代组件库
-- **URL 驱动状态**：搜索/筛选/分页通过 `searchParams`。Zustand 只管 UI 临时状态
+- **URL 驱动状态**：Next.js 用 `searchParams`；非 Next.js 用 TanStack Router search params。Zustand 只管 UI 临时状态
 - **数据获取**：SC 直接 await，客户端用 TanStack Query。❌ `useEffect` 做数据获取
 
 ### 错误处理
@@ -114,3 +119,16 @@ project-root/
 - [references/monorepo-setup.md](references/monorepo-setup.md) — 各 package 的 exports 约定、tsconfig 配置、apps 配置
 - [references/backend-patterns.md](references/backend-patterns.md) — Elysia 模块结构、Eden Treaty 接线代码、Hono 切换、Drizzle PG/SQLite 差异、Zod v4 踩坑
 - [references/frontend-patterns.md](references/frontend-patterns.md) — Next.js 目录结构、TanStack Query 约定、RHF 接线、Zustand 边界、动画选择矩阵
+
+## References 读取门禁
+
+### 读取条件
+
+1. 仅做小范围语法修复或注释调整：可不读取 references。
+2. 发生架构决策、目录结构调整、跨层数据流修改、框架接线改造时：必须读取对应 reference。
+
+### 最低读取量
+
+1. 涉及 monorepo/package 边界：必读 `references/monorepo-setup.md`
+2. 涉及后端 API/ORM/服务编排：必读 `references/backend-patterns.md`
+3. 涉及前端目录/状态/表单/数据获取：必读 `references/frontend-patterns.md`

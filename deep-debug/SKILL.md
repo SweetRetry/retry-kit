@@ -101,4 +101,41 @@ Never patch on top of a broken fix.
 
 ## Example
 
-See [references/example.md](references/example.md) for a full diagnostic walkthrough — symptom reading, hypothesis ranking, boundary expansion, and root cause declaration.
+Use this full calibration walkthrough for complex cases:
+
+1. Symptom read:
+   - When: submit works on fresh load, breaks only after editing any input.
+   - What: click has no effect, no error, no network request.
+   - Where: all forms that share `<FormWrapper>`.
+2. Initial hypothesis ranking:
+   - Presentation: invisible overlay blocks click.
+   - Value/config: validation flag incorrectly disables submit after edits.
+   - Data/state: `onChange` mutates shared state wrongly.
+   - Design/closure: handler uses stale closure after re-render.
+3. First pass investigation:
+   - Rule out overlay (`disabled`, `pointer-events`, z-index blockers absent).
+   - Rule out validation gate (`isValid` remains true and click path not gated).
+   - State writes look correct (`setFormData(prev => ({ ...prev, [k]: v }))`).
+4. Explicit invalidation:
+   - "state mutation bug" is discarded because observed state is correct.
+   - Re-rank from scratch using the new model: "handler reference likely stale."
+5. Second pass:
+   - Check memo boundary assumptions (`React.memo` not present).
+   - Inspect submit handler and find:
+     ```js
+     const handleSubmit = useCallback(() => {
+       onSubmit(formData);
+     }, []);
+     ```
+   - Confirm stale capture: log inside handler always prints mount-time `formData`.
+6. Root cause declaration:
+   - `useCallback([])` froze `handleSubmit` with initial `formData` and `onSubmit`.
+   - Keystrokes update state, but submit reads stale snapshot.
+7. Fix pattern:
+   - Add dependencies (`[formData, onSubmit]`) if recomputation is acceptable.
+   - Or use a stable event handler/ref pattern that reads current state at call time.
+8. Post-fix verification:
+   - Re-test original symptom path first (edit then submit).
+   - Verify no regression in untouched forms.
+
+Discipline rule: if evidence and current hypothesis diverge, invalidate the hypothesis before any patch.

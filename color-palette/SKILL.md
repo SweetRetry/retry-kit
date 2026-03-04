@@ -241,3 +241,19 @@ description: >
 ```
 
 关键对比度：`--foreground` on `--background` = 16.2:1 (AAA)，`--accent` on `--background` = 5.8:1 (AA)
+
+---
+
+## VI. References 读取门禁
+
+### 何时必须读取
+
+1. 只输出配色方向（不落地 token）时：可不读取 `references/token-output.md`。
+2. 输出 `globals.css`、设计 token、Dark Mode 变量映射时：必须读取 `references/token-output.md`。
+
+### 最低读取量
+
+涉及 token 落地时，至少提取以下内容并应用：
+1. token 角色映射规则
+2. dark mode 变量对位规则
+3. 输出模板结构（含 `:root` 与 `.dark`）

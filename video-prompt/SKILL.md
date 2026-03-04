@@ -95,14 +95,17 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 | 运动复杂度 | 单一连续运动 | 2 个并行运动轨迹 | 3+ 独立物体各自运动轨迹；镜头运动+主体运动+特效三叠加 |
 | 空间清晰度 | 屏幕方位+景深层次明确 | 朝向指令辅助但未标方位 | 使用朝向指令（面对面/背靠背）且无构图位置补充；3+ 主体无方位标注 |
 
-## 参考资料（按需加载）
+## 参考资料（统一单源）
 
-| 文档 | 何时加载 |
-|------|---------|
-| [visual-styles.md](references/visual-styles.md) | 需要风格词、风格推荐 |
-| [ai-tools-guide.md](references/ai-tools-guide.md) | 主体描述复杂、需要锚点或词汇可生成性判断 |
-| [camera-and-effects.md](references/camera-and-effects.md) | 需要判断镜头组合合法性、空间布局冲突、画幅约束 |
-| [type-profiles.md](references/type-profiles.md) | 需要类型节奏模板、转场策略、完整示例对齐 |
-| [reference.md](references/reference.md) | 仅在跨主题问题或上述文档无法覆盖时加载 |
+当前仅维护一个参考文件：`references/reference.md`。  
+风格词、镜头组合、节奏模板、类型示例统一从该文件提取，避免多文件漂移。
 
-触发信号：需要风格词/风格推荐、主体描述复杂、需要判断镜头合法性、需要转场写法、需要类型节奏模板或示例对齐。
+## References 读取门禁
+
+### 读取条件
+
+1. 简单单镜头改写（仅润色措辞）可不读取。
+2. 以下任一场景必须读取 `references/reference.md`：
+   - 多镜头叙事
+   - 复杂主体或复杂运动
+   - 需要风格映射、镜头合法性判断、节奏模板对齐

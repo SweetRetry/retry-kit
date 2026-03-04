@@ -312,3 +312,15 @@ When user compares options, asks "should I do X", or needs to choose between dir
 |------|------|----------|
 | [real-cases.md](references/real-cases.md) | 15 个产品案例（含 B2B：Stripe, Figma, Salesforce, Linear；消费者：Dropbox, Instagram, Duolingo, WeChat, GitHub, Notion, MyFitnessPal, Netflix, Slack；失败案例：Google Wave, Quibi）含定量数据（截止 2023） | 需要案例对比或数据支撑时 |
 | Section VI Worked Example | MyFitnessPal 完整分析样本，展示输出深度和信号冲突写法 | 校准输出格式和分析详细程度时 |
+
+## X. References 读取门禁
+
+### 读取条件
+
+1. 只做框架性分析、不引用具体案例或数字：可不读取 `real-cases.md`。
+2. 任何涉及案例对比、行业 benchmark、用户规模或时效性数据的结论：必须读取 `real-cases.md`，并在必要时做 WebSearch 更新验证。
+
+### 最低读取量
+
+1. 至少提取 1 个同赛道正例 + 1 个可对照反例（或失败案例）
+2. 明确标注数据年份；若年份超过 18 个月且会影响结论，必须标注“待验证”或补充 WebSearch

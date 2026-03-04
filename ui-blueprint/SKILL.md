@@ -202,3 +202,16 @@ Not every check applies to every blueprint — skip checks that aren't relevant 
 | [references/examples.md](references/examples.md) | Full examples: Landing Page, Dashboard, Mobile App, Form Flow, Responsive, State Variants | Need a complete blueprint example |
 | [references/component-patterns.md](references/component-patterns.md) | Component-level patterns: Empty State, Skeleton, Modal, Drawer, Toast, Inspector Panel, Pagination vs Infinite Scroll, Form Field States | Need standardized notation for a specific component type |
 | [references/page-structure.md](references/page-structure.md) | Page type standard flows, 3-layer functional zoning, navigation selection, CTA hierarchy, state placement | Confirming page structure and user flow before generating blueprint |
+
+## Reference Read Gate
+
+### When reading is mandatory
+
+1. Single simple component blueprint (no flow/state complexity): references optional.
+2. Multi-screen flow, responsive blueprint, or full-page structure planning: references required.
+
+### Minimum read set
+
+1. Page-level structure work: must read `references/page-structure.md`
+2. Component-heavy or state-heavy work: must read `references/component-patterns.md`
+3. Pattern calibration or end-to-end examples needed: add `references/examples.md`

@@ -199,3 +199,18 @@ description: 基于四要素结构（Persona / Task / Context / Format）、五�
    - 安全拒答准确率 ≥ 99%（越权场景必须拒绝）
 3. 每次改 Prompt 都跑同一套评测集，记录 Before/After 结果。
 4. 任何核心指标下降即回滚，先修复再发布。
+
+## References 读取门禁
+
+### 读取条件
+
+1. 只做很小的措辞修订（不改结构）可不读取 references。
+2. 从零创建 System Prompt、重构结构、审查/优化、生产场景调优时：必须读取 references。
+
+### 最低读取量
+
+1. 所有结构化 Prompt 任务：必读 `references/four-elements.md` + `references/core-practices.md`
+2. 生产优化（缓存/注意力）任务：追加 `references/engineering-optimizations.md`
+3. 面向外部用户或高风险场景：追加 `references/security.md`
+4. 有 function calling/tool schema：追加 `references/tool-use.md`
+5. 需要风格或行业范式样例：按需读 `references/examples.md`
