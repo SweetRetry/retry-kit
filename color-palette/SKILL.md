@@ -158,7 +158,7 @@ description: >
 
 ## IV. Token 映射与输出
 
-生成 `globals.css` 时，读取 `references/token-output.md` 获取完整 token 映射规则、Dark Mode 规则、输出模板和端到端 CSS 示例。
+生成 `globals.css` 时，读取 [references/token-output.md](references/token-output.md) 获取完整 token 映射规则、Dark Mode 规则、输出模板和端到端 CSS 示例。
 
 ---
 
@@ -180,7 +180,7 @@ description: >
 | 中性色 | zinc-500 | oklch(0.55 0.010 106) | Tailwind |
 | 背景色 | zinc-50 | oklch(0.98 0.002 106) | Tailwind |
 
-**完整 globals.css** → 见 `references/token-output.md` 第四节端到端示例。
+**完整 globals.css** → 见 [references/token-output.md](references/token-output.md) 第四节端到端示例。
 
 ### 示例 B：珊瑚暖红方向
 
@@ -248,8 +248,8 @@ description: >
 
 ### 何时必须读取
 
-1. 只输出配色方向（不落地 token）时：可不读取 `references/token-output.md`。
-2. 输出 `globals.css`、设计 token、Dark Mode 变量映射时：必须读取 `references/token-output.md`。
+1. 只输出配色方向（不落地 token）时：可不读取 [references/token-output.md](references/token-output.md)。
+2. 输出 `globals.css`、设计 token、Dark Mode 变量映射时：必须读取 [references/token-output.md](references/token-output.md)。
 
 ### 最低读取量
 

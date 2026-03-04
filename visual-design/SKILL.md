@@ -266,6 +266,7 @@ description: >
 `[严重]` 永远优先修复；`[建议]` 在不破坏目标的前提下尽量执行。
 
 以下情况直接判定为 `[严重]`：
+
 1. 同屏重技法超过 `2` 个
 2. 单屏主焦点超过 `1` 个，或 CTA 超过 `2` 个
 3. 对比度或 `focus-visible` 未达到硬门槛
@@ -283,14 +284,15 @@ description: >
 ### 11.2 最低读取量（不达标即阻塞）
 
 1. `Preserve`：`0-1` 个（按需）。
-2. `Elevate`：至少 `1` 个核心 reference（`visual-patterns` / `techniques` / `case-studies` 三选一）；若涉及 token/class 或颜色体系变更，必须追加 `tokens.md`。
-3. `Forge`：必须读取 `visual-patterns.md` + `techniques.md`；若涉及 token/class 或颜色体系变更，必须追加 `tokens.md`；若做风格对标，追加 `case-studies.md`。
-4. `Audit`：至少读取 `1` 个与问题直接相关的 reference；涉及结构问题优先读 `visual-patterns.md`，涉及交互/性能读 `techniques.md`，涉及 token/可访问性读 `tokens.md`。
+2. `Elevate`：至少 `1` 个核心 reference（[visual-patterns.md](references/visual-patterns.md) / [techniques.md](references/techniques.md) / [case-studies.md](references/case-studies.md) 三选一）；若涉及 token/class 或颜色体系变更，必须追加 [tokens.md](references/tokens.md)。
+3. `Forge`：必须读取 [visual-patterns.md](references/visual-patterns.md) + [techniques.md](references/techniques.md)；若涉及 token/class 或颜色体系变更，必须追加 [tokens.md](references/tokens.md)；若做风格对标，追加 [case-studies.md](references/case-studies.md)。
+4. `Audit`：至少读取 `1` 个与问题直接相关的 reference；涉及结构问题优先读 [visual-patterns.md](references/visual-patterns.md)，涉及交互/性能读 [techniques.md](references/techniques.md)，涉及 token/可访问性读 [tokens.md](references/tokens.md)。
 
 ### 11.3 最小读取策略（防上下文膨胀）
 
 按需读取，不批量加载全文；优先读取目标段落并提炼规则。推荐顺序：
-1. 先读 `visual-patterns.md`（结构）
-2. 再读 `techniques.md`（技法与风险）
-3. 再读 `tokens.md`（token 与可访问性）
-4. 需要风格映射时读 `case-studies.md`
+
+1. 先读 [visual-patterns.md](references/visual-patterns.md)（结构）
+2. 再读 [techniques.md](references/techniques.md)（技法与风险）
+3. 再读 [tokens.md](references/tokens.md)（token 与可访问性）
+4. 需要风格映射时读 [case-studies.md](references/case-studies.md)

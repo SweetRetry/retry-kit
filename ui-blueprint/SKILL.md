@@ -212,6 +212,6 @@ Not every check applies to every blueprint — skip checks that aren't relevant 
 
 ### Minimum read set
 
-1. Page-level structure work: must read `references/page-structure.md`
-2. Component-heavy or state-heavy work: must read `references/component-patterns.md`
-3. Pattern calibration or end-to-end examples needed: add `references/examples.md`
+1. Page-level structure work: must read [references/page-structure.md](references/page-structure.md)
+2. Component-heavy or state-heavy work: must read [references/component-patterns.md](references/component-patterns.md)
+3. Pattern calibration or end-to-end examples needed: add [references/examples.md](references/examples.md)

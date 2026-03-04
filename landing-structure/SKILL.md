@@ -199,8 +199,8 @@ Deep 模式附加要求：第 5 段必须追加以下两个子段。
 
 | 文件 | 内容 | 何时加载 |
 | --- | --- | --- |
-| `references/composition-catalog.md` | Hero 与 Section 构图词汇、产品类型匹配、密度曲线示例 | 选择构图、规划节奏时 |
-| `references/page-examples.md` | SaaS / 开发者 API / DTC 的完整页面流范例 | 需要对照真实页面流时 |
+| [references/composition-catalog.md](references/composition-catalog.md) | Hero 与 Section 构图词汇、产品类型匹配、密度曲线示例 | 选择构图、规划节奏时 |
+| [references/page-examples.md](references/page-examples.md) | SaaS / 开发者 API / DTC 的完整页面流范例 | 需要对照真实页面流时 |
 
 ## References 读取门禁
 
@@ -211,6 +211,6 @@ Deep 模式附加要求：第 5 段必须追加以下两个子段。
 
 ### 最低读取量
 
-1. 涉及构图与节奏：必读 `references/composition-catalog.md`
-2. 涉及行业样例对照或完整流校准：必读 `references/page-examples.md`
+1. 涉及构图与节奏：必读 [references/composition-catalog.md](references/composition-catalog.md)
+2. 涉及行业样例对照或完整流校准：必读 [references/page-examples.md](references/page-examples.md)
 3. `Deep` 模式：两者都读

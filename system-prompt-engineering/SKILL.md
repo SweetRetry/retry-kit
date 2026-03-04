@@ -209,8 +209,8 @@ description: 基于四要素结构（Persona / Task / Context / Format）、五�
 
 ### 最低读取量
 
-1. 所有结构化 Prompt 任务：必读 `references/four-elements.md` + `references/core-practices.md`
-2. 生产优化（缓存/注意力）任务：追加 `references/engineering-optimizations.md`
-3. 面向外部用户或高风险场景：追加 `references/security.md`
-4. 有 function calling/tool schema：追加 `references/tool-use.md`
-5. 需要风格或行业范式样例：按需读 `references/examples.md`
+1. 所有结构化 Prompt 任务：必读 [references/four-elements.md](references/four-elements.md) + [references/core-practices.md](references/core-practices.md)
+2. 生产优化（缓存/注意力）任务：追加 [references/engineering-optimizations.md](references/engineering-optimizations.md)
+3. 面向外部用户或高风险场景：追加 [references/security.md](references/security.md)
+4. 有 function calling/tool schema：追加 [references/tool-use.md](references/tool-use.md)
+5. 需要风格或行业范式样例：按需读 [references/examples.md](references/examples.md)

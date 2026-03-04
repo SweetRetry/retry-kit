@@ -118,7 +118,7 @@ Analytical framework for evaluating whether end users can **know** what value th
 
 **Litmus test**: 想象 5 个目标用户被问 "这个产品帮你实现什么？"——回答含个人成果词（"我能..."）→ 🟢；含品类词但无个人成果（"它是一个...工具"）→ 🟡；含功能词或说不清（"它有...功能" / "不确定"）→ 🔴。
 
-**Case contrast**: Dropbox "access files from any device" (outcome, 🟢) vs Google Wave "unified communication" (abstract, 🔴 — shut down 14 months after launch). See `references/real-cases.md`.
+**Case contrast**: Dropbox "access files from any device" (outcome, 🟢) vs Google Wave "unified communication" (abstract, 🔴 — shut down 14 months after launch). See [references/real-cases.md](references/real-cases.md).
 
 ### 2. Value Timeline
 
@@ -299,8 +299,8 @@ When user compares options, asks "should I do X", or needs to choose between dir
 ## VIII. 研究硬约束
 
 - 引用产品案例必须基于可验证信息，标注数据来源
-- `references/real-cases.md` 中的案例是模式示例而非通用规则 — 使用前必须评估产品类型、市场、用户行为的匹配度
-- **案例数据时效性**：`real-cases.md` 中的指标数据截止于 2023 年前后。引用具体数字时，在括号内标注数据年份，例如"GitHub 100M+ 开发者 (2023)"。若分析依赖用户规模或市场地位等时效性强的数据，用 WebSearch 验证最新状态。
+- [references/real-cases.md](references/real-cases.md) 中的案例是模式示例而非通用规则 — 使用前必须评估产品类型、市场、用户行为的匹配度
+- **案例数据时效性**：[real-cases.md](references/real-cases.md) 中的指标数据截止于 2023 年前后。引用具体数字时，在括号内标注数据年份，例如"GitHub 100M+ 开发者 (2023)"。若分析依赖用户规模或市场地位等时效性强的数据，用 WebSearch 验证最新状态。
 - 案例不匹配时，用 WebSearch 搜索同领域可比产品，不要硬套
 - 探索性思考（头脑风暴价值类型）和证据性分析（声称具体模式）必须区分
 
@@ -317,8 +317,8 @@ When user compares options, asks "should I do X", or needs to choose between dir
 
 ### 读取条件
 
-1. 只做框架性分析、不引用具体案例或数字：可不读取 `real-cases.md`。
-2. 任何涉及案例对比、行业 benchmark、用户规模或时效性数据的结论：必须读取 `real-cases.md`，并在必要时做 WebSearch 更新验证。
+1. 只做框架性分析、不引用具体案例或数字：可不读取 [real-cases.md](references/real-cases.md)。
+2. 任何涉及案例对比、行业 benchmark、用户规模或时效性数据的结论：必须读取 [real-cases.md](references/real-cases.md)，并在必要时做 WebSearch 更新验证。
 
 ### 最低读取量
 

@@ -97,7 +97,7 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 
 ## 参考资料（统一单源）
 
-当前仅维护一个参考文件：`references/reference.md`。  
+当前仅维护一个参考文件：[references/reference.md](references/reference.md)。  
 风格词、镜头组合、节奏模板、类型示例统一从该文件提取，避免多文件漂移。
 
 ## References 读取门禁
@@ -105,7 +105,7 @@ description: 为任意类型视频生成 AI 视频工具的专业 prompt。支�
 ### 读取条件
 
 1. 简单单镜头改写（仅润色措辞）可不读取。
-2. 以下任一场景必须读取 `references/reference.md`：
+2. 以下任一场景必须读取 [references/reference.md](references/reference.md)：
    - 多镜头叙事
    - 复杂主体或复杂运动
    - 需要风格映射、镜头合法性判断、节奏模板对齐

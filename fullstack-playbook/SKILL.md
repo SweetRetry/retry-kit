@@ -129,6 +129,6 @@ project-root/
 
 ### 最低读取量
 
-1. 涉及 monorepo/package 边界：必读 `references/monorepo-setup.md`
-2. 涉及后端 API/ORM/服务编排：必读 `references/backend-patterns.md`
-3. 涉及前端目录/状态/表单/数据获取：必读 `references/frontend-patterns.md`
+1. 涉及 monorepo/package 边界：必读 [references/monorepo-setup.md](references/monorepo-setup.md)
+2. 涉及后端 API/ORM/服务编排：必读 [references/backend-patterns.md](references/backend-patterns.md)
+3. 涉及前端目录/状态/表单/数据获取：必读 [references/frontend-patterns.md](references/frontend-patterns.md)
