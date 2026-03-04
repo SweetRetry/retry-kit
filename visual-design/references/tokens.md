@@ -1,39 +1,103 @@
-# shadcn/ui Token 速查 & Motion Spring 参数
+# Token 与动效参数（执行版）
 
-## shadcn/ui 色彩 Token
-
-**原则**：优先语义 token，不硬编码 zinc/slate 色值。Token 通过 CSS variable 自动适配亮/暗模式。
-
-| 用途 | Token（Tailwind class） | 说明 |
-|------|------------------------|------|
-| 页面背景 | `bg-background` | 最底层，亮色=白，暗色=近黑 |
-| 卡片背景 | `bg-card` | 比 background 略有区分 |
-| 悬浮层/弹出层 | `bg-popover` | Dropdown、Tooltip、Dialog |
-| 次级区块/输入底 | `bg-muted` | Sidebar、代码块、禁用态 |
-| 主要文字 | `text-foreground` | |
-| 次要文字 | `text-muted-foreground` | 描述、标签、占位符 |
-| 主色（品牌色） | `bg-primary` / `text-primary` | CTA、选中态、Link |
-| 主色前景 | `text-primary-foreground` | primary 背景上的文字 |
-| 次要操作 | `bg-secondary` / `text-secondary-foreground` | Ghost 按钮底色 |
-| 描边 | `border-border` | 通用描边 |
-| 表单/输入描边 | `border-input` | Input、Select 边框 |
-| 危险/错误 | `text-destructive` / `bg-destructive` | 删除、错误状态 |
-| 成功/绿色 | `text-emerald-500` + `bg-emerald-500/10` | shadcn 无内置 success token，直接用 Tailwind 色阶 |
-| 警告/橙色 | `text-amber-500` + `bg-amber-500/10` | 同上，避免用 success/warn 语义 token（历史 UI 实践，现代设计系统不推荐） |
-| 强调色（可选） | `bg-accent` / `text-accent-foreground` | Hover 态背景 |
-| Sidebar 背景 | `bg-sidebar` / `text-sidebar-foreground` | shadcn/ui sidebar 组件专用 |
-
-**Brand Cinematic 例外**：深色底透明叠层（`bg-white/5`、`border-white/10`、`border-white/15`）是透明度手法，非硬编码色值，可与 token 共存。
+本文件用于把视觉决策转成可落地的 `before -> after` 变更，不用于定义审美偏好。
 
 ---
 
-## Motion Spring 参数
+## 1) Token 变更策略（按模式）
+
+| 模式 | 允许改动层级 | 典型动作 |
+|------|-------------|---------|
+| `Preserve` | 组件级 class | 修正对比度、边界、状态色，保持现有主题体系 |
+| `Elevate` | 页面级 class + 少量语义 token | 增强层级与节奏，不改核心品牌变量 |
+| `Forge` | 全局 CSS 变量 + 组件级 class | 重设主视觉语言，并同步组件映射 |
+
+---
+
+## 2) 常用语义 Token
+
+| 用途 | Token（Tailwind class） | 备注 |
+|------|------------------------|------|
+| 页面背景 | `bg-background` | 全局底色 |
+| 卡片背景 | `bg-card` | 容器底色 |
+| 浮层背景 | `bg-popover` | Menu / Dialog / Tooltip |
+| 次级底色 | `bg-muted` | 辅助信息区 |
+| 主文字 | `text-foreground` | 正文和标题 |
+| 次文字 | `text-muted-foreground` | 描述和弱信息 |
+| 主操作 | `bg-primary text-primary-foreground` | 主 CTA |
+| 次操作 | `bg-secondary text-secondary-foreground` | 次级按钮 |
+| 常规边框 | `border-border` | 通用边界 |
+| 输入边框 | `border-input` | 表单控件 |
+| 错误态 | `text-destructive` / `bg-destructive` | 错误提示 |
+| 成功态 | `text-emerald-500` + `bg-emerald-500/10` | 状态反馈 |
+| 警告态 | `text-amber-500` + `bg-amber-500/10` | 状态反馈 |
+
+---
+
+## 3) 可执行变更示例
+
+### Preserve 示例（组件级修正）
+
+```txt
+before: className="bg-white text-zinc-900 border-zinc-200"
+after : className="bg-card text-foreground border-border"
+```
+
+### Elevate 示例（页面级增强）
+
+```txt
+before: className="bg-background"
+after : className="bg-background md:bg-muted/30"
+```
+
+### Forge 示例（变量级重设）
+
+```txt
+before: --primary: 222.2 47.4% 11.2%;
+after : --primary: 210 92% 45%;
+```
+
+---
+
+## 4) 动效参数建议
+
+优先使用低风险参数，除非用户明确要求更强表达。
 
 | 场景 | stiffness | damping | 说明 |
 |------|-----------|---------|------|
-| 标准流畅（Brand 入场） | 300 | 30 | 绝大多数 Brand 动效 |
-| 沉稳厚重 | 200 | 40 | 大元素、Hero 产品图 |
-| CTA Magnetic 跟随 | 150 | 25 | 鼠标跟随回弹 |
-| 数字跳动 | 300 | 30 | `useMotionValue` + `useTransform`（实现细节见 techniques.md） |
+| 通用入场 | 300 | 30 | 默认推荐 |
+| 大元素过渡 | 200 | 40 | 更沉稳 |
+| 轻交互跟随 | 150 | 25 | 仅用于少量焦点元素 |
 
-**禁止**：`damping < 20`（产生 bounce 效果）。
+---
+
+## 5) 动效硬约束
+
+1. 只动画 `transform` 和 `opacity`
+2. 必须处理 `prefers-reduced-motion`
+3. 移动端优先降级复杂跟随和视差效果
+4. 交互反馈不能延迟按钮可点击性
+5. 对比度硬门槛：正文 `>= 4.5:1`，大字/图标 `>= 3:1`
+6. 焦点样式硬门槛：必须具备可见 `focus-visible`
+7. 推荐焦点样式：`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-1`
+
+---
+
+## 6) 交付检查模板
+
+```md
+Token 变更：
+1. <before> -> <after>
+2. <before> -> <after>
+
+影响范围：
+- 文件：...
+- 组件：...
+
+验证：
+- 对比度通过
+- 对比度达标（`4.5:1` & `3:1`）
+- focus-visible 可见且一致
+- 深色模式正常
+- reduced-motion 降级生效
+```

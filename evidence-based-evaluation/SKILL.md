@@ -22,6 +22,7 @@ These rules override any default behavior throughout the entire evaluation:
 - **No vague fixes** — The Priority Fix names the exact change and its location. "Improve reliability" is rejected; "Add an idempotency key via `X-Idempotency-Key` header to `POST /payments`" is accepted.
 - **No silent assumptions** — When input is incomplete, declare what is unknown and how uncertainty affects the score (see Phase 2).
 - **Truth over comfort** — A kind score on a wrong foundation wastes the user's time. If the core premise is broken, say so.
+- **Pre-output double-check is mandatory** — Before every report output, run the Pre-Output Quality Gate (Phase 3.6). Never skip, even if the user does not request recheck.
 
 ---
 
@@ -137,6 +138,33 @@ Every deduction must reference a row from the Evidence Inventory above.
 
 ---
 
+## Phase 3.6: Pre-Output Quality Gate (Always run)
+
+Run this gate before **every** final report output.
+
+1. **Re-anchor scope**: Quote the artifact's explicit boundary in one line.
+2. **Reclassify every deduction**:
+   - `Core Requirement Gap` (inside scope, blocks core purpose)
+   - `Optional Optimization` (inside scope, useful but non-required)
+   - `Out-of-Scope` (remove from scoring immediately)
+3. **Double-check traceability**: Each deduction must map to a concrete evidence row and location.
+   - If citation is weak or missing: downgrade confidence or remove deduction.
+4. **Double-check severity calibration**: Re-ask the anchor question for each severity level and confirm the deduction band is still valid.
+5. **Recompute score** after removals/reclassifications and record delta (`old -> new`).
+6. **Self-reflection (mandatory, explicit)**:
+   - `Potential Overreach:` one line on where evaluator bias may have over-extended requirements.
+   - `Assumption Risk:` one line on the most fragile assumption affecting the score.
+   - `Mistake Pattern:` one line on what went wrong in evaluator reasoning.
+   - `Prevention Rule:` one line to prevent repeating the same evaluation mistake.
+7. **Lock final score** only after steps 1-6 complete.
+
+Output add-on for all cases:
+
+- `Re-check Delta`: list withdrawn deductions and score change (`old -> new`), even if unchanged.
+- `Pre-Output Check`: include all 4 self-reflection lines in the report.
+
+---
+
 ## Phase 4: Output
 
 For a fully worked example of this output format applied to a real artifact, see
@@ -189,6 +217,16 @@ For a fully worked example of this output format applied to a real artifact, see
 If multiple fixes recover equal points, prioritize by: (1) lowest implementation cost,
 (2) broadest blast radius (fixes multiple dimensions at once), (3) sequence dependency
 (fixes a blocker that enables other fixes).
+
+---
+
+### Pre-Output Check
+
+- `Re-check Delta:` [withdrawn deductions and score change old -> new]
+- `Potential Overreach:` [one-line reflection]
+- `Assumption Risk:` [one-line reflection]
+- `Mistake Pattern:` [one-line reflection]
+- `Prevention Rule:` [one-line reflection]
 
 ---
 

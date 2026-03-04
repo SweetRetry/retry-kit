@@ -1,46 +1,82 @@
-# 高品质技法库
+# 视觉技法库（执行版）
 
-触发条件不满足时禁止主动引入——技法的价值来自克制使用，不是默认堆砌。
-
----
-
-## 布局构图
-
-| 技法 | 适用档位 | 触发条件 | 实现要点 |
-|------|---------|---------|---------|
-| **Bento Grid** | Tool / Brand | 内容块 ≥ 4 且各块信息密度差异明显 | `grid-cols-[2fr_1fr]`，用 `row-span-2` 制造主次 |
-| **Split Hero** | Brand 优先 | Hero 有配套产品截图或演示动效 | `grid-cols-2 gap-16`，左文右图 |
-| **Sticky Scroll Stack** | Brand | 有 3+ 个需要逐步展开的功能亮点 | `sticky top-24` + `translateY` 偏移，移动端退化为普通堆叠 |
-| **Dashboard Shell** | Tool | 需要固定导航的多页面应用 | 左侧 `w-[240px]` + 右侧 `flex-1`，顶部 `h-14` header |
+技法是增强质量的主手段。`Elevate` 默认至少启用 1 个结构技法 + 1 个交互技法；`Forge` 默认至少启用 2 个结构技法 + 1 个氛围技法。
 
 ---
 
-## 卡片与组件
+## 使用前检查
 
-| 技法 | 适用档位 | 触发条件 | 实现要点 |
-|------|---------|---------|---------|
-| **Spotlight Border Card** | Brand | 卡片是页面主焦点，需要引导视线 | 鼠标位置驱动 `radial-gradient` 边框，移动端禁用，`prefers-reduced-motion` 时改为静态渐变边框 |
-| **Parallax Tilt** | Brand 仅限 Hero 区 | Hero 有核心产品展示图，需要立体感 | `rotateX/Y`，`perspective-1000`，移动端禁用，`prefers-reduced-motion` 时回退为 static |
-| **Command Input** | Tool / Brand | 产品核心交互是输入/搜索/命令 | Typewriter 循环 placeholder，带 processing 状态 |
-| **Live Status** | Tool | 有实时数据需要展示（监控、指标、状态） | `animate-pulse` 呼吸圆点 + spring 数字跳动（`stiffness: 300, damping: 30`） |
-| **Infinite Carousel** | Brand | 需要展示 logo 墙、客户列表或产品截图序列 | `x: ["0%", "-100%"]`，`duration: 20s, ease: linear`；外层容器 `pointer-events-none`，内层可点击项（如 logo 链接）加 `pointer-events-auto` |
+1. 当前模式是否允许新增技法：`Preserve` 默认不新增重技法
+2. 技法是否直接服务目标：可读性、聚焦、反馈、品牌识别之一
+3. 是否提供了移动端降级与 `prefers-reduced-motion` 降级
+4. 是否提供了失败回退（静态样式）
 
 ---
 
-## 背景与氛围
+## 技法矩阵
 
-| 技法 | 适用档位 | 触发条件 | 实现要点 |
-|------|---------|---------|---------|
-| **Mesh Gradient** | Brand | 深色底 + 需要有机感/温度感，非极简风 | `radial-gradient` 多色叠加，动画周期 ≥ 8s，颜色不超过 3 种 |
-| **Grain Texture** | Brand | 任何深色底场景，增加质感层 | `::before` 伪元素叠 `url(noise.svg)`，`opacity-[0.03]`，`pointer-events-none`。若无 noise.svg，用完整 inline SVG filter：`filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter></svg>#n")`。**CSP 注意**：严格 CSP 禁止 data URI 时，改用 `/public/noise.svg` 真实文件 |
-| **暗光底色** | Brand | 选择了暗光 Cinematic 深度模型 | `bg-background` + `border-t border-white/5` 切割层级 |
+| 技法 | 适用模式 | 场景 | 实施要点 | 风险级 | 回退方案 |
+|------|---------|------|---------|-------|---------|
+| **Bento Grid** | `Elevate` `Forge` | 信息块 >= 4，且主次明显 | `grid-cols-[2fr_1fr]` + 主卡 `row-span-2` | `[建议]` | 回退到等宽两列或单列 |
+| **Split Hero** | `Elevate` `Forge` | 首屏有产品截图/演示 | `md:grid-cols-2`，移动端自动单列 | `[建议]` | 回退到单栏 Hero |
+| **Dashboard Shell** | `Preserve` `Elevate` | 需要稳定导航框架 | 侧栏固定宽度 + 主区 `flex-1` | `[建议]` | 回退到顶部导航单栏 |
+| **Spotlight Border** | `Forge` | 需要突出单一焦点卡片 | 鼠标驱动边框高光，移动端关闭 | `[建议]` | 改静态渐变描边 |
+| **Parallax Tilt** | `Forge` | Hero 主视觉展示 | 仅桌面启用，`transform` 动画 | `[严重]`（无降级时） | 改静态图 + 轻浮层 |
+| **Command Input** | `Elevate` | 核心交互是输入/命令 | 占位文案循环频率低，避免干扰输入 | `[建议]` | 纯静态 placeholder |
+| **Live Status Pulse** | `Elevate` | 实时状态或监控指标 | 仅状态点轻动画，不影响布局 | `[建议]` | 改静态状态色 |
+| **Infinite Carousel** | `Forge` | Logo 墙/合作方展示 | 线性匀速，容器避免误触 | `[严重]`（掉帧或可访问性问题） | 改分页网格或静态列表 |
+| **Mesh Gradient** | `Forge` | 品牌氛围背景 | 颜色 <= 3，周期 >= 8s | `[建议]` | 静态渐变 |
+| **Grain Texture** | `Elevate` `Forge` | 深色背景需质感 | 噪点低透明度，不影响内容对比 | `[建议]` | 去掉噪点，仅保留纯色/渐变 |
+| **Button Press** | 全模式 | 按钮点击反馈 | `whileTap={{ scale: 0.97 }}` | `[建议]` | `active:scale-95` |
 
 ---
 
-## 微交互
+## 默认组合（避免保守产出）
 
-| 技法 | 适用档位 | 触发条件 | 实现要点 |
-|------|---------|---------|---------|
-| **CTA Magnetic** | Brand | 主 CTA 是页面唯一焦点，需要强吸引力 | `useSpring({ stiffness: 150, damping: 25 })` 跟随回弹，移动端禁用 |
-| **Button Press** | Tool / Brand | 所有主操作按钮（全档位通用，不受 Tool 动效限额约束） | `whileTap={{ scale: 0.97 }}`，比 `active:scale-95` 更流畅 |
-| **数字跳动** | Tool / Brand | 展示核心指标数字（增长、统计、计数） | `useMotionValue` + `useTransform`，不用 `useState` 轮询 |
+- `Elevate` 默认组合：`Split Hero` + `Button Press`
+- `Elevate`（数据页）默认组合：`Dashboard Shell` + `Live Status Pulse`
+- `Forge` 默认组合：`Bento Grid` + `Mesh Gradient` + `Spotlight Border`
+
+若用户没要求克制，不要降级为“只改颜色和圆角”。
+
+---
+
+## 强度上限（防过载）
+
+1. 同屏重技法最多 `2` 个。重技法：`Parallax Tilt`、`Infinite Carousel`、`Spotlight Border`、`Mesh Gradient`。
+2. 单屏仅允许 `1` 个主焦点 + 最多 `1` 个次焦点；CTA 最多 `2` 个且仅 `1` 个主 CTA。
+
+---
+
+## 严重问题判定（技法相关）
+
+以下情况标记为 `[严重]` 并建议立即回退：
+
+1. 动效未处理 `prefers-reduced-motion`
+2. 技法造成交互阻塞或显著掉帧
+3. 技法导致文本可读性或对比度不达标
+4. 移动端出现误触、抖动、横向溢出
+5. 同屏重技法超过 `2` 个
+6. 单屏主焦点超过 `1` 个，或 CTA 超过 `2` 个
+7. 缺失明确 `focus-visible` 样式
+
+---
+
+## 最小实现模板
+
+```md
+技法：<name>
+目标：<解决的问题>
+变更：
+1. <before class/token> -> <after class/token>
+2. <before class/token> -> <after class/token>
+
+降级：
+- mobile: <on/off or alternative>
+- reduced-motion: <alternative>
+
+验证：
+- 可读性/可点击性
+- 桌面与移动端一致性
+- 性能与回退可用
+```
