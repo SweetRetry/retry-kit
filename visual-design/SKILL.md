@@ -11,6 +11,8 @@ description: >
 
   技术栈范围：React + shadcn/ui + Motion (Framer Motion)。超出范围时输出一行提示：
   `[visual-design] 超出范围：[项目类型]。以下建议为类比参考，请按项目实际适配。`
+
+  English triggers: Web UI visual design constraints, high-quality UI, design system, visual polish.
 ---
 
 ## 档位确认流程
@@ -36,7 +38,7 @@ description: >
 | 信号冲突（如"SaaS 落地页"） | Brand，声明中注明冲突原因 |
 | 无信号 | 默认 **Tool**，声明标注"信号缺失" |
 
-**混合页面**（onboarding / 空状态 / 付费升级页）：首次或低频 → Brand；嵌套高频工作流 → Tool；两者都是 → Brand 但动效降至 Tool 强度（`y: 20px→0, opacity 0→1, 200ms ease-out, staggerChildren 30ms`，不用 Spring）。
+**混合页面**（onboarding / 空状态 / 付费升级页）：首次或低频 → Brand；嵌套高频工作流 → Tool；两者都是 → Brand 但动效降至 Tool 强度（参数见 TOOL 档位动效行，不用 Spring）。
 
 **锁定声明格式**（推断档位时输出，继承时不输出）：
 ```
@@ -86,7 +88,7 @@ description: >
 
 | 维度 | 规则 |
 |------|------|
-| **字体** | Hero H1：Cal Sans / Instrument Serif / Geist Sans extralight（三选一全局统一）；Body：Geist Sans 或 Outfit；禁 Inter（太通用） |
+| **字体** | Hero H1：Cal Sans / Instrument Serif / Geist Sans extralight（三选一全局统一）；Body：Geist Sans 或 Outfit；禁 Inter（Web UI 过于通用，缺乏品牌辨识度） |
 | **排版** | Hero H1 `text-6xl md:text-8xl font-extralight tracking-tighter`；Body `text-base md:text-lg leading-relaxed max-w-[60ch]`；禁居中 Hero（标题 > 5 词时）→ 改左对齐或 Split |
 | **色彩** | 可大面积深色底・Mesh 渐变・光晕；渐变只用同色相（例：`hsl(var(--primary)/0.8)→hsl(var(--primary)/0.2)`）；视觉焦点递进 Hero > 功能介绍 > CTA；禁"AI 紫/蓝"（`#7c3aed` 系列） |
 | **圆角** | `rounded-2xl` 全局统一；Neo-brutalism 改 `rounded-none`（不混用） |

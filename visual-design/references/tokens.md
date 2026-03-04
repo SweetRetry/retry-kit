@@ -34,6 +34,6 @@
 | 标准流畅（Brand 入场） | 300 | 30 | 绝大多数 Brand 动效 |
 | 沉稳厚重 | 200 | 40 | 大元素、Hero 产品图 |
 | CTA Magnetic 跟随 | 150 | 25 | 鼠标跟随回弹 |
-| 数字跳动 | 300 | 30 | `useMotionValue` + `useTransform` |
+| 数字跳动 | 300 | 30 | `useMotionValue` + `useTransform`（实现细节见 techniques.md） |
 
 **禁止**：`damping < 20`（产生 bounce 效果）。

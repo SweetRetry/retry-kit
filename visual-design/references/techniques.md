@@ -23,7 +23,7 @@
 | **Parallax Tilt** | Brand 仅限 Hero 区 | Hero 有核心产品展示图，需要立体感 | `rotateX/Y`，`perspective-1000`，移动端禁用，`prefers-reduced-motion` 时回退为 static |
 | **Command Input** | Tool / Brand | 产品核心交互是输入/搜索/命令 | Typewriter 循环 placeholder，带 processing 状态 |
 | **Live Status** | Tool | 有实时数据需要展示（监控、指标、状态） | `animate-pulse` 呼吸圆点 + spring 数字跳动（`stiffness: 300, damping: 30`） |
-| **Infinite Carousel** | Brand | 需要展示 logo 墙、客户列表或产品截图序列 | `x: ["0%", "-100%"]`，`duration: 20s, ease: linear`，`pointer-events-none` |
+| **Infinite Carousel** | Brand | 需要展示 logo 墙、客户列表或产品截图序列 | `x: ["0%", "-100%"]`，`duration: 20s, ease: linear`；外层容器 `pointer-events-none`，内层可点击项（如 logo 链接）加 `pointer-events-auto` |
 
 ---
 
@@ -32,7 +32,7 @@
 | 技法 | 适用档位 | 触发条件 | 实现要点 |
 |------|---------|---------|---------|
 | **Mesh Gradient** | Brand | 深色底 + 需要有机感/温度感，非极简风 | `radial-gradient` 多色叠加，动画周期 ≥ 8s，颜色不超过 3 种 |
-| **Grain Texture** | Brand | 任何深色底场景，增加质感层 | `::before` 伪元素叠 `url(noise.svg)`，`opacity-[0.03]`，`pointer-events-none`。若无 noise.svg，用完整 inline SVG filter：`filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter></svg>#n")` |
+| **Grain Texture** | Brand | 任何深色底场景，增加质感层 | `::before` 伪元素叠 `url(noise.svg)`，`opacity-[0.03]`，`pointer-events-none`。若无 noise.svg，用完整 inline SVG filter：`filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter></svg>#n")`。**CSP 注意**：严格 CSP 禁止 data URI 时，改用 `/public/noise.svg` 真实文件 |
 | **暗光底色** | Brand | 选择了暗光 Cinematic 深度模型 | `bg-background` + `border-t border-white/5` 切割层级 |
 
 ---
