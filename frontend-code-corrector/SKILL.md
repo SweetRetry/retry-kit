@@ -123,7 +123,7 @@ description: >
 1. 任意值可被标准类替代但未替代
 2. 同类 UI 在不同文件样式不一致
 3. 可复用组件未复用
-4. shadcn 组件可替代原生实现但未替代
+4. shadcn 组件可替代原生实现但未替代：若项目未安装该组件，必须通过 `npx shadcn@latest add <name>` 安装，禁止手写同功能实现
 5. 为了单点需求在调用处覆写组件，而不是封装业务 Wrapper
 6. 组件对外 props 已能表达语义，但调用处仍硬改字号/色彩/状态
 
@@ -193,7 +193,7 @@ description: >
 3. **组件契约检查**：先确认是否已有 `variant/size` 可以满足，避免直接 override
 4. **文本归一**：把硬编码字号替换为标准 `text-*` 阶梯
 5. **token 归一**：把裸色值替换为 design token
-6. **组件归一**：用现有组件或 shadcn 组件替换重复结构
+6. **组件归一**：用现有组件或 shadcn 组件替换重复结构；`components/ui/*` 缺失目标组件时，先执行 `npx shadcn@latest add <name>` 安装，再替换
 7. **状态补齐**：补充 `hover` / `active` / `focus-visible` / `disabled`
 8. **响应式校准**：必要时加 `sm:`/`md:` 分层，而非单一硬编码值
 9. **量化复检**：按 §3.3 重新统计覆盖数，超阈值必须回收
@@ -226,6 +226,23 @@ description: >
 
 - Bad: 手写弹窗、下拉、tooltip（已存在 shadcn 对应组件）
 - Good: 直接复用现有 `Dialog` / `Select` / `Tooltip`
+
+### 手写实现 shadcn 有对应组件的 UI
+
+- Bad: 自行实现 Checkbox、Switch、Tabs、Accordion、Toast 等已有 shadcn 对应组件
+- Good: 先检查 `components/ui/*` 是否已安装；若未安装，使用 shadcn CLI 添加
+
+  ```bash
+  # shadcn v2（推荐，自动适配 Next.js / Vite / React）
+  npx shadcn@latest add <component-name>
+
+  # 示例
+  npx shadcn@latest add checkbox
+  npx shadcn@latest add tabs
+  npx shadcn@latest add toast
+  ```
+
+  安装后直接从 `@/components/ui/<component-name>` 导入，禁止手写同功能实现。
 
 ### 过度覆盖现有组件
 
