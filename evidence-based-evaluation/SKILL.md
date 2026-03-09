@@ -29,8 +29,7 @@ These rules override any default behavior throughout the entire evaluation:
 ## Phase 0: Clarification Gate
 
 **Run this before any analysis.** Ask clarifying questions only when missing context would cause
-the wrong dimensions to be selected — not to understand goals, but to establish the artifact's
-operating context.
+the wrong dimensions to be selected or the wrong severity thresholds to apply.
 
 ### When to Ask
 
@@ -38,15 +37,14 @@ Ask only if **any** of the following are unknown and cannot be inferred from the
 
 | Unknown | Why it blocks evaluation | Example question |
 |---|---|---|
+| Evaluation intent | Determines which flaws are actionable vs. irrelevant | "Are you deciding whether to ship this, or looking for improvement directions?" |
 | Deployment context | Determines whether Security, Scalability are critical | "Is this for internal use or public-facing production?" |
-| Audience / Consumer | Determines whether Accessibility, DX, Onboarding apply | "Who are the end users — developers or non-technical users?" |
 | Lifecycle stage | Determines acceptable thresholds (prototype vs. production) | "Is this a prototype or intended for production?" |
 | Artifact scope | Determines whether an absence is a gap or out of scope | "Is this the complete implementation or one module of a larger system?" |
 
 ### Hard Limits
 
 - **Ask at most 2 questions** — one focused question is almost always enough.
-- **Ask about context, never about goals** — "What problem are you trying to solve?" is forbidden. If the artifact's purpose isn't readable from the artifact itself, that is a finding worth noting in the evaluation.
 - **If context is still unclear after one round, proceed with the most demanding interpretation** — evaluate as production-grade, public-facing, and fully scoped. State this assumption explicitly in the report header.
 - **Never ask to validate the scoring result** — "Does this score seem right to you?" is sycophancy in disguise.
 
@@ -105,11 +103,13 @@ State your reasoning: *"Security weighted 40% because a breach makes all other s
 
 **Do not score. Do not form verdicts. Collect only.**
 
-Organize findings into exactly three columns:
+Organize findings into exactly four columns:
 
-| Present | Claimed, Not Demonstrated | Absent (Expected for Domain) |
-|---|---|---|
-| What explicitly exists in the input | What the artifact asserts but doesn't show | What a complete artifact in this domain would have, but this one lacks |
+| Present | Claimed, Not Demonstrated | Absent (Expected for Domain) | Out-of-Scope for This Context |
+|---|---|---|---|
+| What explicitly exists in the input | What the artifact asserts but doesn't show | What a complete artifact in this domain would have, but this one lacks | What the domain "normally" requires but doesn't apply given the stated lifecycle stage, scope, or deployment context |
+
+The fourth column is a filter, not an afterthought. Before placing anything in "Absent (Expected)", ask: *"Given the context established in Phase 0, would a reasonable engineer actually expect this here?"* If not, move it to Out-of-Scope — it cannot be used as a deduction basis.
 
 **Incomplete input rule**: If the input is a fragment (partial code, draft section, summary only), declare:
 > *"Input completeness: ~N%. Absent items may be present in unseen portions. Deductions for absence are marked [?] and carry 50% weight unless confirmed missing."*
@@ -118,7 +118,14 @@ Organize findings into exactly three columns:
 
 ## Phase 3: Score — Deduct from 100
 
-Every deduction must reference a row from the Evidence Inventory above.
+Every deduction must reference a row from the Evidence Inventory above **and** pass the Deduction Admission Gate below before it can be recorded.
+
+### Deduction Admission Gate (mandatory per finding)
+
+Before assigning any deduction, answer these two questions explicitly:
+
+1. **Scenario test**: *"In this artifact's actual usage context, under what realistic scenario would a user encounter this problem?"* — If you cannot describe a concrete scenario, the finding is downgraded to Cosmetic or removed.
+2. **Burden of proof**: The evaluator bears the burden. If the evidence is ambiguous or the finding requires assumptions about missing context, apply the `[?]` incomplete-input marker and reduce weight by 50%.
 
 ### Deduction Scale with Internal Anchors
 
@@ -146,7 +153,7 @@ Run this gate before **every** final report output.
 2. **Reclassify every deduction**:
    - `Core Requirement Gap` (inside scope, blocks core purpose)
    - `Optional Optimization` (inside scope, useful but non-required)
-   - `Out-of-Scope` (remove from scoring immediately)
+   - `Out-of-Scope` (remove from scoring immediately) — includes: wrong lifecycle stage, wrong deployment context, feature not expected at this artifact's scope, and any finding that failed the Phase 3 Scenario Test
 3. **Double-check traceability**: Each deduction must map to a concrete evidence row and location.
    - If citation is weak or missing: downgrade confidence or remove deduction.
 4. **Double-check severity calibration**: Re-ask the anchor question for each severity level and confirm the deduction band is still valid.
@@ -207,9 +214,9 @@ Use this worked example to calibrate: evidence granularity, severity mapping, in
 
 ### Evidence Inventory
 
-| Present | Claimed, Not Demonstrated | Absent (Expected) |
-|---|---|---|
-| ... | ... | ... |
+| Present | Claimed, Not Demonstrated | Absent (Expected) | Out-of-Scope for This Context |
+|---|---|---|---|
+| ... | ... | ... | ... |
 
 ---
 
