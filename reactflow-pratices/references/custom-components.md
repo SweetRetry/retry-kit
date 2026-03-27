@@ -1,256 +1,255 @@
-# React Flow 自定义组件详解
+# React Flow 自定义节点 / 边 / Handle / 样式
 
-> 所有 import 均从 `@xyflow/react`
+> 用途：处理自定义组件实现细节。
+> 基准：官方 `Custom Nodes`、`Custom Edges`、`Handles`、`Utility Classes`、`Theming` 与相关 examples。
 
-## 1. 自定义节点 —— 完整 API
+## 1. 自定义节点
 
-### NodeProps（React Flow 自动注入）
+### 最小正确心智模型
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `id` | `string` | 节点 id |
-| `data` | `T` | 用户自定义数据 |
-| `type` | `string` | 节点类型 |
-| `selected` | `boolean` | 是否选中 |
-| `dragging` | `boolean` | 是否正在拖拽 |
-| `isConnectable` | `boolean` | 是否可连接 |
-| `positionAbsoluteX` | `number` | 绝对 X 坐标 |
-| `positionAbsoluteY` | `number` | 绝对 Y 坐标 |
-| `width` | `number` | 渲染宽度（只读） |
-| `height` | `number` | 渲染高度（只读） |
-| `sourcePosition` | `Position` | 默认源 Handle 方位 |
-| `targetPosition` | `Position` | 默认目标 Handle 方位 |
-| `dragHandle` | `string` | CSS 选择器，限制拖拽区域 |
-| `parentId` | `string` | 父节点 id |
-| `zIndex` | `number` | 层级 |
-| `draggable` | `boolean` | 是否可拖拽 |
-| `selectable` | `boolean` | 是否可选中 |
-| `deletable` | `boolean` | 是否可删除 |
+自定义节点本质上就是一个普通 React 组件，React Flow 会向它注入 `NodeProps`。
 
-### 交互元素处理
+优先关注这些字段：
 
-```tsx
-// className="nodrag" 阻止拖拽冲突
-<input className="nodrag" onChange={handleChange} />
+- `id`
+- `data`
+- `selected`
+- `dragging`
+- `isConnectable`
+- `width`
+- `height`
+- `sourcePosition`
+- `targetPosition`
+- `parentId`
+- `dragHandle`
 
-// 限制只有特定区域可拖拽
-const node = { id: '1', dragHandle: '.drag-handle', ... };
-```
+### 容易写错的地方
 
-### 节点内更新数据
+1. 把 `width` / `height` 当成业务可控字段
+2. 没给交互元素加 `nodrag`
+3. 动态 Handle 后忘了刷新 internals
+4. 在 render 中重建 `nodeTypes`
+
+### 推荐骨架
 
 ```tsx
-// 方式一：useReactFlow（适合 Controlled / Uncontrolled）
-const { updateNodeData } = useReactFlow();
-updateNodeData(id, { color: '#ff0000' });
+import { memo, type NodeProps, Handle, Position } from '@xyflow/react';
 
-// 方式二：Zustand store action
-const updateColor = useFlowStore(s => s.updateNodeColor);
-updateColor(id, '#ff0000');
+type CounterNode = Node<{ label: string; count: number }, 'counter'>;
+
+function CounterNodeComponent({ data, selected }: NodeProps<CounterNode>) {
+  return (
+    <div className={selected ? 'node selected' : 'node'}>
+      <Handle type="target" position={Position.Top} />
+      <button className="nodrag">{data.label}</button>
+      <Handle type="source" position={Position.Bottom} />
+    </div>
+  );
+}
+
+export default memo(CounterNodeComponent);
 ```
+
+### `nodeTypes` 注册原则
+
+- 静态配置：模块顶层定义
+- 动态配置：`useMemo`
+- `type` 字符串必须和 `nodeTypes` 的 key 完全一致
+
+如果 type 不匹配，官方 common errors 文档说明会回退到默认节点。
 
 ---
 
-## 2. 自定义边 —— 完整 API
+## 2. 自定义边
 
-### EdgeProps（React Flow 自动注入）
+### 推荐路径
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `id` | `string` | 边 id |
-| `source` | `string` | 起始节点 id |
-| `target` | `string` | 目标节点 id |
-| `type` | `string` | 边类型 |
-| `data` | `T` | 用户自定义数据 |
-| `animated` | `boolean` | 是否动画 |
-| `selected` | `boolean` | 是否选中 |
-| `style` | `CSSProperties` | 样式 |
-| `sourceX`, `sourceY` | `number` | 起点坐标 |
-| `targetX`, `targetY` | `number` | 终点坐标 |
-| `sourcePosition` | `Position` | 起点方位 |
-| `targetPosition` | `Position` | 终点方位 |
-| `sourceHandleId` | `string \| null` | 起点 Handle id |
-| `targetHandleId` | `string \| null` | 终点 Handle id |
-| `label` | `ReactNode` | 标签 |
-| `markerStart` | `string` | 起点标记 |
-| `markerEnd` | `string` | 终点标记 |
-| `interactionWidth` | `number` | 不可见点击热区宽度 |
-| `pathOptions` | `object` | 路径参数 |
+官方 custom edges guide 的常见路径是：
 
-### 路径函数
+1. 用 path util 生成 path
+2. 用 `<BaseEdge />` 渲染
+3. 需要 label 时使用 `<EdgeLabelRenderer />`
+
+### 典型骨架
 
 ```tsx
-// 所有路径函数返回: [path, labelX, labelY, offsetX, offsetY]
-const [edgePath, labelX, labelY] = getBezierPath({
-  sourceX, sourceY, targetX, targetY,
-  sourcePosition, targetPosition,
-  curvature: 0.25, // getBezierPath 特有
-});
+import {
+  BaseEdge,
+  getSmoothStepPath,
+  type Edge,
+  type EdgeProps,
+} from '@xyflow/react';
 
-const [edgePath] = getSmoothStepPath({
-  sourceX, sourceY, targetX, targetY,
-  sourcePosition, targetPosition,
-  borderRadius: 5, offset: 25,
-});
+type LabeledEdge = Edge<{ label?: string }, 'labeled'>;
+
+export function LabeledEdgeComponent(props: EdgeProps<LabeledEdge>) {
+  const [path] = getSmoothStepPath({
+    sourceX: props.sourceX,
+    sourceY: props.sourceY,
+    targetX: props.targetX,
+    targetY: props.targetY,
+    sourcePosition: props.sourcePosition,
+    targetPosition: props.targetPosition,
+  });
+
+  return <BaseEdge id={props.id} path={path} />;
+}
 ```
 
-### EdgeLabelRenderer 用法
+### 需要特别记住
 
-```tsx
-<EdgeLabelRenderer>
-  <div
-    style={{
-      position: 'absolute',
-      transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
-      pointerEvents: 'all',
-    }}
-    className="nodrag nopan"
-  >
-    {data?.label}
-  </div>
-</EdgeLabelRenderer>
-```
-
-必须用 `position: absolute` + `transform` 定位，加 `pointerEvents: 'all'` 使可交互，加 `nodrag nopan` 防冲突。
+- 自定义边通常用 `<BaseEdge />`，但特殊 path 允许自行构造
+- 若边与 Handle 对接角度异常，优先检查有没有传 `sourcePosition` / `targetPosition`
+- 多 Handle 时，边对象里的 `sourceHandle` / `targetHandle` 要和 Handle `id` 对上
 
 ---
 
-## 3. Handle 进阶
+## 3. Handle
 
-### 自定义外观
+### 官方约束
+
+- 多个同类型 Handle 时，要有唯一 `id`
+- 隐藏 Handle 不要用 `display: none`
+- 需要局部连接约束时，优先用 Handle props
+
+### 推荐排查项
+
+1. `type` 是否正确
+2. `position` 是否正确
+3. 同类型多 Handle 是否都有 `id`
+4. 动态改 Handle 后是否调用 `useUpdateNodeInternals()`
+
+### 推荐写法
 
 ```tsx
 <Handle
   type="source"
+  id="success"
   position={Position.Right}
-  style={{ background: 'none', border: 'none', width: '1em', height: '1em' }}
->
-  {/* 子元素必须加 pointer-events: none */}
-  <ArrowIcon style={{ pointerEvents: 'none', position: 'absolute', left: 0 }} />
-</Handle>
+  isConnectable
+/>
 ```
 
-### 连接视觉反馈
+### 关于连接数量限制
 
-用 `useConnection()` 跟踪拖拽中的连接状态，通过 `connection.inProgress && connection.toNode?.id === id` 判断是否有连接线指向当前节点，据此改变 Handle 样式。
-
-### Handle CSS 状态类
-
-```css
-.react-flow__handle.connecting { background: #ff6b6b; }
-.react-flow__handle.valid { background: #00c853; }
-```
-
-### 连接限制
-
-```tsx
-// Handle 级别限制连接数
-<Handle type="target" isConnectable={(connections) => connections.length < 1} />
-
-// 全局验证函数
-<ReactFlow isValidConnection={(conn) => conn.source !== conn.target} />
-```
+官方 docs 的 Handle API 重点在 `isConnectable` / `isConnectableStart` / `isConnectableEnd` / `isValidConnection`。
+如果要实现“按连接数限制”的更复杂策略，优先参考官方 `Connection Limit` example，不要凭记忆臆造 `<Handle />` 的回调签名。
 
 ---
 
-## 4. 内置辅助组件
+## 4. Utility Classes
 
-### NodeResizer
+优先使用官方 utility classes 处理交互冲突：
 
-```tsx
-function ResizableNode({ selected }: NodeProps) {
-  return (
-    <>
-      <NodeResizer isVisible={selected} minWidth={100} minHeight={50} />
-      <div style={{ width: '100%', height: '100%' }}>Resizable content</div>
-      <Handle type="source" position={Position.Bottom} />
-    </>
-  );
-}
-```
+### `nodrag`
 
-节点需设置 CSS `min-width`/`min-height` 配合。
+适用：
+
+- `input`
+- `button`
+- `select`
+- 任何节点内部可点击控件
+
+作用：
+
+- 防止点击控件时触发节点拖拽
+
+### `nopan`
+
+适用：
+
+- 边标签
+- 浮层
+- 节点内固定区域
+
+作用：
+
+- 防止拖拽该元素时带动画布平移
+
+### `nowheel`
+
+适用：
+
+- 节点内可滚动容器
+
+作用：
+
+- 滚轮只滚动当前内容，不触发画布平移
 
 ---
 
-## 5. 注册与匹配规则
+## 5. 动态 Handle 与计算型节点
 
-```tsx
-// 模块顶层定义（组件外）
-const nodeTypes = { colorPicker: ColorPickerNode, textEditor: TextEditorNode };
-const edgeTypes = { labeled: LabeledEdgeComponent };
-```
+这些问题要一起考虑：
 
-- `type` 字符串与 nodeTypes/edgeTypes 的 key **大小写完全一致**
-- 不匹配时静默降级为 `'default'` 类型，不报错
-- 建议统一用 camelCase
+- 连接关系订阅
+- 节点数据订阅
+- internals 刷新
+
+常用组合：
+
+- `useNodeConnections()` 读取连接
+- `useNodesData()` 读取相关节点 `data`
+- `useUpdateNodeInternals()` 在 Handle 结构变化后刷新
+
+如果是“输入节点影响输出节点”的计算型场景，优先参考官方 computing flows 思路，而不是用大范围订阅硬算整张图。
 
 ---
 
-## 6. 主题与样式
+## 6. Node Resizer / Edge Label / 其它内置组件
 
-### colorMode
+### `NodeResizer`
 
-```tsx
-<ReactFlow colorMode="dark" />  // 'light' | 'dark' | 'system'
-```
+适合：
 
-启用后根 `.react-flow` 元素添加 `.dark` / `.light` class。
+- 需要用户直接拖拽调整节点尺寸
 
-### CSS 变量完整列表
+注意：
 
-**节点**：
-| 变量 | 默认值 |
-|------|--------|
-| `--xy-node-background-color-default` | `#fff` |
-| `--xy-node-border-default` | `1px solid #1a192b` |
-| `--xy-node-color-default` | `inherit` |
-| `--xy-node-group-background-color-default` | `rgba(240, 240, 240, 0.25)` |
-| `--xy-node-boxshadow-hover-default` | `0 1px 4px 1px rgba(0,0,0,0.08)` |
-| `--xy-node-boxshadow-selected-default` | `0 0 0 0.5px #1a192b` |
+- 节点本身仍应通过样式控制尺寸表现
+- 调整尺寸后若你的业务数据也要同步，需要自己定义同步逻辑
 
-**边与连接线**：
-| 变量 | 默认值 |
-|------|--------|
-| `--xy-edge-stroke-default` | `#b1b1b7` |
-| `--xy-edge-stroke-width-default` | `1` |
-| `--xy-edge-stroke-selected-default` | `#555` |
-| `--xy-connectionline-stroke-default` | `#b1b1b7` |
-| `--xy-connectionline-stroke-width-default` | `1` |
+### `EdgeLabelRenderer`
 
-**Handle**：
-| 变量 | 默认值 |
-|------|--------|
-| `--xy-handle-background-color-default` | `#1a192b` |
-| `--xy-handle-border-color-default` | `#fff` |
+适合：
 
-**UI 控件**：
-| 变量 | 默认值 |
-|------|--------|
-| `--xy-controls-button-background-color-default` | `#fefefe` |
-| `--xy-controls-button-background-color-hover-default` | `#f4f4f4` |
-| `--xy-controls-button-border-color-default` | `#eee` |
-| `--xy-controls-box-shadow-default` | `0 0 2px 1px rgba(0,0,0,0.08)` |
-| `--xy-minimap-background-color-default` | `#fff` |
-| `--xy-resize-background-color-default` | `#3367d9` |
+- HTML label
+- 可点击操作按钮
 
-**选区与背景**：
-| 变量 | 默认值 |
-|------|--------|
-| `--xy-selection-background-color-default` | `rgba(0, 89, 220, 0.08)` |
-| `--xy-selection-border-default` | `1px dotted rgba(0, 89, 220, 0.8)` |
-| `--xy-background-pattern-dots-color-default` | `#91919a` |
-| `--xy-background-pattern-line-color-default` | `#eee` |
+常见要求：
 
-### 样式导入
+- 绝对定位
+- `pointerEvents: 'all'`
+- 常搭配 `nodrag nopan`
 
-- `@xyflow/react/dist/style.css` —— 完整默认样式（推荐）
-- `@xyflow/react/dist/base.css` —— 仅功能性基础样式，适合完全自定义
+---
 
-### 交互控制 CSS 类
+## 7. 样式与主题
 
-| 类名 | 作用 | 典型场景 |
-|------|------|----------|
-| `nodrag` | 阻止触发节点拖拽和选中 | input / button / select |
-| `nopan` | 阻止触发画布平移 | 边标签、浮动面板 |
-| `nowheel` | 阻止触发滚轮缩放 | 节点内可滚动列表 |
+### 样式文件
+
+- 默认优先：`@xyflow/react/dist/style.css`
+- 高度定制时：`@xyflow/react/dist/base.css`
+
+### `colorMode`
+
+官方支持：
+
+- `'light'`
+- `'dark'`
+- `'system'`
+
+### CSS 变量
+
+React Flow 提供了节点、边、Handle、controls、minimap、selection、background 等一组 CSS variables。
+当你只是做主题定制时，优先 CSS 变量，而不是直接覆盖大量内部类名。
+
+---
+
+## 8. 容易误导用户的说法
+
+- “自定义边必须自己写 `<path>`”
+- “所有 Handle 逻辑都要在 `isValidConnection` 里做”
+- “隐藏 Handle 没区别，`display: none` 也行”
+- “自定义节点天然自带默认样式”
+- “type 不匹配会直接抛错”

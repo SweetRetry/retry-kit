@@ -1,392 +1,353 @@
 ---
 name: reactflow-pratices
 description: >
-  React Flow (@xyflow/react v12+) 节点图编辑器开发技能。覆盖节点/边/Handle 数据结构与持久化、
-  自定义组件开发、状态管理模式（controlled/uncontrolled/Zustand）、
-  连接验证、性能优化和 TypeScript 类型设计。
+  React Flow (@xyflow/react v12+) 节点图编辑器开发技能。覆盖自定义节点/边/Handle、
+  状态管理（controlled / uncontrolled / Zustand）、连接校验、性能优化、
+  TypeScript 与 sub flow。以 React Flow 官方 docs / API / examples / migration /
+  troubleshooting 为基准，优先输出与官方一致的实现建议。
 
-  触发场景：(1) 使用 React Flow 构建流程图/节点编辑器/工作流可视化，
-  (2) 遇到 React Flow 性能问题、无限重渲染、边不显示等常见故障，
-  (3) 设计自定义节点/边/Handle 组件，(4) 需要持久化/序列化流程图数据，
-  (5) 用户代码中出现 @xyflow/react 的 import。
+  触发场景：(1) 使用 React Flow 构建流程图、节点编辑器、工作流可视化，
+  (2) 遇到边不显示、无限重渲染、Handle 失灵、Provider 报错等常见问题，
+  (3) 设计自定义节点/边/Handle，(4) 需要持久化流程图数据，
+  (5) 用户代码中出现 `@xyflow/react` 的 import。
 
   Triggers: react flow, reactflow, xyflow, node editor, flow diagram, workflow builder,
   node graph, custom nodes reactflow, @xyflow/react.
 ---
 
-# React Flow 开发规范
+# React Flow 官方对齐开发技能
 
-> `@xyflow/react` v12+。所有 import 均从 `@xyflow/react`。
+> 基准版本：`@xyflow/react` v12+
+> 若本 skill 与官方资料冲突，始终以 React Flow 官方 docs / API Reference / examples / migration guide 为准。
 
-核心原则：
+## 1) 这个 skill 的职责
 
-1. **稳定引用** —— nodeTypes/edgeTypes/handlers 永远不在渲染中重建
-2. **不可变更新** —— 节点/边状态只通过新对象替换，不直接修改
-3. **按需订阅** —— 用 selector 取最小状态，而非整个 nodes/edges 数组
-4. **先验证再连接** —— 所有业务规则在 isValidConnection 中前置校验
+这个 skill 不是“React Flow 常识合集”，而是一个**官方对齐的执行技能**。被触发后，你要优先做三件事：
+
+1. 先判断用户问题属于哪一类：
+   - 基础搭建
+   - 自定义节点/边/Handle
+   - 状态管理 / 持久化
+   - 性能 / 重渲染
+   - 连接校验 / cycles
+   - TypeScript
+   - sub flow / parentId
+   - 故障排查
+2. 用最接近问题的官方页面校准判断，不要凭印象回答
+3. 在输出里明确区分：
+   - **官方 API 事实**
+   - **官方 example 展示的推荐用法**
+   - **本 skill 的工程化归纳**
+
+配套参考：
+
+- 官方对齐：`references/official-alignment.md`
+- API / hooks / utils：`references/api-reference.md`
+- 自定义节点 / 边 / Handle / 样式：`references/custom-components.md`
+- 性能检查：`references/performance-checklist.md`
 
 ---
 
-## 1) 触发边界
+## 2) 触发边界
 
 ### 必须触发
 
 - 用户代码 import 了 `@xyflow/react`
-- 用户要构建流程图、节点编辑器、工作流可视化、DAG 编辑器
-- 用户遇到 React Flow 相关 bug（边不显示、无限重渲染、Handle 失灵等）
-- 用户要做自定义节点/边，或需要持久化流程图数据
+- 用户在做流程图、节点编辑器、DAG/workflow builder、可视化编排器
+- 用户遇到 React Flow 典型问题：
+  - 边不显示
+  - 无限重渲染
+  - Handle 连接不上
+  - provider / zustand ancestor 报错
+  - 自定义节点内交互冲突
+- 用户要做：
+  - 自定义节点 / 自定义边 / 自定义 Handle
+  - 连接校验
+  - Zustand / Redux 等外部状态集成
+  - 保存 / 恢复 / 序列化
 
 ### 不适用
 
-- 纯数据可视化图表（ECharts/D3 图表），非节点-边交互场景
-- 用户未使用 React Flow 且不打算使用
+- 纯图表库问题（ECharts、D3 图表），不是节点-边编辑器
+- 用户没有使用 React Flow，也没有计划采用 React Flow
 
 ---
 
-## 2) 启动检查清单
+## 3) 官方资料优先级
 
-每次开始 React Flow 相关工作前，先验证：
+每次回答或动手前，按这个顺序取证：
 
-1. **包名**：`@xyflow/react`（非旧包名 `reactflow`）
-2. **样式导入**：全局 CSS 中有 `@import '@xyflow/react/dist/style.css'`
-3. **容器尺寸**：ReactFlow 父容器有明确的 width + height（CSS）
-4. **Provider**：使用 hooks 的组件被 `<ReactFlowProvider>` 包裹（且 Provider 在外层）
-5. **nodeTypes/edgeTypes**：定义在组件外部或用 `useMemo` 包裹
+1. `reactflow.dev` 的 API Reference / Learn / Troubleshooting
+2. `reactflow.dev` 官方 examples
+3. 官方 migration guide
+4. 官方 GitHub 仓库 `xyflow/xyflow` 与官方 discussions 的公开实现线索
 
----
+取舍规则：
 
-## 3) 节点、边与自定义组件
-
-> 完整 API、Handle 进阶、辅助组件、主题样式见 `references/custom-components.md`
-> Hooks 与工具函数见 `references/api-reference.md`
-
-### 3.1 Node 数据结构
-
-```tsx
-const node: Node = {
-  id: 'node-1',              // 唯一标识（必需）
-  position: { x: 0, y: 0 },  // 画布坐标（必需）
-  data: { label: 'Hello' },   // 自定义数据，传给节点组件（必需）
-  type: 'custom',             // 匹配 nodeTypes 的 key（可选，默认 'default'）
-};
-```
-
-⚠️ `width`/`height` 是运行时只读计算值，控制节点尺寸用 CSS `style`/`className`。
-
-内置节点类型：`'default'`（双向）、`'input'`（仅输出）、`'output'`（仅输入）、`'group'`（容器）
-
-### 3.2 Edge 数据结构
-
-```tsx
-const edge: Edge = {
-  id: 'edge-1',       // 唯一标识（必需）
-  source: 'node-1',   // 起始节点 id（必需）
-  target: 'node-2',   // 目标节点 id（必需）
-  type: 'smoothstep',  // 可选，默认 'default'（贝塞尔）
-};
-```
-
-内置边类型：`'default'`（贝塞尔）、`'straight'`、`'step'`、`'smoothstep'`、`'simplebezier'`
-
-### 3.3 自定义节点
-
-自定义节点 = 普通 React 组件 + Handle。React Flow 自动注入 `NodeProps<T>`。
-
-```tsx
-type MyNode = Node<{ label: string; value: number }, 'myNode'>;
-
-function MyNodeComponent({ data, id, selected }: NodeProps<MyNode>) {
-  return (
-    <div className={`my-node ${selected ? 'selected' : ''}`}>
-      <Handle type="target" position={Position.Top} />
-      <div className="nodrag"><span>{data.label}</span></div>
-      <Handle type="source" position={Position.Bottom} />
-    </div>
-  );
-}
-export default memo(MyNodeComponent);
-```
-
-**注册**（组件外定义，绝对禁止在渲染函数内创建）：
-
-```tsx
-const nodeTypes = { myNode: MyNodeComponent };
-<ReactFlow nodeTypes={nodeTypes} ... />
-```
-
-**检查项**：
-
-- [ ] `React.memo()` 包裹
-- [ ] TypeScript 用 `Node<Data, Type>` + `NodeProps<T>` 泛型
-- [ ] 可交互元素加 `className="nodrag"`
-- [ ] Handle 有正确的 `type` 和 `position`
-- [ ] 多 Handle 时每个有唯一 `id`
-- [ ] `type` 字符串与 nodeTypes key **大小写完全一致**
-
-### 3.4 自定义边
-
-自定义边 = SVG 路径组件。用内置路径函数生成 path，用 `<BaseEdge>` 渲染。
-
-```tsx
-type MyEdge = Edge<{ color: string }, 'myEdge'>;
-
-function MyEdgeComponent({ sourceX, sourceY, targetX, targetY, ...props }: EdgeProps<MyEdge>) {
-  const [edgePath] = getSmoothStepPath({ sourceX, sourceY, targetX, targetY });
-  return <BaseEdge path={edgePath} {...props} />;
-}
-export default memo(MyEdgeComponent);
-```
-
-**规则**：
-
-- 始终用 `<BaseEdge>` 渲染路径，不要自己写 `<path>`
-- 用内置路径函数：`getBezierPath` / `getSmoothStepPath` / `getStraightPath` / `getSimpleBezierPath`
-- 路径函数返回 `[path, labelX, labelY, offsetX, offsetY]`
-- 边上 label 用 `<EdgeLabelRenderer>` 组件（HTML 渲染）
-- 不要手写 SVG path 命令，除非有极特殊的曲线需求
-
-### 3.5 Handle
-
-Handle = 节点上的连接点（DOM div，非 SVG）。
-
-| 规则 | 原因 |
-|------|------|
-| 多个同类型 Handle 必须给唯一 `id` | 否则边无法区分连接哪个 Handle |
-| 隐藏用 `opacity: 0` 或 `visibility: hidden` | `display: none` 破坏内部尺寸计算 |
-| 动态增减 Handle 后调 `useUpdateNodeInternals()` | 否则位置不刷新 |
-| Handle 子元素加 `pointer-events: none` | 否则子元素拦截连接拖拽事件 |
-
-### 3.6 持久化：该存什么，不该存什么
-
-用 `rfInstance.toObject()` 获取完整快照：`{ nodes, edges, viewport }`
-
-**必须持久化**：`id`, `position`, `data`, `type`, `style`, `className`, `parentId` 等用户配置属性
-
-**不要持久化**（运行时瞬态）：`selected`, `dragging`, `resizing`, `measured`, `width`, `height`
-
-Zustand persist 骨架：
-
-```tsx
-persist(storeCreator, {
-  name: 'flow-storage',
-  partialize: (state) => ({
-    nodes: state.nodes.map(({ selected, dragging, resizing, measured, ...rest }) => rest),
-    edges: state.edges.map(({ selected, ...rest }) => rest),
-    viewport: state.viewport,
-  }),
-});
-```
+- API 事实以 API Reference 为准
+- 设计建议与排查方式以 Learn / Troubleshooting 为准
+- 具体实现手法可以参考 examples，但**不要把 example 的某种写法误写成唯一合法方式**
+- 仓库源码、discussion、release 说明只作为补充上下文，不反向覆盖 docs/API
 
 ---
 
-## 4) 核心规则
+## 4) 启动检查清单
 
-### 4.1 类型注册 —— 组件外定义
+只要开始处理 React Flow 任务，先检查这几项：
 
-```tsx
-// ✅ 组件外部定义，引用永远稳定
-const nodeTypes = { custom: CustomNode, number: NumberNode };
-const edgeTypes = { special: SpecialEdge };
+1. 包名是否为 `@xyflow/react`
+2. 是否导入了样式：
+   - 通常用 `@xyflow/react/dist/style.css`
+   - 仅在完全自定义样式时才考虑 `base.css`
+3. React Flow 父容器是否有明确的 `width` 和 `height`
+4. 使用 hooks 的组件是否位于 `<ReactFlow />` 或 `<ReactFlowProvider />` 内部
+5. `nodeTypes` / `edgeTypes` 是否保持稳定引用
+6. 是否把运行时测量字段当成可持久化业务字段使用
 
-function FlowEditor() {
-  return <ReactFlow nodeTypes={nodeTypes} edgeTypes={edgeTypes} ... />;
-}
-```
-
-**绝对禁止**在组件内部直接写 `nodeTypes={{ custom: CustomNode }}`——每次渲染创建新对象，全量卸载并重挂载所有节点。
-
-### 4.2 事件处理 —— useCallback 包裹
-
-```tsx
-const onNodesChange = useCallback(
-  (changes: NodeChange[]) => setNodes(nds => applyNodeChanges(changes, nds)),
-  []
-);
-const onEdgesChange = useCallback(
-  (changes: EdgeChange[]) => setEdges(eds => applyEdgeChanges(changes, eds)),
-  []
-);
-const onConnect = useCallback(
-  (conn: Connection) => setEdges(eds => addEdge(conn, eds)),
-  []
-);
-```
-
-不用 useCallback → 100 节点 FPS 从 60 降到 10。
-
-### 4.3 不可变状态更新
-
-```tsx
-// ✅ node 和 node.data 都创建新对象
-setNodes(nds => nds.map(n =>
-  n.id === id ? { ...n, data: { ...n.data, value: newVal } } : n
-));
-
-// ❌ 直接修改 —— React Flow 检测不到变化
-node.data.value = newVal;
-```
-
-### 4.4 连接验证
-
-业务规则在 `isValidConnection` 中前置校验：
-
-```tsx
-const isValidConnection = useCallback((conn: Connection) => {
-  if (conn.source === conn.target) return false;
-  const outgoers = getOutgoers(conn.source, nodes, edges);
-  return !outgoers.some(n => n.id === conn.target);
-}, [nodes, edges]);
-```
-
-连接数量限制：
-
-```tsx
-<Handle type="target" isConnectable={(connections) => connections.length < 2} />
-```
+如果这些前置项没过，不要直接跳到复杂排查。
 
 ---
 
-## 5) 性能优化
+## 5) 最佳实践
 
-> 详细检查清单见 `references/performance-checklist.md`
+### 5.1 稳定引用优先
 
-**策略一：memo 一切传给 ReactFlow 的东西**
+**官方事实**
 
-| 传入类型 | 方法 |
-|----------|------|
-| 自定义节点/边组件 | `React.memo()` |
-| 事件回调 | `useCallback` |
-| object/array props | `useMemo` 或组件外定义 |
-| nodeTypes / edgeTypes | 组件外定义 |
+- React Flow 官方 performance 文档明确要求：传给 `<ReactFlow />` 的组件、函数、数组、对象都要尽量保持稳定引用。
+- 常见重渲染来源不是“图太大”，而是你每次 render 都在重建 props。
 
-**策略二：按需订阅**
+**执行规则**
 
-```tsx
-// ❌ 任何节点变化都重渲染
-const nodes = useNodes();
+- 静态 `nodeTypes` / `edgeTypes`：优先放模块顶层
+- 若确实依赖运行时值：用 `useMemo`
+- 事件回调：用 `useCallback`
+- 传给 `<ReactFlow />` 的 object / array props（如 `snapGrid`、`defaultEdgeOptions`）：用 `useMemo`
 
-// ✅ 只取需要的值
-const nodeCount = useStore(s => s.nodes.length);
+**不要写成硬规则的说法**
 
-// ✅ Zustand 返回数组时用 useShallow
-const [a, b] = useFlowStore(useShallow(s => [s.propA, s.propB]));
-```
+- 不要说“只能放组件外”
+- 更准确的说法是：**静态配置优先模块顶层；动态配置至少要保证稳定引用**
 
-**策略三：大图优化**
+### 5.2 更新 nodes / edges 时必须保持不可变
 
-| 规模 | 措施 |
-|------|------|
-| 100+ 节点 | 简化 CSS（去 box-shadow / gradient / animation） |
-| 500+ 节点 | 嵌套子图用 `hidden: true` 折叠 |
-| 重型节点 | 将重型内容隔离到独立 `memo` 子组件 |
+**官方事实**
+
+- 官方 state management guide 明确强调：更新节点数据时必须返回新对象，React Flow 才能感知变化。
+
+**执行规则**
+
+- 更新 node 时至少替换：
+  - `node`
+  - 若修改 `data`，也替换 `node.data`
+- 不要直接改原对象字段
+
+### 5.3 先选对状态模式，再谈实现细节
+
+官方并没有说“所有复杂项目都必须 Zustand”，但官方 state management guide 明确给出了使用 Zustand 的理由和适用场景。
+
+优先按下面选型：
+
+- `Uncontrolled`
+  - 适合简单展示、轻交互 demo、很少从外部同步状态的场景
+- `Controlled`
+  - 适合大多数编辑器
+  - 用 `useNodesState` / `useEdgesState` 起步最快
+- 外部 store（Zustand / Redux / Jotai 等）
+  - 当节点内部要更新全局图状态
+  - 当需要持久化、外部联动、复杂业务动作
+  - 当你需要把派生状态与渲染订阅解耦
+
+### 5.4 避免大范围订阅
+
+**官方事实**
+
+- Performance 文档明确指出：直接在组件里读取整个 `nodes` 或 `edges`，是最常见的性能坑之一。
+- 官方建议把经常用到的派生结果独立存储，而不是每次从整个数组现算。
+
+**执行规则**
+
+- 不要在高频更新的自定义节点 / 面板中直接依赖整个 `nodes` / `edges`
+- 一次性查询：优先 `useReactFlow()` 的实例方法，如 `getNodes()` / `getEdges()`
+- 订阅局部状态：优先 selector
+- 如果你只关心“选中的节点 id 列表”之类的派生值，优先把它单独维护
+
+### 5.5 连接规则分两层
+
+**官方事实**
+
+- 全局连接合法性由 `isValidConnection` 控制
+- Handle 层面可用 `isConnectable`、`isConnectableStart`、`isConnectableEnd` 做局部限制
+- 官方 `Preventing Cycles` example 用 `useReactFlow().getNodes()/getEdges()` 来保持 `isValidConnection` callback 稳定
+
+**执行规则**
+
+- 全局业务规则放 `isValidConnection`
+- Handle 局部限制放 Handle props
+- 要做 cycle 校验时，优先参考官方 `Preventing Cycles` example，不要手写一个每 render 都捕获新 `nodes/edges` 的版本
+
+### 5.6 Handle 相关问题先排查三件事
+
+1. 多个同类型 Handle 是否有唯一 `id`
+2. Handle 是否被 `display: none`
+3. 是否在程序化增删 Handle 后调用 `useUpdateNodeInternals()`
+
+**官方事实**
+
+- 官方 handles 文档明确说明：隐藏 Handle 不要用 `display: none`，而要用 `visibility: hidden` 或 `opacity: 0`
+- common errors 文档说明：多 Handle 找不到或动态增删后未刷新 internals，都会导致连边异常
+
+### 5.7 自定义边通常用 `<BaseEdge />`，但不要把“通常”说成“必须”
+
+**官方事实**
+
+- 官方 custom edges guide 的推荐路径是：路径由工具函数生成，渲染通常使用 `<BaseEdge />`
+- 同一页也明确说明：如果你需要其它路径形状，可以自己构造 SVG path
+
+**执行规则**
+
+- 默认优先 `<BaseEdge /> + path utils`
+- 遇到特殊几何形状时，允许自己生成 path
+- 如果边进入 Handle 的角度异常，优先检查是否把 `sourcePosition` / `targetPosition` 传给 path util
+
+### 5.8 输入类节点优先避免“拖拽/平移/滚轮”冲突
+
+优先使用官方 utility classes：
+
+- `nodrag`
+- `nopan`
+- `nowheel`
+
+不要把这类冲突全部归因于 React Flow bug；很多时候只是交互类名没加对。
+
+### 5.9 Sub Flow 不是普通分组 div
+
+**官方事实**
+
+- React Flow 用 `parentId` 表示父子节点关系
+- `extent: 'parent'` 可限制子节点移动范围
+- common errors 明确有 `Only child nodes can use a parent extent`
+
+**执行规则**
+
+- 真正的父子关系用 `parentId`
+- 只在 child node 上使用 `extent: 'parent'`
+- 处理 group / nested graph 时，把层级、拖拽边界和序列化字段一起考虑，不要只改视觉
+
+### 5.10 TypeScript 要从“节点/边 union”开始
+
+推荐模式：
+
+1. 为每种自定义节点定义 `Node<Data, Type>`
+2. 为每种自定义边定义 `Edge<Data, Type>`
+3. 组合成 `AppNode` / `AppEdge` union
+4. 把 union 传给：
+   - `NodeProps`
+   - `EdgeProps`
+   - `useReactFlow<AppNode, AppEdge>()`
+   - 相关 handler 类型
+
+如果项目混用 built-in 和 custom 类型，查官方 TypeScript guide 里的 `BuiltInNode` / `BuiltInEdge` 组合方式，不要自己发明一个半兼容的联合类型。
 
 ---
 
-## 6) 状态管理
+## 6) 持久化与运行时字段
 
-### 6.1 三种模式
+**官方事实**
 
-**Uncontrolled**：`defaultNodes`/`defaultEdges`，React Flow 内部管理。适合简单展示。
+- `ReactFlowInstance.toObject()` 可以导出 `nodes`、`edges`、`viewport`
+- `Node.width` / `Node.height` 是内部计算得到的只读维度
+- v12 引入了 `measured` 字段用于测量结果
 
-**Controlled**：用 `useNodesState`/`useEdgesState` 管理状态 + `onNodesChange`/`onEdgesChange`/`onConnect` 回调。
+**执行规则**
 
-**Zustand Store（推荐复杂应用）**：
-
-```tsx
-const useFlowStore = create<FlowState>((set, get) => ({
-  nodes: [],
-  edges: [],
-  onNodesChange: (changes) => set({ nodes: applyNodeChanges(changes, get().nodes) }),
-  onEdgesChange: (changes) => set({ edges: applyEdgeChanges(changes, get().edges) }),
-  onConnect: (connection) => set({ edges: addEdge(connection, get().edges) }),
-  updateNodeData: (nodeId, data) =>
-    set({ nodes: get().nodes.map(n =>
-      n.id === nodeId ? { ...n, data: { ...n.data, ...data } } : n
-    ) }),
-}));
-```
-
-### 6.2 选型条件
-
-- IF 简单展示/原型 → Uncontrolled
-- IF 需要从节点内部更新状态 → Controlled 或 Zustand
-- IF 外部状态联动 / 持久化 / 复杂验证 → Zustand store
-- IF 项目已用 Redux → Redux + selector 隔离
-
-### 6.3 输入框状态与 node.data 分离
-
-⚠️ 不要用 `node.data` 直接驱动 input value，会光标跳动。
-
-```tsx
-function InputNode({ data, id }: NodeProps) {
-  const [localValue, setLocalValue] = useState(data.savedValue ?? '');
-  const { updateNodeData } = useReactFlow();
-  return (
-    <input
-      className="nodrag"
-      value={localValue}
-      onChange={(e) => setLocalValue(e.target.value)}
-      onBlur={() => updateNodeData(id, { savedValue: localValue })}
-    />
-  );
-}
-```
-
-### 6.4 读取关联节点数据
-
-```tsx
-function ComputeNode({ id }: NodeProps) {
-  const connections = useHandleConnections({ type: 'target' });
-  const sourceData = useNodesData(connections.map(c => c.source));
-  const sum = sourceData.reduce((acc, d) => acc + (d.data?.value ?? 0), 0);
-  return <div>Sum: {sum}</div>;
-}
-```
+- 持久化只保存真正的业务配置与视口
+- 对运行时字段保持保守态度，尤其是：
+  - `selected`
+  - `dragging`
+  - `resizing`
+  - `measured`
+- 不要把 `width` / `height` 当成你自己的主数据源
 
 ---
 
-## 7) TypeScript 类型设计
+## 7) 故障排查顺序
 
-模式：定义节点类型 → Union → 泛型传递 → 类型守卫
+遇到问题时，按下面顺序排查，不要一上来猜：
 
-```tsx
-type NumberNode = Node<{ number: number }, 'number'>;
-type TextNode = Node<{ text: string }, 'text'>;
-type AppNode = NumberNode | TextNode;
+### 7.1 画布空白 / 不渲染
 
-const { getNodes } = useReactFlow<AppNode, AppEdge>();
+先查：
 
-function isNumberNode(node: AppNode): node is NumberNode {
-  return node.type === 'number';
-}
-```
+1. 父容器尺寸
+2. 样式导入
+3. hooks 是否处在 `<ReactFlow />` / `<ReactFlowProvider />` 内
 
-事件处理泛型：`OnNodeDrag<AppNode>`, `OnConnect` 等均支持泛型参数。
+### 7.2 边不显示 / 边显示异常
 
----
+先查：
 
-## 8) 故障排查速查
+1. edge 是否有 `source` 和 `target`
+2. Handle id 是否存在
+3. 动态 Handle 后是否调用了 `useUpdateNodeInternals()`
+4. 自定义边是否正确传入 `sourcePosition` / `targetPosition`
+5. 外部 CSS 是否破坏了边样式
 
-| 症状 | 最可能原因 | 修复 |
-|------|-----------|------|
-| 边不显示 | 缺少 CSS 导入 | `@import '@xyflow/react/dist/style.css'` |
-| 无限重渲染 | nodeTypes/edgeTypes 在渲染中重建 | 移到组件外 |
-| "zustand provider" 报错 | ReactFlowProvider 位置不对 | Provider 包在 hooks 组件**外层** |
-| 画布空白 | 容器无尺寸 | CSS width + height |
-| Handle 连不上 | 多 Handle 缺少 id | 给唯一 id |
-| Handle 位置偏移 | 动态 Handle 后未更新 | `updateNodeInternals(nodeId)` |
-| 节点类型不生效 | type 大小写不匹配 | node.type 与 nodeTypes key 完全一致 |
-| 拖拽时输入框失焦 | 未阻止拖拽 | `className="nodrag"` |
-| 输入光标跳动 | node.data 直接驱动 input | 分离本地 state（6.3） |
-| 拖拽卡顿 | 未 memo / 订阅整个数组 | 见第 5 节 |
-| CSS 库覆盖边样式 | 外部 CSS 优先级更高 | RF 样式最后加载 |
-| Zustand 重复版本 | monorepo 多版本 | `npm ls @xyflow/react` |
+### 7.3 无限重渲染 / 拖拽卡顿
+
+先查：
+
+1. `nodeTypes` / `edgeTypes` / callbacks / object props 是否稳定
+2. 是否在自定义节点或面板里读了整个 `nodes` / `edges`
+3. 重型节点内容是否被拆到独立 `memo` 组件
+4. 样式是否过重
+
+### 7.4 provider / zustand ancestor 报错
+
+这类问题优先检查组件层级，不要先怀疑 Zustand 本身。
 
 ---
 
-## 9) 子流程与嵌套节点
+## 8) 触发后建议输出格式
 
-- 子节点 `parentId` 指向父节点 id
-- **父节点必须在 nodes 数组中排在子节点之前**
-- `extent: 'parent'` 限制子节点不能拖出父节点
-- 子节点边设合适 `zIndex` 确保渲染在父节点之上
+当你用这个 skill 回答用户时，输出优先包含：
+
+1. **问题归类**
+   - 这属于搭建、性能、Handle、状态管理还是 sub flow
+2. **官方事实**
+   - 哪条来自 API / Learn / Troubleshooting / example
+3. **根因判断**
+   - 不是列十个可能性，而是给最可能的 1-3 个
+4. **修复方案**
+   - 先最小修复，再必要重构
+5. **验证方式**
+   - 改完如何确认问题真正消失
+
+如果是在改代码：
+
+- 先修“前置配置错误”
+- 再修“状态模型错误”
+- 最后才是“局部表现层 workaround”
+
+---
+
+## 9) 你应该主动引用的官方页面
+
+优先查这些：
+
+- `references/official-alignment.md`
+- `references/api-reference.md`
+- `references/custom-components.md`
+- `references/performance-checklist.md`
+
+当问题更具体时，优先回到对应官方页面，而不是只复用 skill 里的总结。
+
+---
+
+## 10) 明确禁止
+
+- 不要把未经官方证据支持的性能数字写成结论
+- 不要把某个 example 的写法写成“唯一正确方式”
+- 不要把运行时字段当稳定业务字段持久化
+- 不要在没有核对官方资料时，自信地下 deprecated / replacement 结论
+- 不要看到 React Flow 问题就默认上 Zustand；先判断状态边界

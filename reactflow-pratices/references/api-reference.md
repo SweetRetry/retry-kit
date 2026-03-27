@@ -1,340 +1,290 @@
-# React Flow Hooks & 工具函数速查
+# React Flow API / Hooks / Utils 速查
 
-> 所有 import 均从 `@xyflow/react`
+> 用途：当你已经知道问题大类，需要快速定位该用哪个 hook、哪个 util、哪些 API 已废弃。
+> 基准：React Flow 官方 API Reference + v12 migration guide。
 
-## 1. 状态管理 Hooks
+## 1. 状态与实例
 
-### useNodesState
+### `useNodesState`
 
-```tsx
-useNodesState<NodeType>(initialNodes: NodeType[]): [
-  nodes: NodeType[],
-  setNodes: Dispatch<SetStateAction<NodeType[]>>,
-  onNodesChange: OnNodesChange<NodeType>
-]
-```
+适合：
 
-管理节点状态 + 内置 change handler。适合原型和中小项目；复杂应用推荐 Zustand。
+- `controlled` 模式起步
+- 中小型编辑器
+- 还没引入外部 store
 
-### useEdgesState
+返回：
 
 ```tsx
-useEdgesState<EdgeType>(initialEdges: EdgeType[]): [
-  edges: EdgeType[],
-  setEdges: Dispatch<SetStateAction<EdgeType[]>>,
-  onEdgesChange: OnEdgesChange<EdgeType>
-]
+const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
 ```
 
-管理边状态 + 内置 change handler。同上。
-
-### useReactFlow
+典型搭配：
 
 ```tsx
-useReactFlow<NodeType, EdgeType>(): ReactFlowInstance<NodeType, EdgeType>
+const onConnect = useCallback(
+  (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+  [setEdges]
+);
 ```
 
-获取实例方法：`fitView`, `getZoom`, `setCenter`, `getNodes`, `setNodes`, `getEdges`, `setEdges`, `updateNodeData`, `screenToFlowPosition`, `flowToScreenPosition`, `toObject` 等。
+### `useEdgesState`
 
-⚠️ **不会因状态变化重渲染**——调用方法时才查询最新状态。在 `useEffect`/`useCallback` 中需将返回值加入依赖数组（首次渲染时未初始化）。
-
-### useViewport
+与 `useNodesState` 成对使用：
 
 ```tsx
-useViewport(): { x: number; y: number; zoom: number }
+const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 ```
 
-获取当前视口状态。视口变化时触发重渲染。
+### `useReactFlow`
 
-### useNodes / useEdges
+适合：
 
-```tsx
-useNodes(): Node[]
-useEdges(): Edge[]
-```
+- 命令式读写 flow 状态
+- 一次性查询当前图状态
+- 视口控制
+- 在稳定 callback 中取最新 `nodes/edges`
 
-⚠️ **高频变化**——拖拽/缩放时每帧都变。自定义节点中慎用，优先用 `useStore(selector)` 取标量值。
+关键点：
+
+- 它**不会**因为状态变化自动触发组件重渲染
+- 如果在 `useCallback` / `useEffect` 里使用，要把返回的 `reactFlow` 实例加入依赖
+
+常用方法：
+
+- `getNodes()`
+- `getEdges()`
+- `setNodes()`
+- `setEdges()`
+- `updateNodeData()`
+- `fitView()`
+- `setCenter()`
+- `screenToFlowPosition()`
+- `flowToScreenPosition()`
+- `toObject()`
+
+### `useViewport`
+
+适合读取当前：
+
+- `x`
+- `y`
+- `zoom`
+
+它会随视口变化而重渲染。若只是偶发读取视口，不要为了这一点订阅整个 viewport。
 
 ---
 
-## 2. 连接与查询 Hooks
+## 2. 连接、节点数据与动态 Handle
 
-### useConnection
+### `useNodeConnections`
 
-```tsx
-useConnection<SelectorReturn>(
-  connectionSelector?: (connection: ConnectionState) => SelectorReturn
-): SelectorReturn | ConnectionState
-```
+优先级高于 `useHandleConnections`。
 
-跟踪拖拽中的连接状态。传 selector 可避免无关属性变化导致重渲染。无连接时所有属性为 null。
+适合：
 
-典型用途：根据连接有效性动态改变 Handle 颜色。
+- 在自定义节点里读取某个 Handle 或某类连接
+- 监听 `onConnect` / `onDisconnect`
 
-### useNodeConnections
+### `useHandleConnections`
 
-```tsx
-useNodeConnections(options?: {
-  id?: string;              // 节点 id，自定义节点内自动填充
-  handleType: 'source' | 'target';
-  handleId?: string;        // 多 Handle 时按 id 过滤
-  onConnect?: (connections: HandleConnection[]) => void;
-  onDisconnect?: (connections: HandleConnection[]) => void;
-}): NodeConnection[]
-```
+状态：
 
-获取节点的连接列表。支持 `onConnect`/`onDisconnect` 回调。
+- **已废弃**
 
-### useHandleConnections（已废弃）
+处理原则：
 
-```tsx
-useHandleConnections(options: {
-  type: 'source' | 'target';
-  id?: string | null;
-  nodeId?: string;
-  onConnect?: (connections: Connection[]) => void;
-  onDisconnect?: (connections: Connection[]) => void;
-}): HandleConnection[]
-```
+- 新代码不要再基于它设计
+- 旧代码迁移时优先改成 `useNodeConnections`
 
-⚠️ **已废弃**，请用 `useNodeConnections()` 替代。
+### `useNodesData`
 
-### useNodesData
+适合：
 
-```tsx
-// 单节点
-useNodesData<NodeType>(nodeId: string): Pick<NodeType, 'id' | 'type' | 'data'> | null
-// 多节点
-useNodesData<NodeType>(nodeIds: string[]): Pick<NodeType, 'id' | 'type' | 'data'>[]
-```
+- 订阅特定节点的 `data`
+- 构建“计算型节点”
 
-订阅指定节点的 `data` 变化。单节点不存在时返回 `null`。
+注意：
 
-### useNodeId
+- 它适合精确订阅某几个节点的数据
+- 不适合替代整图层面的状态设计
 
-```tsx
-useNodeId(): string | null
-```
+### `useNodeId`
 
-在自定义节点内获取当前节点 id，避免 prop drilling。
+适合在自定义节点内部取当前节点 id，减少 prop drilling。
+
+### `useUpdateNodeInternals`
+
+适合：
+
+- 动态增删 Handle
+- 程序化调整 Handle 位置后刷新 internals
+
+如果多 Handle 场景下“看起来 DOM 在，但连边不对”，先想到它。
 
 ---
 
-## 3. 交互与生命周期 Hooks
+## 3. 事件与生命周期
 
-### useOnSelectionChange
+### `useOnSelectionChange`
 
-```tsx
-useOnSelectionChange(params: {
-  onChange: (params: { nodes: NodeType[]; edges: EdgeType[] }) => void;
-}): void
-```
+关键点：
 
-⚠️ **onChange 必须 memoize**（`useCallback`），否则 hook 行为不正确。
+- 传入的 `onChange` 需要保持稳定引用，通常用 `useCallback`
 
-### useOnViewportChange
+### `useOnViewportChange`
 
-```tsx
-useOnViewportChange(callbacks: {
-  onStart?: (viewport: Viewport) => void;
-  onChange?: (viewport: Viewport) => void;
-  onEnd?: (viewport: Viewport) => void;
-}): void
-```
+适合分阶段监听：
 
-分阶段监听视口变化：开始、进行中、结束。
+- `onStart`
+- `onChange`
+- `onEnd`
 
-### useKeyPress
+### `useNodesInitialized`
 
-```tsx
-useKeyPress(keyCode: string | string[], options?: {
-  target?: Window | Document | HTMLElement | ShadowRoot | null;  // 默认 document
-  actInsideInputWithModifier?: boolean;  // 默认 true
-  preventDefault?: boolean;
-}): boolean
-```
+适合：
 
-检测键盘按键。支持组合键（`'a+d'`）和多键（`['a', 'd+s']`）。不依赖 ReactFlowInstance，可在任意组件使用。
+- 等节点首次测量完成后再做自动布局
+- 避免在宽高尚未稳定时提前布局
 
-### useUpdateNodeInternals
+### `useKeyPress`
 
-```tsx
-useUpdateNodeInternals(): (nodeId: string | string[]) => void
-```
+适合：
 
-返回更新函数。动态增减 Handle 后必须调用，支持批量传入节点 id 数组。
-
-### useNodesInitialized
-
-```tsx
-useNodesInitialized(options?: { includeHiddenNodes?: boolean }): boolean
-```
-
-所有节点完成首次测量（有 width/height）后返回 `true`。节点数组为空时始终返回 `false`。
-
-用于布局计算时机：等此值为 `true` 后再执行自动布局。
+- Flow 内快捷键
+- 删除、复制、组合键交互
 
 ---
 
-## 4. 高级 Hooks（谨慎使用）
+## 4. 直接访问内部 store
 
-### useStore
+### `useStore`
 
-```tsx
-useStore<StateSlice>(
-  selector: (state: ReactFlowState) => StateSlice,
-  equalityFn?: (a: StateSlice, b: StateSlice) => boolean
-): StateSlice
-```
+只在下面场景使用：
 
-直接访问内部 Zustand store。**必须用 selector**，不取整个 store。`equalityFn` 可用 `zustand/shallow` 防止不必要重渲染。
+- 专用 hook 不够用
+- 你明确知道要订阅哪个 slice
 
-优先用 `useReactFlow()` / `useViewport()` 等专用 hook，仅在无其他方式时使用。
+使用原则：
 
-### useStoreApi
+- 一定要传 selector
+- 不要订阅整个 store
+- selector 返回对象/数组时要考虑 equality 策略
 
-```tsx
-useStoreApi(): StoreApi<ReactFlowState>
-```
+### `useStoreApi`
 
-获取 store API，用于命令式读写（`getState()` / `setState()`）。仅高级场景。
+适合命令式访问内部 store：
 
-### useInternalNode
+- `getState()`
+- `setState()`
 
-```tsx
-useInternalNode<NodeType>(id: string): InternalNode<NodeType> | undefined
-```
+不适合把业务状态长期绑定在内部实现细节上。
 
-获取节点内部数据（含 `internals.positionAbsolute` 等）。⚠️ 任何节点变化都触发重渲染。内部实现细节，API 可能变更。
+### `useInternalNode`
+
+用途：
+
+- 读取内部节点数据做调试或高级能力
+
+风险：
+
+- 内部细节耦合更高
+- 节点变化时更容易重渲染
+
+若有公开 API，可优先用公开 API。
 
 ---
 
-## 5. 工具函数
+## 5. Utils 该怎么选
 
-### 节点/边变更
-
-```tsx
-applyNodeChanges<NodeType>(changes: NodeChange<NodeType>[], nodes: NodeType[]): NodeType[]
-applyEdgeChanges<EdgeType>(changes: EdgeChange<EdgeType>[], edges: EdgeType[]): EdgeType[]
-addEdge<EdgeType>(
-  edgeParams: Edge | Connection,
-  edges: EdgeType[],
-  options?: { getEdgeId?: GetEdgeId }
-): EdgeType[]
-```
-
-- `applyNodeChanges` / `applyEdgeChanges`：应用 Change 数组到节点/边数组
-- `addEdge`：从 Connection 创建新边，自动防重复
-
-### 边操作
+### 变更应用
 
 ```tsx
-reconnectEdge<EdgeType>(
-  oldEdge: EdgeType,
-  newConnection: Connection,
-  edges: EdgeType[],
-  options?: { shouldReplaceId?: boolean; getEdgeId?: GetEdgeId }
-): EdgeType[]
-
-getConnectedEdges<NodeType, EdgeType>(nodes: NodeType[], edges: EdgeType[]): EdgeType[]
+applyNodeChanges(changes, nodes)
+applyEdgeChanges(changes, edges)
 ```
 
-- `reconnectEdge`：重新连接边（v12 替代 `updateEdge`）。`shouldReplaceId` 默认 `true`
-- `getConnectedEdges`：查找与给定节点关联的所有边
+适合：
+
+- `onNodesChange`
+- `onEdgesChange`
+
+### 新增边
+
+```tsx
+addEdge(connection, edges)
+```
+
+适合：
+
+- `onConnect`
+- 从 `Connection` 或 `Edge` 参数创建边
+
+### 重连边
+
+```tsx
+reconnectEdge(oldEdge, newConnection, edges, options?)
+```
+
+v12 里优先记住它，而不是旧名字。
+
+关键点：
+
+- `shouldReplaceId` 默认 `true`
 
 ### 图遍历
 
 ```tsx
-getIncomers<NodeType, EdgeType>(
-  node: NodeType | { id: string }, nodes: NodeType[], edges: EdgeType[]
-): NodeType[]
-
-getOutgoers<NodeType, EdgeType>(
-  node: NodeType | { id: string }, nodes: NodeType[], edges: EdgeType[]
-): NodeType[]
+getIncomers(node, nodes, edges)
+getOutgoers(node, nodes, edges)
+getConnectedEdges(nodes, edges)
 ```
 
-### 类型守卫
+适合：
 
-```tsx
-isNode(element: unknown): element is Node
-isEdge(element: unknown): element is Edge
-```
+- cycle 检测
+- 依赖传播
+- 级联删除 / 选择分析
 
-### 路径生成（用于自定义边）
+注意：
 
-所有路径函数返回 `[path: string, labelX: number, labelY: number, offsetX: number, offsetY: number]`。
-
-```tsx
-getBezierPath(params: {
-  sourceX, sourceY, targetX, targetY: number;
-  sourcePosition?: Position;   // 默认 Position.Bottom
-  targetPosition?: Position;   // 默认 Position.Top
-  curvature?: number;          // 默认 0.25
-}): [string, number, number, number, number]
-
-getSimpleBezierPath(params: {
-  sourceX, sourceY, targetX, targetY: number;
-  sourcePosition?: Position;
-  targetPosition?: Position;
-}): [string, number, number, number, number]
-
-getSmoothStepPath(params: {
-  sourceX, sourceY, targetX, targetY: number;
-  sourcePosition?: Position;
-  targetPosition?: Position;
-  borderRadius?: number;   // 默认 5，设 0 为直角
-  offset?: number;         // 默认 20
-  centerX?: number;
-  centerY?: number;
-}): [string, number, number, number, number]
-
-getStraightPath(params: {
-  sourceX, sourceY, targetX, targetY: number;
-}): [string, number, number, number, number]
-```
-
-### 视口
-
-```tsx
-getNodesBounds(
-  nodes: (string | NodeType | InternalNodeBase)[],
-  params?: { nodeOrigin?: NodeOrigin; nodeLookup?: NodeLookup }
-): Rect
-
-getViewportForBounds(
-  bounds: Rect,
-  width: number, height: number,
-  minZoom: number, maxZoom: number,
-  padding?: Padding
-): Viewport  // { x, y, zoom }
-```
-
-- `getNodesBounds`：获取节点集合的边界框（旧名 `getRectOfNodes`）
-- `getViewportForBounds`：计算适合边界的视口（旧名 `getTransformForBounds`），可用于服务端渲染
+- 这些 util 期望拿到 node 或至少带 `id` 的对象，而不是随手传一个字符串
 
 ---
 
-## 6. Change 类型定义
+## 6. v12 相关高频迁移点
 
-### NodeChange
+优先记住这些：
 
-```tsx
-type NodeChange<NodeType> =
-  | { type: 'position'; id: string; position: XYPosition; dragging: boolean }
-  | { type: 'dimensions'; id: string; dimensions: { width: number; height: number } }
-  | { type: 'select'; id: string; selected: boolean }
-  | { type: 'remove'; id: string }
-  | { type: 'add'; item: NodeType }
-  | { type: 'replace'; id: string; item: NodeType };
-```
+- 包名改为 `@xyflow/react`
+- `parentNode` 改为 `parentId`
+- `onEdgeUpdate` 系列改名为 `onReconnect`
+- `updateEdge` 的迁移方向是 `reconnectEdge`
+- `width` / `height` 与 `measured` 的语义在 v12 需要区分
+- `useHandleConnections` 属于 deprecated 路径
 
-### EdgeChange
+---
 
-```tsx
-type EdgeChange<EdgeType> =
-  | { type: 'add'; item: EdgeType }
-  | { type: 'remove'; id: string }
-  | { type: 'replace'; id: string; item: EdgeType }
-  | { type: 'select'; id: string; selected: boolean };
-```
+## 7. API 选型速决表
+
+| 需求 | 优先 API |
+| --- | --- |
+| 起步做 controlled flow | `useNodesState` + `useEdgesState` |
+| 需要一次性读取最新图状态 | `useReactFlow()` |
+| 订阅某个节点或若干节点的数据 | `useNodesData()` |
+| 监听当前节点连接关系 | `useNodeConnections()` |
+| 动态 Handle 后刷新 internals | `useUpdateNodeInternals()` |
+| 应用 nodes/edges 变更 | `applyNodeChanges()` / `applyEdgeChanges()` |
+| 新增连边 | `addEdge()` |
+| 重连边 | `reconnectEdge()` |
+| 遍历上下游 | `getIncomers()` / `getOutgoers()` |
+
+---
+
+## 8. 常见误用
+
+- 用 `useNodes()` / `useEdges()` 代替所有读取需求
+- 在 cycle 校验里每次捕获新的 `nodes/edges`
+- 继续围绕 `useHandleConnections` 设计新代码
+- 误把 `reconnectEdge` 当成普通编辑 edge 数据的通用替代品
+- 把内部 store API 当成长期稳定的业务边界

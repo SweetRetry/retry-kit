@@ -1,75 +1,113 @@
 # React Flow 性能检查清单
 
-## 必须项（所有项目）
+> 用途：把官方 performance guide 变成可执行检查表。
+> 基准：官方 `Performance` 文档 + state management guide + relevant examples。
 
-- [ ] `nodeTypes` / `edgeTypes` 定义在组件外部（不是 useMemo，是直接在模块顶层）
-- [ ] 所有事件 handler 用 `useCallback` 包裹，依赖数组稳定
-- [ ] 自定义节点/边组件用 `React.memo()` 包裹
-- [ ] 传给 ReactFlow 的 object/array props（`defaultEdgeOptions`, `snapGrid` 等）用 `useMemo`
-- [ ] 状态更新使用不可变模式（`{ ...node, data: { ...node.data } }`）
+## 1. 必查项
 
-## 按需订阅（避免雪崩重渲染）
+- [ ] `nodeTypes` / `edgeTypes` 保持稳定引用
+- [ ] 传给 `<ReactFlow />` 的 callback 用 `useCallback`
+- [ ] 传给 `<ReactFlow />` 的 object / array props 用 `useMemo` 或稳定常量
+- [ ] 自定义节点 / 边组件用 `React.memo`
+- [ ] nodes / edges 更新保持不可变
+- [ ] 没有在高频组件里直接订阅整个 `nodes` / `edges`
 
-**核心问题**：`nodes`/`edges` 数组在拖拽/缩放时每帧都变。
-在自定义节点或 UI 面板中直接引用整个数组 = 每帧重渲染所有消费者。
+---
 
-```tsx
-// ❌ 在自定义节点中用 useNodes() —— 任何节点拖拽都触发所有节点重渲染
-const nodes = useNodes();
+## 2. 最常见的性能坑
 
-// ❌ selector 返回新数组引用 —— 同样的问题
-const selected = useStore(s => s.nodes.filter(n => n.selected));
-
-// ✅ 取标量 —— 引用天然稳定
-const nodeCount = useStore(s => s.nodes.length);
-
-// ✅ 在 store 中维护独立派生状态
-// store 内: selectedNodeIds: string[]，在 selection change 时更新
-const selectedIds = useStore(s => s.selectedNodeIds);
-
-// ✅ 返回数组时用 useShallow
-import { useShallow } from 'zustand/react/shallow';
-const [a, b] = useFlowStore(useShallow(s => [s.propA, s.propB]));
-```
-
-**或者在 store 层面启用 shallow 比较**：
+### 坑 1：在组件里直接拿整个 `nodes`
 
 ```tsx
-import { createWithEqualityFn } from 'zustand/traditional';
-import { shallow } from 'zustand/shallow';
-
-const useFlowStore = createWithEqualityFn<FlowState>(
-  (set, get) => ({ /* ... */ }),
-  shallow // 所有 selector 自动 shallow 比较
-);
+// ❌ 每次拖拽、平移、缩放都可能导致依赖方重渲染
+const nodes = useStore((state) => state.nodes);
+const selectedIds = nodes.filter((node) => node.selected).map((node) => node.id);
 ```
 
-## 中型图（100-500 节点）
+更好的方向：
 
-- [ ] 自定义节点内不要直接读 `useNodes()` / `useEdges()`
-- [ ] Zustand selector 返回对象/数组时用 `useShallow` 或 store 级 shallow 比较
-- [ ] 减少 CSS `box-shadow` / `gradient` / `animation`
-- [ ] 自定义节点内避免复杂计算，尤其不要在 render 中做数组遍历
+- 单独维护派生状态
+- 或只订阅必要 slice
+- 一次性读取则改用 `useReactFlow().getNodes()`
 
-## 大型图（500+ 节点）
+### 坑 2：每次 render 都创建新 props
 
-- [ ] 嵌套子图用 `hidden: true` 折叠不可见部分
-- [ ] 重型节点内容（表格、图表等）隔离为独立 `React.memo()` 子组件
-- [ ] 考虑 CSS `contain: layout paint` 减少重排
-- [ ] 考虑分区加载 —— 只创建可见区域的节点
+典型对象：
 
-## 性能调试流程
+- `nodeTypes`
+- `edgeTypes`
+- `snapGrid`
+- `defaultEdgeOptions`
+- `proOptions`
 
-1. React DevTools Profiler → 添加 30+ 节点 → 录制 → 拖拽单个节点数秒 → 查看火焰图
-2. **优化后**：只有被拖拽的节点和关联边高亮（深灰 = 未渲染）
-3. **未优化**：大量节点在单次拖拽中被标记为重渲染
-4. 检查 "Why did this render?" —— 定位是 props 变化还是 parent re-render
+### 坑 3：重型节点内容和 Flow 外壳绑在一起
 
-## 官方基准参考
+如果节点里有表格、图表、富文本、复杂表单：
 
-| 场景 | 未优化 | 优化后 |
-|------|--------|--------|
-| 100 个默认节点拖拽 | ~10 FPS | 60 FPS |
-| 100 个重型节点（内嵌 DataGrid） | ~2 FPS | 35-40 FPS |
+- 把重型部分拆成独立 `memo` 子组件
+- 避免让它随着节点位置变化一起做无意义重渲染
 
-优化手段：`React.memo` + `useCallback` + selector 隔离 + 重型内容独立 memo。
+---
+
+## 3. 大图优化方向
+
+官方 performance 文档明确提到两件事：
+
+1. Collapse large node trees
+2. Simplify node and edge styles
+
+可执行化后：
+
+- [ ] 可以折叠的子树使用 `hidden`
+- [ ] 非关键节点减少阴影、渐变、持续动画
+- [ ] 节点内部不要在 render 阶段做大数组遍历
+- [ ] 只在真正需要时才渲染重型内容
+
+---
+
+## 4. 状态设计与性能是同一个问题
+
+如果你发现“图一大就卡”，不要只盯着 React memo。
+优先检查是不是状态模型本身让太多组件订阅了频繁变化的数据。
+
+优先级：
+
+1. 先减订阅范围
+2. 再稳定 props
+3. 最后才是局部 memo 补丁
+
+---
+
+## 5. 建议的排查流程
+
+1. 用 React DevTools Profiler 录制拖拽一个节点
+2. 看是否大量无关节点一起重渲染
+3. 如果是：
+   - 查 `nodeTypes` / callbacks / object props 是否稳定
+   - 查是否读了整个 `nodes` / `edges`
+   - 查 selector 是否返回新对象 / 新数组
+4. 如果不是：
+   - 查节点内部是否有重型 UI
+   - 查样式成本
+
+---
+
+## 6. 什么时候不要乱给数字
+
+除非你手里有当前项目的真实 profiling 证据，否则不要写：
+
+- “这个改动能把 FPS 提升到多少”
+- “100 个节点一定会怎样”
+- “500 个节点一定要上某个方案”
+
+官方 performance 文档给的是方向和模式，不是你的项目基准测试结果。
+
+---
+
+## 7. 一句话原则
+
+- 稳定引用
+- 最小订阅
+- 不可变更新
+- 重型内容隔离
+- 样式尽量轻
