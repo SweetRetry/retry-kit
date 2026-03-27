@@ -1,445 +1,371 @@
 ---
 name: videojs-react
 description: >
-  Video.js v10 (@videojs/react) React 视频播放器开发技能。覆盖
-  createPlayer 工厂模式、features 组合系统、Provider/usePlayer 状态订阅、
-  skins 使用与 eject、平台兼容性处理和性能优化。
+  Video.js v10 (@videojs/react) React 播放器开发技能。覆盖 createPlayer、
+  Provider/Container/usePlayer/useMedia、preset/feature/selectors、官方 skins、
+  自定义 UI 组合、缩略图 text track、Next.js client boundary 与平台集成边界。
 
-  触发场景：(1) 使用 @videojs/react 构建视频/音频播放器，
-  (2) 遇到 Video.js v10 播放、状态、样式相关问题，
-  (3) 需要自定义控制栏或 eject skin，
-  (4) 从 Video.js v8/v9 迁移到 v10，
+  触发场景：(1) 使用 @videojs/react 构建视频/音频/背景播放器，
+  (2) 遇到 Video.js v10 的状态订阅、样式、皮肤、平台兼容性问题，
+  (3) 需要自定义控制栏或基于官方 skin 继续扩展，
+  (4) 要从官方 preset 改成自定义组合，
   (5) 用户代码中出现 @videojs/react 的 import。
 
   Triggers: video.js, videojs, @videojs/react, createPlayer, VideoSkin,
   usePlayer, video player react, videojs v10, videojs react integration.
 ---
 
-# Video.js v10 React 开发规范
+# Video.js v10 React 官方对齐技能
 
-> `@videojs/react` v10 Beta（GA 预计 2026 年中）。**不要在生产环境迁移现有应用，等待官方迁移指南。**
+> 基准：`@videojs/react` 当前官方仓库主线、Video.js 官网首页 React 示例、`videojs/v10` 仓库源码。
+> 如果本 skill 与官方源码 / 官网示例冲突，优先以官方为准。
 
-核心原则：
+## 1) 这个 skill 的职责
 
-1. **工厂在外** —— `createPlayer()` 永远在模块级别调用，不在组件内
-2. **selector 订阅** —— `usePlayer(s => s.xxx)` 取最小状态，不订阅全 store
-3. **按需 features** —— 只引入用到的 features，利用 tree-shaking 减小包体积
-4. **先检查可用性** —— volume/fullscreen/pip 等 features 有平台限制，先读 `*Availability`
+这个 skill 不是旧版 Video.js 或 `video-react` 的通用说明书，而是专门面向 `@videojs/react` 的**官方对齐执行技能**。触发后优先做三件事：
+
+1. 先判断用户问题属于哪一类：
+   - 快速开始 / 组件搭建
+   - `createPlayer` 与 Context
+   - `usePlayer` / selectors / feature state
+   - 官方 skins 与自定义 UI
+   - 缩略图 / text track
+   - 平台集成 / Next.js
+   - 故障排查
+2. 用最接近问题的**官网示例或仓库源码**校准判断
+3. 在输出中明确区分：
+   - **官方源码 / package 事实**
+   - **官网示例推荐**
+   - **本 skill 的工程化归纳**
+
+配套参考：
+
+- 官方对齐：`references/official-alignment.md`
+- 导出 / hooks / selectors / features：`references/api-reference.md`
+- 平台、媒体源与缩略图：`references/streaming-and-platform.md`
 
 ---
 
-## 1) 触发边界
+## 2) 触发边界
 
 ### 必须触发
 
 - 用户代码 import 了 `@videojs/react`
-- 用户要构建视频播放器、音频播放器、背景视频
-- 用户遇到 Video.js v10 相关问题（播放控制、状态订阅、皮肤定制等）
-- 用户要从旧版 Video.js 迁移到 v10
+- 用户在做：
+  - 视频播放器
+  - 音频播放器
+  - 背景视频播放器
+  - 官方 skin 扩展
+  - 自定义 controls / tooltip / slider / popover
+- 用户遇到：
+  - `usePlayer` / Provider / Container 相关错误
+  - 样式或 skin 导入问题
+  - preset / feature / selector 选型问题
+  - 缩略图 / track / captions 相关问题
 
 ### 不适用
 
-- Video.js v8/v9（旧版 API 完全不同）
-- 使用其他播放器库（Plyr、Vidstack、react-player 等）
-- 纯 `<video>` 原生标签场景
+- 旧版 `video.js` v8/v9 API
+- `video-react`
+- 纯原生 `<video>`、其他播放器库（Vidstack、Plyr、react-player 等）
 
 ---
 
-## 2) 启动检查清单
+## 3) 官方资料优先级
 
-每次开始 Video.js v10 相关工作前，先验证：
+每次回答或改代码前，按这个顺序取证：
 
-1. **包名**：`@videojs/react`（而非旧版 `video.js`）
-2. **样式导入**：`import '@videojs/react/video/skin.css'`（按 preset 对应导入）
-3. **createPlayer 位置**：在组件**外部**（模块级）调用，不在函数体内
-4. **Provider 包裹**：`usePlayer` 必须在 `<Player.Provider>` 的子树内调用
-5. **`'use client'`**：Next.js App Router 中播放器组件必须标记为 Client Component
+1. `videojs.org` 官网首页与官方可见文档
+2. `videojs/v10` 仓库源码与 `packages/react/package.json`
+3. 官方 README / discussions / roadmap 文本
 
----
+取舍规则：
 
-## 3) 安装与快速开始
-
-```bash
-npm install @videojs/react
-# 或 pnpm / yarn / bun
-```
-
-最小可运行示例（视频播放器）：
-
-```tsx
-// components/player/index.tsx
-'use client';
-import '@videojs/react/video/skin.css';
-import { createPlayer } from '@videojs/react';
-import { videoFeatures, VideoSkin, Video } from '@videojs/react/video';
-
-// ✅ 模块级调用，引用永远稳定
-const Player = createPlayer({ features: videoFeatures });
-
-export function MyPlayer({ src }: { src: string }) {
-  return (
-    <Player.Provider>
-      <VideoSkin>
-        <Video src={src} playsInline />
-      </VideoSkin>
-    </Player.Provider>
-  );
-}
-```
-
-```tsx
-// app/page.tsx
-import { MyPlayer } from '../components/player';
-
-export default function Page() {
-  return <MyPlayer src="https://example.com/video.mp4" />;
-}
-```
+- API 导出、方法名、selector、feature、preset，以源码与 package exports 为准
+- 快速开始和推荐组合方式，以官网首页 React 示例为准
+- beta / GA / roadmap 这类信息是**时效信息**，只能按“当前官方这样写”描述，不能写成永久事实
 
 ---
 
-## 4) createPlayer 与 Features 系统
+## 4) 启动检查清单
 
-### 4.1 createPlayer 返回值
+只要开始处理 `@videojs/react` 任务，先检查：
 
-```tsx
-const Player = createPlayer({ features: [...] });
-// Player.Provider   — 状态管理层，初始化 Zustand store，必须包裹整个播放器树
-// Player.Container  — 布局容器层（forwardRef div），将 DOM 元素注册给 store
-// Player.usePlayer  — 状态订阅 hook
-```
-
-**Provider vs Container 的区别**：
-
-| | `Player.Provider` | `Player.Container` |
-|--|--|--|
-| 职责 | 初始化并分发 store（Context） | 包装 DOM，注册容器引用 |
-| display | `contents`（不影响布局） | 正常 `<div>` 布局 |
-| 必须用 | ✅ 是 | 视情况而定 |
-
-**何时需要 Container**：使用 VideoSkin 等官方 skin 时，Container 已内置其中，不需要手动写。自定义最小播放器（只要状态，不要标准 UI 布局）时可省略 Container，只保留 Provider。
-
-```tsx
-// 完整模式（Provider + Container，VideoSkin 内部已处理）
-<Player.Provider>
-  <VideoSkin>
-    <Video src={src} />
-  </VideoSkin>
-</Player.Provider>
-
-// 自定义最小化（省略 Container）
-<Player.Provider>
-  <Video src={src} />
-  <MyCustomControls />
-</Player.Provider>
-```
-
-### 4.2 三种 Preset
-
-| Preset | Features | Skin | 导入路径 |
-|--------|----------|------|----------|
-| 视频播放器 | `videoFeatures` | `<VideoSkin>`, `<MinimalVideoSkin>` | `@videojs/react/video` |
-| 音频播放器 | `audioFeatures` | `<AudioSkin>`, `<MinimalAudioSkin>` | `@videojs/react/audio` |
-| 背景视频 | `backgroundFeatures` | `<BackgroundVideoSkin>` | `@videojs/react/background` |
-
-背景视频（无控件、无音量）：
-
-```tsx
-import { createPlayer } from '@videojs/react';
-import { backgroundFeatures, BackgroundVideoSkin, BackgroundVideo } from '@videojs/react/background';
-import '@videojs/react/background/skin.css';
-
-const Player = createPlayer({ features: backgroundFeatures });
-
-export function HeroBg({ src }: { src: string }) {
-  return (
-    <Player.Provider>
-      <BackgroundVideoSkin>
-        <BackgroundVideo src={src} autoPlay muted loop playsInline />
-      </BackgroundVideoSkin>
-    </Player.Provider>
-  );
-}
-```
-
-### 4.3 按需组合 Features
-
-不用 preset 时，按需选取 features（获得最小包体积）：
-
-```tsx
-import { createPlayer, features } from '@videojs/react';
-
-const Player = createPlayer({
-  features: [
-    features.playback,   // 播放/暂停状态
-    features.volume,     // 音量控制
-    features.fullscreen, // 全屏
-  ],
-});
-```
-
-> 每个 feature 是一个独立的 Zustand store slice，tree-shaking 可精确移除未引入的代码。
+1. 包是否真的是 `@videojs/react`
+2. 使用的是哪条 preset 路径：
+   - `@videojs/react/video`
+   - `@videojs/react/audio`
+   - `@videojs/react/background`
+3. 对应 CSS 是否导入正确：
+   - `skin.css`
+   - `minimal-skin.css`
+4. 是否存在 `<Player.Provider>`
+5. 自定义布局时是否有 `Container`
+6. `usePlayer` / `useMedia` 是否在 Provider 子树内
+7. 是否把旧稿里那些已知错误心智模型带进来了：
+   - 只知道 `Player.usePlayer`
+   - 把 `features.pictureinpicture` 当成真实导出
+   - 把 background preset 当成“完整播放器 preset”
 
 ---
 
-## 5) usePlayer —— 状态订阅
+## 5) 最佳实践
 
-### 5.1 基本用法
+### 5.1 把播放器拆成四层心智模型
 
-```tsx
-// ❌ 订阅全 store，任何状态变化都重渲染
-const store = Player.usePlayer();
+最稳的理解方式不是“一个黑盒播放器组件”，而是四层：
 
-// ✅ selector 订阅，只在 paused 变化时重渲染
-const paused = Player.usePlayer((s) => s.paused);
-```
+1. `createPlayer(...)`
+   - 生成带 feature 组合的 player factory
+2. `Provider`
+   - 初始化 store，并把 `media/container` attach 到 player
+3. `Container`
+   - 绑定容器 DOM
+4. 媒体与 UI 组件
+   - `Video` / `Audio` / `BackgroundVideo`
+   - `VideoSkin` / `AudioSkin` / `BackgroundVideoSkin`
+   - `PlayButton` / `TimeSlider` / `Tooltip` 等
 
-### 5.2 常用状态与操作
+如果用户的问题是 “播放器为什么没状态 / 全屏为什么不对 / UI 为什么不工作”，先判断是哪一层出了问题。
 
-```tsx
-function Controls() {
-  const paused = Player.usePlayer((s) => s.paused);
-  const volume = Player.usePlayer((s) => s.volume);
-  const fullscreen = Player.usePlayer((s) => s.fullscreen);
-  const store = Player.usePlayer();
+### 5.2 `createPlayer` 优先保持稳定引用，但不要把它写成神话
 
-  return (
-    <div>
-      <button onClick={() => (paused ? store.play() : store.pause())}>
-        {paused ? '播放' : '暂停'}
-      </button>
-      <input
-        type="range"
-        min={0} max={1} step={0.1}
-        value={volume}
-        onChange={(e) => store.setVolume(Number(e.target.value))}
-      />
-      <button onClick={() => store.requestFullscreen()}>
-        {fullscreen ? '退出全屏' : '全屏'}
-      </button>
-    </div>
-  );
-}
-```
+**官方事实**
 
-### 5.3 Feature 预构建 Selector
+- 官网示例把 `createPlayer({ features: ... })` 放在模块级
+- `createPlayer` 源码返回 `Provider`、`Container`、`usePlayer`、`useMedia`
 
-每个 feature 提供 selector（比手写选择器更稳定）：
+**工程化归纳**
 
-```tsx
-import { selectPlayback, selectVolume } from '@videojs/react';
+- 默认优先模块顶层定义，避免每次 render 重建 factory
+- 如果必须依赖运行时参数，至少用稳定 memo 包住
 
-const { paused, currentTime, duration } = Player.usePlayer(selectPlayback);
-const { volume, muted } = Player.usePlayer(selectVolume);
-```
+不要写成：
 
----
+- “只能在模块顶层调用”
 
-## 6) 平台兼容性处理
+更准确的说法是：
 
-`volume`、`fullscreen`、`picture-in-picture` 在部分平台不可用（如 iOS Safari 不支持 volume 控制）。
+- **默认把 factory 做成稳定引用；模块顶层是最简单、最安全的默认值**
 
-**必须在渲染前检查 availability**：
+### 5.3 `usePlayer` 有两条合法路径
 
-```tsx
-function VolumeControl() {
-  const volumeAvailability = Player.usePlayer((s) => s.volumeAvailability);
-  const volume = Player.usePlayer((s) => s.volume);
-  const store = Player.usePlayer();
+当前官方资料支持两种访问方式：
 
-  // 'unavailable' = 平台不支持但有 API；'unsupported' = 完全不支持
-  if (volumeAvailability === 'unsupported') return null;
+1. 顶层导出：
+   - `import { usePlayer } from '@videojs/react'`
+2. `createPlayer()` 返回的 typed hook：
+   - `const Player = createPlayer(...)`
+   - `Player.usePlayer(...)`
 
-  return (
-    <input
-      type="range"
-      disabled={volumeAvailability === 'unavailable'}
-      value={volume}
-      onChange={(e) => store.setVolume(Number(e.target.value))}
-    />
-  );
-}
-```
+官网首页“Take full control”示例主要使用的是**顶层 `usePlayer`**，不是只有 `Player.usePlayer` 一条路。
 
-| Feature | Availability 属性 | 常见限制 |
-|---------|------------------|---------|
-| volume | `volumeAvailability` | iOS Safari 不支持音量控制 |
-| fullscreen | `fullscreenAvailability` | 部分 iframe 限制 |
-| picture-in-picture | `pipAvailability` | 非 HTTPS 或老旧浏览器 |
+因此执行时要这样判断：
 
-可用值：`'available'` / `'unavailable'` / `'unsupported'`
+- 需要最接近官网示例的写法：优先顶层 `usePlayer`
+- 需要和某个 factory 绑定、希望拿到更具体的 typed store：可以用 `Player.usePlayer`
 
----
+### 5.4 `Container` 不是装饰品
 
-## 7) Skins 与自定义控制栏
+**官方事实**
 
-### 7.1 两种使用模式
+- `createPlayer` 返回 `Container`
+- `context.tsx` 中 `Container` 会把容器 ref attach 给 player context
+- 官网完整自定义示例使用了顶层导出的 `Container`
 
-**Packaged（推荐起点）**：直接用官方提供的 Skin 组件，限制定制空间，自动跟随版本更新。
+**工程化归纳**
 
-```tsx
-<Player.Provider>
-  <VideoSkin>          {/* 或 MinimalVideoSkin */}
-    <Video src={src} />
-  </VideoSkin>
-</Player.Provider>
-```
+- 用官方 skin 时，skin 内部通常已经包好了 `Container`
+- 自定义布局时，不要随手省略 `Container`，除非你明确知道当前功能不依赖容器
 
-**Ejected（完全控制）**：将 Skin 内部组件复制到项目中，获得全部定制能力，手动管理更新。
+当前 skill 最常见的错误，不是“忘记写 Provider”，而是**自定义布局时以为只有 Provider 就够了**。
 
-> 目前 eject = 从文档复制源码到项目。未来会提供 CLI 工具。
+### 5.5 selectors 和 feature 名称必须精确
 
-### 7.2 VideoSkin eject 后可用的 Primitives
+官方源码目前明确暴露了这些 selectors：
 
-VideoSkin eject 出来包含以下 UI primitive（每个只输出单个 HTML 元素）：
+- `selectBuffer`
+- `selectControls`
+- `selectError`
+- `selectFullscreen`
+- `selectPiP`
+- `selectPlayback`
+- `selectPlaybackRate`
+- `selectSource`
+- `selectTextTrack`
+- `selectTime`
+- `selectVolume`
 
-| Primitive | 说明 |
-|-----------|------|
-| `AlertDialog` | 错误/重要信息对话框 |
-| `BufferingIndicator` | 缓冲加载 loading 指示器 |
-| `CaptionsButton` | 字幕开关按钮 |
-| `Controls` | 控制栏容器 |
-| `FullscreenButton` | 全屏按钮 |
-| `MuteButton` | 静音按钮 |
-| `PiPButton` | 画中画按钮 |
-| `PlayButton` | 播放/暂停按钮 |
-| `PlaybackRateButton` | 播放速率按钮 |
-| `Popover` | 弹出菜单容器 |
-| `Poster` | 视频封面 |
-| `SeekButton` | 快进/快退按钮 |
-| `Slider` | 通用滑块基础组件 |
-| `Thumbnail` | 进度条 hover 时的缩略图预览 |
-| `TimeSlider` | 进度条（复合组件，见下） |
-| `Time` | 时间显示（当前时间/总时长） |
-| `Tooltip` | 悬停提示框 |
-| `VolumeSlider` | 音量滑块 |
+官方短名 feature 也是精确的：
 
-`TimeSlider` 是复合组件：
+- `features.buffer`
+- `features.controls`
+- `features.fullscreen`
+- `features.pip`
+- `features.playback`
+- `features.playbackRate`
+- `features.source`
+- `features.textTrack`
+- `features.time`
+- `features.volume`
 
-```tsx
-<TimeSlider.Root>
-  <TimeSlider.Track>
-    <TimeSlider.Buffer />   {/* 已缓冲区域 */}
-    <TimeSlider.Fill />     {/* 已播放区域 */}
-  </TimeSlider.Track>
-  <TimeSlider.Thumb />      {/* 拖拽把手 */}
-</TimeSlider.Root>
-```
+不要继续沿用旧稿里的错误名字：
 
-### 7.3 Thumbnail 组件说明
+- `features.pictureinpicture`
+- `selectPip`
+- `selectSubtitles`
+- `setMuted`
+- `requestPip`
 
-`Thumbnail` 是进度条 hover 预览缩略图，**不会自动截帧**，需要你提前生成图片资源。
+### 5.6 presets 不是都在同一个成熟度上
 
-**使用方式**：
+当前源码给出的 preset 事实：
 
-```tsx
-import { Thumbnail } from '@videojs/react';
+- `videoFeatures`：完整视频播放器所需 feature 组合
+- `audioFeatures`：音频播放器 feature 组合
+- `backgroundFeatures`：当前源码中是空数组
 
-// 传入预生成的 thumbnails 数组（优先级最高）
-<Thumbnail
-  time={hoveredTime}
-  thumbnails={[
-    { src: 'sprite.jpg', startTime: 0, endTime: 30, x: 0, y: 0, width: 160, height: 90 },
-    // ...
-  ]}
-/>
+因此：
 
-// 或通过 <Video> 的 <track> 标签提供 VTT 文件（自动解析）
-<Video src="video.mp4">
-  <track kind="metadata" src="thumbnails.vtt" />
-</Video>
-```
+- `VideoSkin` / `MinimalVideoSkin` / `AudioSkin` / `MinimalAudioSkin` 可以当成成熟默认起点
+- `BackgroundVideoSkin` 当前更像轻量外壳，不要把它写成“和视频/音频 preset 同成熟度的完整 player preset”
 
-**图片资源生成**：需在服务端用 FFmpeg 等工具预先截帧，生成 sprite 图或 VTT 文件后传入。
+### 5.7 官方 skins 是最强基线，不要发明“eject”承诺
 
-### 7.4 自定义控制栏（基于 usePlayer）
+官方资料目前清楚展示了两种路线：
 
-不使用内置 Skin，完全自己构建控制栏：
+1. 直接使用官方 skin
+2. 参考官网 “Take full control” 示例与仓库 preset 源码，自行组合 UI
 
-```tsx
-const Player = createPlayer({ features: [features.playback, features.volume] });
+但当前官方资料并没有给你一个稳定承诺的 “CLI eject workflow”。
+所以更稳妥的说法是：
 
-function CustomControls() {
-  const paused = Player.usePlayer((s) => s.paused);
-  const store = Player.usePlayer();
-  return (
-    <div className="controls">
-      <button onClick={() => (paused ? store.play() : store.pause())}>
-        {paused ? '▶' : '⏸'}
-      </button>
-    </div>
-  );
-}
+- **需要完全控制时，以官网自定义示例和仓库 preset 源码为基线手工组合**
 
-export function CustomPlayer({ src }: { src: string }) {
-  return (
-    <Player.Provider>
-      <div style={{ position: 'relative' }}>
-        <Video src={src} playsInline />
-        <CustomControls />
-      </div>
-    </Player.Provider>
-  );
-}
-```
+不要写成：
+
+- “未来一定会提供官方 eject CLI”
+
+### 5.8 缩略图能力和 text track 强相关
+
+当前官方源码里：
+
+- `Thumbnail` 组件支持直接传 `thumbnails`
+- 如果没有传 `thumbnails`，它会从 `selectTextTrack` 里拿 `thumbnailCues`
+- `textTrackFeature` 会把 `kind="metadata"` 且 `label === 'thumbnails'` 的 track 识别为缩略图轨道
+
+所以更准确的实践是：
+
+- 想要 hover 缩略图，优先基于官方 `Thumbnail` / `Slider.Thumbnail` 和 thumbnail text track
+- 不要把“前端自动截帧”写成内置能力
+
+### 5.9 版本状态要写成“当前官方状态”
+
+当前官方可见资料显示：
+
+- 官网首页把 v10 标记为 `Beta`
+- README 写的是 `Beta - close to stable. Experimental adoption in real projects.`
+- `packages/react/package.json` 当前版本是 `10.0.0-beta.11`
+
+所以实践建议应该这样写：
+
+- **当前官方主线仍处于 beta 阶段，适合按当前官方状态保守评估**
+
+不要写成：
+
+- “绝不能用于真实项目”
+- “生产迁移必须等待官方迁移指南”
+
+因为当前官方 README 的口径已经是“可以在真实项目中做实验性采用”。
+
+### 5.10 Next.js / 平台边界要保守表达
+
+更稳妥的说法：
+
+- 在 Next.js App Router 中，封装播放器的组件通常应是 Client Component
+- 官网 React 示例持续使用 `playsInline`
+- 自动播放、内联播放、全屏、PiP、音量控制都仍然受到浏览器与平台能力约束
+
+更不稳妥的说法：
+
+- “Next page 里绝对不能 import 某某”
+- “availability 的 `unavailable` 一定就等于 iframe 限制”
+
+除非你手里有当前源码或官网明确证据。
 
 ---
 
-## 8) HLS / DASH 流媒体
+## 6) 故障排查顺序
 
-### 8.1 Source 类型
+### 6.1 样式/外观异常
 
-```tsx
-// HLS（.m3u8）
-<Video src="https://example.com/stream.m3u8" type="application/x-mpegURL" playsInline />
+先查：
 
-// DASH（.mpd）
-<Video src="https://example.com/manifest.mpd" type="application/dash+xml" playsInline />
-```
+1. preset 路径和 CSS 路径是否一致
+2. 用的是 `skin.css` 还是 `minimal-skin.css`
+3. 是否混用了官方 skin 与自定义布局
 
-### 8.2 SPF（新流媒体引擎）
+### 6.2 `usePlayer` / Context 报错
 
-Video.js v10 内置 SPF（Streaming Processor Framework），针对简单 HLS 场景体积仅为 v8 的 19%。
-SPF 尚不替代 HLS.js（高级 DRM/广告场景仍需外部引擎）。
+先查：
 
-### 8.3 iOS 必备配置
+1. `usePlayer` 是否在 Provider 子树内
+2. 用的是顶层 `usePlayer` 还是 `Player.usePlayer`
+3. 是否把 player factory 放进了不稳定的 render 路径
 
-```tsx
-// iOS 必须加 playsInline，否则触发系统全屏
-<Video src={src} playsInline autoPlay muted />
-```
+### 6.3 自定义 UI 不工作
 
----
+先查：
 
-## 9) 核心反模式
+1. 自定义布局里是否有 `Container`
+2. 是否引入了对应 feature
+3. 是否用了正确 selector / method 名称
 
-| 反模式 | 后果 | 正确做法 |
-|--------|------|---------|
-| `createPlayer()` 在组件内调用 | 每次渲染重建 player 实例 | 移到模块级别 |
-| `usePlayer()` 无 selector | 任何状态变化都重渲染 | 传入 selector `(s) => s.xxx` |
-| `usePlayer` 在 Provider 外调用 | Context 报错 | 确保在 `<Player.Provider>` 子树内 |
-| 未导入 skin.css | 控件显示异常 | `import '@videojs/react/video/skin.css'` |
-| 不检查 `*Availability` 直接渲染控件 | iOS 等平台 UI 损坏 | 先读 availability 再决定是否渲染 |
-| v10 用于生产迁移 | API 仍在 Beta | 等待 GA（预计 2026 年中） |
+### 6.4 缩略图 / 字幕 / track 问题
 
----
+先查：
 
-## 10) 故障排查速查
-
-| 症状 | 最可能原因 | 修复 |
-|------|-----------|------|
-| 控件无样式/不显示 | 缺少 CSS 导入 | `import '@videojs/react/video/skin.css'` |
-| `usePlayer` context 报错 | Provider 未包裹 | `<Player.Provider>` 包在外层 |
-| 播放器每次渲染重置 | `createPlayer` 在组件内 | 移到模块级别 |
-| iOS 音量控件无效 | 平台不支持 | 检查 `volumeAvailability` |
-| iOS 全屏覆盖整个页面 | 缺少 `playsInline` | `<Video playsInline />` |
-| Next.js 报错（SSR） | 缺少 `'use client'` | 播放器组件顶部加 `'use client'` |
-| HLS 不播放 | 缺少 type 声明 | `type="application/x-mpegURL"` |
-| 字幕不显示 | textTrack mode 不对 | `setTextTrackMode(index, 'showing')` |
-| Thumbnail 不出现 | 未提供图片资源 | 需预生成 sprite 图或 VTT 文件 |
-| 播放速率按钮无效 | 未引入 playbackRate feature | `features: [..., features.playbackRate]` |
+1. `textTrack` feature 是否存在
+2. 缩略图 track 是否满足：
+   - `kind="metadata"`
+   - `label="thumbnails"`
+3. 是用 `Thumbnail` / `Slider.Thumbnail`，还是误把它当成自动截图组件
 
 ---
 
-> 详细 API 见 `references/api-reference.md`
-> 流媒体配置与平台兼容性见 `references/streaming-and-platform.md`
+## 7) 触发后建议输出格式
+
+用这个 skill 回答用户时，优先给：
+
+1. **问题归类**
+2. **官方事实**
+3. **当前最可能的错位点**
+4. **最小修复**
+5. **如果要重构，怎么沿着官方结构重构**
+6. **验证方式**
+
+如果在改代码：
+
+- 先修导出/Context/feature 选型错误
+- 再修 skin / layout / track 组合问题
+- 最后才是局部 UI 细节
+
+---
+
+## 8) 你应该主动回看的参考
+
+- `references/official-alignment.md`
+- `references/api-reference.md`
+- `references/streaming-and-platform.md`
+
+当问题涉及具体 API 时，优先回到源码级 reference，而不是只依赖 skill 概述。
+
+---
+
+## 9) 明确禁止
+
+- 不要把 roadmap 写成稳定事实
+- 不要创造不存在的 feature / selector / method 名称
+- 不要把 background preset 写成完整播放器 preset
+- 不要把官网示例中的某种实现写成唯一合法做法
+- 不要在没有当前官方证据时继续复述 SPF/HLS/DRM/广告支持矩阵

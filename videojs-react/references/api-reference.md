@@ -1,212 +1,396 @@
-# Video.js v10 API 速查
+# Video.js React API / 导出 / Feature 速查
 
-> `@videojs/react` v10 Beta。所有示例均基于 React + TypeScript。
+> 用途：当你已经知道问题属于 `createPlayer`、`usePlayer`、selectors、feature/preset 或 UI 组件时，用它做精确校准。
+> 基准：`videojs/v10` 仓库 `packages/react` 与 `packages/core/src/dom/store/*` 源码。
 
----
+## 1. `createPlayer`
 
-## 1. createPlayer
+`createPlayer` 当前源码返回：
+
+- `Provider`
+- `Container`
+- `usePlayer`
+- `useMedia`
+
+也就是说，当前旧稿里“只返回 `Provider / Container / usePlayer`”是不完整的。
+
+### 源码形态
 
 ```tsx
-createPlayer(options: { features: Feature[] }): {
-  Provider: React.ComponentType<{ children: React.ReactNode }>;
-  Container: React.ComponentType<{ children: React.ReactNode }>;
-  usePlayer: UsePlayer;
+createPlayer(config): {
+  Provider,
+  Container,
+  usePlayer,
+  useMedia,
 }
 ```
 
-**选项**：
+### `Provider` 做什么
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `features` | `Feature[]` | feature 数组或 preset（如 `videoFeatures`） |
+- 创建 store
+- 跟踪 `media`
+- 跟踪 `container`
+- 在 `media/container` 就位后执行 `store.attach(...)`
+
+### `Container` 做什么
+
+- 把容器 DOM 通过 context attach 给 player
+
+### `useMedia`
+
+- 从 Provider context 中读取当前 media 实例
 
 ---
 
-## 2. usePlayer
+## 2. `usePlayer` 有两条合法路径
+
+### 顶层导出
 
 ```tsx
-// 完整 store（谨慎使用，任何状态变化都重渲染）
-const store = Player.usePlayer();
+import { usePlayer } from '@videojs/react';
+```
 
-// selector 订阅（推荐）
+特点：
+
+- 官网“Take full control”示例采用这一条
+- 适合跟官方示例保持一致
+
+### factory 返回的 typed hook
+
+```tsx
+const Player = createPlayer({ features: videoFeatures });
 const paused = Player.usePlayer((s) => s.paused);
-
-// 使用内置 selector
-import { selectPlayback } from '@videojs/react';
-const { paused, currentTime, duration } = Player.usePlayer(selectPlayback);
 ```
 
-### 状态属性（按 feature 分组）
+特点：
 
-**playback feature**：
+- 与当前 player factory 绑定
+- 类型通常更具体
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `paused` | `boolean` | 是否暂停 |
-| `currentTime` | `number` | 当前播放时间（秒） |
-| `duration` | `number` | 总时长（秒） |
-| `ended` | `boolean` | 是否播放结束 |
-| `seeking` | `boolean` | 是否正在 seek |
-| `buffered` | `TimeRanges` | 已缓冲范围 |
+### 使用原则
 
-**volume feature**：
+- 想贴近官网示例：优先顶层 `usePlayer`
+- 想拿到与特定 factory 绑定的 typed store：可用 `Player.usePlayer`
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `volume` | `number` | 音量 0-1 |
-| `muted` | `boolean` | 是否静音 |
-| `volumeAvailability` | `Availability` | 平台可用性 |
+---
 
-**fullscreen feature**：
+## 3. 顶层导出里最重要的东西
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `fullscreen` | `boolean` | 是否全屏 |
-| `fullscreenAvailability` | `Availability` | 平台可用性 |
+`packages/react/src/index.ts` 当前明确 re-export：
 
-**picture-in-picture feature**：
+### Context / hooks
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `pip` | `boolean` | 是否画中画 |
-| `pipAvailability` | `Availability` | 平台可用性 |
+- `Container`
+- `useContainer`
+- `useContainerAttach`
+- `useMedia`
+- `useMediaAttach`
+- `useOptionalPlayer`
+- `usePlayer`
+- `usePlayerContext`
+- `createPlayer`
 
-**subtitles feature**：
+### 常用 UI primitives
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `textTracks` | `TextTrackList` | 所有可用的文本轨道列表 |
-| `subtitlesShowing` | `boolean` | 字幕是否显示 |
+- `AlertDialog`
+- `BufferingIndicator`
+- `CaptionsButton`
+- `Controls`
+- `FullscreenButton`
+- `MuteButton`
+- `PiPButton`
+- `PlayButton`
+- `PlaybackRateButton`
+- `Popover`
+- `Poster`
+- `SeekButton`
+- `Slider`
+- `Thumbnail`
+- `Time`
+- `TimeSlider`
+- `Tooltip`
+- `VolumeSlider`
 
-每个 `TextTrack` 的 `mode`：`'disabled'`（不显示）/ `'hidden'`（已加载不显示）/ `'showing'`（显示中）。同时只能有一个轨道处于 `showing` 状态。
+### Store helpers / selectors
 
-**playbackRate feature**：
+- `createSelector`
+- `shallowEqual`
+- `useSelector`
+- `useStore`
+- 以及 `@videojs/core/dom` 的 selector / feature 导出
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `playbackRate` | `number` | 当前播放速率（1.0 = 正常） |
+---
 
-### 操作方法
+## 4. selectors 精确列表
 
-| 方法 | 说明 |
-|------|------|
-| `store.play()` | 播放 |
-| `store.pause()` | 暂停 |
-| `store.seek(time: number)` | 跳转到指定时间 |
-| `store.setVolume(volume: number)` | 设置音量（0-1） |
-| `store.setMuted(muted: boolean)` | 设置静音 |
-| `store.requestFullscreen()` | 请求全屏 |
-| `store.exitFullscreen()` | 退出全屏 |
-| `store.requestPip()` | 请求画中画 |
-| `store.exitPip()` | 退出画中画 |
-| `store.setPlaybackRate(rate: number)` | 设置播放速率（如 0.5, 1, 1.5, 2） |
-| `store.setTextTrackMode(index, mode)` | 设置字幕轨道显示模式 |
+当前 `packages/core/src/dom/store/selectors.ts` 暴露：
 
-### Availability 类型
+- `selectBuffer`
+- `selectControls`
+- `selectError`
+- `selectFullscreen`
+- `selectPiP`
+- `selectPlayback`
+- `selectPlaybackRate`
+- `selectSource`
+- `selectTextTrack`
+- `selectTime`
+- `selectVolume`
+
+不要再写成：
+
+- `selectPip`
+- `selectSubtitles`
+
+---
+
+## 5. 每个 selector 现在大致包含什么
+
+### `selectPlayback`
+
+来自 `playbackFeature`：
+
+- `paused`
+- `ended`
+- `started`
+- `waiting`
+- `play()`
+- `pause()`
+
+### `selectTime`
+
+来自 `timeFeature`：
+
+- `currentTime`
+- `duration`
+- `seeking`
+- `seek(time)`
+
+### `selectVolume`
+
+来自 `volumeFeature`：
+
+- `volume`
+- `muted`
+- `volumeAvailability`
+- `setVolume(volume)`
+- `toggleMuted()`
+
+### `selectFullscreen`
+
+来自 `fullscreenFeature`：
+
+- `fullscreen`
+- `fullscreenAvailability`
+- `requestFullscreen()`
+- `exitFullscreen()`
+
+### `selectPiP`
+
+来自 `pipFeature`：
+
+- `pip`
+- `pipAvailability`
+- `requestPictureInPicture()`
+- `exitPictureInPicture()`
+
+### `selectPlaybackRate`
+
+来自 `playbackRateFeature`：
+
+- `playbackRate`
+- `playbackRates`
+- `setPlaybackRate(rate)`
+
+### `selectSource`
+
+来自 `sourceFeature`：
+
+- `source`
+- `canPlay`
+- `loadSource(src)`
+
+### `selectTextTrack`
+
+来自 `textTrackFeature`：
+
+- `chaptersCues`
+- `thumbnailCues`
+- `thumbnailTrackSrc`
+- `textTrackList`
+- `subtitlesShowing`
+- `toggleSubtitles(forceShow?)`
+
+### `selectError`
+
+来自 `errorFeature`：
+
+- `error`
+- `dismissError()`
+
+### `selectBuffer`
+
+来自 `bufferFeature`：
+
+- `buffered`
+- `seekable`
+
+注意：
+
+- `buffered` / `seekable` 在源码里是**序列化后的 ranges 数组**
+- 不要继续写成 `TimeRanges`
+
+---
+
+## 6. `features` 精确短名
+
+当前短名导出来自 `feature.parts.ts`：
+
+- `features.buffer`
+- `features.controls`
+- `features.fullscreen`
+- `features.pip`
+- `features.playback`
+- `features.playbackRate`
+- `features.source`
+- `features.textTrack`
+- `features.time`
+- `features.volume`
+
+错误旧名：
+
+- `features.pictureinpicture`
+- `features.subtitles`
+- `features.autoplay`
+
+如果官方后续新增这些 feature，再更新 skill；在此之前不要自己发明。
+
+---
+
+## 7. presets 当前事实
+
+### `videoFeatures`
+
+当前源码包含：
+
+- `playback`
+- `playbackRate`
+- `volume`
+- `time`
+- `source`
+- `buffer`
+- `fullscreen`
+- `pip`
+- `controls`
+- `textTrack`
+- `error`
+
+### `audioFeatures`
+
+当前源码包含：
+
+- `playback`
+- `playbackRate`
+- `volume`
+- `time`
+- `source`
+- `buffer`
+- `error`
+
+### `backgroundFeatures`
+
+当前源码：
+
+```ts
+export const backgroundFeatures: BackgroundFeatures = [];
+```
+
+这意味着：
+
+- 当前 background preset 不是“带完整 controls/state 的 video preset”
+- 它更像背景媒体壳层的起点
+
+---
+
+## 8. preset 路径与 CSS 导出
+
+### 视频
 
 ```tsx
-type Availability = 'available' | 'unavailable' | 'unsupported';
-// 'available'   — 完全支持
-// 'unavailable' — 平台有此 API 但当前不可用（如 iframe 限制）
-// 'unsupported' — 平台完全不支持
+import { Video, VideoSkin, MinimalVideoSkin, videoFeatures } from '@videojs/react/video';
+import '@videojs/react/video/skin.css';
+import '@videojs/react/video/minimal-skin.css';
+```
+
+### 音频
+
+```tsx
+import { Audio, AudioSkin, MinimalAudioSkin, audioFeatures } from '@videojs/react/audio';
+import '@videojs/react/audio/skin.css';
+import '@videojs/react/audio/minimal-skin.css';
+```
+
+### 背景
+
+```tsx
+import { BackgroundVideo, BackgroundVideoSkin, backgroundFeatures } from '@videojs/react/background';
+import '@videojs/react/background/skin.css';
 ```
 
 ---
 
-## 3. 媒体组件
+## 9. 官方 skin 与自定义组合
 
-### Video
+### 官方 skin 路线
 
-```tsx
-import { Video } from '@videojs/react/video';
+- `VideoSkin`
+- `MinimalVideoSkin`
+- `AudioSkin`
+- `MinimalAudioSkin`
+- `BackgroundVideoSkin`
 
-<Video
-  src="video.mp4"           // 视频地址
-  type="video/mp4"          // MIME 类型（HLS/DASH 时必须填写）
-  playsInline               // iOS 必须，避免系统全屏
-  autoPlay                  // 自动播放（需 muted）
-  muted                     // 静音（自动播放前提）
-  loop                      // 循环播放
-  poster="thumbnail.jpg"    // 封面图
-/>
-```
+### 完全自定义路线
 
-### Audio
+基于顶层导出 primitives 自己组合：
 
-```tsx
-import { Audio } from '@videojs/react/audio';
-<Audio src="audio.mp3" />
-```
+- `Container`
+- `Poster`
+- `BufferingIndicator`
+- `Controls`
+- `PlayButton`
+- `SeekButton`
+- `TimeSlider`
+- `Tooltip`
+- `VolumeSlider`
+- 等等
 
-### BackgroundVideo
-
-```tsx
-import { BackgroundVideo } from '@videojs/react/background';
-<BackgroundVideo src="bg.mp4" autoPlay muted loop playsInline />
-```
+如果要做“自定义 controls”，优先参考官网首页 “Take full control” 示例和仓库 preset 源码。
 
 ---
 
-## 4. 内置 Selector
+## 10. `Thumbnail` 与 `Slider.Thumbnail`
 
-```tsx
-import {
-  selectPlayback,      // { paused, currentTime, duration, ended, seeking }
-  selectVolume,        // { volume, muted, volumeAvailability }
-  selectFullscreen,    // { fullscreen, fullscreenAvailability }
-  selectPip,           // { pip, pipAvailability }
-  selectSubtitles,     // { subtitlesShowing, textTracks }
-  selectPlaybackRate,  // { playbackRate }
-} from '@videojs/react';
-```
+当前源码说明：
 
----
+- 顶层导出有 `Thumbnail`
+- `Slider.Thumbnail` 也存在于官方 skin 组合中
 
-## 5. Features 列表
+`Thumbnail` 当前支持：
 
-```tsx
-import { features } from '@videojs/react';
+- 直接传 `thumbnails`
+- 如果不传，会优先尝试从 `selectTextTrack` 里的 `thumbnailCues` 自动解析
 
-features.playback        // 播放/暂停/时间/缓冲
-features.volume          // 音量/静音
-features.fullscreen      // 全屏
-features.pictureinpicture // 画中画
-features.subtitles       // 字幕/文字轨道
-features.playbackRate    // 播放速率
-features.autoplay        // 自动播放策略
-```
+缩略图自动识别依赖：
 
-### Preset（features 组合）
-
-```tsx
-import { videoFeatures } from '@videojs/react/video';
-// 等价于完整视频播放器所需的所有 features
-
-import { audioFeatures } from '@videojs/react/audio';
-// 音频播放器 features
-
-import { backgroundFeatures } from '@videojs/react/background';
-// 背景视频 features（无控件，无音量）
-```
+- `<track kind="metadata" label="thumbnails" ...>`
 
 ---
 
-## 6. TypeScript 类型
+## 11. 当前最常见误用
 
-```tsx
-import type {
-  PlayerState,       // usePlayer 返回的完整 store 类型
-  Availability,      // 'available' | 'unavailable' | 'unsupported'
-  Feature,           // feature 类型
-} from '@videojs/react';
-```
-
----
-
-## 7. CSS 导入路径
-
-| 场景 | 导入路径 |
-|------|---------|
-| 视频播放器（VideoSkin） | `@videojs/react/video/skin.css` |
-| 音频播放器（AudioSkin） | `@videojs/react/audio/skin.css` |
-| 背景视频（BackgroundVideoSkin） | `@videojs/react/background/skin.css` |
+- 把 `Player.usePlayer` 当成唯一合法入口
+- 误写 `features.pictureinpicture`
+- 误写 `selectPip`
+- 误写 `setMuted` / `requestPip`
+- 把 `backgroundFeatures` 当成完整 feature preset
+- 把 `buffered` / `seekable` 当 `TimeRanges`
