@@ -1,302 +1,126 @@
-# Concurrency Patterns & Anti-Patterns
+# 并发与异步审查参考
 
-以 Go 为主要示例，通用规则适用于 Python asyncio/Celery、Node.js worker 等。
+这个文件用于审查 goroutine、worker、job handler、async flow 的生产安全性。
 
----
+## 先看什么
 
-## Goroutine 泄漏
+1. 每个异步分支是否有退出路径
+2. 共享状态如何保护
+3. context 是否从入口一路传到底层 I/O
+4. 重试是否有边界
+5. 副作用是否幂等
 
-### 典型场景：unbuffered channel + context 取消
+## 1. 泄漏与退出路径
+
+### 高风险信号
+
+- `go func()` 启动后没有等待、取消或回收机制
+- unbuffered channel 上发送，但接收方可能提前退出
+- worker shutdown 后仍继续执行长循环
+
+### Go 例子
 
 ```go
-// ❌ ctx 取消后，发送端永远阻塞
-func fetch(ctx context.Context) (string, error) {
-    ch := make(chan string) // unbuffered
-    go func() {
-        result := expensiveQuery()
-        ch <- result // 没人接收 → 永久阻塞
-    }()
-    select {
-    case r := <-ch:
-        return r, nil
-    case <-ctx.Done():
-        return "", ctx.Err() // goroutine 泄漏
-    }
-}
-
-// ✅ 方案 A：buffered channel
-ch := make(chan string, 1)
-
-// ✅ 方案 B：errgroup（推荐）
-g, ctx := errgroup.WithContext(ctx)
-var result string
-g.Go(func() error {
-    var err error
-    result, err = expensiveQuery()
-    return err
-})
-return result, g.Wait()
-
-// ✅ 方案 C：发送端也检查 ctx
+// ❌ ctx 取消后，发送端可能永久阻塞
+ch := make(chan string)
 go func() {
-    result := expensiveQuery()
-    select {
-    case ch <- result:
-    case <-ctx.Done():
-    }
+    ch <- expensiveQuery()
 }()
-```
-
-### 检测
-
-- 测试：`goleak.VerifyNone(t)` (uber-go/goleak)
-- 监控：导出 `runtime.NumGoroutine()` 到 Prometheus
-- Profiling：`go tool pprof http://localhost:6060/debug/pprof/goroutine`
-
----
-
-## Data Race 常见模式
-
-### 并发 Map 写入
-
-```go
-// ❌ fatal: concurrent map writes
-cache := map[string]string{}
-go func() { cache["a"] = "1" }()
-go func() { cache["b"] = "2" }()
-
-// ✅ sync.RWMutex
-type SafeCache struct {
-    mu   sync.RWMutex
-    data map[string]string
-}
-func (c *SafeCache) Get(k string) string {
-    c.mu.RLock()
-    defer c.mu.RUnlock()
-    return c.data[k]
-}
-func (c *SafeCache) Set(k, v string) {
-    c.mu.Lock()
-    defer c.mu.Unlock()
-    c.data[k] = v
+select {
+case result := <-ch:
+    return result, nil
+case <-ctx.Done():
+    return "", ctx.Err()
 }
 ```
 
-### 并发 Slice Append
+### 审查动作
 
-```go
-// ❌ data race：slice 元数据（ptr, len, cap）不是原子的
-results := []Item{}
-for range items {
-    go func() {
-        results = append(results, process()) // RACE
-    }()
-}
+- 看每个 goroutine 的结束条件
+- 看 channel 是否可能永远没人接
+- 看是否有 `WaitGroup` / `errgroup` / worker lifecycle 管理
 
-// ✅ 用 channel 收集结果
-ch := make(chan Item, len(items))
-for _, item := range items {
-    item := item
-    go func() { ch <- process(item) }()
-}
-for range items {
-    results = append(results, <-ch)
-}
-```
+### 最小验证
 
-### 循环变量捕获
+- Go 项目优先查是否有 `goleak.VerifyNone(t)` 或 goroutine 数量监测
+- 涉及并发读写时优先建议 `go test -race`
 
-```go
-// ❌ i 被引用捕获
-for i := 0; i < 10; i++ {
-    go func() { process(i) }() // i 可能是 9 或 10
-}
+## 2. 共享状态
 
-// ✅ 拷贝
-for i := 0; i < 10; i++ {
-    i := i
-    go func() { process(i) }()
-}
-```
+### 常见问题
 
-### Race Detector
+- map 并发写
+- slice 并发 append
+- 同一对象跨多个 goroutine 修改但没锁
 
-```bash
-go test -race ./...          # 测试时检测
-go run -race main.go         # 运行时检测（10x 慢，5-10x 内存）
-go build -race -o app_race   # 构建 race 检测版本（仅用于测试环境）
-```
+### 审查动作
 
-Race detector 是运行时检测，只能发现被执行到的 race。测试覆盖率决定检测有效性。
+- 找出共享 map / cache / accumulator
+- 判断是用 mutex、channel 所有权转移，还是完全没保护
+- 如果是读多写少，确认锁策略是否合理
 
----
+## 3. Context 传播
 
-## Mutex vs Channel 选择
+### 高风险信号
 
-| 用 Mutex | 用 Channel |
-|---------|-----------|
-| 缓存读写 | 传递数据所有权 |
-| 计数器、指标 | 分发工作单元 |
-| 简单状态保护 | 协调 goroutine 生命周期 |
-| 性能关键路径 | 信号通知（完成、取消） |
+- 在业务层使用 `context.Background()`
+- 把 `context.Context` 存进 struct 字段长期复用
+- 入口设置了 timeout，但底层 DB / HTTP client 没接到
 
-```go
-// Mutex：简单状态（计数器）
-type Counter struct {
-    mu    sync.Mutex
-    value int
-}
-func (c *Counter) Inc() {
-    c.mu.Lock()
-    c.value++
-    c.mu.Unlock()
-}
+### 审查动作
 
-// Channel：工作分发
-type Pool struct {
-    tasks chan Task
-}
-func (p *Pool) Submit(t Task) { p.tasks <- t }
-```
+- 看 context 是否作为函数第一个参数传递
+- 看外部 I/O 是否真的接了这个 context
+- 看 shutdown / cancel 信号能否中断长任务
 
-**混合模式**（生产常见）：channel 做工作分发 + mutex 保护统计数据。
+## 4. 重试与幂等
 
----
+### 重试必须回答两个问题
 
-## Worker / Job Queue 规则
+1. 哪些错误可重试，哪些不可重试
+2. 重试后副作用会不会重复执行
 
-### 1. 必须响应 context 取消
+### 高风险信号
 
-```go
-// ❌ 长循环不检查取消
-func (h *Handler) Process(ctx context.Context, task *asynq.Task) error {
-    for i := 0; i < 10000; i++ {
-        doWork(i) // shutdown 后仍在跑
-    }
-    return nil
-}
+- 所有错误一律重试
+- 没有最大次数、backoff、jitter
+- 发邮件、扣款、发消息、写外部系统但没有幂等键
 
-// ✅ 循环内检查
-func (h *Handler) Process(ctx context.Context, task *asynq.Task) error {
-    for i := 0; i < 10000; i++ {
-        if err := ctx.Err(); err != nil {
-            return err
-        }
-        doWork(i)
-    }
-    return nil
-}
-```
+### 审查动作
 
-Python/Celery 等效：检查 `task.request.is_revoked()` 或 catch `SoftTimeLimitExceeded`。
+- 看错误分类逻辑
+- 看 retry policy 是否有边界
+- 看副作用是否有 idempotency key、去重表或状态机保护
 
-### 2. 指数退避 + jitter
+### 最小阈值
 
-```go
-// asynq 默认使用指数退避
-// 区分可重试和不可重试错误：
-func (h *Handler) Process(ctx context.Context, task *asynq.Task) error {
-    err := callExternalAPI()
-    if err != nil {
-        if isPermanent(err) {
-            return asynq.SkipRetry // 不重试
-        }
-        return err // 触发指数退避重试
-    }
-    return nil
-}
-```
+- 只要存在外部副作用，缺少幂等保护就至少是 `Medium`
+- 如果会重复扣款、发消息、发通知，直接按 `High`
 
-### 3. 幂等性
+## 5. 并发度控制
 
-```go
-// ❌ 重试会发两封邮件
-func (h *Handler) SendEmail(ctx context.Context, task *asynq.Task) error {
-    return h.mailer.Send(payload.Email, payload.Subject)
-}
+### 高风险信号
 
-// ✅ idempotency key
-func (h *Handler) SendEmail(ctx context.Context, task *asynq.Task) error {
-    return h.mailer.SendWithID(payload.Email, payload.Subject, payload.MessageID)
-}
-```
+- 按输入规模启动无限 goroutine
+- 队列消费者 concurrency 没根据任务类型限制
+- CPU 密集任务按 I/O 密集策略放大并发
 
-幂等实现方式：
-- 外部 API 的 idempotency key（Stripe 等支持）
-- DB 去重表：`INSERT ... ON CONFLICT DO NOTHING`
-- 状态机：检查当前状态再决定是否执行
+### 审查动作
 
-### 4. 并发度配置
+- 看是否有 `SetLimit`、semaphore、worker pool
+- 看并发上限是否与任务类型匹配
+- 看失败时是否会放大下游压力
 
-```go
-srv := asynq.NewServer(redis, asynq.Config{
-    Concurrency: runtime.NumCPU() * 2, // I/O 密集
-    // Concurrency: runtime.NumCPU(),  // CPU 密集
-})
-```
+## 6. 审查输出句式
 
----
+- “这个 goroutine 在调用方超时退出后仍可能阻塞在发送操作上，存在泄漏风险。”
+- “重试路径没有幂等保护，失败后重跑会重复执行外部副作用。”
+- “context 在入口创建了，但没有继续传到底层 I/O，取消和超时无法真正生效。”
+- “并发度没有上限，输入规模放大时会直接放大 goroutine 和下游压力。”
 
-## Context 传播
+## 参考依据
 
-### 规则
-
-```go
-// ❌ 存 struct 字段
-type Worker struct {
-    ctx context.Context // 哪个调用方的？超时多少？
-}
-
-// ✅ 作为函数第一个参数
-func (w *Worker) Fetch(ctx context.Context) (*Data, error) {
-    return w.db.QueryContext(ctx, "SELECT ...")
-}
-
-// 调用方控制超时
-w.Fetch(context.WithTimeout(ctx, 5*time.Second))
-```
-
-### context.Background() 使用场景
-
-只在真正的顶层：`main()`、测试 setup、HTTP handler 入口。业务层如果用 `context.Background()` 就吞掉了调用方的取消信号。
-
-### Context Values
-
-```go
-// ❌ 用 context 传业务数据
-ctx = context.WithValue(ctx, userIDKey{}, userID)
-
-// ✅ 显式参数
-func process(ctx context.Context, userID string) error { ... }
-```
-
-Context values 只适合 request-scoped 的横切数据（trace ID、deadline），不适合业务参数。
-
----
-
-## errgroup 最佳实践
-
-```go
-g, ctx := errgroup.WithContext(ctx)
-g.SetLimit(20) // 限制并发度
-
-for _, id := range userIDs {
-    id := id
-    g.Go(func() error {
-        return fetchUser(ctx, id)
-    })
-}
-
-if err := g.Wait(); err != nil {
-    return err
-}
-```
-
-### 常见错误
-
-1. **Add 在 Go 之后**（WaitGroup）：`wg.Add(1)` 必须在 `go func()` 之前
-2. **忘记 Done**：永远用 `defer wg.Done()`
-3. **复用 group**：Wait 返回后不要再往同一 group 加任务，新建一个
-4. **不限并发**：1M 个 ID 就起 1M 个 goroutine → OOM
-
-来源：Go Wiki "MutexOrChannel", Go Blog "Context and Structs", Go Blog "Race Detector", Uber Blog "Data Race Patterns in Go", asynq Wiki "Task Timeout and Cancelation", uber-go/goleak
+- Go 官方 `context` 与并发实践
+- `go test -race`
+- `uber-go/goleak`
+- 常见 worker / job queue 失败模式：取消失效、无限重试、非幂等副作用

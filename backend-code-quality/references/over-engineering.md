@@ -1,189 +1,96 @@
-# Over-Engineering Anti-Patterns
+# 过度工程审查参考
 
----
+这个文件只处理“抽象是否真的在解决当前问题”，不处理团队偏好的代码风格。
 
-## Interface 决策树
+## 先看什么
 
-```
-需要 interface？
-├─ 有 2+ 个实现？→ ✅ 创建
-├─ 只有 1 个实现？
-│  ├─ 需要 mock 测试？→ ✅ 创建（consumer 侧定义，最小化）
-│  └─ 不需要 mock？→ ❌ 不创建
-└─ 0 个实现？→ ❌ 预防式 interface，删掉
-```
+1. 当前抽象解决了什么真实问题
+2. 如果删掉会坏什么
+3. 是在服务当前需求，还是在预支未来需求
+4. 抽象后的复杂度是否比重复更低
 
-### Go 核心原则
+## 1. 预防式 Interface
 
-- "The bigger the interface, the weaker the abstraction" — Rob Pike
-- Interface 在 consumer 侧定义，不在 producer 侧
-- Accept interfaces, return structs
-- 最强的 interface 只有一个方法（`io.Reader`, `io.Writer`, `fmt.Stringer`）
+### 高风险信号
 
-```go
-// ❌ Producer 定义大 interface
-package user
+- 只有一个实现，却先定义一个大 interface
+- producer 侧提前定义通用 interface
+- interface 比调用方真正需要的方法多很多
 
-type UserRepository interface {
-    GetByID(ctx context.Context, id string) (*User, error)
-    GetByEmail(ctx context.Context, email string) (*User, error)
-    List(ctx context.Context, filter Filter) ([]*User, error)
-    Create(ctx context.Context, user *User) error
-    Update(ctx context.Context, user *User) error
-    Delete(ctx context.Context, id string) error
-}
+### 更稳的判断
 
-// ✅ Consumer 侧定义最小 interface
-package notification
+- 有多个真实实现，或测试替身确实需要时再建
+- interface 在 consumer 侧定义
+- 能小就小
 
-type UserFinder interface {
-    GetByID(ctx context.Context, id string) (*user.User, error)
-}
+### 最小阈值
 
-type Notifier struct {
-    users UserFinder // 只需要 GetByID
-}
-```
+- `0` 个实现时默认视为预防式 interface
+- `1` 个实现时，只有明确 mock / 替身需求再保留
 
----
+## 2. 工厂、Builder、DI 容器
 
-## DI 框架决策
+### 高风险信号
 
-| 条件 | 方案 |
-|------|------|
-| < 10 个组件，静态依赖图 | 构造函数注入 |
-| 10-30 个组件，初始化变复杂 | 考虑 Wire（编译时） |
-| 30+ 个组件，需要生命周期管理 | 考虑 dig/fx（运行时） |
-| Python 小项目 | 构造函数，不需要 dependency-injector |
+- 只有一个实现，构造函数只有一两行，却又包一层 factory
+- 项目规模很小，却引入完整 DI 容器
+- 初始化图不复杂，但为了“工程化”额外造概念
 
-```go
-// ✅ 构造函数注入（大多数项目够用）
-func NewOrderService(repo OrderRepository, mailer Mailer) *OrderService {
-    return &OrderService{repo: repo, mailer: mailer}
-}
+### 判断标准
 
-// main.go 里手动组装
-repo := postgres.NewOrderRepo(db)
-mailer := sendgrid.NewMailer(apiKey)
-orderSvc := service.NewOrderService(repo, mailer)
-```
+- 如果直接构造更清楚，就直接构造
+- DI 框架是规模工具，不是成熟度勋章
 
-DI 框架不是架构需求，是规模需求。小项目加 DI 框架 = 用推土机种花。
+### 最小阈值
 
----
+- 只有一层薄构造、没有运行时选择，就不要额外引入 factory
+- 组件数量和初始化图都很小，却引入 DI 容器，默认按复杂度债务处理
 
-## Factory / Builder 规则
+## 3. 错误抽象
 
-```
-需要 Factory？
-├─ 有多种变体需要运行时选择？→ ✅
-├─ 初始化逻辑复杂（10+ 行）？→ ✅ 考虑 Builder
-├─ 只有一个实现，构造一行？→ ❌ 直接 new
-└─ "以后可能有多种实现"？→ ❌ YAGNI
-```
+### 典型路径
 
-```go
-// ❌ 过度 factory
-type UserServiceFactory struct{}
+1. 两段代码相似，于是提取
+2. 第三个场景“差不多”，再加参数
+3. 第四个场景再补 flag / switch
+4. 抽象内部越来越多分支，调用方却越来越难理解
 
-func (f *UserServiceFactory) Create() *UserService {
-    return &UserService{} // 就这一行...
-}
+### 审查动作
 
-// ✅ 直接构造
-svc := &UserService{repo: repo}
-```
+- 看抽象内部是否充满条件分支
+- 看每个调用方是否只用到抽象的一小部分
+- 如果是，考虑回退到局部重复，重新观察真实模式
 
----
+## 4. 泛型和配置
 
-## YAGNI 检查
+### 泛型高风险信号
 
-代码审查时，对每个抽象问：
+- 当前只处理一种类型，却为了“通用”引入 `[T any]`
+- 不同类型逻辑不同，却硬塞进一个泛型函数
 
-1. **现在有人在用吗？** 不是"以后可能有人用"
-2. **如果删掉，哪个功能会坏？** 如果答案是"没有"，删掉
-3. **是在解决真实问题还是假设问题？** "我觉得以后可能需要"= 假设问题
+### 配置高风险信号
 
-### YAGNI ≠ 不设计
+- “我还没想好，所以先做成配置”
+- 永远不会切换的 feature flag
+- 业务规则被做成散落配置而不是明确决策
 
-YAGNI 意味着：
-- ✅ 让代码易于变更（好的结构、清晰的边界）
-- ✅ 基本的错误处理和输入验证
-- ❌ 为假设需求写代码
-- ❌ "万一以后要支持多租户"就现在加多租户架构
-- ❌ 永远不会 toggle 的 feature flag
+## 最小验证
 
----
+- 数真实实现数，而不是数“可能会有的实现”
+- 看 factory / builder 是否只包了一层薄构造，没有运行时选择或复杂初始化
+- 看抽象内部是否已经堆出 flag / switch 分支，说明它在替不同场景强行找共同点
+- 看配置或 feature flag 是否有明确生命周期；如果永远不会切换，就把它当设计逃避而不是灵活性
 
-## 错误抽象（Sandi Metz）
+## 5. 审查输出句式
 
-### 路径
+- “这里只有一个实现且构造逻辑极薄，再包 factory 只增加跳转成本，没有实际收益。”
+- “这个 interface 是 producer 侧预防式抽象，当前调用方并不需要这么宽的能力面。”
+- “抽象内部已经堆满条件分支，说明这里更像错误抽象而不是健康复用。”
+- “把业务决策推成配置项并没有降低耦合，只是把未完成的设计判断外包了。”
 
-1. 看到两段重复代码 → 提取成函数/类
-2. 新需求来了，"差不多"能复用 → 加个参数
-3. 又来一个 → 再加个 flag
-4. 函数里堆满 `if/switch` → 没人敢动
+## 参考依据
 
-### 规则
-
-> "Duplication is far cheaper than the wrong abstraction." — Sandi Metz
-
-- 等 2-3 个**真实**例子再提取（Rule of Three）
-- 所有例子必须用**相同逻辑**。如果逻辑不同，那不是重复，是巧合
-- 发现抽象里堆满条件？**回退到重复**：
-  1. 把抽象内联回每个调用方
-  2. 每个调用方只保留自己需要的代码路径
-  3. 删除不需要的分支
-  4. 现在能看清真正的模式了
-
-### Dan Abramov 的补充
-
-> "My code traded the ability to change requirements for reduced duplication, and it was not a good trade." — Dan Abramov, "Goodbye, Clean Code"
-
-DRY 是手段不是目的。如果消除重复导致代码更难改，那就保留重复。
-
----
-
-## 泛型 / 类型参数
-
-```
-用泛型？
-├─ 集合操作（Filter/Map/Reduce）？→ ✅
-├─ 多类型共享完全相同的逻辑？→ ✅
-├─ 只处理一种类型？→ ❌ 用具体类型
-├─ 不同类型需要不同逻辑？→ ❌ interface 或 switch
-└─ 不确定约束该怎么写？→ ❌ 抽象还不成熟
-```
-
-```go
-// ✅ 适合泛型：通用集合操作
-func Filter[T any](items []T, fn func(T) bool) []T {
-    var result []T
-    for _, item := range items {
-        if fn(item) {
-            result = append(result, item)
-        }
-    }
-    return result
-}
-
-// ❌ 不适合泛型：只处理 User
-func GetActiveUsers[T User](users []T) []T { ... }
-// 直接写：
-func GetActiveUsers(users []User) []User { ... }
-```
-
----
-
-## 配置 vs 决策
-
-| 适合做成配置 | 适合写死 |
-|-------------|---------|
-| 运维开关（降级、熔断） | 业务规则 |
-| AB 测试变量 | 只有一种正确做法的逻辑 |
-| 灰度发布百分比 | 永远不会改的常量 |
-| 环境差异（dev/staging/prod） | "我拿不准所以做成配置" |
-
-**Feature flag 生命周期**：创建 → 灰度 → 全量 → **删除**。永久 flag = 技术债。
-
-来源：Rob Pike Go Proverbs, Uber Go Style Guide, Sandi Metz "The Wrong Abstraction", Dan Abramov "Goodbye Clean Code", Martin Fowler "Yagni", Go Wiki CodeReviewComments, 100 Go Mistakes "Interface Pollution"
+- Rob Pike: interface 应尽量小
+- Go 社区常见经验：consumer 定义 interface，accept interfaces / return structs
+- Sandi Metz: wrong abstraction 比重复更贵
+- Martin Fowler: YAGNI

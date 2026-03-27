@@ -1,211 +1,177 @@
-# ORM Patterns & Anti-Patterns
+# ORM 审查参考
 
-语言无关规则，以 GORM (Go) / SQLAlchemy (Python) / Prisma (JS/TS) / ActiveRecord (Ruby) 为示例。
+这个文件不是 ORM 教程，而是给审查时快速定位高风险问题用的。
 
----
+## 先看什么
 
-## Session / 连接安全
+遇到 repository、query builder、model hook、transaction 时，优先检查：
 
-### GORM：方法链会携带状态
+1. session / statement 是否被复用
+2. 展示型查询是否存在 N+1
+3. 副作用是否放进 hook 或事务内
+4. raw SQL 是否参数化
+5. 软删除和唯一约束是否会失效
+
+## 1. Session / Query Builder 复用
+
+### 典型风险
+
+- 上一条 `Where` / `Scopes` / `Joins` 的状态污染后续查询
+- 长生命周期 session 未正确清理
+- 把一次请求的 query state 挂到共享对象上
+
+### 证据怎么找
+
+- 看同一个 DB/session 对象是否在多个操作链之间重复使用
+- 看后续查询是否明确从干净 session 开始
+- 看是否把“带条件的链”缓存到 struct 字段或全局变量
+
+### Go / GORM 信号
 
 ```go
-// ❌ 前一次 Where 条件污染后续查询
+// ❌ 条件污染
 db.Where("status = ?", "active").Find(&users1)
-db.Find(&users2) // 仍带 "status = 'active'" 条件！
+db.Find(&users2)
 
-// ✅ 用 NewSession 方法开始新链
+// ✅ 新链
 db.WithContext(ctx).Find(&users2)
 db.Session(&gorm.Session{}).Find(&users2)
 ```
 
-NewSession 方法：`Session()`, `WithContext()`, `Debug()` —— 任一方法都会创建干净的 statement context。
+### 最小验证
 
-### SQLAlchemy：Session-per-unit-of-work
+- 看后续查询是否显式从新 session 开始
+- 如果是共享 `db` wrapper，确认没有把带条件的链缓存到字段里
 
-```python
-# ❌ 全局 session 复用
-Session = sessionmaker(bind=engine)
-session = Session()  # 创建一次，到处用
+### 其他语言等价问题
 
-# ✅ 每个工作单元新 session
-def get_user(user_id):
-    with Session() as session:
-        return session.query(User).filter(User.id == user_id).first()
-```
+- SQLAlchemy：全局 Session 到处复用，而不是每个 unit of work 新建
+- ActiveRecord：默认 scope 叠加后误以为后续查询是干净的
+- 任何 builder 风格 ORM：把已带条件的 builder 复用给多个调用方
 
-SQLAlchemy 2.0+ 默认 `autocommit=False`，95% 生产问题来自：隐式创建 session 不清理、混用 sessionmaker 模式、忽略新默认值。
+## 2. N+1 查询
 
-### 通用规则
+### 典型风险
 
-- 有显式 session 的 ORM（GORM, SQLAlchemy）：每逻辑操作单元新建 session
-- 无状态 ORM（Prisma）：天然安全，无此问题
-- 连接池公式：`MaxOpenConns ≥ 并发请求数 × 平均持连接秒数`
+- 列表页先查父对象，再在循环里逐条查关联
+- serializer / response formatter 懒加载关联，开发环境看不出问题
+- handler 本身只执行一条 service 调用，但 service 内部隐藏 100+ 条 SQL
 
----
+### 证据怎么找
 
-## 连接池配置
+- 打开 SQL 日志，看一个列表请求到底打了几条 SQL
+- 用 `100+` 父记录的测试数据跑一次
+- 看关联对象是否用了 eager load / preload / include
 
-```go
-sqlDB, _ := db.DB()
-sqlDB.SetMaxOpenConns(25)                  // 活跃连接上限
-sqlDB.SetMaxIdleConns(25)                  // 空闲连接池（≤ MaxOpen）
-sqlDB.SetConnMaxLifetime(5 * time.Minute)  // 回收旧连接
-sqlDB.SetConnMaxIdleTime(3 * time.Minute)  // 释放闲置过久的连接
-```
+### 最小阈值
 
-- `MaxIdleConns > MaxOpenConns` 无意义，多出的空闲连接立即关闭
-- 空闲池过大浪费资源，过小导致频繁建连
-- `ConnMaxLifetime` 必须短于数据库服务器的 `wait_timeout`
+- 父记录列表查询的 SQL 条数若明显随父记录数量线性增长，就按 N+1 处理
+- 不能只在 3 条样本数据下说“没问题”
 
----
+### 常见修复
 
-## N+1 检测与修复
-
-### 症状识别
-
-100 条父记录 + 每条访问一个关联 = 101 条 SQL。在开发环境看不出来（数据少），在生产环境性能断崖。
-
-### 各 ORM 解法对比
-
-| ORM | Eager Load 方式 | 策略 |
-|-----|----------------|------|
-| GORM | `db.Preload("Posts").Find(&users)` | 2 条 SQL，用 IN 子句 |
-| GORM | `db.Joins("Posts").Find(&users)` | 1 条 SQL JOIN，可能有重复行 |
-| SQLAlchemy | `selectinload(User.posts)` | 2 条 SQL，用 IN 子句 |
-| SQLAlchemy | `joinedload(User.posts)` | 1 条 SQL JOIN |
-| Prisma | `include: { posts: true }` | 自动优化 |
-| ActiveRecord | `User.includes(:posts)` | 2 条 SQL |
-
-### 检测策略
-
-1. 开发环境开 SQL 日志（`db.Debug()` / `echo=True` / `debug: true`）
-2. 用 100+ 父记录的测试数据集跑 endpoint
-3. 计数查询条数：超过 `关联层数 + 1` 条就有 N+1
+- GORM：`Preload`
+- SQLAlchemy：`selectinload` / `joinedload`
+- Prisma：`include`
+- ActiveRecord：`includes`
 
 ### 注意
 
-GORM 同时用 `Joins()` + `Preload()` 同一关联时可能产生额外查询（Issue #6988）。选一种用。
+- 不要同时对同一关联混用 `Joins` 和 `Preload`，除非你明确知道生成的 SQL 形态
+- eager load 不是永远正确；如果只需要少数列，优先验证返回体和查询成本是否匹配
 
----
+## 3. Hook / Callback 副作用
 
-## Hook / Callback 规则
+### 只适合放进 hook 的事
 
-### 只允许
+- 数据规范化
+- 默认值填充
+- 纯字段派生
 
-- 数据规范化：`email = strings.ToLower(email)`
-- 默认值填充：`if u.Role == "" { u.Role = "user" }`
-- 计算字段：`u.FullName = u.FirstName + " " + u.LastName`
+### 不该放进 hook 的事
 
-### 禁止
+- 发邮件
+- 发消息
+- 清缓存
+- 调外部 API
+- 任何必须以“事务已提交”为前提的动作
 
-- 外部 API 调用（邮件、Webhook）
-- 事件发布（Kafka、消息队列）
-- 缓存操作（Redis 清理）
-- 任何依赖事务已提交才有意义的操作
+### 为什么危险
 
-### 原因
+hook 往往运行在事务内。外部副作用一旦发出，即使事务 rollback，也无法一起回滚。
 
-Hook 在事务内执行。如果 hook 发了邮件但后续操作失败导致 rollback，邮件无法撤回。把副作用放到 service 层，在事务提交成功后执行。
+## 4. 事务边界
 
----
+### 高风险信号
 
-## 事务纪律
+- 手写 `Begin` / `Commit` / `Rollback`，中间还有多个 return 分支
+- 事务内调用外部服务
+- 事务函数里混合查、算、I/O、写四种动作
 
-### 回调式 vs 手动式
+### 审查动作
 
-```go
-// ✅ 回调式：自动 rollback，支持 savepoint 嵌套
-db.Transaction(func(tx *gorm.DB) error {
-    if err := tx.Create(&order).Error; err != nil {
-        return err // 自动 rollback
-    }
-    return tx.Transaction(func(tx2 *gorm.DB) error {
-        return tx2.Create(&item).Error // savepoint
-    })
-})
+- 找事务的开始和结束位置
+- 看是否存在“锁住数据等待外部响应”
+- 看错误分支是否一定会释放资源
 
-// ❌ 手动式：忘 rollback = 连接泄漏，不支持嵌套
-tx := db.Begin()
-tx.Create(&order)
-// 如果这里 panic 或 return，连接永远不会释放
-tx.Commit()
-```
+### 更稳妥的形态
 
-### 事务内不做 I/O
+- 用回调式事务封装提交 / 回滚
+- 先查数据，再做事务外 I/O，最后开短事务写回
 
-```go
-// ❌ 持锁调外部 API
-db.Transaction(func(tx *gorm.DB) error {
-    tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&order, id)
-    status := callExternalAPI(order.ID) // 锁持续整个 API 调用时间！
-    return tx.Model(&order).Update("status", status).Error
-})
+### 最小验证
 
-// ✅ 先查后做 I/O 再写
-var order Order
-db.First(&order, id)                    // 无锁查询
-status := callExternalAPI(order.ID)     // I/O 在事务外
-db.Transaction(func(tx *gorm.DB) error {
-    return tx.Model(&order).Update("status", status).Error
-})
-```
+- 如果手写事务，确认每个错误分支都能 rollback
+- 如果事务里有网络、消息、缓存调用，默认按高风险处理
 
----
+## 5. 软删除和唯一约束
 
-## 软删除陷阱
+### 常见误区
 
-### JOIN 不自动过滤
+- 以为 ORM 会自动帮所有 JOIN 附加软删除过滤
+- 用 timestamp 字段参与唯一索引，结果软删除后唯一约束失效
 
-```go
-// ❌ Users 表有软删除过滤，Posts 表没有
-db.Joins("LEFT JOIN posts ON posts.user_id = users.id").Find(&result)
-// 返回已删除用户的 posts！
+### 审查动作
 
-// ✅ 手动加过滤条件
-db.Joins("LEFT JOIN posts ON posts.user_id = users.id").
-    Where("users.deleted_at IS NULL").Find(&result)
-```
+- 看 JOIN 语句是否显式加了软删除条件
+- 看唯一约束是否真的只允许一个“活跃”记录
 
-### 唯一索引
+## 6. Raw SQL
 
-```go
-// ❌ 用 timestamp 做唯一索引组成部分
-// 每次删除 timestamp 不同 → 唯一约束无效
-CREATE UNIQUE INDEX ON products(sku, deleted_at)
+### 什么时候合理
 
-// ✅ 用 flag（0/1）
-import "gorm.io/plugin/soft_delete"
+- 窗口函数、CTE、批量 upsert、数据库特有能力
+- 已明确证明 ORM 生成 SQL 不适合当前场景
 
-type Product struct {
-    Sku       string
-    DeletedAt soft_delete.DeletedAt `gorm:"uniqueIndex:idx_sku"`
-}
-// DeletedAt = 0 (活跃) 或 1 (已删除)，唯一约束有效
-```
+### 什么时候危险
 
----
+- 字符串拼接参数
+- 为了“看起来更底层”而把简单查询改成 raw SQL
+- 用 raw SQL 后不再审查索引和执行计划
 
-## Raw SQL 使用时机
-
-### 适合 Raw SQL
-
-- CTE / 递归查询 / 窗口函数
-- 批量 upsert（`ON CONFLICT DO UPDATE`）
-- 数据库特有功能（JSON 操作、全文搜索）
-- 经 profiling 证明 ORM 生成的 SQL 有性能问题
-
-### Raw SQL 安全规则
+### 底线
 
 ```go
 // ✅ 参数化
 db.Raw("SELECT * FROM users WHERE email = ?", email)
 
-// ❌ 字符串拼接 = SQL 注入
+// ❌ 注入风险
 db.Raw(fmt.Sprintf("SELECT * FROM users WHERE email = '%s'", email))
 ```
 
-等效于：
-- SQLAlchemy: `text("... WHERE id = :id")` + `{"id": user_id}`
-- Prisma: `` $queryRaw`... WHERE email = ${email}` `` (tagged template)
+### 与 `sql.md` 的边界
 
-来源：GORM 官方文档 Session/Hooks/Delete/Transactions 章节, GORM Issues #4818 #3662 #6988 #5395, Alex Edwards "Configuring sql.DB", SQLAlchemy Session FAQ, Prisma Raw Queries 文档
+- 本文件只回答“什么时候该用 ORM、什么时候 raw SQL 仍然安全”
+- 一旦已经进入 SQL 形态优化、索引与执行计划问题，转到 [sql.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/sql.md)
+
+## 审查输出句式
+
+- “这里复用了带状态的 query chain，后续查询会继承旧条件，属于 correctness 风险。”
+- “列表查询对每个父记录单独取关联对象，命中 N+1；在数据量上来后会出现性能断崖。”
+- “事务内先锁记录再调外部 API，会把数据库连接和锁持有到网络返回为止。”
+
+## 参考依据
+
+- GORM 官方文档：Session、Hooks、Transactions、Delete
+- SQLAlchemy 官方文档：Session basics / unit of work
+- 常见 ORM 生产事故模式：N+1、transaction 内副作用、raw SQL 参数化

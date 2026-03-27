@@ -1,182 +1,301 @@
 ---
 name: backend-code-quality
 description: >
-  Backend API / Worker 编码质量与反模式检测。覆盖 ORM 使用、错误处理、并发安全、
-  API handler 分层、过度工程五大领域的通用规则与检查项。以 Go (Gin/GORM/asynq) 为主要示例，
-  但规则本身语言无关，适用于任何后端服务。
-  触发场景：(1) 编写或审查后端 API handler / service / repository 代码，
-  (2) 编写或审查 background worker / job queue 处理逻辑，
-  (3) 出现 ORM 误用（N+1、session 复用、hook 塞业务逻辑、事务内做 I/O），
-  (4) 出现错误处理问题（log-and-return、暴露内部错误、缺少 wrap 上下文），
-  (5) 出现并发问题（goroutine 泄漏、data race、不检查 context 取消、非幂等重试），
-  (6) 出现 API 层问题（fat handler、框架 context 穿透 service、响应后不 return），
-  (7) 出现过度工程（预防式 interface、单用 factory、过早泛型、错误抽象），
-  (8) 用户提到"代码审查"、"反模式"、"code review"、"过度抽象"、"错误处理"、
-  "并发安全"、"handler 太胖"、"N+1"。
-  不处理：项目目录结构（交给 go-project-best-practices / python-web-api-best-practices），
-  部署运维，微服务架构设计。
+  Backend API / Worker 代码审查与反模式检测 skill。聚焦 ORM 使用、错误处理、并发安全、
+  API handler 分层、过度工程五个高风险领域，帮助 agent 以证据驱动的方式发现 bug、回归风险、
+  不安全实现和错误抽象。只要用户让你 review 后端 API / service / repository / worker 代码，
+  或怀疑存在 N+1、log-and-return、context 传播、幂等、fat handler、interface 污染、
+  错误抽象等问题，即使用户没有明确说“代码审查”，也应该优先使用本 skill。
+  以 Go (Gin/GORM/asynq) 为主示例，但审查动作本身语言无关。
+  不处理：项目目录结构、部署运维、容量规划、微服务拆分。
 ---
 
 # Backend Code Quality
 
-后端 API / Worker 编码质量规范。规则语言无关，示例以 Go 为主。
+这个 skill 不负责“给后端最佳实践做百科全书式讲解”，而负责把后端代码审查变成稳定、可执行、可验证的工作流。
 
-> **核心立场**：代码审查不是风格偏好，而是防止生产事故。每条规则都对应一个真实的生产问题。
+核心目标只有三个：
 
----
+1. 找出真实会导致生产问题的缺陷，而不是风格偏好
+2. 让 findings 能直接回指到代码证据和修复方向
+3. 控制审查范围，避免从代码质量滑向架构空谈
 
-## 1. ORM 使用
+## 何时使用
 
-### 规则
+优先用于这些场景：
 
-- **每次操作链使用新 session**。不复用带查询状态的 DB 实例——前一次 `Where` 条件会污染下一次查询。用 `WithContext(ctx)` 或 `Session(&gorm.Session{})` 开始新链。
-- **连接池必须显式配置**。`MaxIdleConns ≤ MaxOpenConns`，设 `ConnMaxLifetime`（建议 5min），按 `max(并发请求数 × 平均持连接时间)` 估算上限。
-- **Hook 只做数据规范化**（lowercase、默认值、计算字段）。发邮件、推事件、清缓存等副作用放 service 层，不放 model hook——hook 在事务未提交时执行，外部调用不可回滚。
-- **事务内不做外部 I/O**。持锁期间调外部 API = 数据库连接被占满。先查数据 → 释放锁 → 做 I/O → 再开事务写入。
-- **用回调式事务**（`db.Transaction(func(tx) error {…})`），不用手动 `Begin/Commit`——手动模式不支持 savepoint 嵌套，且忘 rollback 会泄漏连接。
+- 用户要求 review / code review / 审查后端代码
+- 用户怀疑存在 ORM、错误处理、并发、handler 分层、抽象设计问题
+- 用户在实现 API、service、repository、worker、job handler 时要求先做质量把关
+- 用户提到这些信号词：
+  - `N+1`
+  - `log-and-return`
+  - `context`
+  - `goroutine leak`
+  - `幂等`
+  - `fat handler`
+  - `middleware`
+  - `interface 污染`
+  - `factory 过度`
+  - `过度抽象`
 
-### 检查项
+不要用于这些场景：
 
-- [ ] 展示型查询是否 eager load 关联（Preload / Include / joinedload）？用 100+ 父记录测试确认无 N+1
-- [ ] 软删除表的 JOIN 是否手动加了 `deleted_at IS NULL` 过滤？
-- [ ] 软删除唯一索引是否用 flag（0/1）而非 timestamp？
-- [ ] Raw SQL 是否全部用参数化占位符（`?` / `$1` / `:name`），无字符串拼接？
+- 主要问题是目录布局、模块边界、项目结构
+- 主要问题是基础设施、部署、监控、运维
+- 用户要讨论微服务拆分、组织级架构、团队协作流程
+- 用户只是想要框架教程，而不是针对当前代码做判断
 
-### 反模式速查
+需要项目结构时，转交 `go-project-best-practices` 或 `python-web-api-best-practices`。需要宏观架构减负时，转交 `pragmatic-architecture`。
 
-| ID | 名称 | 症状 | 修复 |
-|----|------|------|------|
-| ORM-1 | Session 复用 | 查询条件污染、连接泄漏 | 每操作链新 session |
-| ORM-2 | N+1 查询 | 100 条父记录 = 101 条 SQL | Preload / eager load |
-| ORM-3 | Hook 塞业务逻辑 | 事务未提交就发了邮件 | 移到 service 层 |
-| ORM-4 | 事务内 I/O | 持锁等网络响应 | 拆成查→I/O→写 |
-| ORM-5 | 手动 Begin/Commit | 嵌套事务失败、忘 rollback | 用回调式事务 |
+## 核心执行原则
 
-> 详细的跨 ORM 对比和代码示例见 [orm-patterns.md](references/orm-patterns.md)
-> SQL 查询优化（索引策略、分页、聚合、执行计划分析）见 [sql.md](references/sql.md)
+### 1. 先找风险，再谈风格
 
----
+优先级始终是：
 
-## 2. 错误处理
+1. correctness / 数据一致性
+2. production safety / 回归风险
+3. maintainability / 边界清晰度
+4. 风格与偏好
 
-### 规则
+如果某个点不会增加 bug 风险、运行风险、排障成本或误用概率，不要把它包装成高优先级 finding。
 
-- **Wrap 或上抛，二选一**。加上下文时 wrap（`fmt.Errorf("load user: %w", err)`），会暴露实现细节时直接返回。
-- **Log 或 return，不能两者都做**（Log-and-return 反模式）。底层 wrap + 上抛，顶层（HTTP middleware / worker 入口）统一 log。一个错误只打一次日志。
-- **Sentinel 用于包内固定条件**（`io.EOF`, `sql.ErrNoRows`）；公开 API 用自定义错误类型，携带结构化信息。
-- **API 错误响应不泄露内部细节**。堆栈、SQL、服务名、文件路径都不能出现在 HTTP 响应里。内部 log 完整记录，外部只返回安全的错误码 + 用户可理解的消息。
-- **Panic/异常只在系统边界 recover**：HTTP middleware、goroutine 入口、worker 入口。业务代码不 recover，库代码不 panic。
+### 2. finding 必须可证伪
 
-### 检查项
+每个关键结论都要尽量满足下面三件事：
 
-- [ ] 结构化日志是否用 KV 对而非字符串拼接？
-- [ ] 每条日志是否带 correlation/request ID？
-- [ ] 是否记录了敏感信息（密码、token、PII）？
-- [ ] 错误响应格式是否全局统一（所有端点同一结构）？
+- 能指出代码位置或缺失点
+- 能解释为什么它会出问题
+- 能说明更稳妥的修复方向
 
-### 反模式速查
+避免这种输出：
 
-| ID | 名称 | 症状 | 修复 |
-|----|------|------|------|
-| ERR-1 | Log-and-return | 同一错误日志出现多次 | 底层 wrap，顶层 log |
-| ERR-2 | 暴露内部错误 | 500 响应含堆栈/SQL/路径 | 映射到安全错误码 |
-| ERR-3 | 到处 recover | panic 被吞没，bug 隐藏 | 只在系统边界 recover |
+- “这里可以更优雅”
+- “建议抽象一下”
+- “看起来不太规范”
 
-> 详细的 wrap 决策树和错误码映射表见 [error-handling.md](references/error-handling.md)
+改成这种输出：
 
----
+- “`handler` 在写出响应后没有 `return`，后续仍会继续执行 service 调用，可能造成二次写响应或重复副作用”
+- “同一个 DB handle 复用了已附带查询状态的链，后续查询会继承旧条件”
+- “worker 重试路径没有幂等保护，失败重跑会重复发邮件”
 
-## 3. 并发安全
+### 3. 先按审查对象选入口，不要一上来把五个主题全扫一遍
 
-### 规则
+先判断当前代码主要属于哪一类：
 
-- **每个 goroutine/coroutine 必须有退出路径**。用 buffered channel（cap=1）或 errgroup 防止发送端永久阻塞。测试用 `goleak.VerifyNone(t)`。
-- **共享可变状态必须加锁**。Map 并发写 = fatal crash，slice 并发 append = data race。读多写少用 `sync.RWMutex`，写多用 `sync.Mutex`。
-- **Mutex vs Channel 选择**：简单状态变更（计数器、缓存）用 mutex；协调多 goroutine 生命周期（任务分发、信号通知）用 channel。
-- **Worker 必须响应 context 取消**。长循环内检查 `ctx.Done()` 或 `ctx.Err()`，不能让 worker 在 shutdown 后继续跑。
-- **重试必须指数退避 + jitter**。区分可重试错误（网络超时）和不可重试错误（参数无效），不可重试直接 `SkipRetry`。
-- **有副作用的任务必须幂等**。用 idempotency key 或 DB 去重，保证重试不会发两封邮件 / 扣两次款。
-- **Context 作为函数第一个参数传递**，不存 struct 字段（破坏 per-operation 超时），不在业务层用 `context.Background()`（吞掉取消信号）。
-- **并发度必须有上限**。`errgroup.SetLimit()` / `Semaphore`。I/O 密集 `CPU*2~4`，CPU 密集 `CPU*1`。无上限 = OOM 风险。
+- API / handler / middleware
+- service / orchestration
+- repository / ORM / SQL
+- worker / job / async handler
+- 抽象层 / interface / factory / generic helper
 
-### 检查项
+然后只展开最相关的 2-3 个主题，除非用户明确要求全面审查。
 
-- [ ] 循环变量传入 goroutine 前是否拷贝？（`i := i`）
-- [ ] `wg.Add()` 是否在 `go func()` 之前调用？
-- [ ] errgroup 使用后是否新建而非复用？
+### 4. 结论必须区分严重度
 
-### 反模式速查
+默认用这三级：
 
-| ID | 名称 | 症状 | 修复 |
-|----|------|------|------|
-| CON-1 | Goroutine 泄漏 | NumGoroutine 持续增长 | buffered chan / errgroup |
-| CON-2 | 并发 map 写入 | fatal: concurrent map writes | sync.RWMutex / sync.Map |
-| CON-3 | 不检查 ctx 取消 | worker 关不掉 | 循环内 select ctx.Done() |
-| CON-4 | 无限重试 | 下游被打爆 | 指数退避 + 最大次数 |
-| CON-5 | 非幂等副作用 | 重试发两封邮件 | idempotency key |
-| CON-6 | 无并发上限 | 1M goroutine → OOM | SetLimit / Semaphore |
+- `High`: 明确 bug、数据错误、并发问题、事务错误、安全或稳定性风险
+- `Medium`: 易误用设计、错误边界不清、回归风险、可维护性明显恶化
+- `Low`: 可以优化但当前未形成直接风险
 
-> 详细的并发模式代码示例见 [concurrency.md](references/concurrency.md)
+如果用户要 review，先给 `High`，再给 `Medium`，最后才是 `Low`。
 
----
+### 5. 先做跨语言映射，再套示例
 
-## 4. API Handler 层
+这个 skill 以 Go 例子为主，但判断逻辑不是 Go 专属。遇到其他栈时，先把失败模式映射，再看 API 名字：
 
-### 规则
+- `gin.Context` / `echo.Context` -> `FastAPI Request` / `Express req,res`
+- `gorm.Session` / query chain -> SQLAlchemy session / Prisma query builder / ActiveRecord scope
+- `asynq` retry / cancel -> Celery / BullMQ / Sidekiq 的 retry / timeout / idempotency
 
-- **Handler 是 HTTP 适配器**，只做：解析请求 → 调 service → 格式化响应。业务逻辑在 service 层，数据访问在 repository 层。
-- **框架 Context 不传入 service 层**。Gin 的 `*gin.Context` / Express 的 `req` 对象止步于 handler。Service 接收 `context.Context`（Go）或等效的标准类型，保持框架无关。
-- **请求绑定只调一次**。HTTP body 是流，读一次就空了。Handler 入口统一绑定 + 验证，结果传给后续逻辑。
-- **发送响应后必须 return**。`c.JSON()` / `res.send()` 不会中断函数执行，不 return 会继续跑后续代码。
-- **中间件只做横切关注点**：认证、日志、CORS、panic 恢复。业务判断放 handler/service，不放 middleware。
-- **依赖单向流动**：Handler → Service → Repository。内层不导入外层包，Service 不知道 HTTP 状态码，Repository 不知道 handler 类型。
-- **统一响应格式**：所有端点（成功 + 错误）用同一 JSON 结构。客户端不需要条件解析逻辑。
+如果风险模式成立，就可以给 finding；不要因为代码里没出现 Go API 名称，就放过同类问题。
 
-### 反模式速查
+## 审查前的最小判断
 
-| ID | 名称 | 症状 | 修复 |
-|----|------|------|------|
-| API-1 | Fat handler | 300 行 handler 函数 | 拆到 service + repo |
-| API-2 | 框架 ctx 穿透 | service 依赖 gin.Context | 提取 context.Context |
-| API-3 | JSON 后不 return | 响应发了但代码继续跑 | 立即 return |
-| API-4 | Service 返 HTTP 码 | service 里 `return 400, err` | 返回领域错误，handler 映射 |
+开始前先确定下面几点；如果缺失会显著影响结论，再向用户提问：
 
-> 详细的分层示例和中间件排序规范见 [api-layer.md](references/api-layer.md)
+1. 这次看的对象是什么：API、worker、service、repository，还是整个改动
+2. 你的角色是什么：找 bug、给实现建议，还是做准入审查
+3. 是否允许改产品逻辑，还是只能在既有行为内修实现
+4. 是否需要向后兼容
+5. 审查语言 / 框架是什么
 
----
+如果信息不完整但代码里已经能看出来，就直接继续，不要为了提问而提问。
 
-## 5. 过度工程
+如果用户让你“先把关设计 / 实现方案”但还没有代码，也可以继续，只是要切换成“风险预检”而不是伪装成代码 review：
 
-### 规则
-
-- **Interface 在需要时创建，不预防式定义**。只有多实现 OR 测试 mock 需求时才加。Consumer 侧定义，越小越强（Rob Pike: "The bigger the interface, the weaker the abstraction"）。
-- **DI 先用构造函数注入**。20+ 组件或复杂初始化序列才引入 Wire/dig/fx 等框架。小项目加 DI 框架 = 纯增复杂度。
-- **Factory/Builder 只用于真正多态或复杂初始化**。如果只有一个实现且构造只需一行，直接 `new`。
-- **YAGNI：只构建当前需求的功能**。让代码易于变更，而非预测未来。"以后可能需要"不是写代码的理由。
-- **错误的抽象比重复更贵**（Sandi Metz）。等 2-3 个真实例子再提取。发现抽象里堆满 `if/flag` 时，回退到重复，重新发现模式。
-- **泛型/类型参数只用于集合和真正复用**。只处理一种类型的代码不加泛型。
-- **配置用于运维控制（灰度、开关、AB 测试），不用于回避设计决策**。"我拿不准所以做成配置" = 没做决定。
-
-### 反模式速查
-
-| ID | 名称 | 症状 | 修复 |
-|----|------|------|------|
-| ENG-1 | 预防式 interface | 0 或 1 个实现 | 等需要时再加 |
-| ENG-2 | 单用 factory | new 一行变成 factory 一个文件 | 直接构造 |
-| ENG-3 | 过早泛型 | 只处理一种类型却加了 `[T any]` | 用具体类型 |
-| ENG-4 | 错误抽象 | 抽象里堆满 if/flag | 回退重复，重新提取 |
-| ENG-5 | 配置逃避 | 永远不会 toggle 的 feature flag | 做决定，删 flag |
-
-> 详细的决策树和 Sandi Metz / Dan Abramov 原则展开见 [over-engineering.md](references/over-engineering.md)
-
----
+- 只指出将来最可能踩雷的 1-3 个风险点
+- 把无法验证的部分写成 `Open question`
+- 不要捏造“位置”或“已确认 bug”
 
 ## 审查工作流
 
-当审查后端代码时，按以下顺序扫描：
+### Step 1: 先建立上下文
 
-1. **分层** — handler 是否只做 HTTP 翻译？service 是否框架无关？
-2. **ORM** — 有无 N+1？session 是否安全？事务内有没有 I/O？
-3. **错误处理** — 有无 log-and-return？错误响应是否泄露内部信息？
-4. **并发** — goroutine 有没有退出路径？共享状态有没有保护？worker 是否幂等？
-5. **抽象度** — 有没有没人用的 interface？有没有只构造一次的 factory？
+至少确认：
+
+- 请求入口或任务入口在哪
+- 主要业务路径经过哪些层
+- 副作用是什么
+- 出错后会怎么返回、重试或恢复
+
+如果用户给的是 PR 或局部 diff，不要只盯改动行；要沿着调用链补看上下文，直到能回答：
+
+- 谁负责校验
+- 谁负责持久化
+- 谁负责错误映射
+- 谁负责并发 / 重试 / 取消
+
+### Step 2: 选择审查轨道
+
+按对象优先检查：
+
+- API / handler：`API 层 + 错误处理 + 过度工程`
+- repository / ORM：`ORM + SQL + 错误处理`
+- worker / async：`并发 + 错误处理 + 幂等`
+- service / orchestration：`错误处理 + 分层 + 抽象度`
+
+### Step 3: 用主题检查表找证据
+
+每个主题都按这个结构输出：
+
+- `观察到什么`
+- `为什么危险`
+- `严重度`
+- `建议修复方向`
+
+优先寻找下面三类硬证据：
+
+- `静态证据`：具体代码路径、调用顺序、依赖方向、状态复用
+- `运行证据`：SQL 条数、重试行为、日志重复、响应后仍执行、goroutine 数量
+- `验证锚点`：测试、`EXPLAIN`、`goleak.VerifyNone(t)`、`go test -race`、100+ 记录样本、幂等键或去重表
+
+### Step 4: 给结论贴上证据标签
+
+只有三种合法结论：
+
+- `Finding`：证据已经足够支撑问题成立
+- `Risk hypothesis`：有强信号，但仍缺少关键验证，不要当成已确认 bug
+- `Open question`：缺少上下文，继续判断会放大误判
+
+使用规则：
+
+- `High` 优先给 `Finding`；如果做不到，宁可降级为 `Open question`
+- 缺少运行证据但静态路径已经明确时，可以给 `Medium` 或 `High`，但要把缺失的验证锚点写清
+- 不能把“我怀疑这里可能有问题”直接写成已确认 finding
+
+### Step 5: 按请求形态输出
+
+如果用户要 review，默认输出：
+
+1. findings，按严重度排序
+2. open questions / assumptions
+3. change summary 或总体评价
+
+如果用户要“实现前自检 / worker 设计检查 / 方案把关”，默认输出：
+
+1. top risks
+2. open questions
+3. validation checklist
+
+如果没有发现问题，要明确说“未发现明确 findings”，但仍可补充：
+
+- 哪些区域没充分验证
+- 哪些测试或运行验证还缺失
+
+## 最小输出协议
+
+### 正式 review
+
+```md
+1. [High] <问题标题>
+   - 位置: <文件或调用路径>
+   - 证据: <观察到的代码行为>
+   - 风险: <为什么会出问题>
+   - 修复方向: <建议怎么改>
+```
+
+### 风险预检 / 设计把关
+
+```md
+1. [Risk] <最高优先级风险>
+   - 依据: <当前已知设计或代码片段>
+   - 为什么现在就该担心: <未来最容易出事故的点>
+   - 建议先验证: <测试、trace、SQL 日志、幂等键、race 检查等>
+```
+
+### 信息不足时
+
+```md
+Open question: <需要确认的点>
+- 原因: <为什么它影响结论>
+- 需要查看: <测试、日志、调用方、运行路径>
+```
+
+## 主题分流速查
+
+主 `SKILL.md` 只负责告诉 agent 什么时候展开某个主题、先抓什么信号、用什么锚点验证；具体规则、例子和改写 heuristics 都下沉到 `references/`。
+
+### ORM / SQL
+
+- 什么时候展开：看到 repository、query builder、transaction、列表接口、raw SQL
+- 先抓什么：query chain 复用、N+1、事务内 I/O、raw SQL 拼接、查询形态退化
+- 验证锚点：SQL 条数、`100+` 父记录样本、rollback 覆盖、`MaxIdleConns <= MaxOpenConns`、`EXPLAIN`
+- 去哪看细节：
+  - [orm-patterns.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/orm-patterns.md) 负责 session、transaction、hook、soft delete、raw SQL 边界
+  - [sql.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/sql.md) 负责索引、分页、聚合、批量写入、查询改写
+
+### 错误处理
+
+- 什么时候展开：看到 error wrap、日志、HTTP 错误响应、worker 失败路径、panic / recover
+- 先抓什么：log-and-return、内部错误泄露、边界映射缺失、错误类型混乱
+- 验证锚点：同一路径日志是否只出现一次、4xx/5xx 是否泄露内部细节、边界层是否统一映射
+- 去哪看细节：
+  - [error-handling.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/error-handling.md)
+
+### 并发 / Worker
+
+- 什么时候展开：看到 goroutine、queue handler、retry、异步副作用、共享状态
+- 先抓什么：退出路径缺失、data race、context 不传播、无限重试、非幂等副作用
+- 验证锚点：`go test -race`、`goleak.VerifyNone(t)`、最大重试次数、backoff、jitter、幂等键或去重表
+- 去哪看细节：
+  - [concurrency.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/concurrency.md)
+
+### API / Handler 分层
+
+- 什么时候展开：看到 handler、middleware、binding、response mapping、service 边界
+- 先抓什么：fat handler、framework context 穿透、body 重复绑定、响应后继续执行、middleware 塞业务逻辑
+- 验证锚点：handler 是否直接操作 ORM / SQL、service 是否依赖框架类型、写响应后是否仍有执行分支
+- 去哪看细节：
+  - [api-layer.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/api-layer.md)
+
+### 过度工程
+
+- 什么时候展开：看到 interface、factory、builder、DI、feature flag、泛型 helper
+- 先抓什么：预防式 interface、单实现工厂、错误抽象、为未来需求提前抽象、配置逃避决策
+- 验证锚点：是否已有 `2+` 真实实现、是否只有薄构造、feature flag 是否有生命周期
+- 去哪看细节：
+  - [over-engineering.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/over-engineering.md)
+
+## 常见失效模式
+
+这个 skill 最容易跑偏到下面几类错误，请主动避免：
+
+- 把所有问题都讲成“架构问题”，却没有代码证据
+- 用抽象原则批评代码，但没证明抽象真的造成风险
+- 在没有业务上下文时，把特定实现习惯误判成 bug
+- 只复述 reference 内容，没有结合当前代码做判断
+- 把低优先级风格问题排在真正 bug 前面
+- 用户只是让你做设计把关，你却伪造出像代码 review 一样的“已确认 finding”
+
+## 文件分工
+
+- `SKILL.md`：触发边界、审查流程、输出协议、主题分流
+- `references/*.md`：具体规则、例子、直接可复用 heuristics
+- `evals/evals.json`：最小评测场景
+- `evals/fixtures/*`：供 eval 使用的代码片段
+
+如果问题是“这个查询是不是 ORM 误用”，先看 [orm-patterns.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/orm-patterns.md)；如果问题是“这条 SQL 形态会不会退化”，再看 [sql.md](/Users/zhangzimin/Documents/sweetRetry/skills/backend-code-quality/references/sql.md)。
