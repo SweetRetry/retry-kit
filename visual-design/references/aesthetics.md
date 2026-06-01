@@ -97,13 +97,13 @@ Inter、Roboto、Open Sans、Lato、Montserrat、Poppins 到处都是——用�
 
 不同气质要的反差不同：
 
-| 气质 | display:body 比例 | display 字重 | body 字重 |
+| 设计范式 | display:body 比例 | display 字重 | body 字重 |
 |------|-------------------|--------------|-----------|
-| Editorial | 4:1 ~ 6:1 | Light / Regular（靠尺寸） | Regular |
-| Minimal | 2:1 ~ 3:1 | Medium / Semibold | Regular |
-| Cinematic | 5:1 ~ 8:1（首屏夸张） | Bold / Black | Regular |
-| Utility | 1.5:1 ~ 2:1 | Semibold | Regular |
-| Organic | 3:1 ~ 4:1 | Medium | Regular |
+| Typographic-First | 4:1 ~ 6:1 | Light / Regular（靠尺寸） | Regular |
+| Geometric & Technical | 2:1 ~ 3:1 | Medium / Semibold | Regular |
+| Content-Immersive | 5:1 ~ 8:1（首屏夸张） | Bold / Black | Regular |
+| Data-Dense & Utility | 1.5:1 ~ 2:1 | Semibold | Regular |
+| Human-Centric & Soft | 3:1 ~ 4:1 | Medium | Regular |
 
 ### 行长 / 行高 / 字距判断标尺
 
@@ -211,7 +211,7 @@ amazing product               our amazing
 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 / 128
 ```
 
-**8 太粗——你会频繁需要 12**。Utility 用小步长（4/8/12），Editorial 用大步长（48/96/128）。
+**8 太粗——你会频繁需要 12**。Data-Dense & Utility 用小步长（4/8/12），Typographic-First 用大步长（48/96/128）。
 
 ### 韵律类型
 
@@ -321,13 +321,13 @@ amazing product               our amazing
 
 ### 各气质的质感预算
 
-| 气质 | 阴影 | 边框 | 圆角 | 渐变 | 重技法上限 |
+| 设计范式 | 阴影 | 边框 | 圆角 | 渐变 | 重技法上限 |
 |------|------|------|------|------|-----------|
-| Editorial | 0 | 1px 细线 | 0 / 4px | 0 | 0 |
-| Minimal | 0 | 1px | 6 / 8px | 0 | 0 |
-| Utility | 0 / 1 级浅 | 1px | 4 / 6px | 0 | 0 |
-| Cinematic | 1 大尺度 | 0 | 0 / ≥16px | 1 同色系 | 1 |
-| Organic | 1 级温和 | 0 / 模糊边 | 12 / 24px | 1 轻 | 2 |
+| Typographic-First | 0 | 1px 细线 | 0 / 4px | 0 | 0 |
+| Geometric & Technical | 0 | 1px | 6 / 8px | 0 | 0 |
+| Data-Dense & Utility | 0 / 1 级浅 | 1px | 4 / 6px | 0 | 0 |
+| Content-Immersive | 1 大尺度 | 0 | 0 / ≥16px | 1 同色系 | 1 |
+| Human-Centric & Soft | 1 级温和 | 0 / 模糊边 | 12 / 24px | 1 轻 | 2 |
 
 ### 重技法判定
 
