@@ -43,6 +43,8 @@ CRUD tool 与任务级 tool 都可能合理。用调用次数、选择歧义、�
 
 Description 侧重选择信息。将字段细节放入 schema，将完整流程和领域知识放入按需 reference。
 
+Tool-specific 的选择条件、输入、结果和恢复规则由 tool contract 持有；System Prompt 只保留跨工具稳定成立的策略。避免为了强调而在两处维护同一段说明。
+
 ## 输入契约
 
 选择模型容易生成、服务端容易验证的最小结构：
@@ -73,6 +75,8 @@ OpenAI Function Calling 的 strict mode 当前要求 object schema 使用 `addit
 避免重复输入、全量数据库对象、无界嵌套和调试字段。平台支持时使用 output schema 或 structured content；仅供 UI 使用的数据放入模型不可见 metadata。
 
 当恢复依赖错误类型时，提供稳定 error code、`retryable`、失败字段或 operation index，以及可行的恢复动作。根据业务语义区分改参、重试、等待、重新授权、询问用户和停止。
+
+拒绝或权限不足应返回可判断的原因。Agent 不应原样重试被拒绝的调用；只有参数、权限或执行条件发生有效变化时才再次尝试。
 
 ## 数据量、Batch 与长任务
 

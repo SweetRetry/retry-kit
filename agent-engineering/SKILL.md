@@ -9,7 +9,7 @@ description: >
 
 # Agent Engineering
 
-围绕任务结果设计 agent。将 Instructions、Context、Tools、Runtime 和 Evals 视为协作边界，不用其中一层补偿另一层的缺陷。
+围绕任务结果设计 agent。将 Instructions、Context、Tools、Runtime 和 Evals 视为协作边界，不用其中一层补偿另一层的缺陷。同一规则只放在能执行或验证它的最小责任层；仅在 eval 证明持续遗漏时增加跨层提醒。
 
 ## 读取 references
 
@@ -41,6 +41,8 @@ description: >
 
 选择满足任务的最小形态。根据任务结构决定是否拆 agent，不预设固定数量。
 
+并行执行相互独立的调用或工作轨道，依赖前序结果的步骤保持串行。仅在独立 context、并行收益或权限隔离足以覆盖协调、重复探索和汇报成本时使用 multi-agent；委派后不要在主 agent 重做同一工作。
+
 ## 划分责任
 
 | 层 | 主要责任 |
@@ -58,6 +60,7 @@ description: >
 可使用 `observe → decide → act → verify → update → stop` 作为检查框架，并根据任务调整：
 
 - 在 action 后验证业务效果，而非只检查 tool call 是否返回。
+- 在授权范围内完成用户预期的完整 scope；先推进不受影响的部分，仅在不同假设会导致实质不同、危险或无效的结果时澄清。
 - 更新 working state 和 model-visible context，移除已失效信息。
 - 为可重试、需审批、需用户输入和终止失败提供可区分状态。
 - 长任务保留稳定 ID、关键状态和恢复入口。
@@ -81,7 +84,7 @@ description: >
 
 ## 输出
 
-只交付用户请求的层及其必要接口。说明采用的架构、关键取舍、验证方式和高置信风险；具体格式随任务和消费方调整。
+只交付用户请求的层及其必要接口。先说明结果，再说明必要的架构、取舍与验证；明确区分已完成、失败、跳过和未验证项。具体格式随任务和消费方调整。
 
 ## 资料新鲜度
 
