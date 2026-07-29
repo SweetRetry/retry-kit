@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Designer"
+  short_description: "Design and implement production-ready user interfaces"
+  default_prompt: "使用 $ui-designer 在当前项目中设计并实现一个完整、响应式且有产品特异性的界面。"
