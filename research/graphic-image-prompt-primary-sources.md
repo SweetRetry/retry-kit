@@ -27,7 +27,7 @@
    只交付替换内容后仍成立的可复用视觉语言。
 3. 当前仓库没有名为 `background` 或 `backgrounds` 的 skill，也没有可据此确认的 background 输出合同。
    因此下文只把 background 当作用户提出的一类结果形态分析，不虚构“现有 background skill”事实。
-4. `docs/research/` 已存在一手来源研究笔记，因此本文沿用该目录约定。
+4. `research/` 是本仓库一手来源研究的统一落库目录，因此本文沿用该目录约定。
 
 ### 一手来源范围
 

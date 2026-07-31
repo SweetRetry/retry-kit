@@ -1,6 +1,9 @@
 skill-examples
 .claude
 .agent
+.agents
 
 .DS_Store
 evals
+downloads
+completed

@@ -6,6 +6,7 @@
 
 ```text
 engineering/   Agent、架构、代码质量与前端框架工程
+generation/    AI 图片、视频、剧本与分镜生成
 product/       产品诊断与数据价值判断
 web-design/    界面设计、视觉审查与网页视觉素材
 research/      跨 skill 的研究证据，不参与 skill discovery
@@ -19,6 +20,17 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - `reactflow-pratices`：React Flow v12+ 开发实践。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
 - `videojs-react`：Video.js v10 React 播放器开发实践。
+
+### Generation
+
+- `asset-director`：规划跨画面复用的参考素材与连续性控制。
+- `graphic-image-prompt`：生成 plane-first 二维平面视觉 prompt。
+- `scene-image-prompt`：生成 scene-first 叙事单图与关键帧 prompt。
+- `script-director`：构思、诊断和改写不同媒介与篇幅的脚本。
+- `storyboard-director`：把剧本转为分镜与连续生成段。
+- `style-grill`：通过推荐与追问收敛可复用的视觉 Style Spec。
+- `video-breakdown`：逐镜分析视频并输出紧凑 JSON。
+- `video-prompt`：生成单次 4–15 秒的视频 prompt。
 
 ### Product
 
@@ -47,7 +59,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ```bash
 VALIDATOR="${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py"
 
-find engineering product web-design -mindepth 2 -maxdepth 2 -name SKILL.md -type f |
+find engineering generation product web-design -mindepth 2 -maxdepth 2 -name SKILL.md -type f |
 while IFS= read -r file; do
   python3 "$VALIDATOR" "${file%/SKILL.md}"
 done

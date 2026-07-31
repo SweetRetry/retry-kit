@@ -1,0 +1,4 @@
+interface:
+  display_name: "Seedance 生视频 Prompt"
+  short_description: "编写 4–15 秒可执行的单镜或单次多镜 prompt"
+  default_prompt: "使用 $video-prompt 把当前画面意图与可用上下文整理成一次 Seedance 2.0 视频生成可直接使用的多行自然语言 prompt。"

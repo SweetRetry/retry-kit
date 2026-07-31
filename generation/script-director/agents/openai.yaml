@@ -1,0 +1,4 @@
+interface:
+  display_name: "脚本创作与导演"
+  short_description: "面向不同媒介与篇幅完成脚本创作、诊断、改写和导演表达"
+  default_prompt: "使用 $script-director 把当前想法或素材发展成适合目标媒介和语言的脚本。"

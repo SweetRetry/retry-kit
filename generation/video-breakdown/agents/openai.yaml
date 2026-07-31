@@ -1,0 +1,4 @@
+interface:
+  display_name: "视频拉片"
+  short_description: "逐镜分析单个视频，还原镜头作用、段落结构与完整视听节奏"
+  default_prompt: "使用 $video-breakdown 对当前附带的单个视频做完整拉片，只输出逐镜事实、镜头作用、结构、节奏与不确定项的 JSON。"
