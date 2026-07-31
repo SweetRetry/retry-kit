@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Background Assets"
+  short_description: "Create authored prompts with true background grammar"
+  default_prompt: "Use $generate-web-backgrounds to create a crop-resilient background image prompt, adding only clean static depth layers when the asset will later be animated."

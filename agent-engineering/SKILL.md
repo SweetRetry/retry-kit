@@ -3,20 +3,24 @@ name: agent-engineering
 description: >
   设计、审查和改进 AI Agent，涵盖 System Prompt、context engineering、
   retrieval / memory / compaction、MCP 或 function tools、agent loop、orchestration、
-  guardrails 与 eval。Use when 构建 agent、诊断 instruction 或 context 问题、
-  设计 tool contract、控制 token / latency，或评估 single-agent / multi-agent 架构。
+  guardrails 与 eval。仅当任务对象是 AI Agent 本身时使用，例如构建 agent、诊断
+  instruction 或 context 问题、设计 tool contract、控制 agent 的 token / latency，
+  或评估 single-agent / multi-agent 架构。当前 agent 仅代用户执行普通开发、CLI、
+  部署、运维、授权或 E2E 流程时不触发；除非问题明确属于 agent 的行为或架构。
 ---
 
 # Agent Engineering
 
-围绕任务结果设计 agent。将 Instructions、Context、Tools、Runtime 和 Evals 视为协作边界，不用其中一层补偿另一层的缺陷。同一规则只放在能执行或验证它的最小责任层；仅在 eval 证明持续遗漏时增加跨层提醒。
+围绕任务结果设计 agent。将 Model、Instructions、Context、Tools、Runtime、Environment 和 Evals 视为协作边界，不用其中一层补偿另一层的缺陷。同一规则只放在能执行或验证它的最小责任层；仅在 eval 证明持续遗漏时增加跨层提醒。
 
 ## 读取 references
 
 - 处理 Instructions 或 System Prompt 时，读取 [system-prompt-engineering.md](references/system-prompt-engineering.md)。
 - 处理 retrieval、history、memory、compaction、handoff 或 prompt caching 时，读取 [context-engineering.md](references/context-engineering.md)。
 - 处理 MCP、function calling 或 tool schema 时，读取 [tool-design.md](references/tool-design.md)。
-- 设计完整 agent 时读取三份；局部任务只读取相关 reference。
+- 处理状态权威、副作用、重试、并发、approval、安全或恢复时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
+- 处理 trace、评估集、regression、forward validation 或上线判断时，读取 [evals.md](references/evals.md)。
+- 设计完整 agent 时读取五份；局部任务只读取相关 reference。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。
 
 ## 建立任务契约
 
@@ -47,13 +51,15 @@ description: >
 
 | 层 | 主要责任 |
 | --- | --- |
+| Model | 推理能力、可用接口、latency、cost 与行为基线 |
 | Instructions | 稳定行为、领域规则、工具使用原则、输出契约 |
 | Context | 当前决策需要的事实、证据、历史与工作状态 |
 | Tools | 获取信息或执行动作的模型可见 contract |
 | Runtime | loop、状态、权限、审批、重试、预算与持久化 |
+| Environment | 数据库、文件、外部 API、sandbox 与业务 source of truth |
 | Evals | 判断结果与执行路径是否可靠，并定位最早偏离 |
 
-将鉴权、数据一致性和不可逆副作用留给 runtime 强制；将易变事实留给动态 context 或 tools。
+将鉴权、数据一致性和不可逆副作用留给 runtime 与业务服务强制；将易变事实留给动态 context 或 tools。
 
 ## 设计运行循环
 

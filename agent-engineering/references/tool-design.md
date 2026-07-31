@@ -31,6 +31,15 @@ CRUD tool 与任务级 tool 都可能合理。用调用次数、选择歧义、�
 
 只暴露当前阶段可能需要的 tools。工具集较大时，可考虑 namespace、allowed tools、deferred loading 或 tool search，并通过 eval 判断收益。
 
+先确定执行边界，再设计模型可见 contract：
+
+| 执行位置 | 适用信号 |
+| --- | --- |
+| Client / host | 依赖当前 UI、选区、本地草稿或设备能力；效果只影响用户此刻的视图或设备 |
+| Server / service | 修改业务 source of truth、跨用户可见、需要事务、鉴权、幂等、审计、配额或 secrets |
+
+同一用户任务可拆成服务端改变真源和客户端投影视图两个动作，由业务 source of truth 裁决跨端状态。执行位置可以随宿主变化；只把会影响选择、权限或恢复的实现差异暴露给模型。
+
 ## 选择契约
 
 让 name 和 description 足以区分相似工具：
@@ -75,6 +84,8 @@ OpenAI Function Calling 的 strict mode 当前要求 object schema 使用 `addit
 避免重复输入、全量数据库对象、无界嵌套和调试字段。平台支持时使用 output schema 或 structured content；仅供 UI 使用的数据放入模型不可见 metadata。
 
 当恢复依赖错误类型时，提供稳定 error code、`retryable`、失败字段或 operation index，以及可行的恢复动作。根据业务语义区分改参、重试、等待、重新授权、询问用户和停止。
+
+对非幂等写操作，timeout、network error 或 5xx 可能表示响应丢失而不是动作未执行。此时返回 `indeterminate`、operation ID 和状态查询方式；在确认前不要自动重新发起副作用。
 
 拒绝或权限不足应返回可判断的原因。Agent 不应原样重试被拒绝的调用；只有参数、权限或执行条件发生有效变化时才再次尝试。
 

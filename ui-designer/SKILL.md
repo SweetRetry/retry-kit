@@ -1,7 +1,7 @@
 ---
 name: ui-designer
 description: >-
-  界面设计与实现：把产品目标、真实内容、品牌约束和现有前端栈转成可执行设计方向或可运行的网页 / App UI，覆盖新页面、组件、重设计、响应式与关键状态，并通过 render 迭代完成实现型交付。Use when 用户要求设计、制作、搭建、实现、重做、视觉升级 UI，或明确只要配色、排版、视觉语言与页面构图方案；不用于只读视觉审查、纯产品链路诊断或只做代码规范矫正。
+  界面设计与实现：把产品目标、真实内容、品牌约束和现有前端栈转成可执行设计方向或可运行的网页 / App UI，覆盖新页面、组件、重设计、响应式与关键状态。Use when 用户要求设计、制作、搭建、实现、重做、视觉升级 UI，或明确只要配色、排版、视觉语言与页面构图方案；不用于只读视觉审查、纯产品链路诊断或只做代码规范矫正。
 ---
 
 # UI Designer
@@ -79,7 +79,10 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 
 ### Layout、spacing 与 density
 
-- 同组紧、组间松；heading 上方通常比下方更松。使用有限 spacing scale，同时允许 1–2px optical correction。
+- 同组紧、组间松；heading 上方通常比下方更松。相同语义使用相同 spacing token，组内间距至少比组间小一个层级，同时允许 1–2px optical correction。
+- 缺少 spacing token 时，以 4px 为基础单位，优先从 `4 / 8 / 12 / 16 / 24 / 32 / 48 / 64px` 中选择，把 `2 / 6px` 限定为紧凑组件内部或 optical correction。
+- 紧密 inline 使用 `4–8px`、label 与 control 或 control 内部使用 `8–12px`、组件内容组使用 `16–24px`、section 使用 `32–64px` 作为起点；根据 mode、内容和 viewport 调整关系，不机械复制数值。
+- Tailwind branch 读取 theme：数字 spacing utility 是 `--spacing` 的倍数，不是 CSS pixel。默认 4px 基准下 `gap-4 / gap-6 / gap-8` 是 `16 / 24 / 32px`；仅在 token 无法表达真实布局压力时使用 arbitrary value。
 - 留白必须承担 grouping、focus、sequence 或 recovery；没有作用的空洞不是品质。
 - density 由使用频率、决策复杂度、熟练度和环境决定。工作台不为“呼吸感”浪费视野，营销页也不把全部 proof 挤进 Hero。
 - 页面可以保持系统一致，但 section 不应无视内容地重复同一 skeleton；variation 服务阅读节奏，不以变化本身为目标。
@@ -88,12 +91,19 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 
 - 只定义必要的 display、heading、body、label、metadata、data / code 角色；角色少而清楚优于字体多。
 - 字体由品牌、语言、内容和使用场景决定。system font、Inter 或 serif 都不是原罪，未经判断的默认才是。
+- 缺少 typography token 时，Tailwind branch 未覆盖 theme 的默认值为：`text-xs` `12/16px`、`text-sm` `14/20px`、`text-base` `16/24px`。把 font-size、line-height、weight、tracking 和 contrast 作为一个 text role 一起决定，不只指定字号 class。
+- `text-xs` 默认承载 caption、metadata、辅助 table 信息和非关键 label；用 `text-sm` 或更强 text role 承载决策关键的状态、错误与操作说明。低于 12px 的有意义文字必须有明确密度理由。
+- `text-sm` 可作为紧凑 `Operate` UI 的正文与 control label，或其他 mode 的 secondary copy；`Read` 的连续正文缺少 authority 时从 `text-base` 起。
+- 文案放不下时先处理容器、折行、层级与内容长度，不先缩小字号。
+- 普通文字 contrast 至少 `4.5:1`，符合 WCAG large text 定义的文字至少 `3:1`；200% text resize 后保持内容和功能完整。
 - 用真实 CJK / Latin 混排、长标题、数字、fallback、缺失 weight、窄容器与 zoom 检查 measure、line-height、tracking 和折行。
 - 第二字体必须有独立角色；强调优先使用同一 family 的 weight / italic，而不是随机混搭。
 
 ### Color、shape、depth 与 icon
 
 - 先定义 background、surface、foreground、muted、accent 与 semantic state 的角色，再选具体值。
+- 每个 surface 先指定一个 dominant accent。其他高饱和色必须稳定映射到 semantic state、category、data series 或从属 imagery；同层级标题、序号、Card 和 action 不为“丰富”而各用一种强调色。需要多个 accent 时，写清映射，并确认它们不会共同争夺第一焦点或 primary action。
+- Gradient 默认不用。只有替换为单色会损失既有品牌身份、真实空间 / 层次关系，或项目 chart / progress contract 明确定义的信息编码时才保留；用于信息编码时同时提供非颜色线索，并让 gradient 或复杂背景上的 text、icon、control boundary 与 focus indicator 按覆盖区域中最不利的相邻颜色满足 contrast。不要把 gradient 机械复制到 heading、数字、bar、border、button 和 Card 作为通用强调。
 - accent 只指向真正重要的 action 或 state；gray temperature、radius、border、shadow、icon family 和 elevation 必须有可复述规则。
 - border、shadow 与 surface 不重复表达同一层级；能靠 proximity 解决时不额外装箱。
 - colored surface 上的次要文字从该 surface 的前景色或色相派生，不套用普通 gray。
@@ -104,6 +114,7 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 - Card 只在边界、选择或 elevation 有语义时使用；避免 card 套 card。
 - Pill 只属于 tag、status、filter 或紧凑 control；普通标题、图标底板和装饰文案不自动 pill 化。
 - 使用平台熟悉 affordance；不要为了“独特”隐藏 action、state 或 navigation。
+- pointer target 至少 `24 × 24 CSS px` 或满足相邻间距例外；mobile 高频或关键 action 以 `44 × 44 CSS px` 为更安全目标。
 - Control 必须有 hover、focus、active、disabled 和 pending 反馈；form 使用真实 label、inline validation、problem + recovery 文案。
 - Modal 只用于需要中断、确认或受保护焦点的任务；简单编辑优先 inline、drawer 或 progressive disclosure。
 
@@ -121,6 +132,8 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 - 选择一个 authored moment，其他 motion 保持从属；不要给每个 section 复制同一 fade / slide reveal。
 - 优先 transform / opacity 等可控路径，避免用高频 React state 驱动 pointer / scroll continuous value。
 - 提供 `prefers-reduced-motion` 路径，确认动画停止后界面仍完整可理解。
+
+**完成标准：**每个 spacing 与 text role 都能映射到项目 authority 或上述 fallback baseline；例外有可复述的 surface / content 理由，文字与 pointer target 满足对应 baseline。
 
 ## 5. 抵抗 AI default，但不制造新模板
 
@@ -152,22 +165,11 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 - 交付完整文件和可用交互；不以 TODO、假链接、placeholder skeleton 或“后续补齐”代替已承诺内容。
 - 不因视觉改动破坏现有功能、事件、analytics selector、数据边界或工程约定。
 
-## 7. Render 收口
+## 7. 工程收口
 
-先运行仓库定义的 format、lint、typecheck、test 与 build。随后在可用环境中一次性检查代表性 desktop 与 mobile render、真实内容、核心交互和至少一个 non-happy path。
+运行仓库定义的 format、lint、typecheck、test 与 build；只修复本次改动造成的问题，不扩大 scope。完成后停止开放式 polish。
 
-在同一批 render 中检查：
-
-- 第一焦点、阅读顺序、coverage 与 primary action；
-- typography、折行、overflow、alignment、spacing rhythm 与 density；
-- computed contrast、surface depth、icon / image consistency；
-- keyboard、hover、press、disabled、pending、failure、success 与返回路径；
-- 零 / 少 / 多数据、长短文案、真实图片比例、localization 与 zoom；
-- 窄、中、宽 viewport 的视觉顺序、DOM / focus order、safe area、sticky 与 touch。
-
-合并修复一次，最多再确认一轮，然后停止开放式 polish。源码、lint、detector 或 checklist 不能代替 render；无法运行浏览器时，把视觉、手势和响应式结果标为 `unverified`。
-
-**完成标准：**项目检查通过；render 没有阻断主任务的视觉缺陷；brief 中每项要求可在数秒内找到；未验证边界已明确说明。
+**完成标准：**项目检查通过；brief 中每项要求都已落实到目标 artifact；未验证边界已明确说明。
 
 ## 职责与输出
 
