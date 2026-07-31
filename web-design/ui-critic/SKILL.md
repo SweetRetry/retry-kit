@@ -19,7 +19,7 @@ description: >-
 
 按以下 authority stack 判断选择是否成立：用户明确约束与 brand spec → 已提交的 design system → shared tokens / components → 相邻页面的稳定惯例 → 当前页面的有意例外 → 通用 heuristic。上层 authority 仍需接受任务、可读性与 accessibility 的验证。
 
-把新设计方向与界面实现交给 `ui-designer`，产品 journey 与功能链路交给 `product-guide`，Tailwind、token 和组件实现规范化交给 `frontend-code-corrector`。Action 的可见性、层级和 affordance 属于视觉审查；功能、链接目的地和端到端能力只进入 scope handoff。
+把新设计方向与界面实现交给 `ui-designer`，产品 journey 与功能链路交给 `product-guide`。Action 的可见性、层级和 affordance 属于视觉审查；功能、链接目的地和端到端能力只进入 scope handoff。
 
 **完成标准：**每个对象都有一句可判断的目标、主 mode 和当前可用的最高 authority；缺失信息已标为未知，非视觉问题已有 handoff。
 

@@ -173,4 +173,4 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 
 ## 职责与输出
 
-默认在结尾只报告：设计方向、主要实现、验证结果和未验证项。只读 critique 交给 `ui-critic`；产品 journey 与功能价值诊断交给 `product-guide`；既有 React / Tailwind / shadcn 代码的规范统一交给 `frontend-code-corrector`。这些 handoff 不替代本 skill 对所写 UI 的产品正确性、视觉完整性和工程质量负责。
+默认在结尾只报告：设计方向、主要实现、验证结果和未验证项。只读 critique 交给 `ui-critic`；产品 journey 与功能价值诊断交给 `product-guide`。这些 handoff 不替代本 skill 对所写 UI 的产品正确性、视觉完整性和工程质量负责。
