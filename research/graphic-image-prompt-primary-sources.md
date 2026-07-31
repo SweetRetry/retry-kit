@@ -8,6 +8,7 @@
 
 - pixel poster、抽象或具象 poster；
 - 时尚杂志式 editorial visual；
+- 由二维构成主导的文章配图；
 - collage、版画感、印刷实验、纯 typography 或完全无字的 graphic image；
 - 固定画框的主视觉，以及需要耐裁切、可铺展的 web background；
 - photography、illustration、3D、pixel art、type 等只作为可选材料，不预设其中任何一种是主媒介。
@@ -25,8 +26,8 @@
    但主要决策语言仍是主体、场景、机位、景别、透视、光线和成像媒介。
 2. 当前仓库另有一套纯视觉 Style Spec 合同。它明确排除主体、场景、对象排列、文字和单图构图，
    只交付替换内容后仍成立的可复用视觉语言。
-3. 当前仓库没有名为 `background` 或 `backgrounds` 的 skill，也没有可据此确认的 background 输出合同。
-   因此下文只把 background 当作用户提出的一类结果形态分析，不虚构“现有 background skill”事实。
+3. 本研究开始时，仓库没有名为 `background` 或 `backgrounds` 的 skill，也没有可据此确认的
+   background 输出合同。因此原始结论只把 background 当作一类结果形态分析。
 4. `research/` 是本仓库一手来源研究的统一落库目录，因此本文沿用该目录约定。
 
 ### 一手来源范围
@@ -44,6 +45,10 @@
 规范主要面向 digital product，不直接等同于 poster 法则；本文仅把其中关于 hierarchy、grid、
 spacing、contrast 的可观察机制作为跨媒介推断依据。模型官方文档只证明当前列明的能力与局限，
 不证明遵守 prompt 就能稳定生成优秀设计。
+
+现有来源没有分别覆盖 editorial illustration、fashion art direction 与 digital visual background
+的完整专业实践。因此本文只能抽取它们共享的二维构成机制，不能把 poster、print、design system
+中的 grid、typography 或表面处理提升为所有目标类型的必选规则。
 
 ## 结论
 
@@ -90,10 +95,12 @@ typography 与 exact-copy 决策；不应为了让结果“像海报”而主动
 - adaptive field 要求视觉身份由跨画框的连续关系成立，局部裁切后仍保留节奏与层次，不能依赖唯一
   且必须完整出现的中心对象。
 
-因此，在当前仓库没有既有 background 合同的前提下，最简单的长期结构是把 background 作为
-`graphic-image-prompt` 的一个结果模式，而不是默认再设一套重叠职责。只有未来出现独有且稳定的
-操作约束——例如特定 responsive crops、页面文字 safe zones、可循环纹理或独立的动态化生产合同——
-才有证据把它收窄为单独能力。单纯“美观背景”不足以形成独立边界。
+因此，在当时没有既有 background 合同的前提下，最简单的结构是把 background 当作一种构成模式；
+只有出现独有且稳定的产品与生产约束，才有证据把它收窄为单独能力。后续产品反馈补充了该独立
+decision authority：需要先根据产品属性、页面职责、前景内容与运行条件判断是否使用生成背景，并在
+static image 与 background video 之间选择，同时处理 responsive crop、safe zone、reduced-motion
+与静态 fallback。这一 product-level contract 不等同于 generic graphic composition，因此单独落在
+web design 领域；单纯“美观背景”仍不足以形成独立边界。
 
 ## 一手来源支持的核心判断
 
@@ -112,11 +119,11 @@ typography 与 exact-copy 决策；不应为了让结果“像海报”而主动
 1. 哪一种二维关系使作品成立；
 2. 哪些材料承担主形、次形、背景、连接与表面职责；
 3. 观众先感知整体图形，还是先识别具象内容；
-4. 哪个局部变化打破系统并成为记忆点。
+4. 哪个关系、隐喻、节奏或局部变化形成记忆点。
 
 摄影、插画、3D、pixel art、type 都可以进入，但它们是材料或表现方式，不是固定骨架。
 
-### 2. grid 是对齐与节奏的骨架，不是必须可见的方格
+### 2. composition 可以使用 grid，但 grid 不是前置
 
 **事实：** IBM Carbon 把 2x Grid 称为 typography、columns、boxes、icons 与 illustrations 的几何
 基础；columns、rows、margins、padding、gutters 共同建立 visual rhythm。该系统也强调 grid 应适配
@@ -132,9 +139,9 @@ scale，仍会使层级丢失。它还把 negative space 与 asymmetry 列为制
 composition、单一 type treatment 与 clarity 联系在一起。这是一个历史个案，不是 universal rule。
 [MoMA: Herbert Bayer poster](https://www.moma.org/collection/works/5101)
 
-**推断：** 新能力应要求“选一个主 grid logic”，但允许严格网格、偏移网格、自由场或刻意破格。
-真正门槛是关键元素之间存在可解释的 alignment、interval 与 scale system；不是要求所有作品都使用
-12 栏、16 栏或 8px unit。
+**推断：** 新能力应要求选择一个主 composition logic。strict grid、offset grid、free field、
+organic flow 与 collage structure 都是可选组织方式；真正门槛是空间关系、层级与注意力路径可以被
+复述，而不是要求所有作品都使用 grid、固定栏数或 spacing unit。
 
 ### 3. hierarchy 可以由尺度、位置、密度、色值和空白建立，不依赖文字
 
@@ -270,7 +277,7 @@ bleed 与 destination color profile。
 | 能力对象 | 主要成败标准 | 核心决策 | 明确不负责 |
 | --- | --- | --- | --- |
 | 现有通用单图能力 | 一张统一的 pictorial image 是否成立 | 主体、场景、空间、视点、光色、材质、媒介、情绪 | 不必为所有任务建立 graphic system |
-| 建议的 graphic image 能力 | 某一张或某一组目标画面的二维形式关系是否成立 | shape、色块、grid、scale、rhythm、negative space、layer、crop behavior，以及可选的 image / type | 不探索可跨内容复用的纯 style；不保证 print-ready 文件 |
+| 建议的 graphic image 能力 | 某一张或某一组目标画面的二维形式关系是否成立 | shape、色块、composition logic、scale、rhythm、negative space、layer、crop behavior，以及可选的 image / type | 不探索可跨内容复用的纯 style；不保证 print-ready 文件 |
 | 现有纯 Style Spec 能力 | 换掉主体、场景、布局后视觉语言是否仍成立 | 媒介、边缘、色彩、光影、材质、完成度 | 不决定对象排列、单图构图与目标版面 |
 | background 结果模式 | 连续视觉场在裁切和铺展后是否仍保留身份 | crop invariant、连续节奏、低频区与局部峰值、可选层次 | 不默认推测网页组件与固定文字位置 |
 
@@ -338,21 +345,22 @@ mode 的 2–3 项。
 
 依次确定：
 
-1. 主 grid logic 与关键 alignment；
+1. 主 composition logic：grid alignment、free field、organic flow、collage structure 或其他可解释的组织方式；
 2. 最大、中等、最小三个尺度层级是否都必要；
 3. 主形、反形与边缘裁切；
-4. repetition、interval、density 与 break point；
+4. repetition、interval、density，以及真实需要时的 break point；
 5. overlap、mask、cut、rotation、diagonal 或 asymmetry 的使用边界；
 6. 第一读取、第二读取与停留区域。
 
-不默认追求居中、对称、极简或大留白。只保留一个主 formal device 和一个有控制的破格点。
+不默认追求居中、对称、极简、大留白或破格。只保留一个主组织逻辑；受控破格只在服务概念时使用。
 
-### 5. 设计 color、value 与 surface
+### 5. 设计 color、value、rendering 与 edge
 
 - 用面积和职责描述主色域、支撑色域与强调色；
 - 灰度检查主次与大形，色相检查作品身份；
-- 选择一种主 surface / print logic，并写出它如何影响 edge、overlap、color mixing 与 detail；
-- texture 只进入承担表面或层间关系的区域，不平均铺满全图。
+- 选择一种主 rendering / edge logic，并写出它如何影响 shape、layer、light response 或 detail；
+- clean vector、flat illustration、photography、3D、pixel、collage 与 print texture 均按输入启用；
+  texture 只在承担表面或层间关系时出现，不为“完成度”平均铺满全图。
 
 ### 6. 按需启用 typography 与具象成像
 
@@ -382,19 +390,19 @@ mode 的 2–3 项。
 
 ```text
 【Graphic Core】
-Graphic premise：这张图独有的二维形式关系与一个受控破格点。
+Graphic premise：这张图独有的二维形式关系、视觉隐喻或节奏。
 Canvas mode：fixed composition 或 adaptive field；画幅方向、裁切不变量与边缘关系。
 
 【Composition System】
 Shape and scale：主形、次形、反形、比例层级与重复单元。
-Grid and rhythm：alignment、interval、density、repetition、asymmetry 与注意力路径。
+Composition and rhythm：主 composition logic、alignment 或 flow、interval、density、repetition 与注意力路径。
 Layer relations：base、dominant、support、connector、surface 的遮挡、裁切、透明与混合关系。
 Image role：仅在有 photography、illustration、3D、pixel form 或其他具象材料时出现。
 Typography：仅在有真实文字时出现，包含语义／图形职责、层级、字面内容、排列与可读性要求。
 
 【Visual Treatment】
 Color and value：色域、面积、明度层级、强调色位置与主体／背景分离。
-Material and surface：纸面、油墨、网点、扫描、像素、拼贴或其他表面如何影响边缘与叠色。
+Rendering and edge：clean vector、flat illustration、photography、3D、pixel、collage、print texture 或其他成像机制如何形成边缘、图层与细节。
 Finish：细节密度、锐度、噪声尺度、局部精度与整体完成度。
 
 【Invariants】
@@ -413,12 +421,12 @@ crop behavior。
 2. **Thumbnail read：** 缩小后是否仍能读出主要 shape、value blocks 和节奏；高密度作品也必须有
    dominant read。
 3. **Layer necessity：** 删除任一主要 layer 后，作品关系是否改变；可随意删除的层属于装饰噪声。
-4. **Grid coherence：** alignment、interval、scale 与破格是否来自同一系统；随机错位不等于活力。
+4. **Composition coherence：** 空间关系、interval、scale 与注意力路径是否来自同一组织逻辑；随机错位不等于活力。
 5. **Negative-space function：** 空白或低频区是否承担反形、分组、停顿、适配或焦点职责；没有职责的
    “留白感”不是质量。
 6. **Color role：** 每个主色是否有面积和层级职责；不能只列 palette 名称。
-7. **Surface causality：** print / pixel / scan / collage 机制是否改变 edge、layer 或 color mixing；
-   仅加均匀 grain 不通过。
+7. **Rendering causality：** 成像、边缘或表面处理是否改变 shape、layer、light response 或读取方式；
+   clean rendering 可以成立，仅加均匀 grain 不通过。
 8. **Mode fit：** fixed composition 的关键位置稳定；adaptive field 经中心、边缘、横向、纵向裁切后
    仍至少保留核心节奏和一条层级关系。
 9. **Optional-material discipline：** 没有真实需要时不自动添加摄影主体、illustration、3D object、
@@ -432,9 +440,9 @@ crop behavior。
 
 - 形式选择少而明确；
 - 每个材料只有一个主要职责；
-- 系统与破格同时存在；
-- 大形、局部、表面三个尺度都有控制，但不平均堆满；
-- 作品即使移除题材名与风格名，仍能凭 shape、scale、interval、color area、layer 与 surface 被复述；
+- 构图关系有可复述的秩序，破格只在服务概念时存在；
+- 大形、局部、成像三个尺度都有控制，但不平均堆满；
+- 作品即使移除题材名与风格名，仍能凭 shape、scale、interval、color area、layer、rendering 与 edge 被复述；
 - 审美判断以可观察差异和比较验证，而不是形容词数量为证据。
 
 Cooper Hewitt 的 14 类 poster 机制本身说明，聚焦、过载、简化、对角线、叙事、系统化等都可以成为
@@ -473,8 +481,9 @@ blind judge 至少分开评分：二维构成、层级与节奏、材料／图�
 2. 不把 poster、copy、typography、传播任务或 output channel 设为必要输入；这些都是按需材料。
 3. 不把“探索纯视觉风格”纳入核心职责；已有 Style Spec 合同负责可跨内容复用的 visual language，
    新能力只消费当前上下文中已有或可合理推断的风格方向，为具体画面作 arrangement。
-4. background 在当前证据下更适合作为 adaptive-field 结果模式，与 fixed composition 共用同一套
-   shape / grid / rhythm / layer 决策；未来只有出现独有生产合同时再拆分。
+4. generic graphic background 仍可作为 adaptive-field 结果模式；website background 已出现独立的
+   product-level contract，负责判断是否使用生成素材、选择 image / video，并约束前景关系、
+   responsive crop 与运行 fallback。
 5. 与现有通用单图能力的真正分界是 decision order：scene-first 与 plane-first，而不是 photography
    与 design、写实与抽象、视频与海报。
 6. 后续若写入任何 `SKILL.md`，按仓库独立性硬规则，只描述本能力做什么与交付粒度，不应在文件内用

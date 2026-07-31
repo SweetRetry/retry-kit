@@ -1,4 +1,4 @@
 interface:
   display_name: "场景生图 Prompt"
-  short_description: "编写角色、场景、叙事画面与关键帧 prompt"
+  short_description: "编写由主体、空间、视点与光照关系主导的图片 prompt"
   default_prompt: "使用 $scene-image-prompt 把这个想法整理成由主体、空间、视点与成像关系主导的图片 prompt。"

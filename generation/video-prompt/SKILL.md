@@ -1,6 +1,6 @@
 ---
 name: video-prompt
-description: 可执行的 Seedance 2.0 视频生成 prompt：把当前画面意图与可用上下文编写、优化为一次 4–15 秒生成的多行自然语言指令；一次生成可以是连续单镜或含剪辑关系的多镜叙事。
+description: 可执行的 Seedance 2.0 视频生成 prompt：把已经确定要生成的视频画面意图与可用上下文编写、优化为一次 4–15 秒生成的多行自然语言指令；一次生成可以是连续单镜或含剪辑关系的多镜叙事。不用于判断 website background 是否应采用 image 或 video，也不负责页面前景关系、responsive crop、reduced-motion 与静态 fallback。
 ---
 
 # Seedance 2.0 生视频 Prompt
@@ -10,6 +10,9 @@ description: 可执行的 Seedance 2.0 视频生成 prompt：把当前画面意�
 一份 prompt 对应一次 **4–15 秒 generation**。一次 generation 可以是一个连续镜头，也可以是在这段时长内完成的多镜序列；需要多次 generation 时，分别交付自包含 prompt，并在相邻 prompt 中重复必要的承接状态。
 
 本 skill 只使用当前任务附带或明确允许读取的意图、文字、图片、视频、音频与命名资产。输入可以是一个明确想法，也可以已经包含生成段、镜头与时间码。
+
+本 skill 的前提是视频媒介已经由用户或当前任务确定。需要先根据网站产品属性、页面职责和运行约束决定
+是否使用 background video 时，不采用本合同。
 
 输入合法时，最终回复只包含可直接粘贴的多行自然语言 prompt。生成时长、画幅、上传文件等由入口字段承载；prompt 与这些字段一致，正文只写会改变画面或声音的内容。输入存在无法执行的时长、时间码或素材职责冲突时，先返回具体冲突与需要修正的信息。
 

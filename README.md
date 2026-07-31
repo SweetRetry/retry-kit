@@ -8,7 +8,7 @@
 engineering/   Agent、架构、代码质量与前端框架工程
 generation/    AI 图片、视频、剧本与分镜生成
 product/       产品诊断与数据价值判断
-web-design/    界面设计、视觉审查与网页视觉素材
+web-design/    界面设计、视觉审查与网页背景资产
 research/      跨 skill 的研究证据，不参与 skill discovery
 ```
 
@@ -24,8 +24,8 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Generation
 
 - `asset-director`：规划跨画面复用的参考素材与连续性控制。
-- `graphic-image-prompt`：生成 plane-first 二维平面视觉 prompt。
-- `scene-image-prompt`：生成 scene-first 叙事单图与关键帧 prompt。
+- `graphic-image-prompt`：生成封面、文章配图与 editorial graphic 等 artifact-first 视觉构成 prompt。
+- `scene-image-prompt`：生成由主体、空间、视点与光照关系主导的 scene-first 图片 prompt。
 - `script-director`：构思、诊断和改写不同媒介与篇幅的脚本。
 - `storyboard-director`：把剧本转为分镜与连续生成段。
 - `style-grill`：通过推荐与追问收敛可复用的视觉 Style Spec。
@@ -39,7 +39,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Web Design
 
-- `generate-web-backgrounds`：生成耐裁切的 website background prompt。
+- `generate-web-backgrounds`：依据产品与页面职责选择 image / video，并生成 website background 资产 brief。
 - `ui-critic`：对现有界面进行取证式视觉 critique。
 - `ui-designer`：设计或实现网页与 App UI。
 

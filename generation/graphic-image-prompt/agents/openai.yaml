@@ -1,4 +1,4 @@
 interface:
-  display_name: "平面视觉 Prompt"
-  short_description: "编写海报、editorial、collage 与 web background 生图 prompt"
-  default_prompt: "使用 $graphic-image-prompt 把这个想法整理成由二维构成、图层关系与表面逻辑主导的图片 prompt。"
+  display_name: "Graphic 构成 Prompt"
+  short_description: "编写封面、文章配图与 editorial graphic 构成 prompt"
+  default_prompt: "使用 $graphic-image-prompt 把这些视觉素材整理成由裁切、图层、文字与跨画幅关系主导的设计构成 prompt。"
