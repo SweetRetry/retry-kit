@@ -25,7 +25,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 - `asset-director`：规划跨画面复用的参考素材与连续性控制。
 - `graphic-image-prompt`：生成封面、文章配图与 editorial graphic 等 artifact-first 视觉构成 prompt。
-- `scene-image-prompt`：生成由主体、空间、视点与光照关系主导的 scene-first 图片 prompt。
+- `image-prompt`：分析决定画面成败的视觉维度并生成图片 prompt。
 - `script-director`：构思、诊断和改写不同媒介与篇幅的脚本。
 - `storyboard-director`：把剧本转为分镜与连续生成段。
 - `style-grill`：通过推荐与追问收敛可复用的视觉 Style Spec。
