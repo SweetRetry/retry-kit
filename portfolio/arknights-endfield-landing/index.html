@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>明日方舟：终末地 — 塔卫二考察图鉴 | ARKNIGHTS: ENDFIELD</title>
+<meta name="description" content="粉丝概念落地页：以「奇象巡展」展会图鉴风格呈现的明日方舟：终末地。非官方作品。">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        paper:  '#F4F4F2',
+        ink:    '#111111',
+        muted:  '#6B6B66',
+        cyanx:  '#1DD4DC',
+        pinkx:  '#FB3799',
+        acidx:  '#CACC21',
+        hazard: '#F5D90A',
+        spink:  '#FF2BA0',
+        sacid:  '#D0D500',
+        scyan:  '#0FD8EA',
+      },
+      fontFamily: {
+        display: ['"Archivo Black"', '"Noto Sans SC"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+        sans: ['"Noto Sans SC"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #F4F4F2; color: #111; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #1DD4DC; color: #111; }
+  :focus-visible { outline: 2px solid #111; outline-offset: 3px; border-radius: 2px; }
+
+  /* ---- 横向溢出防护（移动端） ---- */
+  html, body { overflow-x: clip; }
+  .grid > *, .flex > * { min-width: 0; }
+  h1, h2, h3, p { overflow-wrap: break-word; }
+
+  /* ---- 氛围光晕（大面积柔和，验证结论允许） ---- */
+  .aura { position: absolute; border-radius: 9999px; filter: blur(70px); pointer-events: none; }
+
+  /* ---- 半调网点 ---- */
+  .halftone {
+    background-image: radial-gradient(#111 1px, transparent 1.5px);
+    background-size: 9px 9px;
+  }
+
+  /* ---- 黄黑警示斜纹 ---- */
+  .hazard-strip {
+    background: repeating-linear-gradient(-45deg, #F5D90A 0 14px, #111111 14px 28px);
+  }
+
+  /* ---- 荧光光带（长曝光涂抹） ---- */
+  .light-band {
+    background: #CACC21;
+    filter: blur(4px);
+    opacity: .85;
+  }
+
+  /* ---- 气泡标注 ---- */
+  .bubble { border-radius: 58% 42% 55% 45% / 48% 55% 45% 52%; }
+  .bubble-alt { border-radius: 42% 58% 45% 55% / 55% 45% 58% 42%; }
+
+  /* ---- 黑 pill 色散投影 ---- */
+  .pill-chroma { box-shadow: 4px 4px 0 rgba(15,216,234,.55), -4px -3px 0 rgba(255,43,160,.40); }
+
+  /* ---- Glitch 切片标题 ---- */
+  .glitch { position: relative; display: inline-block; }
+  .glitch .layer { display: block; }
+  .glitch .abs { position: absolute; inset: 0; }
+  .glitch .slice-b { clip-path: inset(34% 0 34% 0); transform: translateX(4px); animation: gl-b 3.1s steps(1) infinite; }
+  .glitch .slice-c { clip-path: inset(67% 0 0 0); transform: translateX(-5px); animation: gl-c 2.6s steps(1) infinite; }
+  .glitch .slice-a { clip-path: inset(0 0 66% 0); animation: gl-a 3.8s steps(1) infinite; }
+  .ghost-c { color: #0FD8EA; opacity: .35; transform: translate(5px, 2px); animation: gl-ghost 3.1s steps(1) infinite; }
+  .ghost-p { color: #FF2BA0; opacity: .30; transform: translate(-5px, -2px); animation: gl-ghost 2.6s steps(1) infinite reverse; }
+  @keyframes gl-a { 0%,100%{transform:translateX(0)} 18%{transform:translateX(-7px)} 20%{transform:translateX(3px)} 22%{transform:translateX(0)} 64%{transform:translateX(6px)} 66%{transform:translateX(0)} }
+  @keyframes gl-b { 0%,100%{transform:translateX(4px)} 30%{transform:translateX(-8px)} 32%{transform:translateX(6px)} 34%{transform:translateX(4px)} 78%{transform:translateX(-5px)} 80%{transform:translateX(4px)} }
+  @keyframes gl-c { 0%,100%{transform:translateX(-5px)} 46%{transform:translateX(7px)} 48%{transform:translateX(-5px)} 88%{transform:translateX(-9px)} 90%{transform:translateX(-5px)} }
+  @keyframes gl-ghost { 0%,100%{} 50%{ transform: translate(2px,-1px); } }
+
+  /* ---- 切片接缝短斜杠 ---- */
+  .slash { position: absolute; height: .14em; width: 1.1em; transform: skewX(-24deg); }
+
+  /* ---- Marquee ---- */
+  .marquee { overflow: hidden; }
+  .marquee-track { display: flex; width: max-content; animation: marquee 30s linear infinite; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* ---- 微交互 ---- */
+  .sticker { transition: transform .25s ease; }
+  .sticker:hover { transform: translateY(-3px) rotate(-1deg); }
+  .link-slide { background-image: linear-gradient(#111,#111); background-size: 0% 2px; background-repeat: no-repeat; background-position: 0 100%; transition: background-size .3s ease; }
+  .link-slide:hover { background-size: 100% 2px; }
+  .cta-invert { transition: background-color .2s ease, color .2s ease; }
+  .cta-invert:hover { background: #F4F4F2; color: #111; }
+
+  /* ---- Reduced motion：静止为错位后的静态帧 ---- */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .glitch .slice-b { transform: translateX(5px); }
+    .glitch .slice-c { transform: translateX(-6px); }
+  }
+</style>
+</head>
+<body class="font-sans text-ink bg-paper overflow-x-hidden">
+
+<!-- ============ NAV ============ -->
+<header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-sm">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between gap-4 px-5 sm:px-8 py-4" aria-label="主导航">
+    <a href="#top" class="flex items-center gap-3 shrink-0">
+      <span class="inline-block bg-ink text-paper font-display text-sm tracking-tight px-4 py-2 rounded-full pill-chroma">ENDFIELD</span>
+      <span class="font-mono text-[11px] tracking-[0.3em] text-muted hidden sm:inline">终末地工业</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 font-mono text-xs tracking-[0.2em]">
+      <a href="#world" class="link-slide py-1">世界 WORLD</a>
+      <a href="#protocol" class="link-slide py-1">玩法 PROTOCOL</a>
+      <a href="#operators" class="link-slide py-1">干员 OPERATORS</a>
+      <a href="#download" class="link-slide py-1">下载 ACCESS</a>
+    </div>
+    <a href="https://endfield.gryphline.com/en-us" target="_blank" rel="noopener"
+       class="cta-invert shrink-0 bg-ink text-paper font-mono text-xs tracking-[0.15em] px-5 py-3 rounded-full min-h-[44px] inline-flex items-center">前往官网 ↗</a>
+  </nav>
+  <div class="hazard-strip h-2.5" aria-hidden="true"></div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="top" class="relative">
+  <!-- 角部光晕 -->
+  <div class="aura w-[42vw] h-[42vw] bg-cyanx/25 -top-40 -left-40" aria-hidden="true"></div>
+  <div class="aura w-[30vw] h-[30vw] bg-acidx/20 top-64 -right-32" aria-hidden="true"></div>
+  <div class="aura w-[24vw] h-[24vw] bg-pinkx/10 bottom-0 left-1/3" aria-hidden="true"></div>
+
+  <div class="relative max-w-7xl mx-auto px-5 sm:px-8 pt-14 pb-20 lg:pt-20 lg:pb-28 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+    <!-- 标题组 -->
+    <div class="lg:col-span-7">
+      <p class="font-mono text-[11px] sm:text-xs tracking-[0.45em] text-muted mb-6">TALOS-II SURVEY EXHIBITION — FILE NO.000</p>
+
+      <h1 class="glitch font-display leading-[0.92] tracking-tight text-[clamp(2.8rem,8.5vw,7.25rem)]" aria-label="ARKNIGHTS: ENDFIELD 明日方舟：终末地">
+        <span aria-hidden="true" class="layer abs ghost-c">ARKNIGHTS:<br>ENDFIELD</span>
+        <span aria-hidden="true" class="layer abs ghost-p">ARKNIGHTS:<br>ENDFIELD</span>
+        <span aria-hidden="true" class="layer slice-a">ARKNIGHTS:<br>ENDFIELD</span>
+        <span aria-hidden="true" class="layer abs slice-b">ARKNIGHTS:<br>ENDFIELD</span>
+        <span aria-hidden="true" class="layer abs slice-c">ARKNIGHTS:<br>ENDFIELD</span>
+        <!-- 接缝短斜杠 -->
+        <span aria-hidden="true" class="slash bg-spink" style="top:33%; left:38%;"></span>
+        <span aria-hidden="true" class="slash bg-scyan" style="top:33%; left:66%;"></span>
+        <span aria-hidden="true" class="slash" style="top:66%; left:12%; background:#D0D500;"></span>
+        <span aria-hidden="true" class="slash" style="top:66%; left:52%; background:#FF2BA0;"></span>
+      </h1>
+
+      <div class="mt-7 flex flex-wrap items-center gap-5">
+        <span class="inline-block bg-ink text-paper font-black text-xl sm:text-2xl px-6 py-3 rounded-full pill-chroma">明日方舟：终末地</span>
+        <span class="font-mono text-[11px] tracking-[0.25em] text-muted">3D REAL-TIME RPG / STRATEGIC</span>
+      </div>
+
+      <p class="mt-8 max-w-[34em] text-[15px] leading-[1.9] text-ink/85">
+        塔卫二同步轨道之上，帝江号静候指令。终末地工业的开拓者们在边疆星球铺设产线、抵御侵蚀——
+        这是一份来自考察前线的图鉴，也是一封前往新世界的邀请函。
+      </p>
+
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a href="https://endfield.gryphline.com/en-us" target="_blank" rel="noopener"
+           class="cta-invert bg-ink text-paper font-mono text-sm tracking-[0.15em] px-8 py-4 rounded-full min-h-[44px] inline-flex items-center">前往官网 ↗</a>
+        <a href="#world" class="link-slide font-mono text-sm tracking-[0.15em] py-4 min-h-[44px] inline-flex items-center">阅读考察图鉴 ↓</a>
+      </div>
+    </div>
+
+    <!-- 展台：帝江号线稿 -->
+    <div class="lg:col-span-5 relative">
+      <!-- cyan 流体块 + 色散 -->
+      <svg class="absolute -top-14 -left-14 w-[85%] z-0" viewBox="0 0 300 300" aria-hidden="true">
+        <path d="M150 28 C215 20 268 78 272 148 C276 222 218 276 148 272 C82 268 26 218 30 146 C34 80 88 36 150 28 Z"
+              fill="#FF2BA0" opacity=".28" transform="translate(8,5)"/>
+        <path d="M150 28 C215 20 268 78 272 148 C276 222 218 276 148 272 C82 268 26 218 30 146 C34 80 88 36 150 28 Z"
+              fill="#1DD4DC" opacity=".85"/>
+      </svg>
+
+      <figure class="relative z-10 bg-white border border-ink/15 p-6 sm:p-8">
+        <figcaption class="flex flex-wrap items-center justify-between gap-x-4 font-mono text-[10px] tracking-[0.3em] text-muted mb-4 pr-20 sm:pr-24">
+          <span>EXHIBIT A — ORBITAL</span><span>SCALE 1:12000</span>
+        </figcaption>
+
+        <!-- 帝江号 技术线稿 -->
+        <svg viewBox="0 0 520 420" class="w-full h-auto" role="img" aria-label="帝江号轨道飞行器技术线稿（示意）">
+          <g fill="none" stroke="#111" stroke-width="1.4">
+            <!-- 制图框 -->
+            <rect x="8" y="8" width="504" height="404" stroke-width="1" opacity=".35"/>
+            <!-- 虚线轨道 -->
+            <ellipse cx="260" cy="210" rx="200" ry="120" stroke-dasharray="5 7" opacity=".45"/>
+            <!-- 主环 -->
+            <circle cx="260" cy="200" r="88"/>
+            <circle cx="260" cy="200" r="74" stroke-width="1" opacity=".5"/>
+            <!-- 中央舱体 -->
+            <rect x="238" y="128" width="44" height="144" rx="18"/>
+            <line x1="238" y1="164" x2="282" y2="164" stroke-width="1" opacity=".5"/>
+            <line x1="238" y1="236" x2="282" y2="236" stroke-width="1" opacity=".5"/>
+            <!-- 顶部天线 -->
+            <line x1="260" y1="128" x2="260" y2="84"/>
+            <path d="M252 84 L268 84 L260 66 Z" fill="#111"/>
+            <!-- 桁架 -->
+            <line x1="172" y1="200" x2="96" y2="200"/>
+            <line x1="348" y1="200" x2="424" y2="200"/>
+            <line x1="172" y1="188" x2="172" y2="212" stroke-width="1"/>
+            <line x1="348" y1="188" x2="348" y2="212" stroke-width="1"/>
+            <!-- 太阳能翼 -->
+            <g>
+              <rect x="40" y="168" width="56" height="64"/>
+              <line x1="54" y1="168" x2="54" y2="232" stroke-width="1" opacity=".6"/>
+              <line x1="68" y1="168" x2="68" y2="232" stroke-width="1" opacity=".6"/>
+              <line x1="82" y1="168" x2="82" y2="232" stroke-width="1" opacity=".6"/>
+              <line x1="40" y1="190" x2="96" y2="190" stroke-width="1" opacity=".6"/>
+              <line x1="40" y1="210" x2="96" y2="210" stroke-width="1" opacity=".6"/>
+            </g>
+            <g>
+              <rect x="424" y="168" width="56" height="64"/>
+              <line x1="438" y1="168" x2="438" y2="232" stroke-width="1" opacity=".6"/>
+              <line x1="452" y1="168" x2="452" y2="232" stroke-width="1" opacity=".6"/>
+              <line x1="466" y1="168" x2="466" y2="232" stroke-width="1" opacity=".6"/>
+              <line x1="424" y1="190" x2="480" y2="190" stroke-width="1" opacity=".6"/>
+              <line x1="424" y1="210" x2="480" y2="210" stroke-width="1" opacity=".6"/>
+            </g>
+            <!-- 底部尺寸线 -->
+            <line x1="40" y1="330" x2="480" y2="330" stroke-width="1" opacity=".6"/>
+            <line x1="40" y1="324" x2="40" y2="336" stroke-width="1" opacity=".6"/>
+            <line x1="480" y1="324" x2="480" y2="336" stroke-width="1" opacity=".6"/>
+          </g>
+          <text x="260" y="352" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" letter-spacing="4" fill="#6B6B66">OMV DIJIANG — SYNC ORBIT, TALOS-II</text>
+          <text x="20" y="30" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2" fill="#6B6B66">FIG.01</text>
+          <text x="500" y="400" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2" fill="#6B6B66">ENDFIELD INDUSTRIES</text>
+        </svg>
+
+        <!-- 仪表盘 logomark -->
+        <svg class="absolute -bottom-8 -right-4 sm:-right-8 w-24 h-24 sm:w-28 sm:h-28" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="57" cy="63" r="38" fill="none" stroke="#0FD8EA" stroke-width="7" stroke-dasharray="216 23" opacity=".5" transform="rotate(112 57 63)"/>
+          <circle cx="63" cy="57" r="38" fill="none" stroke="#FF2BA0" stroke-width="7" stroke-dasharray="216 23" opacity=".45" transform="rotate(100 63 57)"/>
+          <circle cx="60" cy="60" r="38" fill="#F4F4F2" stroke="#111" stroke-width="8" stroke-dasharray="216 23" transform="rotate(105 60 60)"/>
+          <g stroke="#111" stroke-width="3">
+            <line x1="60" y1="16" x2="60" y2="27" transform="rotate(-45 60 60)"/>
+            <line x1="60" y1="16" x2="60" y2="27" transform="rotate(-27 60 60)"/>
+            <line x1="60" y1="16" x2="60" y2="27" transform="rotate(-9 60 60)"/>
+            <line x1="60" y1="16" x2="60" y2="27" transform="rotate(9 60 60)"/>
+            <line x1="60" y1="16" x2="60" y2="27" transform="rotate(27 60 60)"/>
+          </g>
+        </svg>
+
+        <!-- 气泡标注 -->
+        <div class="sticker absolute top-2 -left-3 sm:-left-6 bg-cyanx bubble px-5 py-3 font-mono text-[10px] tracking-[0.2em] text-ink">ORBITAL HABITAT<br>帝江号</div>
+        <!-- 星爆贴 -->
+        <div class="sticker absolute -top-8 right-6 w-24 h-24 sm:w-28 sm:h-28">
+          <svg viewBox="0 0 120 120" class="w-full h-full" aria-hidden="true">
+            <polygon fill="#FB3799" points="118,60 96.7,69.8 110.2,89 86.9,86.9 89,110.2 69.8,96.7 60,118 50.2,96.7 31,110.2 33.1,86.9 9.8,89 23.3,69.8 2,60 23.3,50.2 9.8,31 33.1,33.1 31,9.8 50.2,23.3 60,2 69.8,23.3 89,9.8 86.9,33.1 110.2,31 96.7,50.2"/>
+          </svg>
+          <span class="absolute inset-0 flex flex-col items-center justify-center text-center font-black text-[13px] leading-tight text-ink">全球公测<br><span class="font-mono text-[9px] tracking-widest font-medium">2026.01.22</span></span>
+        </div>
+      </figure>
+
+      <!-- 横贯光带 -->
+      <div class="light-band absolute z-20 h-5 w-[115%] -left-[8%] top-[58%] -rotate-2" aria-hidden="true"></div>
+      <!-- 半调网点角 -->
+      <div class="halftone absolute -bottom-10 -left-12 w-40 h-40 opacity-25" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE 警示带 ============ -->
+<div class="border-y border-ink/15 bg-white" aria-hidden="true">
+  <div class="hazard-strip h-2" ></div>
+  <div class="marquee py-3">
+    <div class="marquee-track font-mono text-xs tracking-[0.35em] text-ink">
+      <div class="flex shrink-0 items-center gap-10 pr-10">
+        <span>TALOS-II</span><span class="text-acidx">▲</span><span>ENDFIELD INDUSTRIES</span><span class="text-acidx">▲</span><span>AUTOMATED INDUSTRY COMPLEX</span><span class="text-acidx">▲</span><span>PROTOCOL-ORIGINIUM</span><span class="text-acidx">▲</span><span>OMV DIJIANG</span><span class="text-acidx">▲</span><span>BACK TO ENDFIELD</span><span class="text-acidx">▲</span>
+      </div>
+      <div class="flex shrink-0 items-center gap-10 pr-10">
+        <span>TALOS-II</span><span class="text-acidx">▲</span><span>ENDFIELD INDUSTRIES</span><span class="text-acidx">▲</span><span>AUTOMATED INDUSTRY COMPLEX</span><span class="text-acidx">▲</span><span>PROTOCOL-ORIGINIUM</span><span class="text-acidx">▲</span><span>OMV DIJIANG</span><span class="text-acidx">▲</span><span>BACK TO ENDFIELD</span><span class="text-acidx">▲</span>
+      </div>
+    </div>
+  </div>
+  <div class="hazard-strip h-2"></div>
+</div>
+
+<!-- ============ 世界图鉴 ============ -->
+<section id="world" class="relative max-w-7xl mx-auto px-5 sm:px-8 py-20 lg:py-28 scroll-mt-24">
+  <div class="aura w-[26vw] h-[26vw] bg-cyanx/20 top-10 -right-32" aria-hidden="true"></div>
+
+  <header class="mb-14">
+    <p class="font-mono text-[11px] tracking-[0.4em] text-muted mb-4">SECTION 01 — WORLD FILE</p>
+    <h2 class="font-display text-[clamp(2rem,5vw,4rem)] leading-none">考察图鉴 <span class="text-cyanx">/</span> TALOS-II FILES</h2>
+    <p class="mt-5 max-w-[34em] text-[15px] leading-[1.9] text-ink/80">三份来自前线的档案：一颗边疆星球、一座轨道总部、一种改变工业规则的源石。所有条目按终末地工业考察规范编号归档。</p>
+  </header>
+
+  <!-- FILE 01 塔卫二 -->
+  <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-20">
+    <div class="lg:col-span-5 lg:col-start-1 relative">
+      <div class="relative bg-white border border-ink/15 p-6">
+        <svg viewBox="0 0 480 260" class="w-full h-auto" role="img" aria-label="塔卫二地形等高线示意图（示意线稿）">
+          <g fill="none" stroke="#111" stroke-width="1.3">
+            <path d="M20 200 C80 160 140 210 200 175 C260 140 320 190 380 160 C420 140 450 155 465 145" opacity=".8"/>
+            <path d="M15 175 C75 135 145 185 205 150 C265 118 325 168 385 138 C425 118 450 132 468 122" opacity=".6"/>
+            <path d="M10 150 C70 112 150 160 210 126 C270 96 330 144 390 116 C430 97 452 110 470 100" opacity=".45"/>
+            <path d="M8 126 C68 90 152 136 214 104 C274 76 334 122 394 95 C432 78 454 90 472 82" opacity=".3"/>
+            <path d="M30 226 C90 192 150 234 210 204 C270 176 330 216 390 190 C430 172 452 182 466 174" opacity=".5"/>
+            <!-- 着陆标记 -->
+            <circle cx="300" cy="150" r="16"/>
+            <line x1="300" y1="128" x2="300" y2="172"/>
+            <line x1="278" y1="150" x2="322" y2="150"/>
+            <!-- 警示三角 -->
+            <path d="M96 96 L112 64 L128 96 Z" fill="#F5D90A" stroke="#111" stroke-width="2"/>
+            <line x1="112" y1="74" x2="112" y2="86" stroke-width="2.5"/>
+            <circle cx="112" cy="91" r="1.6" fill="#111" stroke="none"/>
+          </g>
+          <text x="330" y="146" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="2" fill="#6B6B66">LZ-07</text>
+          <text x="16" y="248" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="3" fill="#6B6B66">FIG.02 — TERRAIN SCAN</text>
+        </svg>
+        <div class="sticker absolute -top-4 -right-3 bg-acidx bubble-alt px-4 py-2.5 font-mono text-[10px] tracking-[0.15em] text-ink">UNCHARTED<br>未知地带</div>
+      </div>
+      <div class="halftone absolute -bottom-8 -left-8 w-32 h-32 opacity-20" aria-hidden="true"></div>
+    </div>
+    <div class="lg:col-span-6 lg:col-start-7">
+      <p class="font-mono text-xs tracking-[0.3em] text-cyanx mb-3">FILE 01 — PLANET</p>
+      <h3 class="font-display text-3xl sm:text-4xl mb-1">塔卫二</h3>
+      <p class="font-mono text-xs tracking-[0.3em] text-muted mb-5">TALOS-II</p>
+      <p class="text-[15px] leading-[1.9] text-ink/85 max-w-[32em]">《明日方舟》故事之后近百年的边疆星球。自然灾害「侵蚀」与敌对构装体「天使」横行的土地上，终末地工业以管理员为核心建立开拓据点，把无人区改写为可栖居的工业带。</p>
+      <div class="mt-6 flex flex-wrap gap-3 font-mono text-[10px] tracking-[0.2em]">
+        <span class="border border-ink/25 px-3 py-1.5">威胁：侵蚀 EROSION</span>
+        <span class="border border-ink/25 px-3 py-1.5">敌对构装体：天使</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- FILE 02 帝江号（错位） -->
+  <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-20">
+    <div class="lg:col-span-6 lg:col-start-1 order-2 lg:order-1">
+      <p class="font-mono text-xs tracking-[0.3em] text-cyanx mb-3">FILE 02 — ORBITAL HQ</p>
+      <h3 class="font-display text-3xl sm:text-4xl mb-1">帝江号</h3>
+      <p class="font-mono text-xs tracking-[0.3em] text-muted mb-5">OMV DIJIANG</p>
+      <p class="text-[15px] leading-[1.9] text-ink/85 max-w-[32em]">悬于塔卫二同步轨道的大型飞行器，终末地工业的总部与指挥中枢。干员调度、协议源石研究与地表开拓指令，全部自这里下达。</p>
+      <div class="mt-6 flex flex-wrap gap-3 font-mono text-[10px] tracking-[0.2em]">
+        <span class="border border-ink/25 px-3 py-1.5">轨道：同步轨道</span>
+        <span class="border border-ink/25 px-3 py-1.5">职能：总部 / 指挥</span>
+      </div>
+    </div>
+    <div class="lg:col-span-4 lg:col-start-8 order-1 lg:order-2 relative">
+      <div class="relative bg-white border border-ink/15 p-6">
+        <svg viewBox="0 0 300 220" class="w-full h-auto" role="img" aria-label="帝江号轨道示意图（示意线稿）">
+          <g fill="none" stroke="#111" stroke-width="1.3">
+            <ellipse cx="150" cy="110" rx="120" ry="70" stroke-dasharray="4 6" opacity=".5"/>
+            <ellipse cx="150" cy="110" rx="86" ry="48" stroke-dasharray="4 6" opacity=".3"/>
+            <circle cx="150" cy="110" r="26" fill="#1DD4DC" stroke="#111" stroke-width="1.5"/>
+            <rect x="136" y="102" width="28" height="16" rx="6" fill="#fff"/>
+            <circle cx="228" cy="76" r="5" fill="#111"/>
+            <line x1="228" y1="76" x2="252" y2="60" stroke-width="1" stroke-dasharray="3 3"/>
+          </g>
+          <text x="252" y="52" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="2" fill="#6B6B66">SAT-LINK</text>
+          <text x="16" y="206" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="3" fill="#6B6B66">FIG.03 — ORBIT MAP</text>
+        </svg>
+        <div class="sticker absolute -bottom-4 -left-3 bg-white border border-ink/30 bubble px-4 py-2.5 font-mono text-[10px] tracking-[0.15em] text-ink">SYNC ORBIT<br>同步轨道</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- FILE 03 协议源石 -->
+  <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <div class="lg:col-span-4 lg:col-start-2 relative">
+      <div class="relative bg-white border border-ink/15 p-6">
+        <svg viewBox="0 0 300 220" class="w-full h-auto" role="img" aria-label="协议源石结构示意图（示意线稿）">
+          <g fill="none" stroke="#111" stroke-width="1.4">
+            <path d="M150 30 L210 78 L192 176 L108 176 L90 78 Z"/>
+            <path d="M150 30 L150 176 M90 78 L210 78 M108 176 L150 78 L192 176" stroke-width="1" opacity=".55"/>
+            <path d="M150 58 L184 84 L172 150 L128 150 L116 84 Z" stroke="#1DD4DC" stroke-width="1.4"/>
+            <line x1="210" y1="78" x2="244" y2="52" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="108" y1="176" x2="70" y2="196" stroke-width="1" stroke-dasharray="3 3"/>
+          </g>
+          <text x="244" y="44" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="2" fill="#6B6B66">LATTICE</text>
+          <text x="16" y="206" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="3" fill="#6B6B66">FIG.04 — STRUCTURE</text>
+        </svg>
+        <div class="sticker absolute -top-4 -right-2 bg-pinkx bubble px-4 py-2.5 font-mono text-[10px] tracking-[0.15em] text-ink">CORE TECH<br>核心技术</div>
+      </div>
+    </div>
+    <div class="lg:col-span-6 lg:col-start-7">
+      <p class="font-mono text-xs tracking-[0.3em] text-cyanx mb-3">FILE 03 — TECHNOLOGY</p>
+      <h3 class="font-display text-3xl sm:text-4xl mb-1">协议源石</h3>
+      <p class="font-mono text-xs tracking-[0.3em] text-muted mb-5">PROTOCOL-ORIGINIUM</p>
+      <p class="text-[15px] leading-[1.9] text-ink/85 max-w-[32em]">终末地工业在塔卫二的核心技术应用对象。围绕协议源石的研究与利用，驱动着集成工业系统（AIC）的自动化产线，也牵动着这颗星球的命运走向。</p>
+      <div class="mt-6 flex flex-wrap gap-3 font-mono text-[10px] tracking-[0.2em]">
+        <span class="border border-ink/25 px-3 py-1.5">应用：AIC 自动化工业</span>
+        <span class="border border-ink/25 px-3 py-1.5">主管：监督者 佩丽卡</span>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 玩法 PROTOCOL ============ -->
+<section id="protocol" class="relative border-t border-ink/15 bg-white scroll-mt-24">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-20 lg:py-28">
+    <header class="mb-14">
+      <p class="font-mono text-[11px] tracking-[0.4em] text-muted mb-4">SECTION 02 — PROTOCOL</p>
+      <h2 class="font-display text-[clamp(2rem,5vw,4rem)] leading-none">开拓协议 <span class="text-acidx">/</span> FIELD PROTOCOL</h2>
+      <p class="mt-5 max-w-[34em] text-[15px] leading-[1.9] text-ink/80">官方口径：3D 即时策略 RPG。三条协议构成塔卫二的开拓日常。</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink/15 border border-ink/15 mb-16">
+      <div class="bg-white p-7 sm:p-9">
+        <p class="font-mono text-xs tracking-[0.25em] text-muted mb-5"><span class="text-acidx">▲</span> P-01</p>
+        <h3 class="font-display text-2xl mb-3">即时策略战斗</h3>
+        <p class="text-[15px] leading-[1.85] text-ink/85">实时指挥干员小队，在 3D 战场上走位、集火与技能衔接，策略决策发生在每一秒。</p>
+        <p class="mt-5 font-mono text-[10px] tracking-[0.2em] text-muted">REAL-TIME SQUAD COMBAT</p>
+      </div>
+      <div class="bg-white p-7 sm:p-9">
+        <p class="font-mono text-xs tracking-[0.25em] text-muted mb-5"><span class="text-acidx">▲</span> P-02</p>
+        <h3 class="font-display text-2xl mb-3">AIC 自动化工业</h3>
+        <p class="text-[15px] leading-[1.85] text-ink/85">铺设传送带与产线、搭建电力网络，让集成工业系统（AIC）在荒野上自动运转——基地建设即是玩法支柱。</p>
+        <p class="mt-5 font-mono text-[10px] tracking-[0.2em] text-muted">AUTOMATED INDUSTRY COMPLEX</p>
+      </div>
+      <div class="bg-white p-7 sm:p-9">
+        <p class="font-mono text-xs tracking-[0.25em] text-muted mb-5"><span class="text-acidx">▲</span> P-03</p>
+        <h3 class="font-display text-2xl mb-3">塔卫二区域探索</h3>
+        <p class="text-[15px] leading-[1.85] text-ink/85">踏勘未知区域、回收资源、解锁地块，把开拓边界一寸寸推向星球深处。</p>
+        <p class="mt-5 font-mono text-[10px] tracking-[0.2em] text-muted">REGION EXPLORATION</p>
+      </div>
+    </div>
+
+    <!-- AIC 产线 技术图版 -->
+    <figure class="relative bg-paper border border-ink/15 p-6 sm:p-10">
+      <figcaption class="flex flex-wrap items-center justify-between gap-x-4 font-mono text-[10px] tracking-[0.3em] text-muted mb-6">
+        <span>EXHIBIT B — PRODUCTION LINE</span><span>FIG.05</span>
+      </figcaption>
+      <svg viewBox="0 0 720 260" class="w-full h-auto" role="img" aria-label="AIC 自动化产线示意图（示意线稿）">
+        <g fill="none" stroke="#111" stroke-width="1.4">
+          <!-- 厂房 A -->
+          <path d="M40 200 L40 120 L70 96 L100 120 L130 96 L160 120 L160 200 Z"/>
+          <rect x="58" y="150" width="24" height="50" stroke-width="1"/>
+          <rect x="110" y="140" width="30" height="22" stroke-width="1" opacity=".6"/>
+          <!-- 传送带 1 -->
+          <line x1="160" y1="180" x2="330" y2="180"/>
+          <line x1="160" y1="192" x2="330" y2="192" stroke-width="1" opacity=".6"/>
+          <circle cx="180" cy="186" r="4" stroke-width="1"/>
+          <circle cx="230" cy="186" r="4" stroke-width="1"/>
+          <circle cx="280" cy="186" r="4" stroke-width="1"/>
+          <path d="M300 178 L314 186 L300 194" stroke-width="1.4"/>
+          <!-- 加工站 B -->
+          <rect x="330" y="120" width="110" height="80"/>
+          <path d="M330 120 L385 84 L440 120" />
+          <circle cx="385" cy="160" r="18"/>
+          <circle cx="385" cy="160" r="8" stroke-width="1" opacity=".6"/>
+          <!-- 传送带 2 -->
+          <line x1="440" y1="180" x2="600" y2="180"/>
+          <line x1="440" y1="192" x2="600" y2="192" stroke-width="1" opacity=".6"/>
+          <path d="M560 178 L574 186 L560 194" stroke-width="1.4"/>
+          <!-- 仓储 C -->
+          <path d="M600 200 L600 130 L640 108 L680 130 L680 200 Z"/>
+          <line x1="614" y1="200" x2="614" y2="140" stroke-width="1" opacity=".6"/>
+          <line x1="628" y1="200" x2="628" y2="140" stroke-width="1" opacity=".6"/>
+          <line x1="642" y1="200" x2="642" y2="140" stroke-width="1" opacity=".6"/>
+          <!-- 电力塔 -->
+          <path d="M240 200 L256 128 L272 200" />
+          <line x1="246" y1="168" x2="266" y2="168" stroke-width="1"/>
+          <line x1="250" y1="150" x2="262" y2="150" stroke-width="1"/>
+          <line x1="256" y1="128" x2="385" y2="84" stroke-width="1" stroke-dasharray="4 4" opacity=".6"/>
+          <line x1="256" y1="128" x2="100" y2="96" stroke-width="1" stroke-dasharray="4 4" opacity=".6"/>
+          <!-- 地面基准线 -->
+          <line x1="24" y1="200" x2="696" y2="200" stroke-width="1" opacity=".5"/>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2" fill="#6B6B66">
+          <text x="40" y="230">MINING PLANT</text>
+          <text x="330" y="230">PROCESSOR</text>
+          <text x="600" y="230">STORAGE</text>
+          <text x="228" y="246">POWER GRID</text>
+        </g>
+      </svg>
+      <div class="sticker absolute -top-4 left-8 bg-acidx bubble px-4 py-2.5 font-mono text-[10px] tracking-[0.15em] text-ink">AUTO-RUNNING<br>全自动运转</div>
+      <div class="sticker absolute -bottom-4 right-10 bg-white border border-ink/30 bubble-alt px-4 py-2.5 font-mono text-[10px] tracking-[0.15em] text-ink">CONVEYOR / POWER<br>产线 × 电网</div>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 干员档案 ============ -->
+<section id="operators" class="relative max-w-7xl mx-auto px-5 sm:px-8 py-20 lg:py-28 scroll-mt-24">
+  <div class="aura w-[24vw] h-[24vw] bg-pinkx/10 bottom-0 -left-32" aria-hidden="true"></div>
+
+  <header class="mb-4">
+    <p class="font-mono text-[11px] tracking-[0.4em] text-muted mb-4">SECTION 03 — OPERATOR ARCHIVE</p>
+    <h2 class="font-display text-[clamp(2rem,5vw,4rem)] leading-none">干员档案 <span class="text-pinkx">/</span> OPERATORS</h2>
+  </header>
+  <p class="mb-14 font-mono text-[10px] tracking-[0.25em] text-muted">※ 卡面图形为几何示意符号，非官方立绘 / SYMBOLIC DIAGRAMS ONLY</p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+    <!-- 佩丽卡 -->
+    <article class="relative bg-white border border-ink/15 p-6 flex flex-col min-h-[300px] sticker">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] tracking-[0.25em] text-muted">OP-01</span>
+        <svg viewBox="0 0 40 40" class="w-9 h-9" aria-hidden="true">
+          <path d="M20 4 L36 32 L4 32 Z" fill="none" stroke="#111" stroke-width="2"/>
+          <circle cx="20" cy="24" r="5" fill="#1DD4DC" stroke="#111" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-2xl">佩丽卡</h3>
+      <p class="font-mono text-[10px] tracking-[0.3em] text-muted mt-1 mb-4">PERLICA</p>
+      <p class="text-sm leading-[1.8] text-ink/85">终末地工业监督者，主管协议源石技术应用与帝江号运营。</p>
+      <p class="mt-auto pt-5 font-mono text-[10px] tracking-[0.2em] text-cyanx">ROLE — SUPERVISOR</p>
+      <div class="absolute -top-3 -right-2 bg-cyanx bubble px-3.5 py-2 font-mono text-[9px] tracking-[0.15em] text-ink">SUPERVISOR</div>
+    </article>
+
+    <!-- 陈千语 -->
+    <article class="relative bg-white border border-ink/15 p-6 flex flex-col min-h-[300px] sticker lg:translate-y-6">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] tracking-[0.25em] text-muted">OP-02</span>
+        <svg viewBox="0 0 40 40" class="w-9 h-9" aria-hidden="true">
+          <path d="M20 4 L36 32 L4 32 Z" fill="none" stroke="#111" stroke-width="2"/>
+          <line x1="12" y1="26" x2="28" y2="12" stroke="#FB3799" stroke-width="3"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-2xl">陈千语</h3>
+      <p class="font-mono text-[10px] tracking-[0.3em] text-muted mt-1 mb-4">CHEN QIANYU</p>
+      <p class="text-sm leading-[1.8] text-ink/85">危机处理小组核心成员、佩丽卡的护卫，近战物理输出，奉行公理与正义。</p>
+      <p class="mt-auto pt-5 font-mono text-[10px] tracking-[0.2em] text-pinkx">ROLE — CRISIS UNIT</p>
+    </article>
+
+    <!-- 莱万汀 -->
+    <article class="relative bg-white border border-ink/15 p-6 flex flex-col min-h-[300px] sticker">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] tracking-[0.25em] text-muted">OP-03</span>
+        <svg viewBox="0 0 40 40" class="w-9 h-9" aria-hidden="true">
+          <path d="M20 4 L36 32 L4 32 Z" fill="none" stroke="#111" stroke-width="2"/>
+          <path d="M14 28 L20 12 L26 28" fill="none" stroke="#CACC21" stroke-width="3"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-2xl">莱万汀</h3>
+      <p class="font-mono text-[10px] tracking-[0.3em] text-muted mt-1 mb-4">LAEVATAIN</p>
+      <p class="text-sm leading-[1.8] text-ink/85">公开阵容中的焦点干员之一，于 gamescom 2025 官方名单确认登场。</p>
+      <p class="mt-auto pt-5 font-mono text-[10px] tracking-[0.2em] text-muted">ROLE — OPERATOR</p>
+    </article>
+
+    <!-- 伊冯 -->
+    <article class="relative bg-white border border-ink/15 p-6 flex flex-col min-h-[300px] sticker lg:translate-y-6">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] tracking-[0.25em] text-muted">OP-04</span>
+        <svg viewBox="0 0 40 40" class="w-9 h-9" aria-hidden="true">
+          <path d="M20 4 L36 32 L4 32 Z" fill="none" stroke="#111" stroke-width="2"/>
+          <circle cx="20" cy="20" r="7" fill="none" stroke="#111" stroke-width="2" stroke-dasharray="4 3"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-2xl">伊冯</h3>
+      <p class="font-mono text-[10px] tracking-[0.3em] text-muted mt-1 mb-4">YVONNE</p>
+      <p class="text-sm leading-[1.8] text-ink/85">终末地工业干员，与余烬、狼卫等同属已公开阵容。</p>
+      <p class="mt-auto pt-5 font-mono text-[10px] tracking-[0.2em] text-muted">ROLE — OPERATOR</p>
+    </article>
+  </div>
+
+  <p class="mt-12 text-sm leading-[1.9] text-ink/75 max-w-[36em]">更多干员档案仍在解密中。扮演「管理员 Endministrator」，与干员们一同推进塔卫二的开拓进程。</p>
+</section>
+
+<!-- ============ 通栏 CTA（复刻 KV 底条签名） ============ -->
+<section id="download" class="relative bg-pinkx text-ink scroll-mt-24">
+  <div class="hazard-strip h-2.5" aria-hidden="true"></div>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-16 lg:py-24 text-center relative">
+    <div class="halftone absolute top-6 right-8 w-32 h-32 opacity-20" aria-hidden="true"></div>
+    <p class="font-mono text-[11px] tracking-[0.4em] mb-6">GLOBAL RELEASE — 2026.01.22</p>
+    <h2 class="font-black text-[clamp(1.8rem,5vw,4rem)] leading-[1.15] max-w-[18em] mx-auto">「完成这份合约，前往潜力无限的新热土——开拓未知的新世界。」</h2>
+    <p class="mt-6 font-mono text-xs tracking-[0.3em]">PC / iOS / ANDROID / PS5 — FREE TO PLAY</p>
+    <div class="mt-10 flex flex-wrap justify-center items-center gap-4">
+      <a href="https://endfield.gryphline.com/en-us" target="_blank" rel="noopener"
+         class="cta-invert bg-ink text-paper font-mono text-sm tracking-[0.15em] px-8 py-4 rounded-full min-h-[44px] inline-flex items-center">前往官网 ↗</a>
+      <a href="https://www.playstation.com/en-us/games/arknights-endfield/" target="_blank" rel="noopener"
+         class="font-mono text-sm tracking-[0.15em] px-8 py-4 rounded-full border-2 border-ink min-h-[44px] inline-flex items-center hover:bg-ink hover:text-paper transition-colors">PlayStation Store ↗</a>
+    </div>
+  </div>
+  <div class="hazard-strip h-2.5" aria-hidden="true"></div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-paper">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div>
+      <span class="inline-block bg-ink text-paper font-display text-sm px-4 py-2 rounded-full pill-chroma mb-4">ENDFIELD</span>
+      <p class="font-mono text-[10px] tracking-[0.25em] text-muted leading-loose">TALOS-II SURVEY EXHIBITION<br>FAN-MADE CONCEPT PAGE</p>
+    </div>
+    <div>
+      <p class="font-mono text-[10px] tracking-[0.3em] text-muted mb-4">信息来源 SOURCES</p>
+      <ul class="space-y-2.5 text-sm">
+        <li><a class="link-slide" href="https://endfield.gryphline.com/en-us" target="_blank" rel="noopener">终末地国际官网 ↗</a></li>
+        <li><a class="link-slide" href="https://www.playstation.com/en-us/games/arknights-endfield/" target="_blank" rel="noopener">PlayStation Store 页面 ↗</a></li>
+        <li><a class="link-slide" href="https://prts.wiki/w/%E5%A5%87%E8%B1%A1%E5%B7%A1%E5%B1%95" target="_blank" rel="noopener">PRTS Wiki：奇象巡展 ↗</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-mono text-[10px] tracking-[0.3em] text-muted mb-4">免责声明 DISCLAIMER</p>
+      <p class="text-sm leading-[1.9] text-ink/75">本页为粉丝概念设计练习，与 Hypergryph（鹰角网络）/ Gryphline 无任何关联。「明日方舟」「终末地」及相关名称的权利归其所有者。页面图形均为示意线稿，非官方素材。</p>
+    </div>
+  </div>
+  <div class="border-t border-ink/15">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-5 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] tracking-[0.25em] text-muted">
+      <span>© 2026 FAN PROJECT — NOT AFFILIATED</span>
+      <span>STYLE REF: 奇象巡展 INTERACTIVE EXHIBITION</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
