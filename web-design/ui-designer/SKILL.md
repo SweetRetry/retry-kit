@@ -1,30 +1,56 @@
 ---
 name: ui-designer
 description: >-
-  人机协同界面设计：把产品目标、真实内容、品牌约束与现有前端栈，经「约束注入 → AI 发散候选 → 人选择方向 → AI 收敛为 design.md 契约 → 人审查 → 终态交接」产出可交接的设计契约，默认不写代码。Use when 用户要求设计方向、页面/组件方案、配色、排版、视觉语言、构图，或需要可交接的设计契约；不用于直接实现 UI 代码、只读视觉审查（ui-critic）、纯产品链路诊断（product-guide）或只判断/生成 website background 素材（generate-web-backgrounds）。
+  人机协同界面设计：先产出技术栈无关的 design plan（上下文 / 设计目的 / 用户旅程 / 候选方向），经人选择方向后，结合项目技术栈与 anti-slop 收敛为可执行 design.md 契约，默认不写代码。Use when 用户要求设计方向、页面/组件方案、配色、排版、视觉语言、构图，或需要可交接的设计契约；不用于直接实现 UI 代码、只读视觉审查（ui-critic）、纯产品链路诊断（product-guide）或只判断/生成 website background 素材（generate-web-backgrounds）。
 ---
 
 # UI Designer — 人机协同设计契约
 
 **判断给人、生成给 AI**：人类注入约束、选择方向、审查契约；AI 并行发散候选、穷尽收敛为 design.md 契约。产出 `design plan`（候选方向）→ 经人选择 → `design.md`（标准化契约，终态交付物），默认不写代码。实现是后续独立请求，按契约承接。
 
+## 三个产出物的边界
+
+| 产出物 | 内容 | 技术栈相关？ | 生命周期 | 谁产生 |
+| --- | --- | --- | --- | --- |
+| `references/` 设计基线 | 通用设计标准：spacing / type / color / shape / motion / component / a11y 基线 + anti-slop 信号 + design.md 模板骨架 | 无关，任何项目可查 | 静态知识，随 skill 演进而非随项目变 | skill 作者预置 |
+| `design plan` | 本 surface 的理解：上下文（surface / 真实内容 / authority / anti-goals）→ 设计目的（mode / 要证明什么）→ 用户旅程（怎么走 / 关键状态）→ 候选方向 | 无关，只回答"是什么、为谁、为什么、怎么走" | 一次性、可迭代；方向确认后消费掉（进入 design.md） | AI 发散 + 人注入约束 / 选择 |
+| `design.md` | 可执行契约：§0 技术栈边界 → THESIS → STORY/TASK → OWN WORLD 参数映射 → 状态 + a11y → §8 agent contract | **相关**：§0 写清技术栈，§3 参数映射到栈的 token 机制 | 终态交付物；定稿后冻结，重设计才重开 | AI 收敛 + 人审查 |
+
+**各自不含什么**：
+
+- `references/` 不含"某个 surface 该怎么设计"（那是 design plan）、不含"某个栈怎么实现"（那是 design.md）。
+- `design plan` 不含具体视觉参数值（color 值 / 字号 / spacing 数值）、不含组件实现、不含技术栈映射。
+- `design.md` 不含候选方向的重新论证（只保留选中的一个）、不含通用知识（引用 reference，不复制）。
+
+**plan → design.md 的转换**（阶段 5 的唯一工作）：
+
+| design plan 的 | 进入 design.md 的 |
+| --- | --- |
+| 上下文 / authority / anti-goals | §0 边界 |
+| 设计目的（mode）+ 用户旅程 | §2 STORY/TASK + §6 STATES |
+| 选中的方向（THESIS / 构图） | §1 THESIS + §3 参数骨架 |
+| —（此刻才读）项目技术栈 | §0 技术栈 + §3 参数映射成栈 token |
+| —（全程）anti-slop 检查 | §5/§8 约束与验收点 |
+
+关键规则：**design plan 与技术栈无关**——了解 surface 时读上下文、真实内容与 authority，不读依赖、框架、构建方式；技术栈在写 design.md 阶段才读取并映射。
+
 ## 工作流总览
 
 | # | 阶段 | 角色 | 产出 | gate |
-|---|---|---|---|---|
-| 1 | 读取现场、锁边界与约束注入 | 人 + AI | 边界结论 + 人类约束清单 | 边界完整、约束明确 |
-| 2 | 选择 surface mode | AI 提出 | mode + 策略 | mode 可解释主任务 |
-| 3 | AI 发散生成候选方向 | AI | **design plan**：3–5 个真正不同的候选 | 候选非近亲变体、每个可解释 |
+| --- | --- | --- | --- | --- |
+| 1 | 了解上下文 | 人 + AI | 上下文 / authority / 约束清单 | 边界完整、约束明确 |
+| 2 | 设计目的与用户旅程 | AI 提出 | mode + 用户旅程 | mode 可解释主任务 |
+| 3 | AI 发散候选方向 | AI | **design plan**：3–5 个真正不同的候选 | 候选非近亲变体、每个可解释 |
 | 4 | 方向选择 | **人** | 选定的方向 / 组合指令 | **人已选择（强制 gate）** |
-| 5 | 收敛详化：写 design.md | AI | 完整 8 节设计契约 | 8 节齐全、状态全覆盖 |
+| 5 | 写 design.md（plan + 技术栈 + anti-slop） | AI | 完整 8 节设计契约 | 8 节齐全、状态全覆盖 |
 | 6 | 契约审查 | **人** | flag 清单 → AI 修订 | 无未解决高影响 flag |
 | 7 | 终态与交接 | AI | 定稿 design.md + 未验证项 | 无代码、无 TODO |
 
 人类触点 3 个（每个 ≤2 分钟）：**T1 约束注入**、**T2 方向选择**、**T3 契约审查**。阶段 4 → 5 是强制 gate：方向未经人选择，不得写 design.md。
 
-## 1. 读取现场、锁定边界与约束注入
+## 1. 了解上下文（design plan 输入）
 
-先读用户要求、仓库指令、目标 route / component、依赖、启动命令和真实内容，再检查至少一个现有视觉 authority：design token、theme、共享组件、相邻页面、品牌资产或 live render。不要因缺少 `DESIGN.md` 就把项目当 greenfield。
+只回答"这个 surface 是什么、为谁、有什么不可动"，**不读技术栈**。读用户要求、目标 surface 的职责、真实内容与现有视觉 authority：design token、theme、共享组件、相邻页面、品牌资产或 live render。不要因缺少 `DESIGN.md` 就把项目当 greenfield。
 
 判断 visual authority：
 
@@ -34,13 +60,13 @@ description: >-
 - **重设计 / 替换视觉世界**：保留产品事实、功能、真实内容、明确品牌承诺和不变项；默认不破坏 route、SEO、analytics、legal、copy voice 与 accessibility contract，旧外观不再约束新方向。
 - **Greenfield**：从受众、任务、产品机制和使用环境建立视觉世界，不从类别模板反推答案。
 
-**约束注入（T1）**：非平凡任务默认第一步——目标、受众、保留边界或核心素材会改变结构时，一轮只问 2–3 个最高影响问题：受众现实（谁、什么环境、什么不能变）、明确不要的（anti-goals）、既有 authority 与非协商项。人的回答是所有候选方向的盒子；没有约束注入的发散会退化成类别模板。精确任务直接执行；不要询问 CSS 值、预设风格菜单或用户没有判断基础的技术选型。
+**约束注入（T1）**：非平凡任务默认第一步——目标、受众、保留边界或核心素材会改变结构时，一轮只问 2–3 个最高影响问题：受众现实（谁、什么环境、什么不能变）、明确不要的（anti-goals）、既有 authority 与非协商项。人的回答是所有候选方向的盒子；没有约束注入的发散会退化成类别模板。精确任务直接执行。
 
-**完成标准：**明确用户要完成的事、视觉 authority、保留项、真实素材、可修改边界与 anti-goals。
+**完成标准：**明确 surface 是什么、视觉 authority、保留项、真实素材、可修改边界与 anti-goals。
 
-## 2. 选择 surface mode
+## 2. 设计目的与用户旅程（design plan 输入）
 
-mode 描述用户在当前 surface 的成功方式，不描述产品类别：
+**设计目的**：mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 
 - **Persuade**：用户理解 offer、相信 proof 并采取行动。首个阅读序列必须包含清楚的价值、证据和 primary action；允许更强的品牌表达。
 - **Operate**：用户高效完成任务。scanability、状态清晰、熟悉 affordance、数据密度和低操作成本高于新奇；品牌主要体现在精确细节。
@@ -49,9 +75,11 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 
 一个工具的 landing page 仍是 `Persuade`，品牌站的文档仍是 `Read`。复杂 surface 可分区使用不同策略，但必须有一个主 mode。
 
-**完成标准：**primary task、第一焦点、信息密度和表达自由度都能由 mode 解释。
+**用户旅程**：写清用户从进入到完成主任务会经历什么——先理解什么 → 再做什么 → 到达什么状态；标注关键状态（default / loading / empty / error）。这段理解直接进入 design.md 的 §2 与 §6。
 
-## 3. AI 发散生成候选方向（design plan）
+**完成标准：**primary task、第一焦点、信息密度、表达自由度由 mode 解释；用户旅程覆盖关键状态。
+
+## 3. AI 发散生成候选方向（design plan 输出）
 
 先写：产品独有机制、受众真实场景、文化归属、当前 surface 必须证明什么、该类别最常见的模板套路。然后生成 **3–5 个真正不同的候选方向**——不同 material family / topology / 服务的任务，AI 不自选。每个候选只写：
 
@@ -75,11 +103,17 @@ mode 描述用户在当前 surface 的成功方式，不描述产品类别：
 
 **Gate：** 用户已选择方向（或给出组合指令）后进入阶段 5；方向未选定则停留收敛，不写 design.md。
 
-## 5. 收敛详化：写 design.md
+## 5. 写 design.md（结合 plan + 技术栈 + anti-slop）
 
-按 `references/design-contract-template.md` 的 8 节模板产出标准化设计契约。这是 AI 的比较优势——**穷尽**：所有 token 落到角色制表格、9 个状态全覆盖、a11y inline、响应式断点行为、motion + reduced-motion 静态帧、§8 agent contract。不写代码；不用"高级、现代、克制、科技感"等 mood 词代替机制解释。
+design.md 是三个输入的唯一结合点：
 
-**完成标准：**8 节齐全；每个参数可映射到 authority 或 fallback baseline；状态无遗漏；a11y 与响应式边界内联在对应节；实现边界在 §8 写清。
+1. **design plan**：已确认的方向、设计目的、用户旅程。
+2. **项目技术栈**：此刻才读取依赖、启动命令、framework、styling 与 token 方案，做**技术栈映射**——把 plan 的 spacing / type / color / motion 参数表达为该栈的可用机制（Tailwind 默认 scale、CSS 变量、design token 文件等）。技术栈只在这里进入，不改动 plan 的理解。
+3. **anti-slop 约束**：按 `references/visual-grammar.md` §6 的三测试与信号，检查参数映射不滑向模板或 mood 词。
+
+按 `references/design-contract-template.md` 的 8 节模板产出。AI 的比较优势是**穷尽**：所有 token 落到角色制表格、9 状态全覆盖、a11y inline、响应式断点行为、motion + reduced-motion 静态帧、§8 agent contract。不写代码；不用 mood 词。
+
+**完成标准：**8 节齐全；§0 写清技术栈与边界；每个参数映射到 authority 或栈的 token；状态无遗漏；无 mood 词。
 
 ## 6. 契约审查（人）
 

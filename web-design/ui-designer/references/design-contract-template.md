@@ -2,6 +2,8 @@
 
 `ui-designer` 阶段 5 产出 design.md 时使用本模板。把占位说明替换为实际内容；删去本模板的灰色说明行，保留编号与结构。范例见 `examples/arknights-endfield-landing/design.md`。
 
+> **输入（三合一，缺一不可）**：① design plan——已确认的方向 + 设计目的 + 用户旅程；② 项目技术栈——§0 写清边界，§3 参数**映射到栈的 token 机制**（Tailwind scale / CSS 变量 / design token 文件等，技术栈映射只在此文件发生）；③ anti-slop 约束——按 `references/visual-grammar.md` §6 检查不滑向模板。
+>
 > 术语：`authority` = 项目既有视觉权威（design token / theme / 品牌资产 / 相邻页面 / 官方 design system）；`fallback baseline` = `references/visual-grammar.md` 的默认值；`token` = 具名视觉值（角色名而非字面量）；`agent contract` = §8 给下游实现 agent 的消费指令。
 >
 > 模板规则：每个视觉值必须解析到命名 token 或 authority 引用，缺失时标注 fallback 来源，绝不以字面量硬编码；状态与 a11y 内联在对应节；零 "TBD" microcopy；不写 mood 词（"高级、现代、克制、科技感"）；不写代码。

@@ -21,7 +21,6 @@
 - 同组紧、组间松；heading 上方通常比下方更松。相同语义使用相同 spacing token，组内间距至少比组间小一个层级，同时允许 1–2px optical correction。
 - 缺少 spacing token 时，以 4px 为基础单位，优先从 `4 / 8 / 12 / 16 / 24 / 32 / 48 / 64px` 中选择，把 `2 / 6px` 限定为紧凑组件内部或 optical correction。
 - 紧密 inline 使用 `4–8px`、label 与 control 或 control 内部使用 `8–12px`、组件内容组使用 `16–24px`、section 使用 `32–64px` 作为起点；根据 mode、内容和 viewport 调整关系，不机械复制数值。
-- Tailwind branch 读取 theme：数字 spacing utility 是 `--spacing` 的倍数，不是 CSS pixel。默认 4px 基准下 `gap-4 / gap-6 / gap-8` 是 `16 / 24 / 32px`；仅在 token 无法表达真实布局压力时使用 arbitrary value。
 - 留白必须承担 grouping、focus、sequence 或 recovery；没有作用的空洞不是品质。
 - density 由使用频率、决策复杂度、熟练度和环境决定。工作台不为"呼吸感"浪费视野，营销页也不把全部 proof 挤进 Hero。
 - 页面可以保持系统一致，但 section 不应无视内容地重复同一 skeleton；variation 服务阅读节奏，不以变化本身为目标。
@@ -30,9 +29,9 @@
 
 - 只定义必要的 display、heading、body、label、metadata、data / code 角色；角色少而清楚优于字体多。
 - 字体由品牌、语言、内容和使用场景决定。system font、Inter 或 serif 都不是原罪，未经判断的默认才是。
-- 缺少 typography token 时，Tailwind branch 未覆盖 theme 的默认值为：`text-xs` `12/16px`、`text-sm` `14/20px`、`text-base` `16/24px`。把 font-size、line-height、weight、tracking 和 contrast 作为一个 text role 一起决定，不只指定字号 class。
-- `text-xs` 默认承载 caption、metadata、辅助 table 信息和非关键 label；用 `text-sm` 或更强 text role 承载决策关键的状态、错误与操作说明。低于 12px 的有意义文字必须有明确密度理由。
-- `text-sm` 可作为紧凑 `Operate` UI 的正文与 control label，或其他 mode 的 secondary copy；`Read` 的连续正文缺少 authority 时从 `text-base` 起。
+- 缺少 typography token 时，默认基线：caption `12/16px`、紧凑正文 `14/20px`、正文 `16/24px`。把 font-size、line-height、weight、tracking 和 contrast 作为一个 text role 一起决定，不只指定字号。
+- caption 档（12px）默认承载 metadata、辅助 table 信息和非关键 label；用紧凑正文档（14px）或更强 text role 承载决策关键的状态、错误与操作说明。低于 12px 的有意义文字必须有明确密度理由。
+- 紧凑正文档（14px）可作为紧凑 `Operate` UI 的正文与 control label，或其他 mode 的 secondary copy；`Read` 的连续正文缺少 authority 时从正文档（16px）起。
 - 文案放不下时先处理容器、折行、层级与内容长度，不先缩小字号。
 - 普通文字 contrast 至少 `4.5:1`，符合 WCAG large text 定义的文字至少 `3:1`；200% text resize 后保持内容和功能完整。
 - 用真实 CJK / Latin 混排、长标题、数字、fallback、缺失 weight、窄容器与 zoom 检查 measure、line-height、tracking 和折行。
