@@ -1,4 +1,4 @@
 interface:
   display_name: "UI Designer"
-  short_description: "Design and implement production-ready user interfaces"
-  default_prompt: "使用 $ui-designer 在当前项目中设计并实现一个完整、响应式且有产品特异性的界面。"
+  short_description: "Human-AI co-design: candidate directions → selection → design.md contract, no code"
+  default_prompt: "使用 $ui-designer 走人机协同链路：先问 2–3 个最高影响的约束问题（T1），再发散 3–5 个真正不同的候选方向（design plan），请用户选择方向（T2），确认后收敛为完整 8 节 design.md 契约，用户审查（T3）修订后定稿交接。默认停在契约，不写代码。"
