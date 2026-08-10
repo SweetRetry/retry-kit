@@ -3,7 +3,7 @@ name: video-prompt
 description: 可执行的视频生成 prompt：把已经确定要生成的视频画面意图、目标入口与可用上下文编写、优化为一次 generation 的多行自然语言指令；一次生成可以是连续单镜或含剪辑关系的多镜叙事。用于目标视频模型或入口及其时长合同已经明确的任务；不用于判断 website background 是否应采用 image 或 video，也不负责页面前景关系、responsive crop、reduced-motion 与静态 fallback。
 ---
 
-# 视频生成 Prompt
+# Video Prompt
 
 ## 交付合同
 

@@ -25,12 +25,10 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Generation
 
 - `asset-director`：规划跨画面复用的参考素材与连续性控制。
-- `graphic-image-prompt`：生成封面、文章配图与 editorial graphic 等 artifact-first 视觉构成 prompt。
 - `image-prompt`：分析决定画面成败的视觉维度并生成图片 prompt。
 - `script-director`：构思、诊断和改写不同媒介与篇幅的脚本。
 - `storyboard-director`：把剧本转为分镜与连续生成段。
 - `style-grill`：通过推荐与追问收敛可复用的视觉 Style Spec。
-- `video-breakdown`：逐镜分析视频并输出紧凑 JSON。
 - `video-prompt`：生成单次 4–15 秒的视频 prompt。
 
 ### Product
@@ -42,7 +40,16 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 - `generate-web-backgrounds`：依据产品与页面职责选择 image / video，并生成 website background 资产 brief。
 - `ui-critic`：对现有界面进行取证式视觉 critique。
-- `ui-designer`：设计或实现网页与 App UI。
+- `ui-designer`：设计网页与 App UI 的方向和可交接 design.md 契约（默认不写代码）。
+
+### 外部 Skills（按需使用，不在本仓库手写维护）
+
+以下能力的 source of truth 是各自上游；本仓库只记录其适用范围，不复制、改写或维护规则。
+
+- [Vercel Web Design Guidelines](https://github.com/vercel-labs/agent-skills/blob/main/skills/web-design-guidelines/SKILL.md)：审查 UI 代码的 Web Interface Guidelines、accessibility、UX 与实现质量。
+- [Emil Kowalski Skills](https://emilkowal.ski/skill)：design engineering、动画设计、动画审查与 UI library 选择。
+- [Matt Pocock Skills](https://github.com/mattpocock/skills)：可组合的工程工作流，覆盖需求对齐、调试、TDD、规格与架构改进。
+- [Impeccable](https://github.com/pbakaus/impeccable)：面向 AI coding agent 的设计工作流，覆盖视觉 critique、a11y / responsive audit、motion 与浏览器迭代。
 
 ### Research
 
@@ -50,7 +57,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ## 维护约定
 
-- 每个 skill 使用独立目录，目录名与 `SKILL.md` 中的 `name` 一致。
+- 每个 skill 使用独立目录，目录名与 `SKILL.md` 中的 `name` 一致；`name`、`display_name` 和一级标题统一使用英文。
 - skill 专属的按需资料放在该 skill 的 `references/`；跨 skill 研究放在根目录 `research/`。
 - 保持 skill 职责独立，避免通过目录分层掩盖能力重叠。
 - 低频、重流程或容易与相邻能力竞争的 skill，在 `SKILL.md` 设置 `disable-model-invocation: true`，只接受 Claude Code 的 `/skill-name` 显式调用。

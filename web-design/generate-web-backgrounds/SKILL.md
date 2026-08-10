@@ -4,7 +4,7 @@ description: Website background 设计：根据产品、页面职责、前景和
 disable-model-invocation: true
 ---
 
-# Web Background
+# Web Backgrounds
 
 ## 核心任务
 

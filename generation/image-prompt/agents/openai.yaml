@@ -1,4 +1,4 @@
 interface:
-  display_name: "图片 Prompt"
+  display_name: "Image Prompt"
   short_description: "分析决定画面成败的视觉维度并编写图片 prompt"
   default_prompt: "使用 $image-prompt 分析这个想法的任务重心，并整理成可直接生成的图片 prompt。"

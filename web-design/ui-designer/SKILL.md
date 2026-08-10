@@ -4,7 +4,7 @@ description: >-
   人机协同界面设计：先产出技术栈无关的 design plan（上下文 / 设计目的 / 用户旅程 / 候选方向），经人选择方向后，结合项目技术栈与 anti-slop 收敛为可执行 design.md 契约，默认不写代码。Use when 用户要求设计方向、页面/组件方案、配色、排版、视觉语言、构图，或需要可交接的设计契约；不用于直接实现 UI 代码、只读视觉审查（ui-critic）、纯产品链路诊断（product-guide）或只判断/生成 website background 素材（generate-web-backgrounds）。
 ---
 
-# UI Designer — 人机协同设计契约
+# UI Designer
 
 **判断给人、生成给 AI**：人类注入约束、选择方向、审查契约；AI 并行发散候选、穷尽收敛为 design.md 契约。产出 `design plan`（候选方向）→ 经人选择 → `design.md`（标准化契约，终态交付物），默认不写代码。实现是后续独立请求，按契约承接。
 

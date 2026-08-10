@@ -4,7 +4,7 @@ description: >-
   React Flow (@xyflow/react v12+) 节点编辑器开发与排障，覆盖节点、边、Handle、状态管理、连接校验、性能、持久化和 sub flow。Use when 代码 import `@xyflow/react`，或用户明确使用 React Flow 构建、迁移或排查节点图；D3、ECharts、其他 node graph 库及未选定技术栈的通用流程图任务不触发。
 ---
 
-# React Flow 官方对齐开发技能
+# React Flow Practices
 
 > 基准版本：`@xyflow/react` v12+
 > 若本 skill 与官方资料冲突，始终以 React Flow 官方 docs / API Reference / examples / migration guide 为准。

@@ -4,7 +4,7 @@ description: AI 生图风格引导：通过提问、推荐与备选方案，把�
 disable-model-invocation: true
 ---
 
-# AI 生图风格引导
+# Style Grill
 
 ## 交付合同
 

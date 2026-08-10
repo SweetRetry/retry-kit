@@ -5,7 +5,7 @@ description: >-
 disable-model-invocation: true
 ---
 
-# UX 任务链边界分析
+# UX Edge Cases
 
 发现合法用户目标何时变得不可开始、无法继续、无法判断结果或无法恢复。
 

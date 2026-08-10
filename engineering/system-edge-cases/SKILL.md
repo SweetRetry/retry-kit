@@ -5,7 +5,7 @@ description: >-
 disable-model-invocation: true
 ---
 
-# 系统执行链边界分析
+# System Edge Cases
 
 发现系统在非常规但可到达的条件下，何时进入未定义、彼此矛盾、不可恢复或违反 invariant 的状态。
 

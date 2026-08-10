@@ -3,7 +3,7 @@ name: storyboard-director
 description: 分镜：把当前上下文中的剧本、分场、段落、导演意图或已有画面转换为面向 Seedance 2.0 的 AIGC 场景生成方案。用于规划全片或局部 scene，或审查、重整现有生成段的叙事覆盖、段内时序、连续性与生成可行性。
 ---
 
-# AIGC 分镜导演
+# AIGC Storyboard Director
 
 ## 交付合同
 

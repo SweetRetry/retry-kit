@@ -1,4 +1,4 @@
 interface:
-  display_name: "市场调研"
+  display_name: "Market Research"
   short_description: "用可复核证据回答市场决策，并给出清楚的建议、风险与下一步"
   default_prompt: "使用 $market-research 调研目标市场，先用通俗语言回答我该怎么决策、为什么、什么会改变判断，再附可复核的证据与来源。"

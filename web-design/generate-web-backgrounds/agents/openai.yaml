@@ -1,5 +1,5 @@
 interface:
-  display_name: "Web Background"
+  display_name: "Web Backgrounds"
   short_description: "依据产品与页面职责选择 image 或 video background"
   default_prompt: "使用 $generate-web-backgrounds 根据这个产品与页面内容选择 image 或 video，并生成可落地的 website background 资产 brief。"
 

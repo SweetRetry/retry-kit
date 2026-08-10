@@ -3,7 +3,7 @@ name: image-prompt
 description: 图片生成 prompt：把想法、需求与参考素材分析并组织成可直接用于图片生成的多行自然语言指令。用于最终交付物是 image generation prompt 的任务。
 ---
 
-# 图片 Prompt
+# Image Prompt
 
 ## 核心任务
 
