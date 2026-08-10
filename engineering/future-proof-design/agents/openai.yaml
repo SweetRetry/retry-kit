@@ -1,0 +1,7 @@
+interface:
+  display_name: "Future-Proof Design"
+  short_description: "为已确认的结构性问题收敛可长期演进的唯一 strong target"
+  default_prompt: "使用 $future-proof-design 基于当前代码和不变量，为这个已选定的问题收敛长期 strong target，并明确 owner、authority、contract 与迁移终点。"
+
+policy:
+  allow_implicit_invocation: false

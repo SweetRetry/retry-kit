@@ -1,6 +1,7 @@
 ---
 name: generate-web-backgrounds
-description: 产品驱动的 website background 设计：读取产品价值、页面职责、前景内容、品牌资产与运行约束，判断是否需要生成背景，并在 static image 与 background video 之间选择一种媒介，交付可实现的背景资产 brief 与对应 prompt。用于 hero、section、登录页、发布页、品牌页或沉浸式页面的背景决策与素材设计；通用图片／视频生成、完整页面布局和不涉及网站产品语境的视觉任务不触发。
+description: Website background 设计：根据产品、页面职责、前景和运行约束，在 static image 与 background video 中选择媒介并交付资产 brief 与 prompt。仅供用户显式调用。
+disable-model-invocation: true
 ---
 
 # Web Background

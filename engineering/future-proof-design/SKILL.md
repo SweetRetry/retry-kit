@@ -1,6 +1,7 @@
 ---
 name: future-proof-design
-description: Strong target 设计：针对一个已选定的需求或结构性缺口，基于真实代码与业务不变量收敛长期架构。Use when 用户要求为具体问题给出 clean/long-term target、审查明确的设计或重构方案，或新规则暴露 ownership、contract、state authority、system boundary 问题。
+description: Strong target 设计：针对一个已选定的结构性问题，基于真实代码与业务不变量收敛长期架构和迁移终点。仅供用户显式调用。
+disable-model-invocation: true
 ---
 
 # Future-Proof Design

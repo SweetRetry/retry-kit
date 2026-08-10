@@ -1,0 +1,7 @@
+interface:
+  display_name: "UX Edge Cases"
+  short_description: "审查指定用户任务在前置依赖、交互状态与恢复中的可达断点"
+  default_prompt: "使用 $ux-edge-cases 仅对我指定的用户任务做只读 edge-case 审查；报告可达的交互断点、影响、证据与不确定性，不评价视觉、不分析系统内部，也不提出修复。"
+
+policy:
+  allow_implicit_invocation: false

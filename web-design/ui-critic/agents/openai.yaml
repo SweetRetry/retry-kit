@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Critic"
+  short_description: "基于现有界面证据给出视觉 verdict 与优先级 findings"
+  default_prompt: "使用 $ui-critic 对这个现有界面做只读视觉审查；基于截图或运行证据给出 verdict 和按优先级排序的 findings，不重设计、不改代码。"

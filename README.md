@@ -15,7 +15,8 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Engineering
 
 - `agent-engineering`：设计、审查和改进 AI Agent。
-- `edge-case-analysis`：系统性分析可到达的边界失效。
+- `ux-edge-cases`：审查用户任务、前置依赖与交互链路中的可达断点。
+- `system-edge-cases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
 - `future-proof-design`：为已确认的问题收敛长期 strong target。
 - `reactflow-pratices`：React Flow v12+ 开发实践。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
@@ -35,7 +36,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Product
 
 - `analytics-tracking`：从业务问题判断数据与埋点价值。
-- `product-guide`：诊断用户链路、产品状态、功能边界与 ROI。
+- `product-guide`：判断功能价值、用户成本、维护成本与 ROI。
 
 ### Web Design
 
@@ -52,15 +53,15 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - 每个 skill 使用独立目录，目录名与 `SKILL.md` 中的 `name` 一致。
 - skill 专属的按需资料放在该 skill 的 `references/`；跨 skill 研究放在根目录 `research/`。
 - 保持 skill 职责独立，避免通过目录分层掩盖能力重叠。
+- 低频、重流程或容易与相邻能力竞争的 skill，在 `SKILL.md` 设置 `disable-model-invocation: true`，只接受 Claude Code 的 `/skill-name` 显式调用。
 - 用户反馈驱动的修改遵循 [AGENTS.md](AGENTS.md) 中的反馈闭环。
+
+## Claude Code
+
+将 skill 目录安装到项目级 `.claude/skills/` 或用户级 `~/.claude/skills/`。带有 `disable-model-invocation: true` 的 skill 不会被 Claude 自动加载，只能由用户通过 `/skill-name` 调用。
 
 ## 校验
 
 ```bash
-VALIDATOR="${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py"
-
-find engineering generation product web-design -mindepth 2 -maxdepth 2 -name SKILL.md -type f |
-while IFS= read -r file; do
-  python3 "$VALIDATOR" "${file%/SKILL.md}"
-done
+python3 scripts/validate_skills.py
 ```

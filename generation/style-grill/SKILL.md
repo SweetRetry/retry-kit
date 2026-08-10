@@ -1,6 +1,7 @@
 ---
 name: style-grill
-description: AI 生图风格引导：通过自适应提问、推荐与备选方案，把想法、brief、参考图或已有视觉素材收敛为可直接复用于 image generation prompt 的纯视觉 Style Spec；用于风格探索、创建、审查与修订。
+description: AI 生图风格引导：通过提问、推荐与备选方案，把想法或参考素材收敛为可复用的纯视觉 Style Spec。仅供用户显式调用。
+disable-model-invocation: true
 ---
 
 # AI 生图风格引导

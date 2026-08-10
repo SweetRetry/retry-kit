@@ -1,4 +1,4 @@
 interface:
   display_name: "UI Designer"
   short_description: "Human-AI co-design: candidate directions → selection → design.md contract, no code"
-  default_prompt: "使用 $ui-designer 走人机协同链路：先问 2–3 个最高影响的约束问题（T1），再发散 3–5 个真正不同的候选方向（design plan），请用户选择方向（T2），确认后收敛为完整 8 节 design.md 契约，用户审查（T3）修订后定稿交接。默认停在契约，不写代码。"
+  default_prompt: "使用 $ui-designer 先澄清最高影响的约束并给出真正不同的候选方向；经我选择后再收敛为可执行的 design.md，默认停在设计契约，不写代码。"

@@ -2,3 +2,6 @@ interface:
   display_name: "AIGC Asset Director"
   short_description: "规划图片参考素材与跨画面连续性"
   default_prompt: "使用 $asset-director 判断这份材料中哪些内容靠文字即可、哪些需要图片参考，并输出连续性清单与参考素材库。"
+
+policy:
+  allow_implicit_invocation: false

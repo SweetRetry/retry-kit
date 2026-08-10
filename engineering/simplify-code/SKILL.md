@@ -1,10 +1,8 @@
 ---
 name: simplify-code
-description: >
-  多语言代码简化审查 skill。用于识别过度抽象、无效封装、重复中间层、错误抽象、
-  过深调用链、无价值配置化、薄 wrapper、参数旗标分支、难以追踪的数据流等复杂度债务，
-  并在不改变行为的前提下给出“最小化变简单”的审查结论。
-  触发场景：用户请求代码简化、清理抽象、减少过度工程、降低心智负担、评估 helper/interface 的保留价值等。
+description: >-
+  代码简化审查：在不改变行为的前提下，识别并移除无价值抽象、薄 wrapper、重复中间层、旗标分支和过深调用链。仅供用户显式调用。
+disable-model-invocation: true
 ---
 
 # Simplify Code

@@ -1,18 +1,7 @@
 ---
 name: videojs-react
-description: >
-  Video.js v10 (@videojs/react) React 播放器开发技能。覆盖 createPlayer、
-  Provider/Container/usePlayer/useMedia、preset/feature/selectors、官方 skins、
-  自定义 UI 组合、缩略图 text track、Next.js client boundary 与平台集成边界。
-
-  触发场景：(1) 使用 @videojs/react 构建视频/音频/背景播放器，
-  (2) 遇到 Video.js v10 的状态订阅、样式、皮肤、平台兼容性问题，
-  (3) 需要自定义控制栏或基于官方 skin 继续扩展，
-  (4) 要从官方 preset 改成自定义组合，
-  (5) 用户代码中出现 @videojs/react 的 import。
-
-  Triggers: video.js, videojs, @videojs/react, createPlayer, VideoSkin,
-  usePlayer, video player react, videojs v10, videojs react integration.
+description: >-
+  Video.js v10 (@videojs/react) React 播放器开发与排障，覆盖 player lifecycle、Provider、hooks、preset、feature、official skin、自定义 controls、track 与平台集成。Use when 代码 import `@videojs/react`，或用户明确使用 Video.js v10 React API 构建、迁移或排查播放器；旧版 video.js、原生 video 和其他播放器库不触发。
 ---
 
 # Video.js v10 React 官方对齐技能

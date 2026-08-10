@@ -1,18 +1,7 @@
 ---
 name: reactflow-pratices
-description: >
-  React Flow (@xyflow/react v12+) 节点图编辑器开发技能。覆盖自定义节点/边/Handle、
-  状态管理（controlled / uncontrolled / Zustand）、连接校验、性能优化、
-  TypeScript 与 sub flow。以 React Flow 官方 docs / API / examples / migration /
-  troubleshooting 为基准，优先输出与官方一致的实现建议。
-
-  触发场景：(1) 使用 React Flow 构建流程图、节点编辑器、工作流可视化，
-  (2) 遇到边不显示、无限重渲染、Handle 失灵、Provider 报错等常见问题，
-  (3) 设计自定义节点/边/Handle，(4) 需要持久化流程图数据，
-  (5) 用户代码中出现 `@xyflow/react` 的 import。
-
-  Triggers: react flow, reactflow, xyflow, node editor, flow diagram, workflow builder,
-  node graph, custom nodes reactflow, @xyflow/react.
+description: >-
+  React Flow (@xyflow/react v12+) 节点编辑器开发与排障，覆盖节点、边、Handle、状态管理、连接校验、性能、持久化和 sub flow。Use when 代码 import `@xyflow/react`，或用户明确使用 React Flow 构建、迁移或排查节点图；D3、ECharts、其他 node graph 库及未选定技术栈的通用流程图任务不触发。
 ---
 
 # React Flow 官方对齐开发技能
