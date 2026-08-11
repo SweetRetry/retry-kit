@@ -15,7 +15,6 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Engineering
 
 - `agent-engineering`：设计、审查和改进 AI Agent。
-- `ux-edge-cases`：审查用户任务、前置依赖与交互链路中的可达断点。
 - `system-edge-cases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
 - `future-proof-design`：为已确认的问题收敛长期 strong target。
 - `reactflow-pratices`：React Flow v12+ 开发实践。
@@ -39,6 +38,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Web Design
 
 - `generate-web-backgrounds`：依据产品与页面职责选择 image / video，并生成 website background 资产 brief。
+- `interaction-gap-review`：发现用户任务中缺失的交互步骤、状态反馈、转场与恢复路径。
 - `ui-critic`：对现有界面进行取证式视觉 critique。
 - `ui-designer`：设计网页与 App UI 的方向和可交接 design.md 契约（默认不写代码）。
 
