@@ -1,128 +1,100 @@
-# design.md 标准模板
+# design.md coverage map
 
-`ui-designer` 阶段 5 产出 design.md 时使用本模板。把占位说明替换为实际内容；删去本模板的灰色说明行，保留编号与结构。范例见 `examples/arknights-endfield-landing/design.md`。
+`ui-designer` 阶段 5 用本文件检查 design.md 是否完整。§0–§8 必须可寻址，标题可以补充本项目的具体判断。不要复制一套固定段落、表格或列表；按设计本身的因果关系组织内容。完整范例见 `../design.example.md`，只参考其决策粒度与可追溯性。
 
-> **输入（三合一，缺一不可）**：① design plan——已确认的方向 + 设计目的 + 用户旅程；② 项目技术栈——§0 写清边界，§3 参数**映射到栈的 token 机制**（Tailwind scale / CSS 变量 / design token 文件等，技术栈映射只在此文件发生）；③ anti-slop 约束——按 `references/visual-grammar.md` §6 检查不滑向模板。
->
-> 术语：`authority` = 项目既有视觉权威（design token / theme / 品牌资产 / 相邻页面 / 官方 design system）；`fallback baseline` = `references/visual-grammar.md` 的默认值；`token` = 具名视觉值（角色名而非字面量）；`agent contract` = §8 给下游实现 agent 的消费指令。
->
-> 模板规则：每个视觉值必须解析到命名 token 或 authority 引用，缺失时标注 fallback 来源，绝不以字面量硬编码；状态与 a11y 内联在对应节；零 "TBD" microcopy；不写 mood 词（"高级、现代、克制、科技感"）；不写代码。
+## 写作门槛
 
----
+design.md 同时服务审查设计的人和执行设计的 agent。人需要理解发生了什么、依据是什么、为何这样取舍；agent 需要找到明确对象、条件、参数、状态和验收方式。清楚优先于短，不压缩决定结论成立的上下文。
 
-# <产品 / 项目> · <surface> — 设计契约 (Design Contract)
+对每个会改变构图、交互、token、响应式或状态处理的高影响决策，保留这条因果链：
 
-> 依据：`<design plan 结论 / 参考文件>`；交付物：`<design.md 路径>`（本文件）。
+1. 哪项用户输入、代码、真实内容、live render、视觉 authority 或可靠外部来源提供了事实与约束。
+2. 这些依据支持什么推断，不能支持什么。
+3. 因此选择什么，同时放弃什么。
+4. 这个决定对用户和实现有什么影响，完成后如何验证。
 
-## 0. 项目边界
+事实标明来源；推断不写成事实。证据不足时写 `unverified` 和验证动作，不靠猜测补齐。高影响决策用连贯段落讲清因果，重复字段的映射才用表格，独立约束才用列表。
 
-- 性质：`<粉丝向 / 官方 / 内部工具 / …>`，范围 `<单页 / 组件 / 全站>`。
-- 目标用户与核心任务：`<一句话，具体到角色 / 设备 / 环境>`。
-- 技术栈与运行约束：`<framework / styling / 无构建 / 依赖限制>`。
-- 视觉 authority 与保留项：`<design token / theme / 品牌资产 / 相邻页面 / 不变项>`。
-- **不在范围内（out-of-scope / anti-goals）**：`<不包含用户认证 / 支付 / 后台管理 / 多语言 / …>`。只说做什么不说不做什么的 spec，没有任何基础生成反模式警告。
+每个视觉值解析到命名 token 或 authority 引用。缺少 authority 时标出 fallback 来源与替换条件。状态与 a11y 写在对应行为附近。最终文档不保留模板说明、`TBD` microcopy、mood 词或实现代码。
 
-## 1. THESIS
+## §0 项目边界与依据
 
-**`<这个 surface 独有的一件事>`**：`<一句话方向>`
+先让读者知道本轮究竟在设计什么：surface 的职责、目标用户、核心任务、使用环境、技术栈、可修改范围和明确不动的边界。写清视觉 authority、产品术语、真实内容、route、SEO、analytics、legal 与 accessibility contract 中哪些必须继承。
 
-- 拒绝的类别默认：`<该类别的模板套路 / 上个系统的旧约束>`。
-- 拒绝的 AI default：`<本方向明确排除的 slop 组合>`。
-- 视觉世界分工（若有多个来源）：`<来源 A 提供形 / 来源 B 提供物 …>`。
-- authority gap（若有）：`<哪些决策因缺品牌输入用了 fallback，建议人在哪些点投入判断>`。
+列出真正影响契约的依据及可信状态。来源少且关系简单时用段落；来源具有重复字段时用“依据 / 已知内容 / 如何影响决策 / 状态”表格。不要为显得完整罗列没有进入判断的文件。
 
-## 2. STORY / TASK
+这一节结束时，读者应能区分：已确认事实、从材料观察到的事实、设计推断、fallback 和 `unverified`。同时明确哪些问题属于产品、数据、服务或内容层，本契约无权替它们作决定。
 
-`<mode>` 描述用户推进顺序：
+## §1 THESIS
 
-1. 先理解：`<第一眼理解到什么>`。
-2. 再浏览 / 再操作：`<主路径，描述 job + 决策 + 时间约束，不是页面列表>`。
-3. 最终行动：`<primary action 或达成状态>`。
+从 §0 的事实与约束开始论证，不先写 slogan。说明现有状态为何妨碍主任务，哪一步推断把问题转成空间或交互方向，以及选择该方向后放弃了什么。若需要保留其他入口或能力来承担被放弃的价值，在这里写清。
 
-## 3. OWN WORLD
+论证完成后，用一句话钉住这个 surface 独有的结构性决定。去掉 logo、品牌名和装饰后，这句话仍应由产品机制、内容或受众解释。把类别默认、明确排除的 AI default、多个视觉来源的分工和 authority gap 放在它们实际影响的论证附近，不固定写成四个同形 bullet。
 
-### 3.1 色彩（角色制，非装饰制）
+## §2 STORY / TASK
 
-| 角色 | 值 | 语义映射 | 用量规则 | fallback 来源 |
-|---|---|---|---|---|
-| `bg` | `#…` | 全局底 | … | authority / 推导自 … |
-| `surface` | `#…` | 区块容器 | … | … |
-| `foreground` / `ink` | `#…` | 主前景 | … | … |
-| `muted` | `#…` | 辅助 | … | … |
-| `accent` | `#…` | **主导 accent 语义** | … | … |
-| `semantic…` | `#…` | success / error / … | … | … |
+先说明主 mode 是 `Persuade`、`Operate`、`Read` 或 `Experience` 中的哪一个，以及为什么。再叙述用户从进入到完成主任务的真实推进顺序：先注意什么，用哪些信息判断，执行什么动作，系统如何反馈，之后到达什么状态。
 
-规则：`<多 accent 映射 / CTA 与主 focus 的用色契约 / gradient 是否保留及理由 / dark mode 策略>`。`fallback 来源` 列让实现 agent 知道哪些值在 authority 更新时可自动跟随、哪些必须手工指定。
+字段顺序、第一焦点和 progressive disclosure 都应来自任务与内容，而不是 schema 顺序或常见页面布局。写出会打断主路径的失败、恢复、权限和连续性问题；不要用“先理解 / 再操作 / 最终行动”三句占位代替完整旅程。
 
-### 3.2 字体
+## §3 OWN WORLD
 
-| 角色 | 字体 | 规格 | fallback 来源 |
-|---|---|---|---|
-| Display | … | size / weight / tracking | … |
-| Body | … | size / line-height / measure ≤ 34em | … |
-| Label / data | … | size / case / tracking | … |
+先解释视觉世界从什么机制、内容、文化或 authority 推导出来，以及它怎样帮助当前任务。视觉语言不能只靠材料名、mood 词或装饰组合成立。
 
-加载控制：`<家族数与 weight 档>`。
+随后把当前项目真正需要的视觉参数映射到技术栈：
 
-### 3.3 图形语言
+- color 按语义角色定义，说明每个角色解决什么信息问题，如何处理 semantic state、contrast、dark mode 与多 accent。
+- type 说明角色、family、size、weight、line-height、measure、加载范围和真实长文本行为。
+- spacing、shape、surface、icon、imagery 与 motif 说明角色关系、来源和使用边界。
+- motion 说明唯一 authored moment、触发条件、用户意义、duration/easing token、性能边界和 reduced-motion 静态帧。
 
-`<shape / surface / icon / imagery / motif 的角色规则；真实素材或线稿的清单与裁切规则>`。
+需要逐字段映射时使用表格，并包含角色、token、值、使用规则和来源。表格前后仍要解释为何这样分工；数值本身不构成设计依据。
 
-### 3.4 Motion
+## §4 FIRST VIEWPORT
 
-- 唯一 authored moment：`<name + 触发 + 手法>`。
-- 从属 motion：`<列表>`。
-- `prefers-reduced-motion` 静态帧：`<动画停止后 layout 与内容完整性的具体形态>`。
+说明用户不滚动时必须完成哪一步理解或行动，以及这个要求来自哪项任务证据。写清第一焦点、主内容、primary action 与辅助信息之间的空间关系。
 
-## 4. FIRST VIEWPORT
+viewport、可见行数、内容长度或密度目标必须有来源或标 `unverified`。数字若只来自样本，要说明样本边界和真实内容回放失败时的调整顺序，不能为了守住数字牺牲字号、信息或点击区域。
 
-- 第一焦点：`<内容>`。
-- 主内容与 primary action：`<关系，不互相争夺>`。
-- 空间关系：`<在哪个 viewport 尺寸下成立>`。
+## §5 TOPOLOGY
 
-## 5. TOPOLOGY
+解释主要区域如何组成一条任务路径，哪些内容属于同一工作集，哪些需要 progressive disclosure。navigation、主滚动容器、sticky、overlay 和详情归属都要说明原因。
 
-- 主要区域与 navigation：`<列表>`。
-- progressive disclosure：`<什么折叠 / 何时展开>`。
-- 跨 viewport 重组：`<哪些 reflow / 哪些 collapse / 哪些 sticky / 哪些 hide 及 why；mobile order、safe area>`。
+响应式边界从内容、最小可用控件、阅读顺序和设备环境推导，不直接照搬 framework 默认 breakpoint。逐个断点写清 reflow、collapse、hide、sticky、safe area、mobile order、focus return 与被隐藏信息的替代入口，并注明验证所需的真实内容范围。
 
-## 6. STATES
+## §6 STATES
 
-### 6.1 关键状态
+先定义状态属于页面、区域、数据对象还是具体操作，避免全局 loading、toast 或空态掩盖真实对象。default、loading、empty、error、disabled、success、focus、hover、active 必须各有规则或明确标记 `不适用`。
 
-`<真实内容范围>`；以下状态各给出规则或标记 `不适用`：default / loading / empty / error / disabled / success / focus / hover / active。特别检查 long text overflow、RTL、keyboard focus order、offline、permission denied。
+对异步操作写清保留哪些输入与位置、错误贴在哪里、能否重试、成功后对象何时移动。覆盖 long text overflow、RTL、keyboard focus order、offline、permission denied、重复提交和动态数据；接口能力没有证据时标 `unverified`，不要让 UI 假装保证服务端语义。
 
-### 6.2 可访问性契约
+a11y 与对应行为放在同一节：关键 foreground/background 对及目标 ratio、touch/pointer target、keyboard interaction、focus management、screen reader label/announcement 和 reduced-motion。每项都应能转成实现检查。
 
-- 对比度对：`<关键 foreground/background 对 + 目标 ratio>`。
-- touch / pointer target：`<≥ 24×24 CSS px 或 44×44 的高频关键 action>`。
-- keyboard interaction：`<tab order、焦点可见、trapped focus 场景>`。
-- screen reader 策略：`<label / aria 角色 / announcement>`。
-- reduced-motion：`<静态帧见 §3.4；确保动画停止后界面完整可理解>`。
+## §7 SIGNATURE
 
-数据边界：`<动态数据 / 权限 / 离线>`。a11y 内联在这里，实现 agent 不需要跨节拼凑。
+说明唯一 signature moment 如何让 THESIS 或产品机制变得可见。交代为何选择这种表现而不是更常见的替代方案，它牺牲了什么，以及在低视力、keyboard、screen reader、reduced-motion 和性能条件下如何保持意义。
 
-## 7. SIGNATURE
+若 signature 只增加装饰而不帮助任务或识别机制，删掉这一节的特效，不为满足模板制造 moment。
 
-- 唯一 signature moment：`<最能体现机制的 interaction / visual moment>`。
-- 性能与可访问性风险：`<transform/opacity 约束 / reduced-motion / 焦点管理 / 对比度>`。
+## §8 实现约束与交接
 
-## 8. 实现约束与交接
+说明 design.md 的终态、实现权限、必须复核的依据、所需 assets、事实缺口和 `unverified`。真实代码或内容推翻依据时，要求实现 agent 报告冲突并回到对应决策，不能静默修改契约或伪造能力。
 
-- 本契约终态：`<design.md 为终态，不写代码；实现是后续独立请求>`。
-- 实现需要的 assets：`<用户资产 / 可追溯素材 / 生成素材需求清单>`。
-- 待验证项：`<未核实的事实写 unverified / 未覆盖的 viewport 与状态>`。
-- 对比度 / 响应式 / 可访问性边界：`<实现时必须满足的最低要求>`。
-- **Agent contract**：给下游实现 agent 的消费指令——
-  - 消费顺序：`<先读 §0 → §1 → §3 → §4 → §5 → §6，再写代码>`。
-  - 验收点：`<所有颜色解析到 token / 所有状态已覆盖 / a11y contract 全部满足 / 无 mood 词残留>`。
-  - 禁止行为：`<不将 accent 借给非语义映射内容 / 不追加本文未声明的 gradient 或 decoration>`。
+Agent contract 必须给出：
 
----
+- 读取代码、内容、authority 和本契约的顺序。
+- token、structure、state、a11y、motion 的实施依赖关系。
+- 每个高影响行为的可触发验证路径和目标 viewport。
+- 明确禁止的越界修改，以及发现跨层问题时的报告方式。
 
-> **完成后自查（5 项，全部通过才定稿）：**
-> 1. 去品牌测试：去掉 logo/品牌名后，构图仍由机制/内容/受众解释。
-> 2. 状态完整性：所有 9 状态有规则或标注"不适用"。
-> 3. 零 mood 词：全文无"高级/现代/克制/科技感"等不可执行形容词。
-> 4. token 可追溯：每个颜色/字体/spacing 参数可映射到 authority 或 fallback baseline。
-> 5. Agent consumable：下游 agent 不依赖本文未记录的上下文推导即可实现。
+## 定稿检查
+
+全部满足才交付：
+
+1. §0–§8 覆盖完整，但各节没有被强行写成同样的长度与形状。
+2. 每个高影响决策能回答“依据是什么、为何支持这个判断、代价是什么、如何验证”。
+3. 去掉 logo 和品牌名后，构图仍由机制、内容或受众解释。
+4. 九种状态有规则或标记 `不适用`，a11y 位于对应行为附近。
+5. 每个 color、type、spacing 与 motion 参数可追到 authority、技术栈 token 或 fallback。
+6. 下游 agent 不依赖未记录上下文即可实现和验收。
+7. 全文没有模板残留、mood 词、无来源事实或不可判定的“适当优化”。
