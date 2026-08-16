@@ -19,7 +19,7 @@ description: >
 - 处理 retrieval、history、memory、compaction、handoff 或 prompt caching 时，读取 [context-engineering.md](references/context-engineering.md)。
 - 处理 MCP、function calling 或 tool schema 时，读取 [tool-design.md](references/tool-design.md)。
 - 处理状态权威、副作用、重试、并发、approval、安全或恢复时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
-- 处理 trace、trajectory monitoring、metrics、logs、告警、sampling 或 client activity view 时，读取 [observability.md](references/observability.md)。
+- 处理 trace、trajectory monitoring、metrics、logs、告警、sampling 或 telemetry visibility policy 时，读取 [observability.md](references/observability.md)。
 - 处理评估集、grader、regression、forward validation 或上线判断时，读取 [evals.md](references/evals.md)。
 - 设计完整 agent 时读取六份；局部任务只读取相关 reference。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。
 
@@ -80,7 +80,7 @@ description: >
 
 1. Session 提供多轮连续性的边界；Context 只负责将其中必要的 history 投影到下一次 model call，不拥有 Session 的存储或展示语义。
 2. Runtime 管理一次 Run 的状态、权限、副作用和恢复，并在关键边界发出 telemetry；Environment 继续拥有业务真相。
-3. Observability 将 telemetry 关联为 trace、metrics 和 logs，面向监测、调试、审计及经过 visibility policy 过滤的 client view。
+3. Observability 将 telemetry 关联为 trace、metrics 和 logs，面向监测、调试、审计，并只向 client 提供经过 visibility policy 过滤的信号。
 4. Evals 默认从任务 outcome 判断能力；只有 execution invariant 或失败归因需要检查路径时，才消费 trajectory evidence。
 
 完成分层的判据是：每份状态、规则和证据都有唯一 owner，跨层接口明确，且没有用 Prompt 或 Trace 补偿 Runtime 与业务服务必须强制的约束。

@@ -8,7 +8,7 @@
 - [信号模型](#信号模型)
 - [Trajectory 与关联](#trajectory-与关联)
 - [监测与响应](#监测与响应)
-- [Client Projection](#client-projection)
+- [Client 可见信号](#client-可见信号)
 - [数据治理](#数据治理)
 
 ## 对象与边界
@@ -20,7 +20,7 @@
 | Business state | Environment / 业务服务 | 业务对象的当前真相与写入一致性 | 解释模型为什么采取动作 |
 | Trace | Observability | 关联一次 Run 的 spans 与 events | 业务状态权威、恢复存档或 Eval 结论 |
 | Eval record | Evals | 保存任务、rubric、grader 结果与证据引用 | Runtime 的实时控制状态 |
-| Client activity | 产品展示层 | 向用户解释有意义的进度、动作和结果 | 暴露全部内部执行细节 |
+| Client activity | Application / Client | 向用户解释有意义的进度与动作 | 充当 Artifact、业务状态或原始 Trace |
 
 不要默认 Session 是完整 append-only event log，也不要为了统一存储强制 event sourcing。若同一 event store 同时支持 Session、恢复、Trace 或审计，仍分别定义 schema projection、访问、删除、compaction 和保留策略。
 
@@ -73,9 +73,9 @@ Trace 可能被 sampling、丢失或延迟，因此不能作为业务提交、�
 
 完成标准是：聚合信号可追到单次 Run，每类告警都有 owner 与动作，高风险事件不因 Trace sampling 静默消失，并能区分模型错误、tool/runtime 故障和真实业务失败。
 
-## Client Projection
+## Client 可见信号
 
-Client View 是 telemetry 与运行状态的产品化 projection，不是原始 Trace viewer。按用户影响和解释价值决定 visibility：
+Observability 只负责提供经过治理的 client activity 信号，不拥有 Artifact、Thread、界面层级或用户控制。按用户影响和解释价值决定 telemetry visibility：
 
 | 级别 | 典型内容 | 展示方式 |
 | --- | --- | --- |
@@ -84,7 +84,7 @@ Client View 是 telemetry 与运行状态的产品化 projection，不是原始 
 | Internal | retry、cache、routing、retrieval chunk、低层 tool plumbing | 不进入普通 client view |
 | Restricted | secrets、敏感 payload、security / audit-only 事件 | 按最小权限单独访问 |
 
-“不展示”不等于“必须完整记录”。先做数据最小化，再对确有观测价值的字段应用 visibility policy。用户应看到影响其授权、资产、数据或结果理解的动作，而不是内部实现噪声。
+“不展示”不等于“必须完整记录”。先做数据最小化，再对确有观测价值的字段应用 visibility policy。Client 使用这些信号解释进度和影响，但不得把 Trace 当作状态权威或结果资产。
 
 ## 数据治理
 
