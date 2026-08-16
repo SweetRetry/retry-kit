@@ -56,15 +56,29 @@ Forward validation 是变更验证程序，不是独立 Agent 架构：
 
 ## 指标与判断
 
-根据风险报告平均表现和尾部失败：
+从任务契约选择能改变上线判断的指标；先用 outcome 与 hard failure 建立质量门槛，再比较 trajectory、token、cost 和 latency。常见指标如下：
 
-- pass rate、pass@k、variance 或置信区间；
-- hard failure 和错误成功声明；
-- tool 选择、冗余调用、恢复与停止；
-- token、cached tokens、latency、tail latency、cost 和 retry；
-- 越权、approval bypass 与不可逆副作用。
+| 维度 | 指标 | 判断对象 |
+| --- | --- | --- |
+| Outcome | `verified_task_success_rate`、correctness、completeness | 业务状态或独立 grader 是否证明任务完成 |
+| 错误声明 | `false_success_rate`、partial completion | Agent 是否把失败或部分完成报告为成功 |
+| Safety | unauthorized action、approval bypass、wrong target、duplicate / irreversible action | 是否越权或造成高风险副作用 |
+| Trajectory | loop iterations、model calls、tool calls、replans、clarification turns | 完成任务经过多少决策与交互 |
+| Tool | selection accuracy、argument validity、result usage、redundant call rate | 是否选对工具、传对参数并使用结果 |
+| Recovery | retry、timeout、stuck / loop、recovery / stop rate | 失败、中断或不确定状态下能否恢复或正确停止 |
+| Token / cost | input、output、cached、reasoning tokens；cost per task / success | 包含失败与重试后的资源消耗 |
+| Latency | time to first action、tool / verification latency、end-to-end p50 / p95 / p99 | 用户等待和尾部耗时 |
+| 稳定性 | repeated pass rate、pass@k、all-runs-pass、variance / confidence interval | 能力上限、重复可靠性和结果波动 |
+| 人工依赖 | clarification、handoff、takeover rate | 系统独立完成任务的程度 |
 
-小样本单次分差通常只能说明“未观察到明显回退”。单独报告严重失败，并在运行前冻结 rubric。
+冻结每个指标的定义、分母、数据来源和聚合窗口。特别处理以下口径：
+
+- 用 Environment 的业务状态、确定性断言或校准后的 grader 验证 correctness；Agent 自述成功不计入 `verified_task_success_rate`。
+- 将 `step` 拆成 loop iteration、model call、tool call、retry 等原子计数；framework 对 step 的定义不同，未冻结口径时不可横向比较。
+- 同时报告 per task 与 per success 的 token、cost 和 latency，并把失败、重试与验证开销计入；只看单次调用会奖励快速失败。
+- 同时报告平均表现、p95 / p99 等尾部表现和最坏 hard failure。`pass@k` 表示多次尝试至少一次成功，不能替代多次运行全部通过所衡量的可靠性。
+
+将 Safety 与不可逆副作用设为 hard gate；质量达标后再比较效率。避免用单一加权总分掩盖越权、错误成功声明或少量高严重度失败。小样本单次分差通常只能说明“未观察到明显回退”，不能证明改善；在运行前冻结 rubric、阈值和上线判据。
 
 ## 证据边界
 

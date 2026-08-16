@@ -50,16 +50,28 @@ Trajectory 是从 telemetry 重建的执行路径，不是 hidden chain-of-thoug
 
 Trace 可能被 sampling、丢失或延迟，因此不能作为业务提交、权限、恢复或审计不变量的唯一依据。高风险不变量由 Runtime 与业务服务强制，Observability 负责发现和解释偏离。
 
+发生失败时，从 outcome 或告警追到 exemplar trace，再从最早偏离定位责任层：
+
+| 症状 | 优先检查 |
+| --- | --- |
+| 调用工具前已理解错任务 | 任务契约、Instructions、输入边界 |
+| 选错工具或参数不稳定 | tool surface、description、schema |
+| 缺证据、使用旧事实 | retrieval、memory、freshness、context update |
+| 正确结果未被使用 | result shape、排序、context budget |
+| 重复调用或无法停止 | loop state、success / retry / stop condition |
+| 长任务逐渐偏航 | working state、compaction、handoff、durable memory |
+| 越权或产生危险副作用 | Runtime 权限、approval、幂等与服务端校验 |
+
 ## 监测与响应
 
 从任务契约与运行预算定义 signals：已验证成功、错误成功声明、tool error / retry / loop、恢复、denied、approval anomaly、人工接管、tail latency、token、cost 和不可逆副作用。为每个信号写明 baseline、阈值、窗口、owner 和处置动作。
 
 - 只为能触发调查、降级、暂停、限流或回滚的信号告警。
 - 告警关联 exemplar trace、相关版本和 runbook，不只报告原始日志量。
-- 失败、denied、indeterminate、审批异常及 latency / cost outlier 全量保留或 tail-sample；正常成功按明确比例采样。
+- 根据风险、调查价值、数据边界和成本定义 head / tail sampling。高风险失败、denied、indeterminate 与 approval anomaly 保留不可丢失的最小安全或审计事件；是否保存完整 Trace 另行决定。
 - 从 exemplar trace 找最早偏离；需要判断能力或改动时，再将案例交给 [evals.md](evals.md) 形成 regression 或 forward validation。
 
-完成标准是：聚合信号可追到单次 Run，每类告警都有 owner 与动作，关键失败不会因 sampling 静默消失，并能区分模型错误、tool/runtime 故障和真实业务失败。
+完成标准是：聚合信号可追到单次 Run，每类告警都有 owner 与动作，高风险事件不因 Trace sampling 静默消失，并能区分模型错误、tool/runtime 故障和真实业务失败。
 
 ## Client Projection
 

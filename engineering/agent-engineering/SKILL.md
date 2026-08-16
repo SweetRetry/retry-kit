@@ -83,19 +83,7 @@ description: >
 3. Observability 将 telemetry 关联为 trace、metrics 和 logs，面向监测、调试、审计及经过 visibility policy 过滤的 client view。
 4. Evals 默认从任务 outcome 判断能力；只有 execution invariant 或失败归因需要检查路径时，才消费 trajectory evidence。
 
-发生失败时，从 outcome 或告警追到 exemplar trace，再从最早偏离定位责任层：
-
-| 症状 | 优先检查 |
-| --- | --- |
-| 调用工具前已理解错任务 | 任务契约、Instructions、输入边界 |
-| 选错工具或参数不稳定 | tool surface、description、schema |
-| 缺证据、使用旧事实 | retrieval、memory、freshness、context update |
-| 正确结果未被使用 | result 结构、排序、context 预算 |
-| 重复调用或无法停止 | loop state、success / retry / stop condition |
-| 长任务逐渐偏航 | working state、compaction、handoff、durable memory |
-| 越权或产生危险副作用 | runtime 权限、审批、幂等与服务端校验 |
-
-将可复现的失败写入 regression set，再用 held-out forward validation 判断修改是否值得保留。完成标准是：业务状态可向 Environment 验证，运行可恢复，监测信号可追到 exemplar trace，client view 不暴露无关内部细节或敏感信息，eval 结论与证据层级一致。
+完成分层的判据是：每份状态、规则和证据都有唯一 owner，跨层接口明确，且没有用 Prompt 或 Trace 补偿 Runtime 与业务服务必须强制的约束。
 
 ## 输出
 

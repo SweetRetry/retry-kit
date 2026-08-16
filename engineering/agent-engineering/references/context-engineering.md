@@ -36,7 +36,7 @@ Session 只提供多轮 history 的来源；Context 决定其中哪些内容进�
 
 Retrieval 先由当前决策定义所需证据，再构造 query。用权限、source、version、时间和 metadata 缩小候选；返回可识别片段、source ID、freshness 和继续读取方式。关键结论回读足够原文，避免摘要或 chunk 丢失限定条件。
 
-History 只保留会影响后续行为的用户修正、承诺和已验证结果。Working state 保留当前目标、阶段、进度、关键 ID、失败、未决项和下一动作。Durable memory 只加载当前 scope 内仍相关且未过期的信息，不把完整 transcript 或未验证推断当作长期记忆。
+从 History 选择会影响后续行为的用户修正、承诺和已验证结果；从 Working state 选择当前目标、阶段、进度、关键 ID、失败、未决项和下一动作；从 Durable memory 只加载当前 scope 内仍相关且未过期的信息，不把完整 transcript 或未验证推断当作长期记忆。
 
 ## 组织 Model Input
 
