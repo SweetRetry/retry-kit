@@ -8,7 +8,7 @@
 engineering/   Agent、架构、代码质量与前端框架工程
 generation/    AI 图片、视频、剧本与分镜生成
 product/       产品诊断与数据价值判断
-web-design/    界面设计、视觉审查与网页背景资产
+web-design/    界面设计、视觉审查与交互任务链审查
 research/      跨 skill 的研究证据，不参与 skill discovery
 ```
 
@@ -24,10 +24,9 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Generation
 
 - `asset-director`：规划跨画面复用的参考素材与连续性控制。
-- `image-prompt`：分析决定画面成败的视觉维度并生成图片 prompt。
+- `image-prompt`：分析决定画面成败的视觉维度；缺少视觉上下文时先询问高影响方向，再生成图片 prompt。
 - `script-director`：构思、诊断和改写不同媒介与篇幅的脚本。
-- `storyboard-director`：把剧本转为分镜与连续生成段。
-- `style-grill`：通过推荐与追问收敛可复用的视觉 Style Spec。
+- `storyboard-director`：把剧本拆成 scene、beat、shot 与 generation assembly，不编写最终生成 prompt。
 - `video-prompt`：生成单次 4–15 秒的视频 prompt。
 
 ### Product
@@ -37,7 +36,6 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Web Design
 
-- `generate-web-backgrounds`：依据产品与页面职责选择 image / video，并生成 website background 资产 brief。
 - `interaction-gap-review`：发现用户任务中缺失的交互步骤、状态反馈、转场与恢复路径。
 - `ui-critic`：对现有界面进行取证式视觉 critique。
 - `ui-designer`：设计网页与 App UI 的方向和可交接 design.md 契约（默认不写代码）。
@@ -66,9 +64,3 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ## Claude Code
 
 将 skill 目录安装到项目级 `.claude/skills/` 或用户级 `~/.claude/skills/`。带有 `disable-model-invocation: true` 的 skill 不会被 Claude 自动加载，只能由用户通过 `/skill-name` 调用。
-
-## 校验
-
-```bash
-python3 scripts/validate_skills.py
-```

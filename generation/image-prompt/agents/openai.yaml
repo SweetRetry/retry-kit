@@ -1,4 +1,4 @@
 interface:
   display_name: "Image Prompt"
-  short_description: "分析决定画面成败的视觉维度并编写图片 prompt"
-  default_prompt: "使用 $image-prompt 分析这个想法的任务重心，并整理成可直接生成的图片 prompt。"
+  short_description: "先收敛高影响视觉方向，再编写可直接生成的图片 prompt"
+  default_prompt: "使用 $image-prompt 把这个想法整理成图片生成 prompt；视觉上下文不足时，先向我确认最影响结果的方向。"

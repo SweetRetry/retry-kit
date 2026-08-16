@@ -1,4 +1,4 @@
 interface:
   display_name: "AIGC Storyboard Director"
-  short_description: "把剧本拆成 4–15 秒生成段，用本地时间码规划段内画面"
-  default_prompt: "使用 $storyboard-director 把这份剧本拆成 AIGC 场景分镜：每个 scene 划分为 4–15 秒的生成段，段内用从 0s 开始的连续时序段描述画面；上下文附带参考素材库时直接引用其中已有素材。"
+  short_description: "把剧本拆成 scene、beat、shot 与 generation assembly"
+  default_prompt: "使用 $storyboard-director 把这份剧本拆成 storyboard，规划 scene、beat、shot、generation assembly、连续性与关键帧需求，不编写生成 prompt。"

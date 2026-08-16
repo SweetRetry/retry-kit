@@ -1,7 +1,0 @@
-interface:
-  display_name: "Style Grill"
-  short_description: "通过推荐与自适应追问收敛可复用的纯视觉风格"
-  default_prompt: "使用 $style-grill 和我一起收敛这些想法或参考素材的 AI 生图风格，并在信息完整后交付 Style Spec。"
-
-policy:
-  allow_implicit_invocation: false

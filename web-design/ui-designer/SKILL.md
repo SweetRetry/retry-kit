@@ -1,7 +1,7 @@
 ---
 name: ui-designer
 description: >-
-  人机协同界面设计：先产出技术栈无关的 design plan（上下文 / 设计目的 / 用户旅程 / 候选方向），经人选择方向后，结合项目技术栈与 anti-slop 收敛为可执行 design.md 契约，默认不写代码。Use when 用户要求设计方向、页面/组件方案、配色、排版、视觉语言、构图，或需要可交接的设计契约；不用于直接实现 UI 代码、只读视觉审查（ui-critic）、纯产品链路诊断（product-guide）或只判断/生成 website background 素材（generate-web-backgrounds）。
+  人机协同界面设计：先产出技术栈无关的 design plan（上下文 / 设计目的 / 用户旅程 / 候选方向），经人选择方向后，结合项目技术栈与 anti-slop 收敛为可执行 design.md 契约，默认不写代码。Use when 用户要求设计方向、页面/组件方案、配色、排版、视觉语言、构图，或需要可交接的设计契约；不用于直接实现 UI 代码、只读视觉审查（ui-critic）、纯产品链路诊断（product-guide）或只判断/生成 website background 素材。
 ---
 
 # UI Designer
@@ -136,7 +136,7 @@ design.md 是三个输入的唯一结合点：
 
 - 停在 design.md，不写代码。实现是后续独立请求，按 §8 agent contract 承接。
 - 报告未验证项、资产缺口与实现约束；不留 TODO、不顺手补实现。
-- 只读视觉 critique 交给 `ui-critic`；产品链路与功能价值诊断交给 `product-guide`；website background 素材交给 `generate-web-backgrounds`。这些 handoff 不替代本 skill 对设计契约的完整性与可执行性负责。
+- 只读视觉 critique 交给 `ui-critic`；产品链路与功能价值诊断交给 `product-guide`。单独的 website background 素材任务需要页面职责、前景覆盖、responsive crop、运行限制和静态回退等信息，不属于本 skill 的设计契约交付。这些 handoff 不替代本 skill 对设计契约的完整性与可执行性负责。
 
 **完成标准：**无代码产出；未验证边界已明确说明；design.md 可被后续实现请求无歧义执行。
 
