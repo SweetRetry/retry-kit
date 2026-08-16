@@ -9,7 +9,7 @@
 - [副作用与未知结果](#副作用与未知结果)
 - [并发、取消与恢复](#并发取消与恢复)
 - [权限、Approval 与安全](#权限approval-与安全)
-- [Trace 与验证](#trace-与验证)
+- [可观测运行边界](#可观测运行边界)
 
 ## 状态权威
 
@@ -82,10 +82,10 @@ Approval 不是布尔值。至少绑定：
 
 批准不能扩展原任务授权。对来自网页、文件、retrieval、memory 和 tool result 的不可信内容，限制其能访问的 tools、数据和外部副作用；对 filesystem、network、credentials 和成本设置 blast radius。
 
-## Trace 与验证
+## 可观测运行边界
 
-记录足以重建运行事实、但不依赖 hidden chain-of-thought 的 trace：任务契约和版本、阶段、working state、model-visible context 来源、暴露 tools、结构化调用与结果摘要、状态转换、重试与停止依据、token、latency、cost、compaction 和最终业务验证。
+Runtime 在 run 开始/结束、model、context、tool、状态转换、approval、retry、handoff 和业务验证边界发出结构化 telemetry。事件关联 `run_id`、父子 span、`attempt_id`，有副作用时同时关联 `operation_id` / `idempotency_key`；但 telemetry 不是状态权威，采集失败不能改变业务提交、重试或恢复语义。
 
-区分 trace / correlation ID、operation ID、attempt ID 和 idempotency key。Trace 也受 PII、secrets、访问、retention、删除和 sampling policy 约束；未采样到失败不证明失败不存在。
+运行时必须记录实际状态转换、错误类别和验证结果，而不是只转发模型自述或 tool success。Trace、metrics、logs、sampling、数据治理和 client projection 的 contract 见 [observability.md](observability.md)。
 
 用正常、冲突、超时、重复请求、取消、晚到结果、审批过期、中断恢复和未知外部效果场景验证。Tool 返回 success 只证明调用完成；写操作应回读 source of truth 或验证真实下游可见性。

@@ -21,9 +21,11 @@
 | Regression | 已稳定能力是否持续成立 |
 | Safety | 权限、越权、对抗与高风险副作用是否受控 |
 | Change / forward validation | candidate 相比固定 baseline 是否值得保留 |
-| Production observation | 真实流量中的失败、人工接管、成本与分布漂移如何 |
+| Production / canary evaluation | 真实流量样本中的质量与安全是否持续成立 |
 
 从任务契约导出可观察 outcome 和 execution invariants。可检查任务完成、错误成功声明、tool selection、参数、result 使用、恢复、停止、审批、越权、context 命中、token、latency、cost 和失败率。路径不承载必要约束时，允许多个合理解法。
+
+Outcome eval 不要求 trace。只有 execution invariant、安全边界或失败归因必须检查执行路径时，才使用 [observability.md](observability.md) 提供的 trajectory evidence；trace 是证据输入，不是 grader 或通过标准。
 
 ## 建立任务集与 Harness
 
@@ -78,6 +80,6 @@ Forward validation 是变更验证程序，不是独立 Agent 架构：
 
 ## 反馈闭环
 
-从 trace 找到最早偏离的责任层，再做能解释失败的最小修改。外部方法或案例迁移时，增加换域测试和去来源测试，避免来源域目标长期污染 Instructions 或 Context。
+从 outcome、业务验证与必要的 trajectory evidence 找到最早偏离的责任层，再做能解释失败的最小修改。外部方法或案例迁移时，增加换域测试和去来源测试，避免来源域目标长期污染 Instructions 或 Context。
 
 将 production failure、人工接管、denial、rollback、异常 cost 和用户纠正整理为 regression cases。记录 dataset owner、provenance、访问、retention、删除、敏感信息和训练使用边界，避免测试集泄漏或被 candidate 反复拟合。

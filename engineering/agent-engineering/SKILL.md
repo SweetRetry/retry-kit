@@ -3,15 +3,15 @@ name: agent-engineering
 description: >
   设计、审查和改进 AI Agent，涵盖 System Prompt、context engineering、
   retrieval / memory / compaction、MCP 或 function tools、agent loop、orchestration、
-  guardrails 与 eval。仅当任务对象是 AI Agent 本身时使用，例如构建 agent、诊断
+  observability（trace、metrics、logs）、guardrails 与 eval。仅当任务对象是 AI Agent 本身时使用，例如构建 agent、诊断
   instruction 或 context 问题、设计 tool contract、控制 agent 的 token / latency，
-  或评估 single-agent / multi-agent 架构。当前 agent 仅代用户执行普通开发、CLI、
+  设计运行监测或评估 single-agent / multi-agent 架构。当前 agent 仅代用户执行普通开发、CLI、
   部署、运维、授权或 E2E 流程时不触发；除非问题明确属于 agent 的行为或架构。
 ---
 
 # Agent Engineering
 
-围绕任务结果设计 agent。将 Model、Instructions、Context、Tools、Runtime、Environment 和 Evals 视为协作边界，不用其中一层补偿另一层的缺陷。同一规则只放在能执行或验证它的最小责任层；仅在 eval 证明持续遗漏时增加跨层提醒。
+围绕任务结果设计 agent。将 Model、Instructions、Context、Tools、Runtime、Environment、Observability 和 Evals 视为协作边界，不用其中一层补偿另一层的缺陷。同一规则只放在能执行或验证它的最小责任层；仅在 eval 证明持续遗漏时增加跨层提醒。
 
 ## 读取 references
 
@@ -19,8 +19,9 @@ description: >
 - 处理 retrieval、history、memory、compaction、handoff 或 prompt caching 时，读取 [context-engineering.md](references/context-engineering.md)。
 - 处理 MCP、function calling 或 tool schema 时，读取 [tool-design.md](references/tool-design.md)。
 - 处理状态权威、副作用、重试、并发、approval、安全或恢复时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
-- 处理 trace、评估集、regression、forward validation 或上线判断时，读取 [evals.md](references/evals.md)。
-- 设计完整 agent 时读取五份；局部任务只读取相关 reference。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。
+- 处理 trace、trajectory monitoring、metrics、logs、告警、sampling 或 client activity view 时，读取 [observability.md](references/observability.md)。
+- 处理评估集、grader、regression、forward validation 或上线判断时，读取 [evals.md](references/evals.md)。
+- 设计完整 agent 时读取六份；局部任务只读取相关 reference。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。
 
 ## 建立任务契约
 
@@ -57,7 +58,8 @@ description: >
 | Tools | 获取信息或执行动作的模型可见 contract |
 | Runtime | loop、状态、权限、审批、重试、预算与持久化 |
 | Environment | 数据库、文件、外部 API、sandbox 与业务 source of truth |
-| Evals | 判断结果与执行路径是否可靠，并定位最早偏离 |
+| Observability | 关联 run 的 trace、metrics 与 logs，支撑监测、调试和审计 |
+| Evals | 用 outcome 与必要的 trajectory evidence 判断能力、回归和安全 |
 
 将鉴权、数据一致性和不可逆副作用留给 runtime 与业务服务强制；将易变事实留给动态 context 或 tools。
 
@@ -72,9 +74,16 @@ description: >
 - 长任务保留稳定 ID、关键状态和恢复入口。
 - 按风险设置 turn、时间、成本、并发与重试边界。
 
-## 用 trace 定位问题
+## 连接运行、观测与评估
 
-保存足以重建关键决策的 trace，并从最早偏离处修改：
+不要让 Session、Run、Trace 和 Eval 共用一个含混 contract；它们可以共用物理存储，但必须保留不同的 owner、保留策略和消费者：
+
+1. Session 提供多轮连续性的边界；Context 只负责将其中必要的 history 投影到下一次 model call，不拥有 Session 的存储或展示语义。
+2. Runtime 管理一次 Run 的状态、权限、副作用和恢复，并在关键边界发出 telemetry；Environment 继续拥有业务真相。
+3. Observability 将 telemetry 关联为 trace、metrics 和 logs，面向监测、调试、审计及经过 visibility policy 过滤的 client view。
+4. Evals 默认从任务 outcome 判断能力；只有 execution invariant 或失败归因需要检查路径时，才消费 trajectory evidence。
+
+发生失败时，从 outcome 或告警追到 exemplar trace，再从最早偏离定位责任层：
 
 | 症状 | 优先检查 |
 | --- | --- |
@@ -86,7 +95,7 @@ description: >
 | 长任务逐渐偏航 | working state、compaction、handoff、durable memory |
 | 越权或产生危险副作用 | runtime 权限、审批、幂等与服务端校验 |
 
-用真实任务覆盖正常、缺失、冲突、边界、对抗、多轮和恢复场景。结合任务成功、错误成功声明、tool 使用、context 命中、token、latency、cost 与安全指标评估改动。
+将可复现的失败写入 regression set，再用 held-out forward validation 判断修改是否值得保留。完成标准是：业务状态可向 Environment 验证，运行可恢复，监测信号可追到 exemplar trace，client view 不暴露无关内部细节或敏感信息，eval 结论与证据层级一致。
 
 ## 输出
 
