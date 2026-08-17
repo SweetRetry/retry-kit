@@ -2,7 +2,7 @@
 name: agent-engineering
 description: >
   设计、审查和改进 AI Agent，涵盖 System Prompt、context engineering、
-  retrieval / memory / compaction、MCP 或 function tools、agent loop、orchestration、
+  retrieval / memory / compaction、MCP 或 function tools、agent loop、
   observability（trace、metrics、logs）、guardrails 与 eval。仅当任务对象是 AI Agent 本身时使用，例如构建 agent、诊断
   instruction 或 context 问题、设计 tool contract、控制 agent 的 token / latency，
   设计运行监测或评估 single-agent / multi-agent 架构。当前 agent 仅代用户执行普通开发、CLI、
@@ -35,19 +35,6 @@ description: >
 
 信息不足时，只澄清会改变方案的部分。
 
-## 选择执行形态
-
-| 形态 | 适用信号 |
-| --- | --- |
-| 确定性代码 | 规则与输出可可靠编码 |
-| Workflow | 路径已知，模型只处理局部判断 |
-| Agent loop | 下一步依赖中间结果，需要动态选路或选工具 |
-| Multi-agent | 独立 context、权限隔离、并行探索或专业分工能覆盖协调成本 |
-
-选择满足任务的最小形态。根据任务结构决定是否拆 agent，不预设固定数量。
-
-并行执行相互独立的调用或工作轨道，依赖前序结果的步骤保持串行。仅在独立 context、并行收益或权限隔离足以覆盖协调、重复探索和汇报成本时使用 multi-agent；委派后不要在主 agent 重做同一工作。
-
 ## 划分责任
 
 | 层 | 主要责任 |
@@ -62,6 +49,10 @@ description: >
 | Evals | 用 outcome 与必要的 trajectory evidence 判断能力、回归和安全 |
 
 将鉴权、数据一致性和不可逆副作用留给 runtime 与业务服务强制；将易变事实留给动态 context 或 tools。
+
+## Guardrails 分层
+
+安全与合规约束按执行能力分散到多层，不集中到单个 model prompt 或 instruction：Instructions 规定行为禁止与边界，Runtime 强制权限、批准、幂等与不可逆副作用，Tools 标注读写与影响范围，Observability 记录 denied / approval anomaly 与审计信号，Evals 把安全设为不可掩盖的 hard gate。允许 agent 作策略传达者，但授权与强制始终归 Runtime / 业务服务。
 
 ## 设计运行循环
 
