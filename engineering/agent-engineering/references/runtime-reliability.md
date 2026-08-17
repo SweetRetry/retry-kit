@@ -1,6 +1,6 @@
 # Agent Runtime Reliability
 
-让 agent loop 在真实状态、副作用、权限、并发和中断下保持一致。Runtime 负责模型不能可靠强制的执行语义；业务服务和 Environment 继续拥有业务真相与数据一致性。
+让 agent loop 在真实状态、副作用、权限、并发和中断下保持一致。Runtime 负责模型不能可靠强制的执行语义；业务服务和 Environment 继续拥有业务真相与数据一致性。本文件定义执行保证，不定义模型可见 schema；需要 agent 判断的状态、ID 与恢复入口通过 [tool contract](tool-design.md) 投影。
 
 ## 导航
 

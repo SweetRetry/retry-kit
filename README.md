@@ -28,6 +28,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - `script-director`：构思、诊断和改写不同媒介与篇幅的脚本。
 - `storyboard-director`：把剧本拆成 scene、beat、shot 与 generation assembly，不编写最终生成 prompt。
 - `video-prompt`：生成单次 4–15 秒的视频 prompt。
+- `world-director`：为小说题材建立自洽、服务于故事的世界观设定。
 
 ### Product
 

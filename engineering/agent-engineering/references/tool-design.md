@@ -9,7 +9,7 @@
 - [输入契约](#输入契约)
 - [结果与错误](#结果与错误)
 - [数据量、Batch 与长任务](#数据量batch-与长任务)
-- [副作用与安全](#副作用与安全)
+- [副作用的契约投影](#副作用的契约投影)
 - [设计与评估](#设计与评估)
 - [平台说明](#平台说明)
 - [资料](#资料)
@@ -105,13 +105,11 @@ Batch 适合共享校验、原子用户动作或无意义的中间状态；单�
 
 为截断结果说明是否完整以及继续读取方式。为异步任务返回状态、建议轮询时机和可恢复的结果位置，避免 agent 通过重复启动猜测进度。
 
-## 副作用与安全
+## 副作用的契约投影
 
-- 根据重复调用风险决定 idempotency key、冲突检测、版本条件和回滚能力。
-- 为不可逆、跨权限或高成本动作提供明确风险信息和适当 approval。
-- 在服务端执行鉴权、租户隔离、输入验证、rate limit、数据最小化与一致性检查。
-- 将 tool result 与第三方 resource 视为不可信数据。
-- 将 annotations 和 Prompt 用作模型提示，不替代 runtime enforcement。
+Tool contract 只暴露 agent 选择、确认和恢复所需的信息：读写性质、目标与影响范围、关键前置条件、是否需要 approval、实际状态变化、稳定 ID、冲突或 `indeterminate` 状态及恢复入口。Runtime 已知的 operation、identity、version 或 idempotency 信息不要求模型重复提供；只有确需 agent 决策时才进入 schema。
+
+鉴权、租户隔离、approval、去重、并发控制、事务、rate limit 与写入一致性由 Runtime 或业务服务强制，具体语义见 [runtime-reliability.md](runtime-reliability.md)。Annotations、Prompt 和 contract 中的风险说明只帮助模型正确选择，不承担 enforcement。Tool result 与第三方 resource 均作为不可信数据处理。
 
 ## 设计与评估
 

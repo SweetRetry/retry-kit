@@ -17,8 +17,8 @@ description: >
 
 - 处理 Instructions 或 System Prompt 时，读取 [system-prompt-engineering.md](references/system-prompt-engineering.md)。
 - 处理 retrieval、history、memory、compaction、handoff 或 prompt caching 时，读取 [context-engineering.md](references/context-engineering.md)。
-- 处理 MCP、function calling 或 tool schema 时，读取 [tool-design.md](references/tool-design.md)。
-- 处理状态权威、副作用、重试、并发、approval、安全或恢复时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
+- 设计模型可见的 tool surface、选择条件、input / output 或 error contract 时，读取 [tool-design.md](references/tool-design.md)。
+- 设计 host 或 service 如何强制状态、副作用、重试、并发、approval、安全或恢复语义时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
 - 处理 trace、trajectory monitoring、metrics、logs、告警、sampling 或 telemetry visibility policy 时，读取 [observability.md](references/observability.md)。
 - 处理评估集、grader、regression、forward validation 或上线判断时，读取 [evals.md](references/evals.md)。
 - 设计完整 agent 时读取六份；局部任务只读取相关 reference。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。

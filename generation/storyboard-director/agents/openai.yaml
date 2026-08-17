@@ -1,4 +1,4 @@
 interface:
   display_name: "AIGC Storyboard Director"
   short_description: "把剧本拆成 scene、beat、shot 与 generation assembly"
-  default_prompt: "使用 $storyboard-director 把这份剧本拆成 storyboard，规划 scene、beat、shot、generation assembly、连续性与关键帧需求，不编写生成 prompt。"
+  default_prompt: "使用 $storyboard-director 把这份剧本拆成 storyboard，输出 scene、beat、shot、generation assembly、连续性与关键帧需求，交付结构化 plan。"
