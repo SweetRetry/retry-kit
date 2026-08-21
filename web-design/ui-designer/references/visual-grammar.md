@@ -1,13 +1,13 @@
 # Visual Grammar 基线
 
-`ui-designer` 阶段 3 推导参数时的约束参考。所有参数必须能映射到项目 authority 或本文件的 fallback baseline；例外需有可复述的 surface / content 理由。本文件是推导约束，不是逐条 checklist。
+`ui-designer` 阶段 3 构思与筛选候选方向时的约束参考。项目 visual authority 优先于本文件的 fallback baseline；例外需有可复述的 surface / content 理由。本文件约束判断，不是输出模板，具体参数不进入 design plan。
 
-## 1. Design system 与实现栈
+## 1. Visual authority
 
-- 已有官方或项目 design system 时，把其 token、component 和 interaction contract 当 authority；不要导入第二套系统。
+- 已有官方或项目 design system 时，把其 token、component 和 interaction contract 当 authority，不另建一套视觉系统。
 - `editorial`、`glass`、`bento`、`brutalism` 等是 aesthetic，不是假装存在官方 package 的理由。
-- 沿用当前 framework、styling 与状态管理。导入依赖前核对 manifest；不为视觉效果擅自迁移技术栈。
-- 复用语义匹配的 component，不因"已有 Card"就把所有内容塞进 Card；缺少真实能力时新增最小 primitive。
+- 把现有 component 当作 visual grammar 的证据，不因“已有 Card”就让所有内容采用 Card 形态。
+- authority 没有定义的具体视觉参数保持为未决项；本阶段只确定方向，不补实现契约。
 
 ## 2. Hierarchy 与 composition
 
@@ -87,5 +87,5 @@
 
 - Motion 只服务 continuity、causality、orientation、feedback、state transition 或叙事。
 - 选择一个 authored moment，其他 motion 保持从属；不要给每个 section 复制同一 fade / slide reveal。
-- 优先 transform / opacity 等可控路径，避免用高频 React state 驱动 pointer / scroll continuous value。
+- 优先可控、低成本的动画路径，避免用高频应用状态更新驱动 pointer / scroll continuous value。
 - 提供 `prefers-reduced-motion` 路径，确认动画停止后界面仍完整可理解。

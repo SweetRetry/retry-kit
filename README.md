@@ -8,7 +8,7 @@
 engineering/   Agent、架构、代码质量与前端框架工程
 generation/    AI 图片、视频、剧本与分镜生成
 product/       产品诊断与数据价值判断
-web-design/    界面设计、视觉审查与交互任务链审查
+web-design/    界面设计与交互任务链审查
 research/      跨 skill 的研究证据，不参与 skill discovery
 ```
 
@@ -38,8 +38,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Web Design
 
 - `interaction-gap-review`：发现用户任务中缺失的交互步骤、状态反馈、转场与恢复路径。
-- `ui-critic`：对现有界面进行取证式视觉 critique。
-- `ui-designer`：设计网页与 App UI 的方向和可交接 design.md 契约（默认不写代码）。
+- `ui-designer`：在对话中提出固定 3 个界面设计方向，经用户选择后交付方向摘要（默认不生成文档或代码）。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）
 
