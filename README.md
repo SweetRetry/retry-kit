@@ -37,7 +37,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Web Design
 
-- `interaction-gap-review`：发现用户任务中缺失的交互步骤、状态反馈、转场与恢复路径。
+- `find-interaction-gap`：发现用户任务中缺失的交互步骤、状态反馈、转场与恢复路径。
 - `grilling-design`：把界面设计需求拆成决策树分轮追问（每题附具体选项与推荐答案），收敛后交付方向摘要（默认不生成文档或代码）。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）

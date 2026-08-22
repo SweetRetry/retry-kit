@@ -1,0 +1,7 @@
+interface:
+  display_name: "Find Interaction Gap"
+  short_description: "定位用户任务中缺失、断裂、误导或时序错误的交互路径"
+  default_prompt: "使用 $find-interaction-gap 审查我指定的用户任务链；报告 action、反馈、转场或恢复中的 interaction gap 及证据，不提出修复。"
+
+policy:
+  allow_implicit_invocation: false

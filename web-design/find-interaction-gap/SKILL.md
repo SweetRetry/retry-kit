@@ -1,10 +1,10 @@
 ---
-name: interaction-gap-review
+name: find-interaction-gap
 description: 审查既有网页或 App 的用户任务链，发现缺失、断裂、误导或时序错误的 action、状态反馈、转场与恢复路径。
 disable-model-invocation: true
 ---
 
-# Interaction Gap Review
+# Find Interaction Gap
 
 审查用户能否在既有网页或 App 中开始、理解、推进、控制、确认并恢复任务。把 interaction gap 定义为用户可达的状态转换缺失、断裂、误导、过晚或无法恢复；已有 UI 仍可能形成 gap，缺少某个惯用组件本身不构成 gap。
 
