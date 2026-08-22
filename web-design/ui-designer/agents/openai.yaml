@@ -1,4 +1,0 @@
-interface:
-  display_name: "UI Designer"
-  short_description: "Three UI directions → human selection; no files or code"
-  default_prompt: "使用 $ui-designer 确认 surface 约束和 visual authority，在对话中给出固定 3 个真正不同的方向供我选择；选择后只交付方向摘要、未决项与边界，不生成文件或代码。"

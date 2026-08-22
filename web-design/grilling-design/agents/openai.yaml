@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grilling Design"
+  short_description: "分轮追问收敛界面设计方向；无文件或代码"
+  default_prompt: "使用 $grilling-design 先核实我的界面事实，再把未定设计决策拆成决策树分轮追问；每项决策提供具体选项与推荐，确认后只交付方向摘要和未决项。"

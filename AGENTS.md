@@ -25,3 +25,4 @@
 - `research/` 是本仓库跨 skill 研究资料的统一落库目录，不是可触发的 skill。
 - 研究记录应保留问题、日期、来源范围、事实／推断／建议边界及局限，优先使用一手来源。
 - 研究本身不改变 skill 行为；需要采用的结论必须回写到对应 `SKILL.md` 的真实决策点。
+- `research/` 是原始存档，skill 的 `SKILL.md`、`references/`、`agents/*.yaml` 与 README 不得引用其中的文件；skill 改名或迭代时也不需要同步 `research/` 里的历史提法。
