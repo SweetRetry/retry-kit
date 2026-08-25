@@ -1,0 +1,4 @@
+interface:
+  display_name: "信息架构"
+  short_description: "设计与审查信息单元、分组、层级和渐进披露"
+  default_prompt: "使用 $information-architecture 审查我指定的界面：先建立展示模型，再判断分组、命名、层级和摘要是否支持用户理解与判断。"
