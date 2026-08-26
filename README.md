@@ -37,7 +37,8 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Web Design
 
-- `find-interaction-gap`：发现用户任务中缺失的交互步骤、状态反馈、转场与恢复路径。
+- `information-clarity`：审查必要信息、信息噪声，以及分组、命名、顺序、层级与渐进披露是否支持用户判断。
+- `find-interaction-gap`：审查用户如何行动、获得反馈、转换状态、完成和恢复任务。
 - `grilling-design`：把界面设计需求拆成决策树分轮追问（每题附具体选项与推荐答案），收敛后交付方向摘要（默认不生成文档或代码）。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）
