@@ -9,34 +9,6 @@ disable-model-invocation: true
 
 本 Skill 的核心是系统性判断：**当前复杂度是否在解决真实问题，若是表达或预支复杂度，如何进行最小化安全重构。**
 
-## Quick start
-
-### 输入代码示例：
-```go
-// user.go
-type UserFetcher interface {
-    FetchUser(id string) (*User, error)
-}
-
-type UserFetcherImpl struct {
-    db *sql.DB
-}
-
-func (u *UserFetcherImpl) FetchUser(id string) (*User, error) {
-    return u.db.QueryRow("SELECT ...", id)
-}
-
-func GetUserByID(fetcher UserFetcher, id string) (*User, error) {
-    return fetcher.FetchUser(id)
-}
-```
-
-### 审查输出示例：
-```md
-- [High] user.go:2: UserFetcher 接口目前仅有一个生产实现且无 Mock/测试替身需求 → 删除 UserFetcher 接口并内联
-- [High] user.go:14: GetUserByID 函数只做了一层无参数转调的薄 wrapper 转发 → 删除 GetUserByID，让调用方直接调用 fetcher.FetchUser(id)
-```
-
 ## Workflows
 
 ### 代码简化审查工作流

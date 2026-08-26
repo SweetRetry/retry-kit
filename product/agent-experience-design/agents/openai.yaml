@@ -1,4 +1,0 @@
-interface:
-  display_name: "Agent Experience Design"
-  short_description: "设计 Agent 的 Artifact、状态、控制与渐进式披露体验"
-  default_prompt: "使用 $agent-experience-design 设计这个 Agent 产品的 Artifact、任务状态、用户控制与渐进式披露体验。"

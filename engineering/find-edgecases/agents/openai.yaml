@@ -1,0 +1,7 @@
+interface:
+  display_name: "Find Edgecases"
+  short_description: "审查指定系统执行链在异常条件、运行与恢复中的可达失效"
+  default_prompt: "使用 $find-edgecases 仅对我指定的代码或执行链做只读 edge-case 审查；报告可达的系统失效、最终状态、影响、证据与不确定性，不分析 UX，也不提出修复。"
+
+policy:
+  allow_implicit_invocation: false

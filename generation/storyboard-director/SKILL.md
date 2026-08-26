@@ -9,9 +9,7 @@ description: AIGC storyboard 拆解：把已成立的剧本、分场、段落、
 
 把已成立的故事意义拆成可拍、可生成、可验收、可返工的 storyboard：
 
-```text
-故事 → scene → story beat → shot → generation assembly
-```
+**故事 → scene → story beat → shot → generation assembly**
 
 - `scene` 完成一次相对连续时空中的戏剧变化。
 - `story beat` 是目标、信息、关系、风险、情绪或认知的一次有效变化。

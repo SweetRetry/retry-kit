@@ -27,8 +27,6 @@ disable-model-invocation: true
 
 用户只说 `changes` 时，从交互变更出发，沿 route、state、API consumer 和用户 action 追到稳定 contract、明确隔离边界或无因果关系的位置。不把相邻页面自动纳入范围。
 
-**完成标准：**actor、目标、起点、终点、前置条件、状态 authority、影响边界和证据缺口均明确；能用一句话描述“谁在什么状态下要得到什么结果”。
-
 ## 2. 建立用户可见的任务图
 
 以用户能识别的状态为节点，以 action、system update、navigation 或 handoff 为边，还原主路径、合法替代路径、失败路径与恢复路径。不要用组件树或 API 调用图代替任务图。
@@ -42,8 +40,6 @@ disable-model-invocation: true
 3. 现在正在发生什么，我还能做什么？
 4. 最终实际发生了什么，结果在哪里？
 5. 我如何继续、撤销、修正、重试或安全退出？
-
-**完成标准：**每个入口都到达成功、合法阻塞或安全退出；每条关键边都能回答适用的五个问题，不适用项有明确理由。
 
 ## 3. 按 transition 类型检查响应 contract
 
@@ -61,8 +57,6 @@ disable-model-invocation: true
 
 即时反馈的形式服从任务语义，可以是局部状态、pressed／disabled、validation、saving／pending、progress、optimistic result、即时转场或同步完成结果。反馈应靠近 semantic owner，并对用户当前使用的交互与感知 modality 可感知；不以“出现过 loader／toast”代替 contract 已闭合。
 
-**完成标准：**每个关键 transition 的适用 contract 均有可见进入、进行和退出语义；触发到稳定结果之间没有无法解释的静默、冻结或虚假状态。
-
 ## 4. 检查跨链路 interaction invariant
 
 对每个关键任务逐项检查；不适用时说明原因，不因 happy path 能完成而跳过。
@@ -79,8 +73,6 @@ disable-model-invocation: true
 | **控制** | back、cancel、undo、确认与 final feedback 和后果相称 | 用户被困；无法停止长任务；不可逆动作没有清楚范围或生效确认 |
 | **等价** | keyboard、screen reader、touch、窄屏、zoom 与本地化下仍能执行 action 并获得等价反馈 | focus 丢失或被困；状态只靠颜色／视觉 motion；移动端或翻译后关键 action 消失 |
 
-**完成标准：**每项 invariant 都有“成立／不成立／不适用”结论；不成立项映射到任务图的具体节点或边及真实用户后果。
-
 ## 5. 验证时序、变化与恢复
 
 优先观察 live behavior；用 source、测试、route 与 contract 解释机制和未显示状态。截图只证明画面内的静态状态，单个组件或缺少某段代码不能证明整条用户路径断裂。
@@ -93,7 +85,7 @@ disable-model-invocation: true
 - 让输入、对象、permission、session、network 或 remote state 在任务中途变化；
 - 通过主导航、direct URL、deep link、通知、浏览器返回与登录 redirect 重入；
 - 用任务实际支持的 keyboard、screen reader、touch、窄屏、zoom 与长文案验证 action 和反馈等价性；
-- 组合两个会共同改变用户结果的条件，例如未保存输入与 session expiry、optimistic success 与 server rejection。
+- 组合两个会共同改变用户结果的条件。
 
 从断点继续追到用户可观察的稳定状态、不可逆后果或明确证据缺口。API error、exception 或 toast 出现不是终点；只有用户理解当前结果且拥有正确 next action，恢复才闭合。
 
@@ -102,8 +94,6 @@ disable-model-invocation: true
 - **已确认：**运行行为或可复现路径直接证明可见后果；测试、代码、route 与明确 contract 已核实触发条件和机制；
 - **高可信推断：**测试、实现、route 与状态转换足以推出可见后果，但尚未观察完整任务链；
 - **待确认：**已有具体风险线索，但缺少会改变结论的 actor、入口、flag、runtime 或 service contract。
-
-**完成标准：**每个候选 gap 都已追到稳定用户后果并获得相称证据，或精确说明缺少什么事实会改变判断。
 
 ## 6. 反证、合并与定级
 
@@ -122,7 +112,7 @@ disable-model-invocation: true
 
 相同根因与最终后果合并；不要把一次响应 contract 断裂拆成 loading、success、error 多条 finding。分别保留导致不同任务结果的缺口。
 
-**完成标准：**每个 finding 均锚定一条具体状态转换和可观察任务后果，经反证后只有一个主要根因、一个严重度和与措辞相称的证据等级；所有适用 invariant 均已覆盖。
+完成标准：所有适用 transition contract 与 invariant 均有结论；每个 finding 锚定具体状态转换和稳定用户后果，经反证后只有一个主要根因、严重度和相称的证据等级。
 
 ## 输出 contract
 
