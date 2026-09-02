@@ -34,8 +34,8 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Web Design
 
-- `information-clarity`：审查必要信息、信息噪声，以及分组、命名、顺序、层级与渐进披露是否支持用户判断。
-- `find-interaction-gap`：审查用户如何行动、获得反馈、转换状态、完成和恢复任务。
+- `information-clarity`：确保用户获得该知道的信息，拒绝过分极简省略与一股脑倒数据。
+- `find-interaction-gap`：补全交互过程实现与用户感知，专治 Agent 只写头尾、中间黑盒的缺陷。
 - `grilling-design`：把界面设计需求拆成决策树分轮追问（每题附具体选项与推荐答案），收敛后交付方向摘要（默认不生成文档或代码）。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）
