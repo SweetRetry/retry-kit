@@ -17,7 +17,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - `agent-engineering`：设计、审查和改进 AI Agent。
 - `find-edgecases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
 - `future-proof-design`：为已确认的问题收敛长期 strong target。
-- `reactflow-pratices`：React Flow v12+ 开发实践。
+- `reactflow-practices`：React Flow v12+ 开发实践。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
 - `videojs-react`：Video.js v10 React 播放器开发实践。
 
