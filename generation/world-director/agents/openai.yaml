@@ -1,7 +1,0 @@
-interface:
-  display_name: "World Director"
-  short_description: "建立自洽、服务于故事的小说世界观设定"
-  default_prompt: "使用 $world-director 为当前题材、核心角色与故事种子建立小说世界观，按七维固定结构交付并保证因果自洽与故事可用性。"
-
-policy:
-  allow_implicit_invocation: false

@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC Generation Director"
+  short_description: "AIGC 叙事导演总控：世界观、剧本、资产建档与分镜装配"
+  default_prompt: "使用 $generation-director 进行 AIGC 叙事与制作总控：根据当前阶段进行世界观设定、剧本创作/诊断、资产拆解（角色/场景/道具档案）或分镜装配规划。"
+
+policy:
+  allow_implicit_invocation: false

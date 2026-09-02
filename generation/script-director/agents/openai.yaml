@@ -1,4 +1,0 @@
-interface:
-  display_name: "Script Director"
-  short_description: "面向不同媒介与篇幅完成脚本创作、诊断、改写和导演表达"
-  default_prompt: "使用 $script-director 把当前想法或素材发展成适合目标媒介与语言的脚本，交付用户本轮需要的脚本形态（logline/梗概/结构/场景/对白/整稿/诊断等）。"
