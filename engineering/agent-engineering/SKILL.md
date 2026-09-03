@@ -1,82 +1,99 @@
 ---
 name: agent-engineering
 description: >
-  设计、审查和改进 AI Agent，涵盖 System Prompt、context engineering、
-  retrieval / memory / compaction、MCP 或 function tools、agent loop、
-  observability（trace、metrics、logs）、guardrails 与 eval。仅当任务对象是 AI Agent 本身时使用，例如构建 agent、诊断
-  instruction 或 context 问题、设计 tool contract、控制 agent 的 token / latency，
-  设计运行监测或评估 single-agent / multi-agent 架构。当前 agent 仅代用户执行普通开发、CLI、
-  部署、运维、授权或 E2E 流程时不触发；除非问题明确属于 agent 的行为或架构。
+  AI Agent 架构与系统工程：设计、审查或优化 Agent 的 System Prompt、上下文工程、
+  工具契约、运行时可靠性与评测体系。仅当任务主体是 AI Agent 自身架构、行为定义或排障时触发。
 ---
 
 # Agent Engineering
 
-围绕任务结果设计 agent。将 Model、Instructions、Context、Tools、Runtime、Environment、Observability 和 Evals 视为协作边界，不用其中一层补偿另一层的缺陷。同一规则只放在能执行或验证它的最小责任层；仅在 eval 证明持续遗漏时增加跨层提醒。
+围绕任务结果设计与审查 Agent。将 Model、Instructions、Context、Tools、Runtime、Environment 和 Evals 视为协作边界，**同一规则只放在能执行或验证它的最小责任层，严禁跨层代偿**（不靠 Prompt 掩盖 Runtime 漏洞，不靠 Runtime 弥补模型理解力缺口）。
 
-## 读取 references
+---
 
-- 处理 Instructions 或 System Prompt 时，读取 [system-prompt-engineering.md](references/system-prompt-engineering.md)。
-- 处理 retrieval、history、memory、compaction、handoff 或 prompt caching 时，读取 [context-engineering.md](references/context-engineering.md)。
-- 设计模型可见的 tool surface、选择条件、input / output 或 error contract 时，读取 [tool-design.md](references/tool-design.md)。
-- 设计 host 或 service 如何强制状态、副作用、重试、并发、approval、安全或恢复语义时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
-- 处理 trace、trajectory monitoring、metrics、logs、告警、sampling 或 telemetry visibility policy 时，读取 [observability.md](references/observability.md)。
-- 处理评估集、grader、regression、forward validation 或上线判断时，读取 [evals.md](references/evals.md)。
-- 涉及富 UI 空间交互、两阶段交易安全、Eager Dispatching、旁路记忆或生产落地模板时，参考 [claude-field-patterns.md](references/claude-field-patterns.md)。
-- 设计完整 agent 时读取相关 reference 与 examples。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。
+## 五大专项 References 索引 (Progressive Disclosure)
 
-## 建立任务契约
+根据任务涉及的具体责任层，按需读取对应领域的实战指南：
 
-先明确会影响设计的约束：
+- 处理 Instructions、Prompt 黄金五段式结构与高频规则时，读取 [system-prompt-engineering.md](references/system-prompt-engineering.md)。
+- 处理 Prompt Caching 物理三段布局、长程记忆三层漏斗或结构化压缩时，读取 [context-engineering.md](references/context-engineering.md)。
+- 设计模型可见 Tool Surface、视觉上下文镜像与可执行错误契约时，读取 [tool-design.md](references/tool-design.md)。
+- 涉及两阶段提议（Staged-Apply）、服务端签发 ID 白名单、并发写加锁、六维遥测关联与排障归因时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
+- 设计单轮状态快照评测（Snapshot Evals）、成对负例与分级 CI 缩圈流水线时，读取 [evals.md](references/evals.md)。
 
-- 用户需要的结果与可观察成功标准
-- 输入、状态、外部依赖和副作用
-- 可读、可写、需审批和禁止触碰的边界
-- 完成、澄清、等待、失败和停止条件
-- 质量、延迟、成本与风险预算
+---
 
-信息不足时，只澄清会改变方案的部分。
+## 核心执行流程 (Four-Stage Execution Flow)
 
-## 划分责任
+无论是**从零设计 (Design)**、**架构审查/排障 (Review & Diagnose)**，还是**性能演进 (Optimize)**，均严格按以下四步执行：
 
-| 层 | 主要责任 |
-| --- | --- |
-| Model | 推理能力、可用接口、latency、cost 与行为基线 |
-| Instructions | 稳定行为、领域规则、工具使用原则、输出契约 |
-| Context | 当前决策需要的事实、证据、历史与工作状态 |
-| Tools | 获取信息或执行动作的模型可见 contract |
-| Runtime | loop、状态、权限、审批、重试、预算与持久化 |
-| Environment | 数据库、文件、外部 API、sandbox 与业务 source of truth |
-| Observability | 关联 run 的 trace、metrics 与 logs，支撑监测、调试和审计 |
-| Evals | 用 outcome 与必要的 trajectory evidence 判断能力、回归和安全 |
+```mermaid
+flowchart LR
+    Step1["1. 锚定契约与边界<br/>(Contract & Invariants)"] --> Step2["2. 拓扑与分层裁决<br/>(Topology & Minimal Layer)"]
+    Step2 --> Step3["3. 分层实战执行<br/>(Disclosed Reference)"]
+    Step3 --> Step4["4. 快照反证与交付<br/>(Verification & Delivery)"]
+```
 
-将鉴权、数据一致性和不可逆副作用留给 runtime 与业务服务强制；将易变事实留给动态 context 或 tools。
+### 步骤 1：锚定契约与边界 (Task Contract & Invariants)
 
-## Guardrails 分层
+先明确会改变系统设计的业务与工程约束：
+1. **目标与成功断言**：用户期望的最终交付物是什么？可由代码/数据独立验证的成功标准是什么？
+2. **状态与副作用范围**：涉及哪些读取数据源？是否存在金钱、配置、外部发布等不可逆副作用？
+3. **权限与审批红线**：哪些操作可自主执行？哪些必须由用户显式审批？哪些属于绝对禁止触碰的边界？
+4. **资源与指标预算**：端到端延迟（TTFT/Total Latency）、Token 消耗与单任务成本上限。
 
-安全与合规约束按执行能力分散到多层，不集中到单个 model prompt 或 instruction：Instructions 规定行为禁止与边界，Runtime 强制权限、批准、幂等与不可逆副作用，Tools 标注读写与影响范围，Observability 记录 denied / approval anomaly 与审计信号，Evals 把安全设为不可掩盖的 hard gate。允许 agent 作策略传达者，但授权与强制始终归 Runtime / 业务服务。
+> **完成标准**：输出清晰的**业务成功判定式 (Verified Success Criterion)** 与 **执行红线清单**；信息不足时，只澄清会改变技术架构与安全边界的实质歧义。
 
-## 设计运行循环
+---
 
-可使用 `observe → decide → act → verify → update → stop` 作为检查框架，并根据任务调整：
+### 步骤 2：拓扑与分层裁决 (Topology & Minimal Responsible Layer)
 
-- 在 action 后验证业务效果，而非只检查 tool call 是否返回。
-- 在授权范围内完成用户预期的完整 scope；先推进不受影响的部分，仅在不同假设会导致实质不同、危险或无效的结果时澄清。
-- 更新 working state 和 model-visible context，移除已失效信息。
-- 为可重试、需审批、需用户输入和终止失败提供可区分状态。
-- 长任务保留稳定 ID、关键状态和恢复入口。
-- 按风险设置 turn、时间、成本、并发与重试边界。
+#### 2.1 拓扑决策准则：动态技能优于多子代理 (Skills over Subagents)
+- **三分之一法则（The 1/3 Rule）**：
+  - 覆盖 $\ge 1/3$ 线上流量的通用能力直接固化在 System Prompt 中；长尾业务能力收敛为独立动态 Skills，由主 Agent 统一持有完整上下文运行；
+  - 入口意图明确时，由 Harness 在首轮模型调用前预注入对应 Skill，消除加载轮次。
+- **Subagent 唯二准入边界**：
+  - **高噪音沙盒探索（如 Deep Research）**：需翻阅海量文件、跑代码回溯的任务，由 Subagent 自闭环并仅回传紧凑结论；
+  - **独立合规域的彻底交接（Hand-off）**：如转接至具有强合规隔离的结算 Agent（必须是对白所有权的彻底转移，而非单轮内反复横跳）。
 
-## 连接运行、观测与评估
+#### 2.2 最小责任层分工矩阵
+将各项规则精确分配给唯一拥有它的最小层级，严禁错位：
 
-不要让 Session、Run、Trace 和 Eval 共用一个含混 contract；它们可以共用物理存储，但必须保留不同的 owner、保留策略和消费者：
+| 层级 | 核心职责 | 绝对边界 (Prohibitions) |
+| :--- | :--- | :--- |
+| **Model** | 推理决策、语义对齐、上下文理解 | 严禁承担鉴权、数据一致性与不可逆操作保护 |
+| **Instructions** | 稳定行为契约、优先级仲裁、输出格式 | 严禁堆砌长尾百科、易变事实与敏感凭据 |
+| **Context** | 当前单轮决策所需的最小充分信息切片 | 严禁全量倾倒历史；严格执行前缀缓存友好布局 |
+| **Tools** | 获取信息或发起动作的模型可见 Schema | 严禁返回内部宽表大字段；严禁返回无指引的哑巴错误 |
+| **Runtime** | 状态机、两阶段提议、ID 白名单、并发加锁、六维遥测 | 严禁将模型自述当授权；遥测不作为业务恢复依赖 |
+| **Environment** | 数据库、持久化存储、外部 API 真实源 | 业务真相的唯一所有者，不依赖上下文推测 |
+| **Evals** | 单轮状态快照评测、成对负例、分级 CI、轨迹证据归因 | 默认评估最终 Outcome，不强求死锁中间执行路径 |
 
-1. Session 提供多轮连续性的边界；Context 只负责将其中必要的 history 投影到下一次 model call，不拥有 Session 的存储或展示语义。
-2. Runtime 管理一次 Run 的状态、权限、副作用和恢复，并在关键边界发出 telemetry；Environment 继续拥有业务真相。
-3. Observability 将 telemetry 关联为 trace、metrics 和 logs，面向监测、调试、审计，并只向 client 提供经过 visibility policy 过滤的信号。
-4. Evals 默认从任务 outcome 判断能力；只有 execution invariant 或失败归因需要检查路径时，才消费 trajectory evidence。
+> **完成标准**：拓扑结构确定；每份状态、规则与限制均有且仅有唯一 Owner，不存在跨层代偿。
 
-完成分层的判据是：每份状态、规则和证据都有唯一 owner，跨层接口明确，且没有用 Prompt 或 Trace 补偿 Runtime 与业务服务必须强制的约束。
+---
 
-## 输出
+### 步骤 3：深入分层 Reference 执行 (Disclosed Reference Execution)
 
-只交付用户请求的层及其必要接口。先说明结果，再说明必要的架构、取舍与验证；明确区分已完成、失败、跳过和未验证项。具体格式随任务和消费方调整。
+根据步骤 2 定位到的最小责任层，深入对应的专项 Reference，执行具体的工程实现或重构：
+- 若涉及 **Prompt 编写**：采用黄金五段式结构，正向表达规则，核对 1/3 流量法则；
+- 若涉及 **记忆与缓存**：严格按 Block 1 静态 / Block 2 半静态 / Block 3 动态分段，任务型 Agent 仅使用单会话 Working Memory 避免过度引入旁路 Worker；
+- 若涉及 **工具契约**：前端组件设计为视觉镜像工具（对齐视觉树排布），提供具备 `actionable_hint` 的错误契约，轻量工具不滥用 Eager Streaming；
+- 若涉及 **写操作、安全与排障**：全量落实两阶段提议（`stage_*` $\to$ `commit_*`），在 Runtime 增加服务端签发 ID 白名单校验、会话串行锁，并依照六维关联合约与偏离排障表进行根因定位；
+- 若涉及 **质量评测**：采用单轮状态快照评测（Snapshot Evals），成对配置负例与越界用例，接入分级 CI。
+
+> **完成标准**：产出具体、完整、可直接落地的 Schema、代码或配置，不出现未填补的伪代码空洞。
+
+---
+
+### 步骤 4：快照反证与结构化交付 (Snapshot Verification & Delivery)
+
+1. **状态快照反证（Snapshot Falsification）**：
+   - 使用包含多轮脏历史或矛盾前提的静态快照进行推演；
+   - 验证成对负例：当关键参数缺失时，系统是否主动澄清？当遭遇非法 ID 或指令注入时，Runtime 是否坚决阻断？
+2. **结构化交付输出**：
+   - **架构与拓扑摘要**：单 Agent 技能划分与责任层落位；
+   - **核心契约实现**：具体的 System Prompt、Tool JSON Schema、Runtime 拦截器代码；
+   - **验证与反例清单**：成对负向快照用例与边界测试建议。
+
+> **完成标准**：通过成对负向快照反证；无悬空假设；交付物自含且符合生产级工程标准。
