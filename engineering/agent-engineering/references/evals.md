@@ -16,7 +16,7 @@
 
 ## 任务集与 Harness
 
-- 覆盖正常、缺失、冲突、陈旧、权限、对抗、多轮、中断和未知副作用，并包含正负例。
+- 覆盖正常、缺失、冲突、陈旧、权限、对抗、多轮、中断和未知副作用，并包含正负例。状态快照评测（Snapshot Evals，构造脏历史或矛盾前提直接测单轮 Outcome 与末次写参数）优于多轮 LLM 模拟互聊；必须成对覆盖负向用例（提供 vs 拒绝，执行 vs 澄清）；CI 缩圈策略参见 [claude-field-patterns.md](claude-field-patterns.md)。
 - 冻结 model、sampling、Instructions、tools、retrieval、policy 与 build；尽量复用 production runtime，隔离 trial 状态。
 - 主观任务预定义 rubric 并校准 grader；高风险或高方差 case 重复运行，保留分歧与最坏结果。
 - 版本化任务、意图与来源；held-out 不参与 candidate 设计，也不泄露预期修复或评分偏好。

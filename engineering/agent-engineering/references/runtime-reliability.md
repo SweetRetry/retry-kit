@@ -80,7 +80,7 @@ Approval 不是布尔值。至少绑定：
 - 撤销语义；
 - human takeover 后 agent 还能读写或重新申请什么。
 
-批准不能扩展原任务授权。对来自网页、文件、retrieval、memory 和 tool result 的不可信内容，限制其能访问的 tools、数据和外部副作用；对 filesystem、network、credentials 和成本设置 blast radius。
+批准不能扩展原任务授权。对来自网页、文件、retrieval、memory 和 tool result 的不可信内容，限制其能访问的 tools、数据和外部副作用；对 filesystem、network、credentials 和成本设置 blast radius。高危副作用（如转账、扣费、改价、对外发布）应采用两阶段提议（Staged-Apply）：模型动作上限仅为生成暂存草案（Staged ID），最终生效必须由外部审批面触发；写工具与渲染工具严格只接收当前会话由服务端签发的有效 ID 白名单；风控限额基于写后聚合状态校验并将会话内写操作加锁串行化（参见 [claude-field-patterns.md](claude-field-patterns.md)）。
 
 ## 可观测运行边界
 

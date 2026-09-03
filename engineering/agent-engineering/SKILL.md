@@ -21,7 +21,8 @@ description: >
 - 设计 host 或 service 如何强制状态、副作用、重试、并发、approval、安全或恢复语义时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
 - 处理 trace、trajectory monitoring、metrics、logs、告警、sampling 或 telemetry visibility policy 时，读取 [observability.md](references/observability.md)。
 - 处理评估集、grader、regression、forward validation 或上线判断时，读取 [evals.md](references/evals.md)。
-- 设计完整 agent 时读取六份；局部任务只读取相关 reference。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。
+- 涉及富 UI 空间交互、两阶段交易安全、Eager Dispatching、旁路记忆或生产落地模板时，参考 [claude-field-patterns.md](references/claude-field-patterns.md)。
+- 设计完整 agent 时读取相关 reference 与 examples。Framework-specific 实现另外核验当前官方文档，通用结论保持 SDK-neutral。
 
 ## 建立任务契约
 
@@ -79,7 +80,3 @@ description: >
 ## 输出
 
 只交付用户请求的层及其必要接口。先说明结果，再说明必要的架构、取舍与验证；明确区分已完成、失败、跳过和未验证项。具体格式随任务和消费方调整。
-
-## 资料新鲜度
-
-资料核验日期：**2026-07-20**。实现 provider-specific model、cache、compaction、tool schema 或安全能力前，重新查看对应 reference 中的官方 living docs。

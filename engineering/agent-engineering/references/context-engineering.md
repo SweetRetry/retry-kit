@@ -36,7 +36,7 @@ Session 只提供多轮 history 的来源；Context 决定其中哪些内容进�
 
 Retrieval 先由当前决策定义所需证据，再构造 query。用权限、source、version、时间和 metadata 缩小候选；返回可识别片段、source ID、freshness 和继续读取方式。关键结论回读足够原文，避免摘要或 chunk 丢失限定条件。
 
-从 History 选择会影响后续行为的用户修正、承诺和已验证结果；从 Working state 选择当前目标、阶段、进度、关键 ID、失败、未决项和下一动作；从 Durable memory 只加载当前 scope 内仍相关且未过期的信息，不把完整 transcript 或未验证推断当作长期记忆。
+从 History 选择会影响后续行为的用户修正、承诺和已验证结果；从 Working state 选择当前目标、阶段、进度、关键 ID、失败、未决项和下一动作；从 Durable memory 只加载当前 scope 内仍相关且未过期的信息，不把完整 transcript 或未验证推断当作长期记忆。长期记忆宜采用独立旁路进程在 turn 结束后异步抽取并校验写入（只读对白文本，严禁读 Tool Result 以免混入外部噪音），读取按常驻、意图预取、按需工具三层组织；Prompt Caching 按 Global / Session / Volatile 三段布局，动态 Skill 作为 Tool Result 载入以复用前缀缓存（参见 [claude-field-patterns.md](claude-field-patterns.md)）。
 
 ## 组织 Model Input
 
@@ -78,16 +78,3 @@ Compaction 或 handoff 只定义需要继续进入模型的信息；持久化、
 | 外部内容改变行为 | instruction/data boundary、source labeling、tool surface |
 
 修改最早发生偏离的 Context 决策。只有在目标任务质量保持或改善，关键约束没有丢失，且 token、latency 与 cache 成本可接受时，才完成这次 Context 变更；评估方法见 [evals.md](evals.md)。
-
-## 资料
-
-核验日期：**2026-07-20**。Provider API、context window、caching 和 compaction 属于 living docs，实施前重新核验：
-
-- [OpenAI Prompt Caching 201：Context Engineering](https://developers.openai.com/cookbook/examples/prompt_caching_201#46-be-thoughtful-about-context-engineering)
-- [OpenAI Conversation State](https://developers.openai.com/api/docs/guides/conversation-state)
-- [OpenAI Compaction](https://developers.openai.com/api/docs/guides/compaction)
-- [OpenAI Agents SDK Context](https://openai.github.io/openai-agents-python/context/)
-- [OpenAI Agents SDK Sessions](https://openai.github.io/openai-agents-python/sessions/)
-- [Anthropic：Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-- [Anthropic：Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
-- [Byerly & Khashabi, 2026, TACL](https://aclanthology.org/2026.tacl-1.15/)

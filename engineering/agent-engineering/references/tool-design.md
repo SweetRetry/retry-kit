@@ -12,7 +12,6 @@
 - [副作用的契约投影](#副作用的契约投影)
 - [设计与评估](#设计与评估)
 - [平台说明](#平台说明)
-- [资料](#资料)
 
 ## 从任务定义 Tool Surface
 
@@ -38,7 +37,7 @@ CRUD tool 与任务级 tool 都可能合理。用调用次数、选择歧义、�
 | Client / host | 依赖当前 UI、选区、本地草稿或设备能力；效果只影响用户此刻的视图或设备 |
 | Server / service | 修改业务 source of truth、跨用户可见、需要事务、鉴权、幂等、审计、配额或 secrets |
 
-同一用户任务可拆成服务端改变真源和客户端投影视图两个动作，由业务 source of truth 裁决跨端状态。执行位置可以随宿主变化；只把会影响选择、权限或恢复的实现差异暴露给模型。
+同一用户任务可拆成服务端改变真源和客户端投影视图两个动作，由业务 source of truth 裁决跨端状态。执行位置可以随宿主变化；只把会影响选择、权限或恢复的实现差异暴露给模型。驱动客户端富 UI 渲染的展示工具（如卡片、轮播），入参结构应严格镜像前端视觉排版树（有序行与轮播组），而非由客户端重排的扁平列表，以保证用户后续轮次的空间/位置指代（如“左边第三个”）能在上下文历史中精准对齐；支持 token 级流式渲染时声明 `eager_input_streaming: true`（参见 [claude-field-patterns.md](claude-field-patterns.md)）。
 
 ## 选择契约
 
@@ -133,12 +132,3 @@ Tool contract 只暴露 agent 选择、确认和恢复所需的信息：读写�
 - **Anthropic Tool Use**：根据当前文档区分 client tools、server tools、tool search、strict schema 与 tool result loop。
 
 平台能力和字段可能变化。将 provider-specific 建议与通用 contract 原则分开表述。
-
-## 资料
-
-核验日期：**2026-07-20**。实现前重新核验对应 living docs：
-
-- [OpenAI Function Calling](https://developers.openai.com/api/docs/guides/function-calling)
-- [OpenAI Agents SDK Tools](https://openai.github.io/openai-agents-python/tools/)
-- [MCP Tools Specification 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/server/tools)
-- [Claude Platform Tool Use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)

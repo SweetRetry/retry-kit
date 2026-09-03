@@ -51,10 +51,3 @@
 2. 修改能解释该失败的最小规则、位置或 example。
 3. 用原样例、held-out 与异域任务比较结果、格式、工具行为、安全、token 和 latency。
 4. 只保留改善目标且未造成关键回退的改动。
-
-## 资料
-
-核验日期：**2026-07-20**。执行 provider-specific 工作时重新核验：
-
-- [OpenAI Prompt Engineering](https://developers.openai.com/api/docs/guides/prompt-engineering)
-- [Anthropic Prompt Engineering Overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
