@@ -14,7 +14,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Engineering
 
-- `agent-engineering`：设计、审查和改进 AI Agent。
+- `agent-engineering`：AI Agent Harness 架构工程：循环引擎、沙盒抽象、工具契约、上下文管理、死循环熔断与验证门禁。
 - `find-edgecases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
 - `future-proof-design`：为已确认的问题收敛长期 strong target。
 - `reactflow-practices`：React Flow v12+ 开发实践。
@@ -37,6 +37,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - `information-clarity`：确保用户获得该知道的信息，拒绝过分极简省略与一股脑倒数据。
 - `find-interaction-gap`：补全交互过程实现与用户感知，专治 Agent 只写头尾、中间黑盒的缺陷。
 - `grilling-design`：把界面设计需求拆成决策树分轮追问（每题附具体选项与推荐答案），收敛后交付方向摘要（默认不生成文档或代码）。
+- `refactor-design`：界面重新设计与排版链路重构，消除卡片嵌套、排版层级塌陷、多余弹窗与窒息密度等设计债务。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）
 

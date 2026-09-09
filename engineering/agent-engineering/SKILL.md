@@ -1,99 +1,97 @@
 ---
 name: agent-engineering
 description: >
-  AI Agent 架构与系统工程：设计、审查或优化 Agent 的 System Prompt、上下文工程、
-  工具契约、运行时可靠性与评测体系。仅当任务主体是 AI Agent 自身架构、行为定义或排障时触发。
+  AI Agent Harness 架构与系统工程：设计、审查或优化 Agent 的执行循环、沙盒抽象、
+  工具契约、上下文管理、死循环熔断、子代理委托拓扑与验证门禁。仅当任务主体是 AI Agent 自身架构、行为定义或排障时触发。
 ---
 
-# Agent Engineering
+# Agent Engineering (AI Agent Harness 架构工程指南)
 
-围绕任务结果设计与审查 Agent。将 Model、Instructions、Context、Tools、Runtime、Environment 和 Evals 视为协作边界，**同一规则只放在能执行或验证它的最小责任层，严禁跨层代偿**（不靠 Prompt 掩盖 Runtime 漏洞，不靠 Runtime 弥补模型理解力缺口）。
+围绕任务结果设计、审查与排障 Agent 系统。大模型是非确定性的概率推断引擎，**系统可靠性的真正基石是 Harness（运行时挽具/外壳）**。一切关于执行安全、步数预算、沙盒隔离、死循环熔断、上下文保活与诚信验证的硬性指标，必须由 Harness 代码层兜底。
 
----
-
-## 五大专项 References 索引 (Progressive Disclosure)
-
-根据任务涉及的具体责任层，按需读取对应领域的实战指南：
-
-- 处理 Instructions、Prompt 黄金五段式结构与高频规则时，读取 [system-prompt-engineering.md](references/system-prompt-engineering.md)。
-- 处理 Prompt Caching 物理三段布局、长程记忆三层漏斗或结构化压缩时，读取 [context-engineering.md](references/context-engineering.md)。
-- 设计模型可见 Tool Surface、视觉上下文镜像与可执行错误契约时，读取 [tool-design.md](references/tool-design.md)。
-- 涉及两阶段提议（Staged-Apply）、服务端签发 ID 白名单、并发写加锁、六维遥测关联与排障归因时，读取 [runtime-reliability.md](references/runtime-reliability.md)。
-- 设计单轮状态快照评测（Snapshot Evals）、成对负例与分级 CI 缩圈流水线时，读取 [evals.md](references/evals.md)。
+**核心第一性原理：同一规则只放在能执行或验证它的最小责任层，严禁跨层代偿**（不靠 Prompt 掩盖沙盒漏洞，不靠运行时重试弥补工具契约歧义）。
 
 ---
 
-## 核心执行流程 (Four-Stage Execution Flow)
+## 六大核心 References 索引 (Progressive Disclosure)
 
-无论是**从零设计 (Design)**、**架构审查/排障 (Review & Diagnose)**，还是**性能演进 (Optimize)**，均严格按以下四步执行：
+根据任务涉及的具体架构层级，查阅对应领域的指导原则与契约原型：
+
+- 查阅执行循环生命周期、沙盒抽象、**工具死循环指纹熔断（Circuit Breaker）**、重连探针与事件总线原则，读取 [harness-loop-and-runtime.md](references/harness-loop-and-runtime.md)。
+- 查阅 **5 段式描述契约（双重否定对抗 Bash 引力）**、指令化错误协议（Actionable Error）与工具工厂解耦原则，读取 [tool-contracts-and-design.md](references/tool-contracts-and-design.md)。
+- 查阅**有界截断（预防优于清理）**、动态消息剪枝（`pruneMessages`）、**双轨制工作记忆保活防失忆**与 Prompt Caching 布局原则，读取 [context-and-memory-management.md](references/context-and-memory-management.md)。
+- 查阅系统提示词分区分工（Role + Agency + Guardrails）、**行动优于解释（Act Don't Explain）**、Grep 先行探索、**模糊性仲裁协议（Search $\to$ Ask $\to$ Act）**与 `askUser` 原则，读取 [system-prompt-and-hitl.md](references/system-prompt-and-hitl.md)。
+- 查阅**工作流优于自主代理准入准则（Simplicity First）**、单代理三大死因、**Explorer（廉价只读）与 Executor（高阶执行）二元拓扑**与结论提炼原则，读取 [subagent-delegation-patterns.md](references/subagent-delegation-patterns.md)。
+- 查阅**毫秒级先错先停门禁顺序（`tsc` $\to$ `lint` $\to$ `test` $\to$ `build`）**、**Scoped Claims 诚信声明契约（严禁虚假全通）**与 Todo 单在办任务硬约束，读取 [verification-and-scoped-claims.md](references/verification-and-scoped-claims.md)。
+
+---
+
+## 核心决策流水线 (Four-Stage Harness Engineering Flow)
+
+无论是**从零设计 (Design)**、**架构审查 (Review)** 还是 **排障归因 (Diagnose)**，严格按以下四个具有指导和引导意义的原则阶段执行：
 
 ```mermaid
 flowchart LR
-    Step1["1. 锚定契约与边界<br/>(Contract & Invariants)"] --> Step2["2. 拓扑与分层裁决<br/>(Topology & Minimal Layer)"]
-    Step2 --> Step3["3. 分层实战执行<br/>(Disclosed Reference)"]
-    Step3 --> Step4["4. 快照反证与交付<br/>(Verification & Delivery)"]
+    Step1["1. 范式准入与拓扑裁决<br/>(Simplicity First & Dual Topology)"] --> Step2["2. 沙盒环境与工具契约<br/>(Sandbox & 5-Section Contract)"]
+    Step2 --> Step3["3. 运行时防护与上下文工程<br/>(Bounded Caps & Circuit Breaker)"]
+    Step3 --> Step4["4. 门禁验证与诚信交付<br/>(Gate Order & Scoped Claims)"]
 ```
 
-### 步骤 1：锚定契约与边界 (Task Contract & Invariants)
+### 步骤 1：范式准入与拓扑裁决 (Paradigm & Topology)
 
-先明确会改变系统设计的业务与工程约束：
-1. **目标与成功断言**：用户期望的最终交付物是什么？可由代码/数据独立验证的成功标准是什么？
-2. **状态与副作用范围**：涉及哪些读取数据源？是否存在金钱、配置、外部发布等不可逆副作用？
-3. **权限与审批红线**：哪些操作可自主执行？哪些必须由用户显式审批？哪些属于绝对禁止触碰的边界？
-4. **资源与指标预算**：端到端延迟（TTFT/Total Latency）、Token 消耗与单任务成本上限。
+- **工作流优先原则（Workflows over Autonomous Agents）**：
+  - 执行路径固定、步骤依赖明确时，必须使用确定性代码工作流（Prompt Chaining / Routing / Parallelization / Evaluator-Optimizer）；
+  - 仅当修改范围完全开放、探索路径不可预测时，方可准入开放式 Agent Loop。
+- **二元分工拓扑原则（Dual-Role Topology）**：
+  - 局部小改动采用单 Agent 主控；
+  - 跨文件复杂任务采用 **Explorer（只读/廉价模型/隔离沙盒）+ Executor（高阶模型/全工具/定向执行）**；主控只接收精炼结论，绝不吸纳探索过程的中间历史。
 
-> **完成标准**：输出清晰的**业务成功判定式 (Verified Success Criterion)** 与 **执行红线清单**；信息不足时，只澄清会改变技术架构与安全边界的实质歧义。
-
----
-
-### 步骤 2：拓扑与分层裁决 (Topology & Minimal Responsible Layer)
-
-#### 2.1 拓扑决策准则：动态技能优于多子代理 (Skills over Subagents)
-- **三分之一法则（The 1/3 Rule）**：
-  - 覆盖 $\ge 1/3$ 线上流量的通用能力直接固化在 System Prompt 中；长尾业务能力收敛为独立动态 Skills，由主 Agent 统一持有完整上下文运行；
-  - 入口意图明确时，由 Harness 在首轮模型调用前预注入对应 Skill，消除加载轮次。
-- **Subagent 唯二准入边界**：
-  - **高噪音沙盒探索（如 Deep Research）**：需翻阅海量文件、跑代码回溯的任务，由 Subagent 自闭环并仅回传紧凑结论；
-  - **独立合规域的彻底交接（Hand-off）**：如转接至具有强合规隔离的结算 Agent（必须是对白所有权的彻底转移，而非单轮内反复横跳）。
-
-#### 2.2 最小责任层分工矩阵
-将各项规则精确分配给唯一拥有它的最小层级，严禁错位：
-
-| 层级 | 核心职责 | 绝对边界 (Prohibitions) |
-| :--- | :--- | :--- |
-| **Model** | 推理决策、语义对齐、上下文理解 | 严禁承担鉴权、数据一致性与不可逆操作保护 |
-| **Instructions** | 稳定行为契约、优先级仲裁、输出格式 | 严禁堆砌长尾百科、易变事实与敏感凭据 |
-| **Context** | 当前单轮决策所需的最小充分信息切片 | 严禁全量倾倒历史；严格执行前缀缓存友好布局 |
-| **Tools** | 获取信息或发起动作的模型可见 Schema | 严禁返回内部宽表大字段；严禁返回无指引的哑巴错误 |
-| **Runtime** | 状态机、两阶段提议、ID 白名单、并发加锁、六维遥测 | 严禁将模型自述当授权；遥测不作为业务恢复依赖 |
-| **Environment** | 数据库、持久化存储、外部 API 真实源 | 业务真相的唯一所有者，不依赖上下文推测 |
-| **Evals** | 单轮状态快照评测、成对负例、分级 CI、轨迹证据归因 | 默认评估最终 Outcome，不强求死锁中间执行路径 |
-
-> **完成标准**：拓扑结构确定；每份状态、规则与限制均有且仅有唯一 Owner，不存在跨层代偿。
+> **完成标准**：输出明确的架构范式选型依据；明确定义参与角色的权限边界与模型分级。
 
 ---
 
-### 步骤 3：深入分层 Reference 执行 (Disclosed Reference Execution)
+### 步骤 2：沙盒环境与工具契约 (Sandbox & Tool Contracts)
 
-根据步骤 2 定位到的最小责任层，深入对应的专项 Reference，执行具体的工程实现或重构：
-- 若涉及 **Prompt 编写**：采用黄金五段式结构，正向表达规则，核对 1/3 流量法则；
-- 若涉及 **记忆与缓存**：严格按 Block 1 静态 / Block 2 半静态 / Block 3 动态分段，任务型 Agent 仅使用单会话 Working Memory 避免过度引入旁路 Worker；
-- 若涉及 **工具契约**：前端组件设计为视觉镜像工具（对齐视觉树排布），提供具备 `actionable_hint` 的错误契约，轻量工具不滥用 Eager Streaming；
-- 若涉及 **写操作、安全与排障**：全量落实两阶段提议（`stage_*` $\to$ `commit_*`），在 Runtime 增加服务端签发 ID 白名单校验、会话串行锁，并依照六维关联合约与偏离排障表进行根因定位；
-- 若涉及 **质量评测**：采用单轮状态快照评测（Snapshot Evals），成对配置负例与越界用例，接入分级 CI。
+- **沙盒面向接口原则（Sandbox Abstraction First）**：
+  - 工具代码严禁直接调用宿主 `child_process` 或操作物理磁盘；必须统一面向 `Sandbox` 抽象接口（`readFile`, `writeFile`, `exec`, `stop`）编程。
+- **双重否定对抗万能工具引力原则（Fighting Bash Gravity via Doubled-Up Negatives）**：
+  - 工具描述必须采用 5 段式契约（Summary, WHEN TO USE, WHEN NOT TO USE, DO NOT USE FOR, USAGE & EXAMPLES）；
+  - 必须同时声明软重定向（WHEN NOT TO USE）与硬性禁令（DO NOT USE FOR），强力阻断模型向 `bash` 退化。
+- **错误指令化原则（Instructions over Error Codes）**：
+  - Tool Result 是下一轮模型的 Prompt；执行失败严禁返回纯状态码或空值，必须携带指向明确下一步行动的指导指令（Actionable Hint）。
 
-> **完成标准**：产出具体、完整、可直接落地的 Schema、代码或配置，不出现未填补的伪代码空洞。
+> **完成标准**：工具工厂与沙盒实现解耦；所有工具均具备 5 段式描述与指令化错误格式。
 
 ---
 
-### 步骤 4：快照反证与结构化交付 (Snapshot Verification & Delivery)
+### 步骤 3：运行时防护与上下文工程 (Runtime Circuit & Context)
 
-1. **状态快照反证（Snapshot Falsification）**：
-   - 使用包含多轮脏历史或矛盾前提的静态快照进行推演；
-   - 验证成对负例：当关键参数缺失时，系统是否主动澄清？当遭遇非法 ID 或指令注入时，Runtime 是否坚决阻断？
-2. **结构化交付输出**：
-   - **架构与拓扑摘要**：单 Agent 技能划分与责任层落位；
-   - **核心契约实现**：具体的 System Prompt、Tool JSON Schema、Runtime 拦截器代码；
-   - **验证与反例清单**：成对负向快照用例与边界测试建议。
+- **预防优于清理原则（Prevention over Cleanup via Bounded Caps）**：
+  - 工具输出必须在底层施加硬性截断（`read` 500 行、`grep` 50 条、`bash` 尾部 5000 字符保留报错现场），并在截断处携带分页提示；严禁依赖事后剪枝。
+- **双轨制对抗剪枝失忆原则（Dual-Track: Ephemeral History vs. Durable State）**：
+  - 对话历史在 `prepareCall` 中通过 `pruneMessages` 积极剥除旧工具调用对；
+  - 核心架构事实与任务进度沉淀于 Todo 状态看板，在 System Prompt 中长效保活，彻底杜绝“剪枝后失忆进而重复读取”的恶性循环。
+- **调用指纹与滑动熔断原则（Fingerprint Hashing & Circuit Breaker）**：
+  - 维护最近工具调用的规范化指纹 `hash(tool_name, args)`；
+  - 连续 2 次相同入参且报错/无增量，或在两个工具间震荡时，Harness 在底层短路拦截，主动注入 `[HARNESS CIRCUIT BREAKER]` 诊断警告。
+- **执行层硬拦截原则（Execute-Level Gates over `needsApproval`）**：
+  - 危险写操作的审批门禁必须在工具 `execute` 内部基于安全白名单强制阻断，绝不依赖模型自述的审批开关。
 
-> **完成标准**：通过成对负向快照反证；无悬空假设；交付物自含且符合生产级工程标准。
+> **完成标准**：输出截断参数生效；死循环熔断器挂载；动态剪枝与工作记忆双轨保活就绪。
+
+---
+
+### 步骤 4：门禁验证与诚信交付 (Verification & Scoped Claims)
+
+- **毫秒级先错先停原则（Millisecond-First Gate Sequence）**：
+  - 验证命令必须按报错反馈速度递进执行：
+    $$\text{typecheck (毫秒级暴露类型错误)} \longrightarrow \text{lint (静态合规)} \longrightarrow \text{test (逻辑回归)} \longrightarrow \text{build (全量构建)}$$
+- **Scoped Claims 诚信声明原则（No Blanket Claims）**：
+  - 报告必须严格拆分为两部分：“本次改动引发的新结果”与“项目中原有的存量既有失败”；
+  - 严禁在存在任何失败或未运行测试时，以偏概全宣称“测试全部通过”。
+- **模糊性仲裁三步走原则（Search first $\to$ Ask second $\to$ Act third）**：
+  - 能搜到的自行检索；代码无约定且涉及关键架构取舍时，调用 `askUser` 提供 2~4 个结构化选项提问；严禁主观盲猜。
+- **单在办任务硬约束（Single-Active-Item Constraint）**：
+  - Todo 任务看板在任何时刻最多只能有 1 个任务处于 `in_progress`，杜绝注意力涣散与目标漂移。
+
+> **完成标准**：验证通过并附带 Scoped Claims 诚信声明；Todo 看板各任务状态清零闭环；交付物可直接投入生产运行。
