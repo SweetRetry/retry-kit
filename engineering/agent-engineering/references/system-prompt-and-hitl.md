@@ -1,70 +1,52 @@
 # AI Agent System Prompt & HITL 实战指南
 
-系统提示词（System Prompt）是 Agent 的操作准则。**核心信条：拒绝名牌式空洞声明；强制行动优于解释；确立搜索先行与人机协同仲裁纪律。**
+系统提示词（System Prompt）是 Agent 的操作准则。**核心信条：拒绝空洞的角色名牌；已授权工作持续完成；确立运行态元数据注入与人机协同仲裁纪律。**
 
 ---
 
 ## 核心指导与引导原则 (Guiding Principles)
 
-### 原则 1：指令策略分区原则 (Role + Agency + Guardrails)
-- **指导准则**：系统提示词不能仅停留在角色声明（“You are a coding agent”），必须显式划分为职责、行动权限（Agency）与安全红线（Guardrails）。
-- **契约原型**：
-  ```markdown
-  You are an expert engineering agent operating in '${cwd}'.
+### 原则 1：Turn 0 运行态元数据注入 (Turn 0 Runtime Context Injection)
 
-  # Agency
-  - USE YOUR TOOLS. Read files, search code, run commands, then respond.
-  - Do NOT explain what you WOULD do or write hypothetical implementation plans. ACT and deliver real changes.
-  - Search before reading: use `grep` first, then `read` ONLY the files you will inspect or change.
-  - Available tools: ${toolNames.join(", ")}.
-
-  # Guardrails
-  - Keep changes minimal and focused. Do not refactor unrelated code or touch styling.
-  - Search before creating: always reuse existing project patterns and utilities.
-  - Never install new third-party dependencies without asking.
-  ```
+* **【真实翻车 Case】**：
+  Agent 在收到用户需求后，开局连续发起了 3 轮工具调用：第一轮调 `bash` 跑 `uname -a` 和 `pwd` 查环境，第二轮跑 `git status` 查分支，第三轮查看项目里的配置文件。白白浪费了前 3 轮的 API 配额与几十秒的等待时间。
+* **【核心指导原则】**：
+  在首轮（Turn 0）启动 Agent 时，Harness 必须自动探查运行环境元数据并一次性组装进 System Prompt，消除模型探索初始环境的重复工具调用：
+  1. 当前工作目录（cwd）；
+  2. 操作系统类型与 Shell 环境；
+  3. Git 仓库分支与当前状态；
+  4. 项目已定义的门禁命令（从 `package.json` 读取的 lint/test/build 脚本）；
+  5. 项目特有规约（根目录下的 `AGENTS.md` / `CLAUDE.md`）。
+* **【反直觉踩坑 (Gotcha)】**：
+  元数据注入必须精简，不要把整个 `node_modules` 文件列表塞进去；只注入最顶层的包名、入口文件与门禁脚本。
 
 ---
 
 ### 原则 2：行动优于解释原则 (Act, Don't Explain)
-- **指导准则**：大模型训练数据充满解答型对话，天然倾向于“向用户解释我打算怎么做”而非直接调工具。提示词必须使用强引导词明确禁止口头清谈，强制工具先行。
+
+* **【真实翻车 Case】**：
+  用户指示 Agent“修复登录页面的表单校验 bug”。模型滔滔不绝地输出了 600 字的分析：“我打算先看 auth.ts，然后修改 regex，最后跑测试...”，却一个工具都没调用就停止了，等着用户回复“请继续”。
+* **【核心指导原则】**：
+  实现或修复请求授权完成目标所必需的范围内改动和验证，无需逐步确认；讨论、研究、排查和评审按用户约定的交付范围处理。既有授权持续有效，直到用户撤回或任务范围改变。
+  可以先简要说明行动，但不能只交付计划就结束已授权的实施任务。一般方案建议不阻塞工作，也不擅自替换用户目标。发布、破坏性操作及其他明确审批边界继续遵守；只有审批前已授权的准备工作可以先完成。
+  新增第三方依赖仍须明确批准，已经批准的依赖和范围不重复询问。
 
 ---
 
-### 原则 3：搜索先行探索原则 (Search-First Exploration)
-- **指导准则**：严禁“通读全库”式的漫无目的漫游。在处理未明确指定文件路径的任务时，必须严格执行：
-  $$\text{1. 用 grep/正则搜索关键符号} \longrightarrow \text{2. 仅针对命中的目标文件调用 read 验证} \longrightarrow \text{3. 实施修改}$$
-- **收益门槛**：实测显示该纪律可将探索阶段的步数从数十步压缩至 4 步以内，Token 开销压降 80%。
+### 原则 3：事实、授权与阻塞澄清
+
+* **【真实翻车 Case】**：
+  用户要求“增加一个导出报表功能”。模型在没有查阅现有报表格式的情况下，自作主张选择了 CSV 格式并写了 300 行代码；用户看后表示“我们系统所有报表都是 Excel (.xlsx) 格式，你怎么写成 CSV 了？”，导致全盘返工。
+* **【核心指导原则】**：
+  先查现有事实、约束和已确认选择；可据此决定的常规实现自行处理。只有无法合理推断、会改变目标或重大取舍且阻塞下一步的问题才询问。发现需求自相矛盾或无法满足验收标准时说明证据；建议分歧不自动成为审批门禁。
+  等待答复期间继续独立工作，不将沉默视为批准；用户已作决定时直接继续。
 
 ---
 
-### 原则 4：模糊性仲裁三步走原则 (Search $\to$ Ask $\to$ Act)
-- **指导准则**：模型在开发者语料中吸收了过度自信，面对模糊指令宁愿瞎猜也不愿提问。必须在提示词与工具层同时建立仲裁协议。
-- **执行时序**：
-  1. **Search first (代码事实优先)**：先用 grep/read 调研；若代码已有明确约定，按既有约定直接执行；
-  2. **Ask second (结构化提问)**：代码无约定且涉及关键架构取舍时，调用 `askUser` 提出具备 2~4 个互斥选项的选择题；
-  3. **Act third (即刻执行)**：用户选定后立即动手，不再拖延。
-- **`askUser` 工具契约原型**：
-  ```ts
-  export function createAskUserTool() {
-    return tool({
-      description: `Ask the user a multiple-choice question when facing architectural trade-offs.
-  WHEN TO USE: scoping ambiguous tasks after searching code yielded multiple valid implementations.
-  WHEN NOT TO USE: you can find the answer in the codebase (search first!).
-  DO NOT USE FOR: rhetorical chit-chat.`,
-      inputSchema: z.object({
-        question: z.string().describe("Specific question for the user"),
-        options: z.array(z.string()).min(2).max(4).describe("2 to 4 mutually exclusive options"),
-      }),
-      execute: async ({ question, options }) => {
-        const list = options.map((opt, i) => `${i + 1}. ${opt}`).join("\n");
-        return `Asked user: "${question}"\nOptions:\n${list}\n(Awaiting user decision)`;
-      },
-    });
-  }
-  ```
+### 原则 4：结构化提问工具规范 (Structured Questioning via `askUser`)
 
----
-
-### 原则 5：动态组装与项目上下文注入原则 (Dynamic Context & AGENTS.md)
-- **指导准则**：提示词不应硬编码为纯静态文本，必须在 Harness 启动时动态感知当前工作路径、git 分支、沙盒类型与可用门禁命令，并自动拼接项目根目录下的 `AGENTS.md`，实现工程定制与通用套件的无缝结合。
+* **【真实翻车 Case】**：
+  Agent 遇到设计分歧时，直接在普通助手文本里写道：“你希望用 JWT 还是 Session 呢？请告诉我。” 用户随手回了一个“随便”，Agent 再次陷入迷茫。
+* **【核心指导原则】**：
+  使用当前宿主支持的提问方式。比较明确方案时提供互斥选项、推荐与代价；缺少事实时直接问所需事实，不强制选项数量。
+  澄清与批准分开：批准必须使用宿主允许的审批渠道；提问工具不可用不代表获得批准。工具结果应反映真实答复或待答状态，仅返回“已提问”的文本不能模拟用户输入。

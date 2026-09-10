@@ -57,7 +57,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - 每个 skill 使用独立目录，目录名与 `SKILL.md` 中的 `name` 一致；`name`、`display_name` 和一级标题统一使用英文。
 - skill 专属的按需资料放在该 skill 的 `references/`；跨 skill 研究放在根目录 `research/`。
 - 保持 skill 职责独立，避免通过目录分层掩盖能力重叠。
-- 低频、重流程或容易与相邻能力竞争的 skill，在 `SKILL.md` 设置 `disable-model-invocation: true`，只接受 Claude Code 的 `/skill-name` 显式调用。
+- 显式调用策略按宿主配置：Claude Code 使用 `SKILL.md` 的 `disable-model-invocation: true`；Codex 使用 `agents/openai.yaml` 的 `policy.allow_implicit_invocation: false`。两者不能互相替代；修改后检查显式可调用、隐式不触发。
 - 用户反馈驱动的修改遵循 [AGENTS.md](AGENTS.md) 中的反馈闭环。
 
 ## Claude Code

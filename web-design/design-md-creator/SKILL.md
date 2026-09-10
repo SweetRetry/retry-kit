@@ -1,6 +1,6 @@
 ---
 name: design-md-creator
-description: "Create or optimize a design.md for a project or brand: a skill-formatted brand guidance file that teaches page-generating AI (v0, Claude artifacts, Cursor, local coding agents) to produce reports, proposals, dashboards, and marketing pages that carry authentic brand judgment and eliminate AI slop. Triggers on: create design.md, brand guidelines for agents, teaching v0/Claude our design system, or complaints about generic AI-flavored pages (太像模板了, AI 味重, 不像我们的设计, 消除 AI 塑料感)."
+description: "Create or update design.md when the user requests reusable brand or design guidance for agents. A complaint about one page’s appearance alone does not trigger this skill."
 metadata:
   keywords: design.md, brand guidelines, on-brand pages, anti-slop, design tokens, v0, Claude artifacts, agent design system, Vercel design.md, 品牌规范, 设计规范, 消除AI味
 ---
@@ -24,7 +24,7 @@ A complete agent design system decouples decisions into three distinct layers. `
    - Named rejections: explicit catalogue of banned AI template defaults (Anti-Slop).
 2. **Layer 2: Bounded Vocabulary / Stylesheet carries Mechanics**
    - Precise tokens, colors, type scales, and CSS class names.
-   - **Context Decoupling**: The stylesheet is loaded by the browser at render time. **Never read the stylesheet implementation into the agent's context window**, preserving context budget for judgment.
+   - **Context Decoupling**: The stylesheet is loaded by the browser at render time. Read only the relevant stylesheet definitions when verifying tokens or diagnosing style conflicts; otherwise use the documented vocabulary.
    - **Closed Vocabulary Rule**: The agent may only use explicitly documented classes and tokens; it is strictly forbidden from inventing or extrapolating names.
 3. **Layer 3: Deterministic Checks carry Physical Verification**
    - Script-checkable assertions (e.g. table width not 100%, missing landmarks, unregistered classes, mobile overflow).

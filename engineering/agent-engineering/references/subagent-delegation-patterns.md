@@ -1,66 +1,44 @@
 # AI Agent Subagent Delegation & Topology 实战指南
 
-盲目增加 Agent 数量只会带来死循环踢皮球与账单暴涨。**核心信条：奥卡姆剃刀（工作流优于自主代理）；单代理三大死因隔离；Explorer 与 Executor 二元拓扑。**
+子代理用于解决可独立分担的实际瓶颈；隔离权限，保留足以核验的交接证据。
 
 ---
 
 ## 核心指导与引导原则 (Guiding Principles)
 
-### 原则 1：奥卡姆剃刀：工作流优于自主代理 (Simplicity First)
-- **指导准则**：严禁无节制创建多 Agent 协作系统。凡是执行路径可预测、步骤依赖明确的工程，优先采用确定性代码工作流：
-  1. **Prompt Chaining**：步骤固定时用普通的 async/await 链式调用；
-  2. **Routing**：条件明确时走静态代码分类分支；
-  3. **Parallelization**：多维度代码审查或测试生成时并行扇出，最后聚合；
-  4. **Autonomous Agent Loop**：仅在探索空间完全开放、修改路径未知的长程任务中准入。
+### 原则 1：奥卡姆剃刀：工作流优于自主代理 (Workflows over Autonomous Agents)
+
+* **【真实翻车 Case】**：
+  团队设计了一个全自动发版功能，包括“运行测试 $\to$ 打 tag $\to$ 推送到 npm”。他们为此创建了一个自主 Agent Loop 让大模型自己决定每一步。结果模型在跑完测试后，突然自作主张去重构 `package.json` 中的字段，步骤错乱导致发布流程频频失败。
+* **【核心指导原则】**：
+  固定且需要可靠重放的操作优先采用确定性工作流；需要根据中间结果探索时使用 Agent Loop，两者可以组合。审查或局部修改不要求先实现一套工作流。
 
 ---
 
-### 原则 2：单代理三大死因防御 (Defend Single-Agent Failure Modes)
-- **指导准则**：在 30 步以上的复杂工程中，单代理必然暴露以下缺陷，必须通过子代理物理隔离解决：
-  1. **Context Pollution（上下文污染）**：为了解系统读了 20 个文件，这些无关历史在后续修改时持续占用注意力，稀释核心目标；
-  2. **Lost Focus（焦点漂移）**：中途被无关警告或代码格式吸引，顺手重构导致偏离主线任务；
-  3. **Over-broad Capabilities（权限过宽）**：在探索阶段手握 `write` 与 `bash` 权限，误改公共代码。
+### 原则 2：委托收益与适用条件
+
+* **【真实翻车 Case】**：
+  单 Agent 主控为了定位一个符号，先后读取了 15 个源文件。主上下文充斥着这 15 个文件的具体实现细节。当它最终开始写代码时，由于被巨量的中间代码分散了注意力，彻底遗忘了用户最开始提出的边界约束条件。
+* **【核心指导原则】**：
+  先判断子任务是否可独立交付、权限和写入范围是否可隔离、主控能否继续有用工作，以及委托收益是否超过协调成本。不根据跨文件、固定步数或模型代际强制拆分。
+  上下文过多可先缩小读取范围或压缩已完成工作；只有委托能解决实际瓶颈时才使用子代理。
 
 ---
 
-### 原则 3：二元角色与模型分级拓扑 (Explorer vs. Executor Topology)
-- **指导准则**：将长程任务拆分为“探索”与“执行”两个完全隔离的子代理，并按成本进行模型分级。
-- **角色分工矩阵**：
-  | 维度 | Parent (主控) | Explorer (探索者) | Executor (执行者) |
-  | :--- | :--- | :--- | :--- |
-  | **职责** | 状态机维护、任务派发、用户交互 | 跨文件检索、定位符号与定义 | 代码修改、重构、运行验证 |
-  | **工具集** | `task`, `todo`, `askUser` | `read`, `grep` (物理切断写与执行) | `read`, `grep`, `edit`, `write`, `bash` |
-  | **模型选型** | 旗舰模型 (Sonnet / Opus) | 廉价极速模型 (Haiku / Flash) | 高阶编程模型 (Sonnet / Pro) |
-  | **生命周期** | 全局常驻 | 任务完结后**整个上下文物理销毁** | 独立干净沙盒，执行完即销毁 |
+### 原则 3：角色与权限分配
+
+* **【真实翻车 Case】**：
+  使用昂贵的旗舰模型（如 Claude Opus）去做全库 `grep` 和扫描文件列表，耗费了成千上万的高价 tokens，导致单次调试成本高达数十美元。
+* **【核心指导原则】**：
+  按当前子任务分配最小权限和明确交付物。只读探索可采用 Explorer，独立实现可采用 Executor，但不强制二元拓扑或固定模型等级。
+  模型选择遵循宿主配置与用户授权；只读角色的写权限由运行时切断。并行写入须明确文件或资源所有权，避免多个代理同时修改同一语义来源。
 
 ---
 
-### 原则 4：父代只收结论不收过程原则 (Synthesized Outcome Only)
-- **指导准则**：子代理探索产生的大量中间交互历史，严禁倒灌回父代上下文。Explorer 探索 20 个文件消耗的数万 tokens 随会话直接丢弃，仅向 Parent 回传提炼后的一两句核心结论，确保 Parent 上下文始终保持极度纯净。
-- **`task` 工具路由原型**：
-  ```ts
-  export function createTaskTool(sandbox: Sandbox) {
-    return tool({
-      description: `Delegate an isolated subtask to a specialized subagent.
-  WHEN TO USE:
-    - Exploring code across multiple files (use role='explorer' to protect parent context from pollution).
-    - Executing a concrete implementation task with clear instructions (use role='executor').
-  WHEN NOT TO USE:
-    - Simple 1-2 step lookups you can do directly.
-    - Making architectural decisions (parent must do that).`,
-      inputSchema: z.object({
-        role: z.enum(["explorer", "executor"]),
-        goal: z.string().describe("Clear, self-contained objective for the subagent"),
-      }),
-      execute: async ({ role, goal }) => {
-        // 模型分级与工具权限物理隔离
-        const model = role === "explorer" ? "anthropic/claude-haiku-4-5" : "anthropic/claude-sonnet-4-5";
-        const tools = createHarnessTools(sandbox, { readOnly: role === "explorer" });
+### 原则 4：父代只收结论不收过程 (Synthesized Outcome Only)
 
-        // 独立沙盒执行，只回传结构化结论
-        const result = await runIsolatedAgentLoop({ model, tools, goal });
-        return `[SUBAGENT ${role.toUpperCase()} COMPLETED]:\n${result.summary}`;
-      },
-    });
-  }
-  ```
+* **【真实翻车 Case】**：
+  子代理探索完毕后，Harness 将子代理执行过的 20 轮工具调用历史全量塞回父代上下文，父代上下文瞬间被垃圾日志淹没，子代理隔离的收益化为乌有。
+* **【核心指导原则】**：
+  默认回传结论、证据位置、实际变更、验证结果及未解决项，不回灌完整工具历史，也不把交接强制压缩到一两句话。主控负责核对交付是否满足整体任务，必要时按证据定位原始材料。
+  委托工具契约应说明子任务、权限范围和预期结果；不因调用了子代理就视为任务完成。

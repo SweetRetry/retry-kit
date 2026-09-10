@@ -6,51 +6,23 @@
 
 ## 核心指导与引导原则 (Guiding Principles)
 
-### 原则 1：双重否定对抗万能工具引力 (Fighting Bash Gravity via Doubled-Up Negatives)
-- **指导准则**：万能通用工具（如 `bash`）对模型具有本能的退化引力（Bash Gravity）。在面临稍微模糊的任务时，模型倾向于跳过专用工具（`read`/`grep`），直接在终端里用 `cat`、`find` 甚至 `sed`。
-- **决策约束**：必须在工具描述中同时声明**软重定向（WHEN NOT TO USE）**与**硬边界（DO NOT USE FOR）**。在模型实测中，单写软建议会被忽略，双重否定才能形成确定性的阻断。
+### 原则 1：用途与路由边界
+
+* **【真实翻车 Case】**：
+  给 Agent 提供了 `bash` 工具后，它在需要查看代码时不再调用专用的 `read` 工具，而是开始频繁执行 `cat`、`head -n 20`；在修改文件时不用 `edit`，而是尝试用 `sed` 或 `python -c` 脚本原地改写，经常因转义字符错误破坏代码文件。
+* **【核心指导原则】**：
+  描述说明工具用途、输入输出和非显然限制。存在实测路由混淆时，再补充与相邻工具的边界；不强制五段结构或重复否定。安全约束由执行层保证，文字描述不能形成确定性的权限阻断。
+  搜索工具应返回匹配位置及截断状态。没有匹配是有效查询结果，例如原生 `grep` 的退出码 1，不能将其当作执行崩溃。
 
 ---
 
-### 原则 2：五段式描述契约标准 (The 5-Section Contract)
-- **指导准则**：进入 Harness 的每个工具必须严格具备 5 个结构块，消除路由歧义。
-- **契约原型**：
-  ```ts
-  const grep = tool({
-    description: `Search file contents using regular expressions. Returns matching lines with file paths.
+### 原则 2：错误指令化原则 (Instructions over Error Codes)
 
-  WHEN TO USE:
-    - Finding patterns across multiple files (e.g. function definitions, imports, TODOs, error messages).
-    - Locating where a symbol is referenced across the project.
-
-  WHEN NOT TO USE:
-    - Reading the full contents of a known file (use read instead).
-    - Running terminal scripts or system commands (use bash instead).
-
-  DO NOT USE FOR:
-    - Reading files (use read).
-    - Listing directories (use bash).
-    - Modifying code (use edit).
-
-  USAGE:
-    - pattern: standard regex string.
-    - glob: file filter pattern (e.g. "*.ts").
-    - Output is capped at 50 matches to protect context.
-
-  EXAMPLES:
-    - Find TODOs: pattern "TODO" glob "*.ts"
-    - Find function: pattern "function handleLogin" glob "src/**/*.ts"`,
-    inputSchema: z.object({ /* ... */ }),
-    execute: async ({ /* ... */ }) => { /* ... */ },
-  });
-  ```
-
----
-
-### 原则 3：错误指令化原则 (Instructions over Error Codes)
-- **指导准则**：Tool Result 本质是给大模型下一轮做决策的 Prompt 输入。模型面对异常时，需要的不是技术堆栈或裸数字码，而是**明确的自然语言行动指引（Actionable Hint）**。
-- **决策边界**：工具执行失败严禁返回 `404`、`500` 或空字符串，必须指出失败根因并提供建议尝试的下一步动作。
-- **契约原型**：
+* **【真实翻车 Case】**：
+  Agent 调用 `read` 读取一个不存在的路径，工具返回 `{ error: "ENOENT: no such file or directory", code: -2 }`。模型不知道目标文件其实在上一级目录，下一轮直接原样重试了一次一模一样的路径，原地打转。
+* **【核心指导原则】**：
+  Tool Result 是下一轮大模型的输入上下文。模型面对失败时，需要的不是原始底层堆栈，而是**指出原因并带有明确下一步排查行动的自然语言指令（Actionable Hint）**。
+* **【契约与代码原型】**：
   ```ts
   export function createActionableError(reason: string, nextAction: string): string {
     return JSON.stringify({
@@ -60,39 +32,46 @@
     });
   }
 
-  // 示例：文件未找到时的错误契约
+  // 示例：文件不存在时的错误输出
   if (!exists) {
     return createActionableError(
-      `Path '${path}' does not exist.`,
-      `请不要用完全相同的路径重复调用 read！请先使用 grep 搜索相关文件名，确认正确路径后再读取。`
+      `Path '${filePath}' does not exist.`,
+      `请不要用完全相同的路径重复调用 read！请先使用 grep 或 find_by_name 搜索相关文件名，确认真实相对路径后再读取。`
     );
   }
   ```
 
 ---
 
-### 原则 4：工具工厂与角色权限解耦原则 (Tool Factory Decoupling)
-- **指导准则**：工具定义不应硬编码为全局单例，必须通过工厂函数组装，依据角色类型（如 Explorer 只读子代理 vs. Executor 执行子代理）实施物理级权限切断。
-- **契约原型**：
-  ```ts
-  export interface ToolFactoryOptions {
-    readOnly?: boolean;
-    approvalPolicy?: (command: string) => Promise<boolean>;
-  }
+### 原则 3：块级精准字符串替换 (Exact Block Replace over Overwrite)
 
-  export function createHarnessTools(sandbox: Sandbox, options: ToolFactoryOptions = {}) {
-    const tools: Record<string, any> = {
-      read: createReadTool(sandbox),
-      grep: createGrepTool(sandbox),
-    };
+* **【真实翻车 Case】**：
+  为了修改文件里的一个常量值，模型使用全量覆盖（Overwrite）工具重写了整个 600 行的文件。由于上下文生成限制或幻觉，模型在重写时无意中漏掉了中间 80 行业务逻辑，导致系统产生隐蔽的逻辑截断缺陷。
+* **【核心指导原则】**：
+  代码修改严禁默认采用全量文件写入（Overwrite）。必须强制采用局部块级精准匹配替换（Exact Block Replacement），并施加唯一性约束：
+  1. `TargetContent`：待替换的原文本块（必须在文件中精确、唯一存在）；
+  2. `ReplacementContent`：替换后的新文本块；
+  3. 若 `TargetContent` 匹配到 0 处或大于 1 处，必须直接拒绝执行并返回清晰的定位指引。
+* **【反直觉踩坑 (Gotcha)】**：
+  匹配失败最常见的原因是行尾换行符（CRLF vs LF）或制表符空格差异。执行匹配前必须统一做换行符标准化（`\r\n` $\to$ `\n`）。
 
-    // 针对只读子代理，物理切断写工具，彻底隔绝越权修改风险
-    if (!options.readOnly) {
-      tools.edit = createEditTool(sandbox);
-      tools.write = createWriteTool(sandbox);
-      tools.bash = createSafeBashTool(sandbox, options.approvalPolicy);
-    }
+---
 
-    return tools;
-  }
-  ```
+### 原则 4：执行层硬拦截审批门禁 (Execute-Level Gates over Model Flags)
+
+* **【真实翻车 Case】**：
+  系统在入参 Schema 里定义了 `{ needsApproval: boolean }`，寄希望于模型在执行高危删除或部署操作时自行声明 `needsApproval: true`。实测中，模型经常忘记传该字段，或者自以为“改动很安全”而传入 `false`，导致未经审批的高危操作直接执行。
+* **【核心指导原则】**：
+  审批由执行层强制实施，不接受模型传入 `needsApproval: false` 作为豁免。优先复用宿主的权限与批准机制；已有批准只在原目标、操作和范围内复用。
+  自建策略必须解析完整命令及其参数、重定向、命令连接和目标资源；不得用 `command.startsWith(prefix)` 判定安全。前缀匹配既可能误拦普通读取，也可能放过包含额外操作的复合命令。
+  执行结果区分允许、需要批准和拒绝；无法判定的危险操作默认阻断。批准通道不可用或用户拒绝时停止该操作，继续不依赖它的已授权工作。不得通过更换工具绕过拒绝。
+  工具应保留退出码及相关 stdout/stderr，不能因有 stdout 就丢弃错误证据。
+
+---
+
+### 原则 5：工具工厂与角色权限解耦 (Tool Factory Decoupling)
+
+* **【真实翻车 Case】**：
+  只读的探索子代理（Explorer）原本只需要查看代码，但因为系统中工具实例是全局单例，Explorer 偷偷调用了 `edit` 修改了文件，打乱了主控规划。
+* **【核心指导原则】**：
+  工具严禁设计为全局单例，必须由工厂函数按运行环境与角色权限动态组装。针对只读角色，直接在工厂物理层切断写工具的注册，彻底消除越权篡改代码的风险。
