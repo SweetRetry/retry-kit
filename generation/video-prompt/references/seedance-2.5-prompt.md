@@ -1,6 +1,6 @@
 # Seedance 2.5 Prompt Reference
 
-只在目标入口明确为 Seedance 2.5 时使用。本文件只说明如何写 prompt；生成内容、timeline 与连续性仍服从 `video-prompt` 主文档。
+只在目标入口明确为 Seedance 2.5 时使用。素材解释、信息顺序、格式与能力限制以本文件为准；其余内容与连续性原则见 `video-prompt` 主文档。
 
 官方依据：[提示词指南](https://docs.volcengine.com/docs/82379/2607689?lang=zh)、[输入任务教程](https://docs.volcengine.com/docs/82379/2607688?lang=zh)。
 

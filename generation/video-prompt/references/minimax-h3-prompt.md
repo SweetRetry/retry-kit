@@ -1,6 +1,6 @@
 # MiniMax H3 Prompt Reference
 
-只在目标入口明确为 MiniMax-H3 时使用。本文件只说明如何写 prompt；生成内容、timeline 与连续性仍服从 `video-prompt` 主文档。
+只在目标入口明确为 MiniMax-H3 时使用。素材解释、信息顺序、格式与能力限制以本文件为准；其余内容与连续性原则见 `video-prompt` 主文档。
 
 官方依据：[Video Generation Guide](https://platform.minimax.io/docs/guides/video-generation.md)、[H3 Prompt Examples](https://platform.minimax.io/docs/guides/video-prompt.md)。
 

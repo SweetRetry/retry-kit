@@ -1,0 +1,7 @@
+interface:
+  display_name: "Refactor Design"
+  short_description: "审查界面设计债务，或实施已授权的布局与交互重构"
+  default_prompt: "使用 $refactor-design 检查指定界面的设计债务，给出有证据的最小修改建议；若我已要求实现，继续完成相关修改和验证。"
+
+policy:
+  allow_implicit_invocation: false

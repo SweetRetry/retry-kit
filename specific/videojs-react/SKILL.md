@@ -1,7 +1,7 @@
 ---
 name: videojs-react
 description: >-
-  Video.js v10 (@videojs/react) React 播放器开发与排障，覆盖 player lifecycle、Provider、hooks、preset、feature、official skin、自定义 controls、track 与平台集成。Use when 代码 import `@videojs/react`，或用户明确使用 Video.js v10 React API 构建、迁移或排查播放器；旧版 video.js、原生 video 和其他播放器库不触发。
+  使用 @videojs/react v10 实现、迁移或排查播放器。仅用于当前任务涉及该 React API 的代码或行为，不用于旧版 video.js、原生 video 或其他播放器库。
 ---
 
 # Video.js React

@@ -72,13 +72,13 @@ Ask one grouped set of questions only when proceeding could change commercial me
 
 Preserve the host framework, file structure, routes, component conventions, build system, and output form. Edit the files that naturally own the experience.
 
-Resolve [<assets/brand.css>](<public-or-local-url>) from this skill's location. Outside an existing project, link the byte-identical foundation once at the nearest shared boundary. Use the public API documented below; do not read the stylesheet implementation into context.
+Resolve [<assets/brand.css>](<public-or-local-url>) from this skill's location. Outside an existing project, link the byte-identical foundation once at the nearest shared boundary. Use the public API documented below; read relevant stylesheet definitions when verifying tokens or diagnosing style conflicts.
 
 The default network allowlist is the foundation stylesheet, official brand assets, and user-supplied assets. Do not add third-party JavaScript, chart libraries, icon kits, stock assets, or analytics without authorization.
 ```
 
 > **核心工程原则**：
-> - **样式与上下文严格解耦**：样式通过浏览器渲染，大模型仅引用已发布的类名白名单，**严禁将 CSS 源码载入提示词上下文**。
+> - **样式按需读取**：样式通过浏览器渲染；通常使用已发布的类名与 token，仅在核实定义或排查冲突时读取相关 CSS。
 
 ---
 

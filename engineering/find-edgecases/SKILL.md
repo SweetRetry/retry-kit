@@ -16,7 +16,7 @@ disable-model-invocation: true
 
 从用户指定范围出发，检查真实实现、调用者与被调用者、测试、schema、配置、migration 和运行证据。用户只说 `changes` 时，从当前变更沿因果路径向外追踪，直到稳定 contract、明确隔离边界或无因果关系的位置。
 
-先明确入口、出口、actor、核心 invariant、state authority、合法转换、持久化点、外部依赖、不可逆 side effect，以及 transaction、process、network、permission、resource 与 deployment boundary。再还原 normal、failure、recovery 与 lifecycle path，包括：
+按指定范围与后果严重度确定相关入口、出口、actor、核心 invariant、state authority、合法转换、持久化点、外部依赖及不可逆 side effect；只追踪与当前问题有因果关系的边界。还原相关 normal、failure、recovery 与 lifecycle path，考虑：
 
 - branch、callback、error mapping、cleanup、return 与 exception；
 - domain state、持久化、cache、derived view 与 terminal state；
@@ -26,7 +26,7 @@ disable-model-invocation: true
 
 在每个 handoff 标出前置状态、authority、成功与失败语义、已经发生的 side effect、retry 或 recovery 的 owner，以及如何确认稳定结果。只保留真实存在的节点，不用分布式术语包装局部逻辑。
 
-**完成标准：**每个入口都有 normal、failure 和适用的 recovery 终点；每次 state mutation 与不可逆 side effect 都能追到最终 consumer、稳定 contract 或明确证据边界。
+**完成标准：**选定路径中的相关 mutation 与 side effect 能追到最终 consumer、稳定 contract 或明确证据边界；不以建立完整系统地图作为前提。
 
 ## 2. 扰动并追踪到稳定状态
 
@@ -65,11 +65,8 @@ disable-model-invocation: true
 
 结束前确认：
 
-- 每个适用扰动面都有成立、不成立或不适用的结论，并映射到执行图；
-- 每个核心 invariant 都经历了相关的值、逻辑、状态、时间、资源或版本扰动；
-- 每个 state transition 都检查了中断、重复、并发与 recovery 后 re-entry；
-- 每个 transaction、process、network handoff 与不可逆 side effect 都检查了 partial success 和 unknown result；
-- 相关的 startup、shutdown、crash、restart 与 in-flight work 已闭合；
+- 已按用户指定范围和后果严重度检查相关路径与扰动，不为所有维度填覆盖账本；
+- 候选问题已有充分证据，或已到达明确证据边界；会改变结论的重要未覆盖项具体可识别；
 - 同一根因与最终后果只保留一次，证据等级与措辞一致。
 
 按 correctness、安全、可用性、数据或不可逆业务影响从高到低输出。每个 finding 用一小段说明位置、触发条件、执行分叉、已发生的 side effect、被破坏的 invariant、recovery 后的最终状态、影响、证据、可信度与待确认事实。按根因和最终后果合并，不套固定表格或通用 checklist。

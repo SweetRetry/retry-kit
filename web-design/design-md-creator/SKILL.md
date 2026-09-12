@@ -25,7 +25,7 @@ A complete agent design system decouples decisions into three distinct layers. `
 2. **Layer 2: Bounded Vocabulary / Stylesheet carries Mechanics**
    - Precise tokens, colors, type scales, and CSS class names.
    - **Context Decoupling**: The stylesheet is loaded by the browser at render time. Read only the relevant stylesheet definitions when verifying tokens or diagnosing style conflicts; otherwise use the documented vocabulary.
-   - **Closed Vocabulary Rule**: The agent may only use explicitly documented classes and tokens; it is strictly forbidden from inventing or extrapolating names.
+   - **Closed Vocabulary Rule**: Use documented classes, tokens, and any explicitly provided extension mechanism; do not invent foundation API names.
 3. **Layer 3: Deterministic Checks carry Physical Verification**
    - Script-checkable assertions (e.g. table width not 100%, missing landmarks, unregistered classes, mobile overflow).
 
@@ -35,7 +35,7 @@ A complete agent design system decouples decisions into three distinct layers. `
 
 ### Step 1: Inspect (Proactive Asset Extraction)
 
-**Inspect before asking.** Scan the repository or provided sources to extract existing design foundations:
+**Inspect before asking.** Read the repository or provided sources relevant to the requested guidance; a local update only needs the affected rules and their evidence:
 
 1. **Tokens and CSS**: Check `tailwind.config.*`, CSS modules, `globals.css`, theme definitions, or design tokens. Extract the actual palette, font families, and spacing tokens.
 2. **Authorship Furniture**: Inspect existing pages, headers, footers, and logo placement.
@@ -44,7 +44,7 @@ A complete agent design system decouples decisions into three distinct layers. `
 
 ### Step 2: Translate Corrections into Observable Rules
 
-Prompt the user for the 3–5 recurring complaints or manual steering notes they frequently give when AI generates pages (e.g., "feels like generic SaaS", "tables are cramped").
+Use corrections and steering notes already provided. Ask only for missing feedback that would materially change the guidance; do not require a fixed number of complaints.
 
 Triage every correction using this decision tree:
 ```
@@ -64,9 +64,9 @@ A feedback item or correction:
 
 ### Step 3: Synthesize `design.md`
 
-Draft against the canonical structure in [references/design-md-template.md](references/design-md-template.md). Keep the total length focused (~200–350 lines).
+Use the relevant sections of [references/design-md-template.md](references/design-md-template.md). Keep only rules that change decisions for this project's actual artifacts; no target line count.
 
-Ensure the following high-leverage sections are populated:
+Include the following sections only where the project has relevant guidance:
 1. **Frontmatter**: Descriptive triggers naming concrete artifact types.
 2. **Role & Stance**: Define the persona and establish that the reader's job outranks document category.
 3. **Brand Context**: Voice traits paired with **explicit negations** (e.g., "precise and calm; never manufactured through hype or decoration"). Dual reading speeds (Executive path vs Audit path).
@@ -85,13 +85,13 @@ Ensure the following high-leverage sections are populated:
 
 ### Step 4: Verify & Deliver
 
-Follow [references/eval-and-verification.md](references/eval-and-verification.md) to close the loop:
+Check changed rules for consistency with the project's evidence and existing guidance. Read [references/eval-and-verification.md](references/eval-and-verification.md) when a behavioral comparison is needed:
 
-1. **Matched Comparison (A/B Test)**:
+1. **Matched Comparison (when needed to validate a new design principle)**:
    - Pick one representative scenario (e.g., a customer renewal proposal or performance report).
    - Compare Baseline (no design.md) vs Guided (with design.md).
-   - Verify that changes are **structural** (reordered evidence, clear first viewport, full-width data, removed fluff), not just font cosmetics.
+   - Verify the intended decision changes; require structural changes only when the new rule concerns structure. Do not regenerate pages for wording-only updates.
 2. **Deliverables**:
-   - `design.md`: The canonical brand guidance file (clean, focused, under ~350 lines).
-   - Associated `tokens.css` or bounded class contract (if not already existing in repo).
-   - *AGENTS.md / CLAUDE.md Hook (Optional)*: If the host project has an `AGENTS.md` or `CLAUDE.md`, add a single-line Context Pointer (`When building or modifying pages, follow [design.md](design.md)`). Never inline the full `design.md` into `AGENTS.md`.
+   - `design.md`: The requested brand guidance, limited to applicable decisions.
+   - Associated `tokens.css` or bounded class contract only when necessary for the requested deliverable; reuse existing definitions.
+   - *AGENTS.md / CLAUDE.md Hook*: When integration is requested, add a single-line Context Pointer (`When building or modifying pages, follow [design.md](design.md)`). Never inline the full `design.md` into `AGENTS.md`.

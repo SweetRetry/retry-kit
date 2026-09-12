@@ -25,7 +25,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 - `generation-director`：AIGC 叙事导演总控，涵盖世界观设定、剧本创作/诊断、资产建档与分镜装配。
 - `image-prompt`：分析决定画面成败的视觉维度；缺少视觉上下文时先询问高影响方向，再生成图片 prompt。
-- `video-prompt`：生成单次 4–15 秒的视频 prompt。
+- `video-prompt`：按目标模型与入口限制编写单次生成、编辑或延长视频的 prompt。
 
 ### Product
 
@@ -36,7 +36,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 - `information-clarity`：确保用户获得该知道的信息，拒绝过分极简省略与一股脑倒数据。
 - `find-interaction-gap`：补全交互过程实现与用户感知，专治 Agent 只写头尾、中间黑盒的缺陷。
-- `grilling-design`：把界面设计需求拆成决策树分轮追问（每题附具体选项与推荐答案），收敛后交付方向摘要（默认不生成文档或代码）。
+- `grilling-design`：通过分轮追问或用户明确委托的判断收敛界面方向，交付方向摘要；原请求包含其他产物时继续完成。
 - `refactor-design`：界面重新设计与排版链路重构，消除卡片嵌套、排版层级塌陷、多余弹窗与窒息密度等设计债务。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）

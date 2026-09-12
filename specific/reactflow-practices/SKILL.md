@@ -1,7 +1,7 @@
 ---
 name: reactflow-practices
 description: >-
-  React Flow (@xyflow/react v12+) 节点编辑器开发与排障，覆盖节点、边、Handle、状态管理、连接校验、性能、持久化和 sub flow。Use when 代码 import `@xyflow/react`，或用户明确使用 React Flow 构建、迁移或排查节点图；D3、ECharts、其他 node graph 库及未选定技术栈的通用流程图任务不触发。
+  使用 @xyflow/react v12+ 实现、迁移或排查节点编辑器。仅用于当前任务涉及 React Flow 的代码或行为，不用于其他图形库或通用流程图。
 ---
 
 # React Flow Practices
