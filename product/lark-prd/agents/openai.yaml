@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lark PRD"
+  short_description: "用 lark-cli 在飞书撰写 PRD：常见 section、流程画板、业界实践与需求变更记录"
+  default_prompt: "使用 $lark-prd 把这份需求写成飞书 PRD：先确认读者与决策，按 section 组织需求与验收，用画板表达关键流程，并维护业界实践与需求变更记录。"

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Video.js React"
-  short_description: "基于 @videojs/react v10 官方 API 开发和排查播放器"
-  default_prompt: "使用 $videojs-react 按 @videojs/react v10 官方 API 处理这个播放器任务，并验证本次受影响的行为与边界。"

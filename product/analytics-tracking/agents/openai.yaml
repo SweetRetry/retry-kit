@@ -1,4 +1,0 @@
-interface:
-  display_name: "Analytics Tracking"
-  short_description: "从业务问题判断数据分析价值并设计必要的埋点与事件契约"
-  default_prompt: "使用 $analytics-tracking 从这个业务问题反推真正需要的数据和事件，说明每个埋点支持什么决策，并过滤无分析价值的采集。"

@@ -19,7 +19,6 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - `future-proof-design`：为已确认的问题收敛长期 strong target。
 - `reactflow-practices`：React Flow v12+ 开发实践。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
-- `videojs-react`：Video.js v10 React 播放器开发实践。
 
 ### Generation
 
@@ -29,7 +28,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Product
 
-- `analytics-tracking`：从业务问题判断数据与埋点价值。
+- `lark-prd`：用 lark-cli 在飞书云文档撰写 PRD，含流程画板、业界实践与需求变更记录。
 - `product-guide`：判断功能价值、用户成本、维护成本与 ROI。
 
 ### Web Design
