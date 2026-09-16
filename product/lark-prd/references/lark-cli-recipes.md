@@ -90,11 +90,7 @@ lark-cli docs +update --doc <url> --command append \
   --doc-format markdown --as user --content "@./changelog.md"
 ```
 
-`changelog.md` 每条一行：
-
-```markdown
-- **[日期] / [版本] / [需求 ID] / 修改**：[旧要求] → [新要求]。原因：[事实依据]。影响面：[实际变化或待确认]。提出人：[依据或待确认]。状态：[依据或待确认]。
-```
+`changelog.md` 每条一行，字段与新建时的首个 `<li>` 相同，`<b>` 写作 `**`。
 
 新建文档将变更记录放在末尾，用列表承载。`append` 只作用于文档末尾；修订已有文档时，若记录不在末尾，用 `block_insert_after` 在该节最后一条记录后插入，不移动其他章节。实测 append 的列表项会并入已有 `<ul>`；已有记录为表格时，按上游更新工作流定位并修改表格，不能用 append 的 markdown 表格行，后者只生成字面文本。追加后回读核对需求 ID、变更内容和状态。
 
@@ -108,17 +104,8 @@ lark-cli docs +update --doc <url> --command append \
 | 时序依赖、先后交互 | `sequenceDiagram` |
 | 时间线 / 里程碑 | `gantt` |
 
-- 一图一主题，节点名与需求术语一致；
-- 分支边写条件标签（`-->|通过|`），不留裸线；
-- 主路径与失败路径都进图，失败路径不省略。
+- 分支边写条件标签（`-->|通过|`），不留裸线。
 
 ## 上游官方 skill
 
-官方 `lark-doc` 与 `lark-whiteboard` 随 CLI 安装，可直接读取，不必凭记忆猜：
-
-```bash
-lark-cli skills read lark-doc
-lark-cli skills read lark-whiteboard
-```
-
-本地副本在 `~/.agents/skills/lark-doc` 与 `~/.agents/skills/lark-whiteboard`；PRD 体裁契约在 `~/.agents/skills/lark-doc/references/genres/prd.md`。自定义 SVG、视觉精修、编辑已有画板、复杂排版交给这两个上游 skill，本 skill 只负责 PRD 的决策与质量门槛。
+`lark-doc` 与 `lark-whiteboard` 内嵌在 CLI 二进制里，用 `lark-cli skills read <skill> [相对路径]` 读取，与 CLI 版本同步；磁盘上没有副本。修订读 `lark-doc references/lark-doc-update.md`，画板读 `lark-whiteboard`，PRD 体裁契约读 `lark-doc references/genres/prd.md`。
