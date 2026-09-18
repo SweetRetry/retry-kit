@@ -19,6 +19,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - `future-proof-design`：为已确认的问题收敛长期 strong target。
 - `reactflow-practices`：React Flow v12+ 开发实践。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
+- `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
 
 ### Generation
 
