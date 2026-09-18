@@ -128,12 +128,19 @@ flowchart TD
         P2["04-phase-e2e-integration.md<br/>串联公共路由与端到端测试"]
     end
 
+    subgraph WaveFinal["🏁 全局终审 (Final Sign-off)"]
+        FR["🔍 全局终审 Reviewer<br/>全量回归 + 台账清算 + 业务规则穿透"]
+        SHIP["🚀 交付上线 / 合并主分支"]
+    end
+
     Wave0 --> Wave1
     P1A_CMT --> WB
     P1B_CMT --> WB
     R1A -.->|反馈状态| WB
     R1B -.->|反馈状态| WB
     WB -->|无严重问题直接通过| Wave2
+    P2 --> FR
+    FR -->|SIGN_OFF| SHIP
 ```
 
 ---
@@ -167,7 +174,37 @@ flowchart TD
 - [ ] 所有临时 Worktree 已清理；
 - [ ] [`issues.md`](issues.md) 中没有遗留阻塞问题；
 - [ ] [`legacy-burdens.md`](legacy-burdens.md) 中的老代码包袱都有明确的处理记录；
-- [ ] [`changes.md`](changes.md) 记录完备，各分支已完成 rebase 对齐。
+- [ ] [`changes.md`](changes.md) 记录完备，各分支已完成 rebase 对齐；
+- [ ] 全局终审 Reviewer 给出 `SIGN_OFF`。
+
+---
+
+## 10. 🏁 全局终审验收 Reviewer 提示词 (Final Sign-off Payload)
+
+> **全局出库关卡**：所有分阶段任务与集成测试完成后触发。Final Reviewer 站在系统全局视角，执行全量自动化验证、业务不变量穿透核验、三张台账清算与环境卫生检查。
+
+```yaml
+role: "System Final Sign-off Reviewer"
+model: "pro"
+tools: ["view_file", "run_command"]
+prompt: >
+  对 docs/tasks/{taskfolder}/ 关联的交付代码进行系统级终审验收 (Final Sign-off)：
+  1. 全量自动化回归 (Full Verification)：
+     - 运行全量类型检查、代码检查与测试套件 (如 `pnpm tsc --noEmit && pnpm test && pnpm test:e2e`)；
+     - 确认 100% 通过，且无任何跳过的测试 (.skip / .only)；
+  2. 业务规则端到端穿透核验 (Invariants Verification)：
+     - 对照 00-overview.md 中约定的系统规则 (INV-01 ~ INV-XX)，核验最终合并代码是否在任何场景下均严格遵守；
+  3. 三张台账最终清算 (Ledger Audit)：
+     - 核对 issues.md：确认所有 Blocker 问题已标记为 Resolved，无遗留未解决的硬阻断；
+     - 核对 legacy-burdens.md：确认老代码妥协都有明确原因与后续还款计划，无掩耳盗铃式的脏代码；
+     - 核对 changes.md：确认中途发生的契约变更都已同步到各模块代码中；
+  4. 工程卫生检查 (Hygiene Check)：
+     - 执行 `git worktree list`，确认所有临时 Worktree 分支已清理合并；
+     - 检查本次改动无残留的调试日志 (console.log / print)、临时断点或未引用的死代码；
+  输出终审结论：
+  - SIGN_OFF: 全部合规，允许合并主分支交付上线；
+  - REJECTED: 存在阻塞性缺陷，输出明确的打回原因、阻塞项清单 (Blockers) 与修复指引。
+```
 ```
 
 ---

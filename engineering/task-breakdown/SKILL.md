@@ -32,6 +32,13 @@ disable-model-invocation: true
   - **务实支持快速交付**：
     - 普通代码坏味道、代码风格差异或微小优化，**一律作为建议记入 `issues.md`，直接给 `PASS` 放行**，绝不无端阻塞开发流水线；
     - 打回时必须给出明确的“最小修复建议”，建设性协同。
+- **双层审查机制：切片级审查 + 全局终审验收 (Two-Tier Review Architecture)**：
+  - **第 1 层：切片级快照 Reviewer (Phase Reviewer)**：在子任务完成单测并提交 Commit 后异步触发，只读单 Commit diff，严守 4 类硬红线，普通建议入 `issues.md`，不阻断单个切片快速推进；
+  - **第 2 层：全局终审验收 Reviewer (Final Sign-off Reviewer)**：在全部分支合并、汇总集成（Wave 2）完成后触发，以系统全景视角执行终审：
+    1. **全链路回归**：运行全量类型检查、代码规范与端到端测试，确认 100% 通过且无跳过；
+    2. **规则穿透核验**：对照 `00-overview.md` 约定的系统规则（INV-01 ~ INV-XX），验证完整系统严格满足所有业务不变量；
+    3. **三张台账清算**：核验 `issues.md` 无遗留 Blocker、`legacy-burdens.md` 无假公济私的技术债、`changes.md` 契约变更已全量对齐；
+    4. **工程卫生清理**：确认临时 Git Worktree 全部清理，无残留调试代码；给出最终 `SIGN_OFF` 放行裁决。
 - **变更只追加记录，不覆盖旧文档 (`changes.md`)**：
   - 开发过程中发生需求调整、接口修改或方案变轨时，**严禁直接修改原有文档假装没变过**；
   - 所有变动追加记录到 `changes.md`，写清“旧要求 $\to$ 新要求”、为什么改、改了哪些文件以及由谁确认，确保历史可追溯。
@@ -75,7 +82,7 @@ disable-model-invocation: true
    - 端到端核心时序图（Mermaid）；
    - 统一术语表（Glossary）；
    - 架构决策与选型权衡（Mini-ADRs）；
-   - 波次依赖拓扑图、子 Agent 预算表、当前断点快照（Checkpoint）与全局完成定义（DoD）。
+   - 波次依赖拓扑图、子 Agent 预算表、当前断点快照（Checkpoint）、全局完成定义（DoD）与全局终审 Reviewer 提示词。
 2. **`01-phase-{slug}.md`, `02-phase-{slug}.md`...（分阶段子任务）**：
     - 🤖 **紧凑派发提示词**（含工具轮次上限与重试熔断配置）；
     - 🔍 **务实批判的 Reviewer 提示词**（严查作弊与硬规则，普通建议挂单放行）；
@@ -97,7 +104,8 @@ disable-model-invocation: true
 
 ### 步骤 1：梳理总览上下文与系统规则
 - 提炼核心实体、时序流、不可破坏的业务规则（Invariants）与统一术语表，写入 `00-overview.md`；
-- 规划子 Agent 的模型、轮次上限与重试熔断阈值。
+- 规划子 Agent 的模型、轮次上限与重试熔断阈值；
+- 编写全局终审 Reviewer 提示词。
 
 ### 步骤 2：按依赖关系划分批次 (Execution Waves)
 - **Wave 0 (基础契约)**：定义公共接口、类型与核心验收测试（单 Agent 串行完成）；
@@ -119,16 +127,22 @@ disable-model-invocation: true
 - 遇到老代码包袱，先评估能否顺手重构或防腐隔离，不准直接写脏补丁；
 - 中途改契约时，先暂停并行，主干更新后通过 `git rebase` 同步各分支，并在 `changes.md` 留痕。
 
-### 步骤 6：务实批判的异步 Review 与收敛合并
+### 步骤 6：务实批判的切片 Review 与波次汇聚
 - 单测通过后生成 Commit，主流程继续推进；
-- **Reviewer** 在后台客观审查 Commit（严查测试作弊、核对核心 Invariants、排查真实 bug，普通建议挂单入 issues.md 放行）；
-- 波次结束时集中核验 Review 结果，清理 Worktrees，合并分支进入下一波次。
+- **切片 Reviewer** 在后台客观审查 Commit（严查测试作弊、核对核心 Invariants、排查真实 bug，普通建议挂单入 issues.md 放行）；
+- 波次结束时在 Wave Barrier 集中核验 Review 结果，清理 Worktrees，合并分支进入下一波次。
+
+### 步骤 7：全局终审验收与出库放行 (Final Sign-off)
+- 全部分支合并、汇总集成完成后，派发全局终审 Reviewer；
+- 执行全量回归测试、穿透核验业务 Invariants、清算三张台账（issues/legacy/changes）并检查工程卫生；
+- 输出终审裁决（`SIGN_OFF` 允许交付上线，或 `REJECTED` 给出阻断清单打回修复）。
 
 ## 4. 纪律红线 (Prohibitions)
 
 - **严禁写没有上下文的空洞子任务**：每个子任务必须交代清晰的业务场景、上下游依赖与参考代码路径。
 - **严禁走过场式点赞，也严禁吹毛求疵阻碍交付**：Reviewer 必须客观严谨，既不无脑放过作弊与规则破坏，也不为假想的极端理论风险无端卡流程。
 - **严禁带病跨越波次屏障**：在 Wave Barrier 处若存在未解决的 `BLOCKER`，严禁强行进入下一批次或合并到主干。
+- **严禁跳过全局终审直接交付**：即使各阶段单测全部通过，合并后仍必须由 Final Reviewer 完成端到端回归与三张台账最终清算。
 - **严禁直接覆盖旧文档**：需求或方案变更必须在 `changes.md` 记录，不准静默修改。
 - **严禁篡改测试用例**：严禁私自修改已有测试断言、降低判定标准或给测试加 `.skip`。
 - **严禁并发阶段安装新依赖**：Wave 1 并发开发期间禁止私自修改 `package.json` 或升级依赖。
