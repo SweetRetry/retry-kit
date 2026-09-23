@@ -1,4 +1,0 @@
-interface:
-  display_name: "Product Guide"
-  short_description: "评估 feature 的用户价值、成本、替代方案与投入回报"
-  default_prompt: "使用 $product-guide 评估这个 feature 的用户结果、成本、替代方案和 ROI，并给出删除、简化、保留或加固判断。"
