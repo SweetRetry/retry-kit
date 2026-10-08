@@ -5,10 +5,11 @@
 ## 目录
 
 ```text
-engineering/   Agent、架构、代码质量与前端框架工程
+engineering/   Agent、代码质量与工程任务拆解
 generation/    AI 图片、视频、剧本与分镜生成
-product/       产品诊断与数据价值判断
-web-design/    界面设计与交互任务链审查
+product/       飞书产品需求文档
+web-design/    界面设计、文案、原型与交互审查
+specific/      特定框架工程实践
 research/      跨 skill 的研究证据，不参与 skill discovery
 ```
 
@@ -16,8 +17,6 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 - `agent-engineering`：AI Agent Harness 架构工程：循环引擎、沙盒抽象、工具契约、上下文管理、死循环熔断与验证门禁。
 - `find-edgecases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
-- `future-proof-design`：为已确认的问题收敛长期 strong target。
-- `reactflow-practices`：React Flow v12+ 开发实践。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
 - `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
 
@@ -30,14 +29,32 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Product
 
 - `lark-prd`：用 lark-cli 在飞书云文档撰写 PRD，含流程画板、业界实践与需求变更记录。
-- `product-guide`：判断功能价值、用户成本、维护成本与 ROI。
 
 ### Web Design
 
-- `information-clarity`：确保用户获得该知道的信息，拒绝过分极简省略与一股脑倒数据。
-- `find-interaction-gap`：补全交互过程实现与用户感知，专治 Agent 只写头尾、中间黑盒的缺陷。
-- `grilling-design`：通过分轮追问或用户明确委托的判断收敛界面方向，交付方向摘要；原请求包含其他产物时继续完成。
-- `refactor-design`：界面重新设计与排版链路重构，消除卡片嵌套、排版层级塌陷、多余弹窗与窒息密度等设计债务。
+- `ux-writing`：把界面文案改成一眼看懂的日常说法，统一用词，输出原文案→新文案对照表。
+- `improve-ui`：信息呈现、构图、视觉系统、尺寸稳定、动效、浮层与交互质量；原信息审查、布局重构与交互审查统一调用 `$improve-ui`。
+- `design-md-creator`：提炼可复用品牌与设计规范，创建或更新 `design.md`。
+- `ui-prototyping`：用临时可交互 HTML 比较尚未定案的 UI 方案。
+
+### Specific
+
+- `reactflow-practices`：React Flow v12+ 开发实践。
+
+### 相邻能力的边界
+
+| 任务 | 入口 | 按需加载 |
+| --- | --- | --- |
+| 决定信息是否出现、何时展开 | `improve-ui` | 信息设计 reference |
+| 改写文案、统一名称 | `ux-writing` | 自含改写规则 |
+| 改进既有界面的视觉与交互质量 | `improve-ui` | 按改动读取构图、视觉系统、动效与稳定、浮层或交互 reference |
+| 比较尚未定案的交互方案 | `ui-prototyping` | 临时 HTML 模板 |
+| 沉淀可复用设计规范 | `design-md-creator` | 新建／重排时读结构模板；行为验证时读验证规范 |
+| 规划故事、资产与分镜 | `generation-director` | 当前制作阶段 reference |
+| 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 视频只读目标模型 reference |
+| 设计 Agent 系统／拆解工程任务 | `agent-engineering`／`task-breakdown` | 对应架构层／任务执行契约与模板 |
+
+这些入口不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）
 

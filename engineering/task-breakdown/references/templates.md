@@ -34,9 +34,9 @@
 - **先行验证**：{需要先跑通的最小场景及不确定边界，或已有稳定链路的证据}
 - **集成分支与责任人**：{目标分支、负责合并和相关检查的人}
 
-| 任务编号 / 文件 | 所属切片 / 目标 | 前置任务与启动条件 | 可并行任务 | 写入范围及责任人 | 验收条件 / 细化条件 |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| {编号或任务文件链接} | {切片、局部目标} | {依赖证据，无依赖写无} | {通过写入及资源核对的任务} | {模块或文件、责任人} | {局部验收；远期何时细化} |
+| 任务编号 / 文件 | 所属切片 / 目标 | 复杂度画像 (Profile) | 前置任务与启动条件 | 可并行任务 | 写入范围及责任人 | 验收条件 / 细化条件 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| {编号或任务文件链接} | {切片、局部目标} | {低·fast(off) \| 中·standard(low) \| 高·reasoning(high)} | {依赖证据，无依赖写无} | {通过写入及资源核对的任务} | {模块或文件、责任人} | {局部验收；远期何时细化} |
 
 | 公共文件 / 共享资源 | 唯一写入责任人或串行安排 | 消费任务 |
 | :--- | :--- | :--- |
@@ -81,7 +81,7 @@ prompt: >
 ````markdown
 # Task {X}: {任务目标}
 
-> 总览：[`00-overview.md`](00-overview.md) | 所属交付切片：{标识} | 当前状态见 [`kanban.html`](kanban.html)
+> 总览：[`00-overview.md`](00-overview.md) | 所属交付切片：{标识} | 复杂度：{低/中/高} (`{tier / effort}`) | 当前状态见 [`kanban.html`](kanban.html)
 > 前置任务与启动条件：{明确通过的契约/行为证据} | 可并行任务：{编号或无}
 > 分支 / Worktree：{分支及路径} | 输入规格 / 契约版本：{版本}
 
@@ -90,6 +90,11 @@ prompt: >
 ```yaml
 role: "Task-{X} Executor"
 cwd: "{实际工作目录}"
+# 统一能力画像：由执行宿主按环境别名动态解析，禁止在任务文档中固化特定厂商具体型号
+profile:
+  complexity: "{低 | 中 | 高}" # 依据：机械样板/常规业务/核心算法或高竞态状态机
+  tier: "{fast | standard | reasoning}"
+  effort: "{off | low | medium | high}"
 budget: "{按任务不确定性设置的时间或工具预算，注明宿主是否强制执行}"
 permissions: "{实际权限；仅为执行约定的只读路径需明确标注}"
 prompt: >
@@ -192,3 +197,17 @@ prompt: >
 ## 4. Human 看板
 
 复制 [HTML 模板](../assets/kanban.html) 到任务目录，仅填入 `board-data` JSON；字段见模板内注释。执行中由主控汇总 Agent 汇报更新，Markdown 链接看板，不重复抄写运行进度。模板已内嵌 Tailwind CSS，可直接打开，无需安装依赖。
+
+## 5. 宿主模型别名与迟绑定规范 (Harness Aliasing & Late Binding)
+
+任务包中只声明厂商中立的抽象能力画像（`tier` + `effort`），**禁止在任务文档中固化特定厂商的具体模型版本号**，避免厂商模型迭代导致任务包失效。
+
+具体模型型号与推理控制参数由执行宿主（如 CLI 启动参数、企业网关、环境变量或项目配置别名）在派发时完成迟绑定映射：
+
+| 抽象 Profile (`tier / effort`) | 典型适用场景 | 宿主映射原则 | 当前主流基准（供宿主配置参考，勿硬编码入任务文档） |
+| :--- | :--- | :--- | :--- |
+| **`fast / effort: off`**<br>(低复杂度) | 机械样板、配置调整、文档、简单单测增补 | 映射到当前成本最低、高吞吐轻量模型，关闭显式推理 | • Anthropic: `claude-3-5-haiku`<br>• OpenAI: `gpt-4o-mini`<br>• Google: `gemini-2.0-flash` (thinking: off)<br>• DeepSeek: `deepseek-chat` |
+| **`standard / effort: low~medium`**<br>(中复杂度) | 标准业务逻辑、多分支模块、常规重构、明确契约联调 | 映射到主力通用代码模型，开启轻度至中度推理（1k~2k tokens） | • Anthropic: `claude-3-5/3.7-sonnet`<br>• OpenAI: `gpt-4o` 或 `o3-mini (low)`<br>• Google: `gemini-2.0-flash / 2.5-pro`<br>• DeepSeek: `deepseek-chat` |
+| **`reasoning / effort: high`**<br>(高复杂度) | 核心算法、高并发竞态、跨模块复杂状态机、底层协议重构 | 映射到当前顶级深度推理旗舰模型，开启满血推理预算（8k~16k+ tokens） | • Anthropic: `claude-3-7-sonnet (thinking: high)`<br>• OpenAI: `o1` 或 `o3-mini (high)`<br>• Google: `gemini-2.5-pro (thinking: high)`<br>• DeepSeek: `deepseek-reasoner` (R1) |
+
+

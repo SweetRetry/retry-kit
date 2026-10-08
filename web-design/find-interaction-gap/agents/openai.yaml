@@ -1,7 +1,0 @@
-interface:
-  display_name: "Find Interaction Gap"
-  short_description: "审查用户如何行动、获得反馈、转换状态、完成任务并从失败中恢复"
-  default_prompt: "使用 $find-interaction-gap 审查用户如何行动、获得反馈、转换状态、完成和恢复任务，报告有任务后果的 interaction gap 及证据。"
-
-policy:
-  allow_implicit_invocation: false

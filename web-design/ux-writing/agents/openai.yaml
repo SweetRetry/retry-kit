@@ -1,0 +1,4 @@
+interface:
+  display_name: "UX Writing"
+  short_description: "把界面文案改成一眼看懂的日常说法，输出原文案→新文案对照表"
+  default_prompt: "使用 $ux-writing 重写当前应用的菜单和功能文案，输出原文案→新文案对照表，功能不改，不确定的先问我。"

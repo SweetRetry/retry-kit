@@ -1,4 +1,0 @@
-interface:
-  display_name: "Information Clarity"
-  short_description: "审查必要信息、信息噪声、呈现模式（全量直出/分层披露）与判断支持"
-  default_prompt: "使用 $information-clarity 审查当前呈现的信息是否足以支持用户判断，并指出应保留、合并、压缩、延后或删除的具体信息。"

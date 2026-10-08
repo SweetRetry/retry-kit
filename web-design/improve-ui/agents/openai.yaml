@@ -1,0 +1,7 @@
+interface:
+  display_name: "Improve UI"
+  short_description: "审查或改进既有界面的信息呈现、构图、视觉系统与交互质量"
+  default_prompt: "使用 $improve-ui 依据任务与内容关系检查信息呈现、构图、视觉系统和交互质量，按问题读取 reference，给出有证据的最小调整；若我已要求实现，完成修改和验证。"
+
+policy:
+  allow_implicit_invocation: false
