@@ -15,7 +15,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 
 ### Engineering
 
-- `agent-engineering`：AI Agent Harness 架构工程：循环引擎、沙盒抽象、工具契约、上下文管理、死循环熔断与验证门禁。
+- `agent-engineering`：设计与改进 AI Agent 系统：任务与自主程度、模型、知识与记忆、工具、执行控制、权限、委托和评估迭代。
 - `find-edgecases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
 - `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
@@ -23,7 +23,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 ### Generation
 
 - `generation-director`：AIGC 叙事导演总控，涵盖世界观设定、剧本创作/诊断、资产建档与分镜装配。
-- `image-prompt`：分析决定画面成败的视觉维度；缺少视觉上下文时先询问高影响方向，再生成图片 prompt。
+- `image-prompt`：按交付物与视觉媒介选择专业语言，覆盖摄影、绘画、插画、动漫、游戏美术、像素画、3D、平面设计与材料拼贴。
 - `video-prompt`：按目标模型与入口限制编写单次生成、编辑或延长视频的 prompt。
 
 ### Product
@@ -51,7 +51,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 | 比较尚未定案的交互方案 | `ui-prototyping` | 临时 HTML 模板 |
 | 沉淀可复用设计规范 | `design-md-creator` | 新建／重排时读结构模板；行为验证时读验证规范 |
 | 规划故事、资产与分镜 | `generation-director` | 当前制作阶段 reference |
-| 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 视频只读目标模型 reference |
+| 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 图片按视觉方向读取 reference；视频只读目标模型 reference |
 | 设计 Agent 系统／拆解工程任务 | `agent-engineering`／`task-breakdown` | 对应架构层／任务执行契约与模板 |
 
 这些入口不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。

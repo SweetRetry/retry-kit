@@ -12,11 +12,22 @@
     <noscript>请启用 JavaScript 查看任务看板，或请主控提供进度摘要。</noscript>
     <p id="error" role="alert" class="mb-4 hidden rounded-xl border border-red-200 bg-red-50 p-4 text-red-800"></p>
     <main id="app" class="hidden">
-      <section aria-labelledby="board-title">
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-baseline gap-3"><h1 id="board-title" class="text-lg font-semibold">执行看板</h1><span id="shown-count" class="text-xs text-stone-500" aria-live="polite"></span></div>
-
-        </div>
+      <header class="mb-4">
+        <h1 id="board-title" class="text-2xl font-semibold tracking-tight"></h1>
+        <p id="goal" class="mt-2 text-sm text-stone-600"></p>
+        <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-stone-500"><span id="updated-at"></span><span id="revision"></span><span id="overview-link"></span></div>
+      </header>
+      <section aria-labelledby="delivery-title" class="mb-4 rounded-xl border border-stone-200 bg-white p-4">
+        <h2 id="delivery-title" class="text-sm font-semibold">交付验收</h2>
+        <p id="progress" class="mt-2 text-sm text-stone-600"></p>
+        <ul id="deliveries" class="mt-3 space-y-2"></ul>
+      </section>
+      <section id="decisions-panel" aria-labelledby="decisions-title" class="mb-4 hidden rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <h2 id="decisions-title" class="text-sm font-semibold">待决事项</h2>
+        <ul id="decisions" class="mt-3 space-y-2"></ul>
+      </section>
+      <section aria-labelledby="tasks-title">
+        <div class="mb-4 flex items-baseline gap-3"><h2 id="tasks-title" class="text-lg font-semibold">执行任务</h2><span id="shown-count" class="text-xs text-stone-500"></span></div>
         <div class="mb-4 flex gap-1" role="group" aria-label="看板视图"><button id="board-view" type="button" aria-pressed="true" class="rounded-lg bg-stone-800 px-4 py-2 text-sm text-white">任务看板</button><button id="graph-view" type="button" aria-pressed="false" class="rounded-lg px-4 py-2 text-sm text-stone-600">依赖关系</button></div>
         <div id="graph-panel" class="mb-4 hidden rounded-xl border border-stone-200 bg-white p-4"><p class="mb-4 text-xs text-stone-500">从左到右推进 · 连线表示前置任务 · 点击节点查看详情</p><div class="max-h-[560px] overflow-auto"><div id="graph" class="relative"></div></div></div>
         <div id="board" class="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-5"></div>
@@ -50,7 +61,7 @@
     'use strict';
     const labels = {Todo:'待开始', Implementing:'实现中', Verifying:'验证中', Reviewing:'审查中', Ready:'待集成', Integrated:'已集成', Blocked:'受阻'};
     const tones = {Todo:'bg-stone-100 text-stone-600', Implementing:'bg-blue-50 text-blue-700', Verifying:'bg-violet-50 text-violet-700', Reviewing:'bg-violet-50 text-violet-700', Ready:'bg-teal-50 text-teal-700', Integrated:'bg-teal-50 text-teal-700', Blocked:'bg-amber-50 text-amber-800'};
-    const colors = {Todo:'bg-stone-300', Implementing:'bg-blue-500', Verifying:'bg-violet-400', Reviewing:'bg-violet-600', Ready:'bg-teal-400', Integrated:'bg-teal-700', Blocked:'bg-amber-500'};
+    const deliveryLabels = {planned:'待验收', active:'验收中', accepted:'已验收', blocked:'受阻'};
     const columns = [{title:'待开始', states:['Todo']}, {title:'进行中', states:['Implementing']}, {title:'待确认', states:['Verifying','Reviewing','Ready']}, {title:'已集成', states:['Integrated']}, {title:'受阻', states:['Blocked']}];
     const $ = id => document.getElementById(id);
     const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -63,9 +74,18 @@
     const link = (title, href) => `<a class="text-sm font-medium text-teal-700 underline-offset-4 hover:underline" href="${escape(safeLink(href))}">${escape(title)} ↗</a>`;
     try {
       const data = JSON.parse($('board-data').textContent);
+      for (const key of ['title','goal','revision','overview']) {
+        if (typeof data[key] !== 'string') throw new Error(`看板缺少文本字段 ${key}`);
+      }
       const tasks = new Map(data.tasks.map(task => [task.id, task]));
       const deliveries = new Map(data.deliveries.map(delivery => [delivery.id, delivery]));
       if (tasks.size !== data.tasks.length || deliveries.size !== data.deliveries.length) throw new Error('任务或交付目标编号重复');
+      for (const delivery of data.deliveries) {
+        for (const key of ['id','title','acceptance']) {
+          if (typeof delivery[key] !== 'string') throw new Error(`交付目标缺少文本字段 ${key}`);
+        }
+        if (!Object.hasOwn(deliveryLabels, delivery.status)) throw new Error(`${delivery.id} 的交付状态无效`);
+      }
       for (const task of data.tasks) {
         if (!Object.hasOwn(labels, task.status) || !deliveries.has(task.delivery)) throw new Error(`${task.id} 的状态或交付目标无效`);
         if (!task.complexity) throw new Error(`${task.id} 缺少复杂度标注`);
@@ -74,8 +94,27 @@
         safeLink(task.source);
         for (const item of task.evidence) safeLink(item.href);
       }
-      for (const item of data.decisions) safeLink(item.source);
+      safeLink(data.overview);
+      for (const item of data.decisions) {
+        for (const key of ['question','impact','source']) {
+          if (typeof item[key] !== 'string') throw new Error(`待决事项缺少文本字段 ${key}`);
+        }
+        safeLink(item.source);
+      }
       document.title = `${data.title} · 执行看板`;
+      $('board-title').textContent = data.title;
+      $('goal').textContent = data.goal;
+      if (data.updatedAt !== null && (typeof data.updatedAt !== 'string' || !Number.isFinite(Date.parse(data.updatedAt)))) throw new Error('更新时间无效');
+      $('updated-at').textContent = data.updatedAt === null ? '尚未更新' : `更新于 ${new Date(data.updatedAt).toLocaleString('zh-CN')}`;
+      $('revision').textContent = data.revision;
+      $('overview-link').innerHTML = link('任务总览',data.overview);
+      const accepted = data.deliveries.filter(delivery => delivery.status === 'accepted').length;
+      const integrated = data.tasks.filter(task => task.status === 'Integrated').length;
+      $('progress').textContent = `业务已验收 ${accepted} / ${data.deliveries.length} · 任务已集成 ${integrated} / ${data.tasks.length}`;
+      $('deliveries').innerHTML = data.deliveries.map(delivery => `<li class="text-sm"><span class="font-medium">${escape(delivery.title)}</span><span class="px-2 text-xs text-stone-500">${deliveryLabels[delivery.status]}</span><p class="mt-1 text-xs leading-5 text-stone-600">${escape(delivery.acceptance)}</p></li>`).join('');
+      $('decisions').innerHTML = data.decisions.map(item => `<li class="text-sm"><p class="font-medium">${escape(item.question)}</p><p class="mt-1 text-xs leading-5 text-amber-900">${escape(item.impact)}</p>${link('问题记录',item.source)}</li>`).join('');
+      $('decisions-panel').classList.toggle('hidden',data.decisions.length === 0);
+      $('shown-count').textContent = `${data.tasks.length} 个任务`;
 
       function showDetail(id) {
         const task = tasks.get(id);
@@ -85,13 +124,10 @@
         $('detail').showModal();
       }
       function renderBoard() {
-        const filtered = data.tasks;
-        $('shown-count').textContent = `${filtered.length} / ${data.tasks.length} 个任务`;
         $('board').innerHTML = columns.map(column => {
-          const items = filtered.filter(task => column.states.includes(task.status));
+          const items = data.tasks.filter(task => column.states.includes(task.status));
           return `<section class="min-w-0 rounded-xl bg-stone-100/80 p-3"><h3 class="mb-4 flex items-center justify-between px-1 text-sm font-medium"><span>${column.title}</span><span class="rounded-md bg-white px-2 py-0.5 text-xs tabular-nums text-stone-500">${items.length}</span></h3><div class="space-y-3">${items.map(task => `<button type="button" data-task="${escape(task.id)}" class="block w-full rounded-xl border ${task.status === 'Blocked' ? 'border-amber-200' : 'border-stone-200'} bg-white p-4 text-left transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"><div class="mb-3 flex flex-wrap items-center justify-between gap-2"><div class="flex items-center gap-1.5"><span class="text-xs font-medium text-stone-500">${escape(task.id)}</span><span class="rounded-md bg-stone-100 px-2 py-0.5 text-xs text-stone-600">${escape(task.complexity)}</span></div>${badge(task.status)}</div><h4 class="break-words text-sm font-semibold leading-6">${escape(task.title)}</h4><p class="mt-2 break-words text-xs leading-5 text-stone-500">${escape(task.summary)}</p>${task.blocker ? `<p class="mt-3 rounded-lg bg-amber-50 px-2 py-1.5 text-xs leading-5 text-amber-900">${escape(task.blocker)}</p>` : ''}<p class="mt-3 break-words text-xs leading-5 text-stone-600">下一步 · ${escape(task.next)}</p>${task.dependencies.length ? `<p class="mt-2 text-xs leading-5 text-stone-500">依赖 ${escape(task.dependencies.join('、'))}</p>` : ''}<div class="mt-4 flex items-center justify-between gap-2 border-b border-stone-100 pt-3 text-xs text-stone-500"><span>${escape(task.owner)}</span><span aria-hidden="true">详情 ↗</span></div></button>`).join('') || `<p class="px-1 py-6 text-xs leading-5 text-stone-500">${data.tasks.length ? '当前没有此状态的任务' : '任务尚未拆分'}</p>`}</div></section>`;
         }).join('');
-        for (const button of $('board').querySelectorAll('[data-task]')) button.addEventListener('click', () => showDetail(button.dataset.task));
       }
       const levels = new Map(), visiting = new Set();
       function level(id) {
@@ -120,7 +156,6 @@
           const pos = positions.get(task.id);
           return `<button type="button" data-task="${escape(task.id)}" style="left:${pos.x}px;top:${pos.y}px;width:228px;min-height:96px" class="absolute rounded-xl border border-stone-200 bg-white p-3 text-left hover:border-teal-600 focus-visible:outline-2 focus-visible:outline-teal-600"><span class="flex items-center justify-between gap-2"><span class="text-xs text-stone-500">${escape(task.id)}</span>${badge(task.status)}</span><span class="mt-2 block truncate text-sm font-medium">${escape(task.title)}</span></button>`;
         }).join('') : '<p class="text-sm text-stone-500">任务尚未拆分，暂无依赖关系。</p>';
-        for (const button of $('graph').querySelectorAll('[data-task]')) button.addEventListener('click', () => showDetail(button.dataset.task));
       }
       function switchView(graph) {
         $('graph-panel').classList.toggle('hidden',!graph); $('board').classList.toggle('hidden',graph);
@@ -128,14 +163,14 @@
           $(id).setAttribute('aria-pressed',String(selected));
           $(id).className = selected ? 'rounded-lg bg-stone-800 px-4 py-2 text-sm text-white' : 'rounded-lg px-4 py-2 text-sm text-stone-600';
         }
-
-        $('shown-count').textContent = graph ? `全部 ${data.tasks.length} 个任务` : '';
-        if (!graph) renderBoard();
       }
       renderGraph();
       $('board-view').addEventListener('click',() => switchView(false));
       $('graph-view').addEventListener('click',() => switchView(true));
-
+      $('app').addEventListener('click',event => {
+        const button = event.target.closest('[data-task]');
+        if (button) showDetail(button.dataset.task);
+      });
       renderBoard();
       $('app').classList.remove('hidden');
     } catch (error) {

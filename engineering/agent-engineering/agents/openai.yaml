@@ -1,4 +1,0 @@
-interface:
-  display_name: "Agent Engineering"
-  short_description: "设计 Agent 的 prompt、context、tools、runtime 与 eval"
-  default_prompt: "使用 $agent-engineering 仅针对这个 AI Agent 的行为或架构进行设计或审查，并用真实 prompt、context、tool contract、runtime telemetry 与 eval 证据支持结论。"

@@ -1,7 +1,7 @@
 interface:
   display_name: "Task Breakdown"
-  short_description: "将需求或契约拆解为自含任务上下文、务实批判性审查、Worktree隔离与变更审计的工程任务包"
-  default_prompt: "使用 $task-breakdown 将需求或契约拆解为 docs/tasks/{taskfolder}/** 任务文档包，包含总览 00-overview.md、自含上下文与务实审查的子任务文件、未决问题 issues.md、老代码处理记录 legacy-burdens.md 与变更记录 changes.md。"
+  short_description: "将已确认需求拆为含任务边界、验收、看板与变更记录的工程任务包"
+  default_prompt: "使用 $task-breakdown 将已确认需求或契约拆为 docs/tasks/{taskfolder}/ 任务包，明确任务边界、依赖与验收，并初始化进度看板。"
 
 policy:
   allow_implicit_invocation: false

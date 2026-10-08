@@ -1,6 +1,6 @@
 # Task Breakdown Document Templates
 
-生成任务包时使用以下模板，按真实任务展开表格行；Phase 表示执行任务，编号仅用于引用，不表示固定批次或数量。近期任务生成完整文件，远期任务先在总览保留目标、依赖、验收及细化条件。占位符应替换为仓库事实；不适用的性能或外部资源字段可省略，未知项明确标记。派发与审查配置是任务描述，接入执行工具前须映射到宿主实际支持的参数。
+用仓库事实替换占位符，按任务展开表格行；不适用字段可省略，未知项显式标记。能力画像与执行规则见 [执行契约](execution-contract.md)，配置须映射到宿主实际参数。
 
 ## 1. 任务总览模板 (`00-overview.md`)
 
@@ -90,9 +90,8 @@ prompt: >
 ```yaml
 role: "Task-{X} Executor"
 cwd: "{实际工作目录}"
-# 统一能力画像：由执行宿主按环境别名动态解析，禁止在任务文档中固化特定厂商具体型号
 profile:
-  complexity: "{低 | 中 | 高}" # 依据：机械样板/常规业务/核心算法或高竞态状态机
+  complexity: "{低 | 中 | 高}"
   tier: "{fast | standard | reasoning}"
   effort: "{off | low | medium | high}"
 budget: "{按任务不确定性设置的时间或工具预算，注明宿主是否强制执行}"
@@ -193,21 +192,3 @@ prompt: >
 | 编号 / 日期 | 旧要求 → 新要求 | 原因及依据 / 确认人 | 影响任务与文档 | 契约提交 | 分支同步及受影响验证状态 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 ```
-
-## 4. Human 看板
-
-复制 [HTML 模板](../assets/kanban.html) 到任务目录，仅填入 `board-data` JSON；字段见模板内注释。执行中由主控汇总 Agent 汇报更新，Markdown 链接看板，不重复抄写运行进度。模板已内嵌 Tailwind CSS，可直接打开，无需安装依赖。
-
-## 5. 宿主模型别名与迟绑定规范 (Harness Aliasing & Late Binding)
-
-任务包中只声明厂商中立的抽象能力画像（`tier` + `effort`），**禁止在任务文档中固化特定厂商的具体模型版本号**，避免厂商模型迭代导致任务包失效。
-
-具体模型型号与推理控制参数由执行宿主（如 CLI 启动参数、企业网关、环境变量或项目配置别名）在派发时完成迟绑定映射：
-
-| 抽象 Profile (`tier / effort`) | 典型适用场景 | 宿主映射原则 | 当前主流基准（供宿主配置参考，勿硬编码入任务文档） |
-| :--- | :--- | :--- | :--- |
-| **`fast / effort: off`**<br>(低复杂度) | 机械样板、配置调整、文档、简单单测增补 | 映射到当前成本最低、高吞吐轻量模型，关闭显式推理 | • Anthropic: `claude-3-5-haiku`<br>• OpenAI: `gpt-4o-mini`<br>• Google: `gemini-2.0-flash` (thinking: off)<br>• DeepSeek: `deepseek-chat` |
-| **`standard / effort: low~medium`**<br>(中复杂度) | 标准业务逻辑、多分支模块、常规重构、明确契约联调 | 映射到主力通用代码模型，开启轻度至中度推理（1k~2k tokens） | • Anthropic: `claude-3-5/3.7-sonnet`<br>• OpenAI: `gpt-4o` 或 `o3-mini (low)`<br>• Google: `gemini-2.0-flash / 2.5-pro`<br>• DeepSeek: `deepseek-chat` |
-| **`reasoning / effort: high`**<br>(高复杂度) | 核心算法、高并发竞态、跨模块复杂状态机、底层协议重构 | 映射到当前顶级深度推理旗舰模型，开启满血推理预算（8k~16k+ tokens） | • Anthropic: `claude-3-7-sonnet (thinking: high)`<br>• OpenAI: `o1` 或 `o3-mini (high)`<br>• Google: `gemini-2.5-pro (thinking: high)`<br>• DeepSeek: `deepseek-reasoner` (R1) |
-
-

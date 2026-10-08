@@ -1,4 +1,4 @@
 interface:
   display_name: "Image Prompt"
-  short_description: "先收敛高影响视觉方向，再编写可直接生成的图片 prompt"
-  default_prompt: "使用 $image-prompt 把当前想法、需求与参考素材整理成可直接用于图片生成的多行 prompt；视觉上下文不足、不同方向会明显改变画面时，先向我确认影响最大的方向。"
+  short_description: "按交付物与视觉媒介选择专业术语，编写可直接使用的图片 prompt"
+  default_prompt: "使用 $image-prompt 按当前交付物与视觉方向读取对应 reference，把需求和参考整理成可直接使用的图片生成或编辑 prompt。"
