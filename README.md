@@ -1,21 +1,19 @@
 # SweetRetry Skills
 
-面向 Agent 的可复用 skill 集合。仓库按职责领域组织 skill，并将支持 skill 设计与迭代的研究证据单独落库。
+面向 Agent 的可复用 skill 集合。仓库按职责领域组织 skill。
 
 ## 目录
 
 ```text
-engineering/   Agent、代码质量与工程任务拆解
+engineering/   代码质量审查与工程任务拆解
 generation/    AI 图片、视频、剧本与分镜生成
 product/       飞书产品需求文档
 web-design/    界面设计、文案、原型与交互审查
 specific/      特定框架工程实践
-research/      跨 skill 的研究证据，不参与 skill discovery
 ```
 
 ### Engineering
 
-- `agent-engineering`：设计与改进 AI Agent 系统：任务与自主程度、模型、知识与记忆、工具、执行控制、权限、委托和评估迭代。
 - `find-edgecases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
 - `simplify-code`：识别并减少不改变行为的复杂度债务。
 - `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
@@ -52,7 +50,7 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 | 沉淀可复用设计规范 | `design-md-creator` | 新建／重排时读结构模板；行为验证时读验证规范 |
 | 规划故事、资产与分镜 | `generation-director` | 当前制作阶段 reference |
 | 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 图片按视觉方向读取 reference；视频只读目标模型 reference |
-| 设计 Agent 系统／拆解工程任务 | `agent-engineering`／`task-breakdown` | 对应架构层／任务执行契约与模板 |
+| 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
 
 这些入口不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
 
@@ -65,14 +63,10 @@ research/      跨 skill 的研究证据，不参与 skill discovery
 - [Matt Pocock Skills](https://github.com/mattpocock/skills)：可组合的工程工作流，覆盖需求对齐、调试、TDD、规格与架构改进。
 - [Impeccable](https://github.com/pbakaus/impeccable)：面向 AI coding agent 的设计工作流，覆盖视觉 critique、a11y / responsive audit、motion 与浏览器迭代。
 
-### Research
-
-`research/` 保存支持 skill 决策的一手来源研究。研究记录应区分事实、推断与建议；研究结论只有回写到对应 `SKILL.md` 后，才会改变 skill 行为。
-
 ## 维护约定
 
 - 每个 skill 使用独立目录，目录名与 `SKILL.md` 中的 `name` 一致；`name`、`display_name` 和一级标题统一使用英文。
-- skill 专属的按需资料放在该 skill 的 `references/`；跨 skill 研究放在根目录 `research/`。
+- skill 专属的按需资料放在该 skill 的 `references/`。
 - 保持 skill 职责独立，避免通过目录分层掩盖能力重叠。
 - 显式调用策略按宿主配置：Claude Code 使用 `SKILL.md` 的 `disable-model-invocation: true`；Codex 使用 `agents/openai.yaml` 的 `policy.allow_implicit_invocation: false`。两者不能互相替代；修改后检查显式可调用、隐式不触发。
 - 用户反馈驱动的修改遵循 [AGENTS.md](AGENTS.md) 中的反馈闭环。
