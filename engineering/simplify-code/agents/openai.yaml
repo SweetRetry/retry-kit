@@ -1,7 +1,7 @@
 interface:
   display_name: "Simplify Code"
-  short_description: "在不改变代码行为前提下识别并移除无价值抽象与复杂度债务"
-  default_prompt: "使用 $simplify-code 只审查我指定的代码范围，找出有证据支持的无价值抽象或中间层，并给出保持行为不变的最小简化结论。"
+  short_description: "找出并移除不改变行为的多余层级与复杂度"
+  default_prompt: "使用 $simplify-code 审查我指定的代码范围，找出有证据支持的多余层级，给出保持行为不变的最小改法。"
 
 policy:
   allow_implicit_invocation: false

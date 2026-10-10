@@ -14,8 +14,8 @@ specific/      特定框架工程实践
 
 ### Engineering
 
-- `find-edgecases`：审查系统执行、状态、协议、运行与恢复链路中的可达失效。
-- `simplify-code`：识别并减少不改变行为的复杂度债务。
+- `find-edgecases`：审查重复、中断、超时、新旧版本并存等可达条件下的系统失效。
+- `simplify-code`：审查并移除不改变行为的复杂度。
 - `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
 
 ### Generation
