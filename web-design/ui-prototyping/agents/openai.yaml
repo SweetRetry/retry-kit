@@ -1,4 +1,4 @@
 interface:
   display_name: "UI Prototyping"
-  short_description: "用临时可交互 HTML 并排体验多个 UI 方案"
-  default_prompt: "使用 $ui-prototyping 把这个难以决策的 UI 做成一个临时可交互 HTML，让我在相同条件下体验并比较各个方案。"
+  short_description: "用临时可交互原型并排体验多个 UI 方案"
+  default_prompt: "使用 $ui-prototyping 把这个难以决策的 UI 做成一个临时可交互原型，让我在相同条件下体验并比较各个方案。"

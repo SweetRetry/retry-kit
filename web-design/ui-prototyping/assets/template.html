@@ -24,7 +24,7 @@
     </style>
   </head>
   <body class="min-h-full text-stone-950 antialiased" data-motion="false">
-    <div class="grid min-h-svh grid-cols-[12rem_minmax(0,1fr)] md:grid-cols-[15rem_minmax(0,1fr)]">
+    <div id="prototype-layout" class="grid min-h-svh grid-cols-[12rem_minmax(0,1fr)] md:grid-cols-[15rem_minmax(0,1fr)]">
       <aside class="sticky top-0 h-svh overflow-y-auto border-r border-stone-200 bg-white p-3 md:p-5">
         <nav id="component-nav" class="grid gap-1" aria-label="Components"></nav>
       </aside>
@@ -38,43 +38,55 @@
 
     <script type="module">
       const components = [...document.querySelectorAll("[data-prototype-component]")];
-      const nav = document.querySelector("#component-nav");
+      const layout = document.querySelector("#prototype-layout");
 
-      components.forEach((component) => {
-        const link = document.createElement("a");
-        link.href = `#${component.id}`;
-        link.dataset.target = component.id;
-        link.textContent = component.dataset.label;
-        link.className = "rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-stone-100 hover:text-stone-950";
-        nav.append(link);
-      });
+      // A single candidate has nothing to compare against, so the sidebar only costs width.
+      if (components.length < 2) {
+        layout.querySelector("aside").remove();
+        layout.className = "min-h-svh";
+      } else {
+        mountNav();
+      }
 
-      const links = [...nav.querySelectorAll("a")];
-      const setActive = (id) => {
-        links.forEach((link) => {
-          const active = link.dataset.target === id;
-          link.classList.toggle("bg-stone-950", active);
-          link.classList.toggle("text-white", active);
-          link.classList.toggle("text-stone-600", !active);
-          link.classList.toggle("hover:bg-stone-100", !active);
-          link.classList.toggle("hover:text-stone-950", !active);
-          if (active) link.setAttribute("aria-current", "true");
-          else link.removeAttribute("aria-current");
+      function mountNav() {
+        const nav = document.querySelector("#component-nav");
+
+        components.forEach((component) => {
+          const link = document.createElement("a");
+          link.href = `#${component.id}`;
+          link.dataset.target = component.id;
+          link.textContent = component.dataset.label;
+          link.className = "rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-stone-100 hover:text-stone-950";
+          nav.append(link);
         });
-      };
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((entry) => entry.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-          if (visible) setActive(visible.target.id);
-        },
-        { threshold: [0.25, 0.5, 0.75] },
-      );
+        const links = [...nav.querySelectorAll("a")];
+        const setActive = (id) => {
+          links.forEach((link) => {
+            const active = link.dataset.target === id;
+            link.classList.toggle("bg-stone-950", active);
+            link.classList.toggle("text-white", active);
+            link.classList.toggle("text-stone-600", !active);
+            link.classList.toggle("hover:bg-stone-100", !active);
+            link.classList.toggle("hover:text-stone-950", !active);
+            if (active) link.setAttribute("aria-current", "true");
+            else link.removeAttribute("aria-current");
+          });
+        };
 
-      components.forEach((component) => observer.observe(component));
-      if (components[0]) setActive(components[0].id);
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible) setActive(visible.target.id);
+          },
+          { threshold: [0.25, 0.5, 0.75] },
+        );
+
+        components.forEach((component) => observer.observe(component));
+        if (components[0]) setActive(components[0].id);
+      }
 
       const motionAllowed = document.body.dataset.motion === "true" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (motionAllowed) {
