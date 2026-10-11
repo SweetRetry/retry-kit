@@ -1,34 +1,47 @@
 ---
 name: design-md-creator
-description: Create or update design.md for reusable brand or design guidance for agents. A complaint about one page alone does not trigger this skill.
+description: 通过逐轮访谈确定品牌、设计规范与应用界面决策，视觉选择用 ui-prototyping 比较，创建或更新项目的 design.md。单个页面的修改意见不触发。
 ---
 
 # Create a design.md
 
-Distill project evidence and human corrections into reusable, observable design decisions. Keep page-specific fixes in the current artifact unless they reveal a reusable rule.
+design.md 把三层决策交给 agent：品牌（是谁、什么感觉、不像谁）、设计规范（品牌如何落到 Token 与组件）、应用界面（各类界面的跨页判断）。具体流程和页面留在 PRD 与原型。
 
-## 1. Inspect the affected sources
+决策归用户，事实归你：能从项目查到的不问用户。
 
-Read relevant tokens, CSS, shipped pages, authorship elements, voice and recurring artifact types. For a local update, inspect only affected rules and evidence. Prefer shipped code when it conflicts with drafts; ask only about critical conflicts affecting brand identity or facts.
+## 1. 查事实
 
-## 2. Place each rule at its responsibility layer
+读 Token、样式、组件变体、已上线页面、品牌素材与现有 design.md；局部更新只读受影响的部分。已上线代码优先于草稿，来源之间的冲突转为访谈问题。
 
-- **Judgment → design.md**: reader tasks, information architecture, composition and evidence priorities.
-- **Mechanics → existing tokens or stylesheet**: exact colors, fonts, spacing and class names. Read definitions only to verify tokens or diagnose conflicts; document the public vocabulary and extension mechanism.
-- **Mechanical verification → deterministic checks**: assertions such as overflow, contrast or unregistered classes.
+## 2. 逐轮访谈
 
-Express judgment as observable behavior, with a reason where misapplication is likely. Use supplied corrections; do not require a fixed number of complaints or turn sample values into universal rules.
+请求中已给出的决定直接记录，只问它没覆盖的部分。
 
-## 3. Synthesize the guidance
+每轮提出所有前置已定的问题：编号，每题附基于事实的推荐答案，措辞让回答“yes”即采纳推荐。依赖本轮未决答案的问题留到下一轮。按依赖顺序推进：
 
-When creating or restructuring the file, read [design-md-template.md](references/design-md-template.md); a narrow edit does not need the full template. Keep only project-backed sections and decisions, with no target line count.
+1. **品牌**：性格、受众、期望感受、不能像谁、语气。
+2. **设计规范**：颜色角色、字体、密度与间距、层级表达、形状语言、动效、组件词表。
+3. **应用界面**：产品有哪几类界面，各自的首要任务与密度，规则是否冲突。
+4. **封杀清单**：读 [anti-slop-patterns.md](references/anti-slop-patterns.md)，挑出与这些界面相关的条目逐条提问，连同用户点名的反例一起确认。
 
-Preserve facts and caller constraints before reader clarity, brand authorship, material composition and micro-details. Reuse existing style definitions; only include exact public classes, tokens and documented extensions.
+需要看到才能定的问题（整体色调、字体搭配、密度、形状语言、动效手感）改用 `ui-prototyping`：在同一个真实页面上用真实内容做 2 到 4 个整体方向，按该 skill 收敛；单个数值在收敛后的原型里确认。选定原型的取值即为 Token。
 
-When reusable feedback rejects generated design patterns, read [anti-slop-patterns.md](references/anti-slop-patterns.md) and select applicable patterns. Do not import the full catalogue as a default style.
+用户的修正只在超出当前页面仍成立时写成规则，样例数值不升格为通用规则。
 
-## 4. Verify and deliver
+所有分支已回答或明确省略，且用户确认双方理解一致，访谈才结束；此前不写文件。
 
-Check changed rules against project evidence and existing guidance. For a new behavioral principle needing comparison, read [eval-and-verification.md](references/eval-and-verification.md) and compare baseline with guided output on one representative scenario. Require structural differences only for structural rules; wording edits do not require page regeneration.
+## 3. 写文件
 
-Deliver design.md. Add a token or class contract only when the requested guidance needs it. When integration is requested, add one context pointer to AGENTS.md or CLAUDE.md; keep the guidance in design.md.
+新建或重排时读 [design-md-template.md](references/design-md-template.md)，局部修改不读。只写访谈确定的章节，不设行数目标。
+
+- 判断写进正文，写成可观测行为，容易误用处附理由。
+- 取值只有一个来源：项目已有 Token 来源（如 `globals.css`）时，正文点名公开 Token 并给出路径，文件头省略对应分组并记入 `omitted`；没有时文件头就是来源。
+- 能机械检查的规则（溢出、对比度、未登记类名）交给脚本或 CI，正文不重复。
+
+默认写一个文件。各类界面规则冲突时才拆分：根文件放品牌与共用规范，各界面文件写明自己覆盖了什么。
+
+## 4. 验证与交付
+
+逐条对照访谈答案与项目证据。新增行为原则时，用同一个真实页面和同一提示，分别在不加载与加载 design.md 的条件下生成，用 `ui-prototyping` 并排呈现给用户；结构性规则须看到结构差异，措辞修改不需重新生成。
+
+交付 design.md 与 `omitted` 中记录的决定。用户要求接入时，在 AGENTS.md 或 CLAUDE.md 加一行指针，规范本身留在 design.md。
