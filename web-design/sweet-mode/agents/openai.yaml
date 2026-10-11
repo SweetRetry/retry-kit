@@ -1,0 +1,7 @@
+interface:
+  display_name: "Sweet Mode"
+  short_description: "按 SweetRetry 界面规范在 Tailwind + shadcn/ui 项目中实现或修改界面"
+  default_prompt: "使用 $sweet-mode 按 SweetRetry 界面规范实现或修改当前界面，按改动读取 reference，逐项完成验收清单并交付结论。"
+
+policy:
+  allow_implicit_invocation: false

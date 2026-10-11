@@ -34,6 +34,7 @@ specific/      特定框架工程实践
 - `improve-ui`：信息呈现、构图、视觉系统、尺寸稳定、动效、浮层与交互质量；原信息审查、布局重构与交互审查统一调用 `$improve-ui`。
 - `design-md-creator`：提炼可复用品牌与设计规范，创建或更新 `design.md`。
 - `ui-prototyping`：用临时可交互原型（单文件 HTML 或 Next.js）比较尚未定案的 UI 方案。
+- `sweet-mode`：按 SweetRetry 界面规范在 Tailwind + shadcn/ui 项目中实现或修改界面，含 Token、圆角、层叠、反馈与动效硬约束。
 
 ### Specific
 
@@ -46,6 +47,7 @@ specific/      特定框架工程实践
 | 决定信息是否出现、何时展开 | `improve-ui` | 信息设计 reference |
 | 改写文案、统一名称 | `ux-writing` | 自含改写规则 |
 | 改进既有界面的视觉与交互质量 | `improve-ui` | 按改动读取构图、视觉系统、动效与稳定、浮层或交互 reference |
+| 按 SweetRetry 规范实现界面 | `sweet-mode` | 按改动读取层级、布局、表面、字体、稳定或交互 reference |
 | 比较尚未定案的交互方案 | `ui-prototyping` | HTML 模板或 Next.js 脚手架脚本 |
 | 沉淀可复用设计规范 | `design-md-creator` | 新建／重排时读结构模板；行为验证时读验证规范 |
 | 规划故事、资产与分镜 | `generation-director` | 当前制作阶段 reference |
