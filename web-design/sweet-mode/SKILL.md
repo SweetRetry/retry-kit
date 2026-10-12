@@ -27,7 +27,7 @@ reference 引用的 `globals.css`、`packages/ui` 变体与 recipe 指目标项�
 | 间距、对齐、宽度、栅格与分区边界 | [layout.md](reference/layout.md) |
 | 颜色 Token、表面高度、圆角嵌套、z-index 与 Portal | [surface.md](reference/surface.md) |
 | 字号、字重、字体族与数字字形 | [typography.md](reference/typography.md) |
-| 加载占位、卡片等高、空值、报错与长文本溢出 | [stability.md](reference/stability.md) |
+| 加载占位、卡片等高、空值、报错、长文本溢出与浮层关闭时的内容稳定 | [stability.md](reference/stability.md) |
 | 错误与结果反馈、toast、等待态、过渡与动画 | [interaction.md](reference/interaction.md) |
 
 改动只落在当前任务触及的范围。范围外发现的违规列在交付里，不顺手修改。
