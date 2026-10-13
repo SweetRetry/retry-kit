@@ -156,7 +156,7 @@ Retry is a personal design language for everything Zimin makes: the site, notes 
 
 **Personality**, each word with what it rules out:
 
-- **Restrained**: never manufactures polish with gradients, glows, glass or big shadows.
+- **Restrained**: never manufactures polish with gradients, glows, decorative glass or big shadows.
 - **Precise**: alignment, numbers and wording are exact. No filler copy, no fake stats.
 - **Warm**: not corporate. Plain first-person voice, room to breathe, an occasional personal touch.
 
@@ -255,6 +255,32 @@ One family: **Inter** with optical sizing (`font-optical-sizing: auto`), loaded 
 
 **States.** Every interactive element is drawn in all four states: rest, hover, focus, disabled. Focus is always `focus-ring` (2px solid `ring`, 2px offset), at least 3:1 on every surface it lands on. Disabled swaps to `surface-1` and `subtle-foreground`; it never uses opacity.
 
+## Interaction patterns
+
+Each rule names its condition, so it holds on every surface. Surface files set parameters or opt in; they don't rewrite these.
+
+**Waiting**
+
+- An action that rarely fails and can be undone (create, rename, move, toggle): update the UI instantly and mark the item with a quiet `subtle-foreground` dot until the server confirms. On failure, revert it and say so in an `rt-toast` with a Retry action.
+- An action that moves money, reaches other people, or can't be undone: show the pending state inside the button (a spinner replaces the label, the button keeps its width). Never update optimistically.
+- First load of a page or list: skeleton rows in the shape of the real content, `surface-2` on `background`. Never a full-page spinner. If it loads in under 300ms, show nothing.
+
+**Revealing actions**
+
+- Secondary row actions may appear on hover only if the same action is reachable another way: a keyboard shortcut, a context menu, or a swipe on touch. Primary actions are always visible.
+
+**Empty states**
+
+- Name the space, add one line on what belongs there, and one verb button ("Create your first note"). Never "No data", never an apology.
+
+**Color that carries direction**
+
+- Up/down coloring is off by default. A surface may turn it on only when direction is the core information (prices, for example), always paired with a + or − sign, and its surface file must say so.
+
+**Translucency**
+
+- Blur is allowed only on chrome that content scrolls underneath (sticky headers, sidebars over content), as `background` at about 85% opacity plus blur. Never on cards, panels or decoration.
+
 ## Motion
 
 Quick and quiet. Color changes take 150ms, movement (switches, theme change) 200ms, both on `cubic-bezier(0.2, 0, 0, 1)`. Motion only answers a state change: no entrance animations, no bounce, no parallax.
@@ -274,11 +300,11 @@ All four share the color budget: one emerald moment per view.
 
 - **Don't** open with a centered hero and three icon cards. **Do** lead with a real claim or the work, left-aligned.
 - **Don't** box every group or nest cards in cards. **Do** group with space, tone and type size.
-- **Don't** use gradients, glows, glassmorphism, grid backdrops or large shadows. **Do** use flat tone steps.
+- **Don't** use gradients, glows, decorative glass cards, grid backdrops or large shadows. **Do** use flat tone steps; blur only on chrome that content scrolls under (see Interaction patterns).
 - **Don't** wrap ordinary metadata in badges or pills. **Do** set it in `small`, `muted-foreground`; dots only for real status.
 - **Don't** put decorative icons before headings or on tinted tiles. **Do** use icons only on actions.
 - **Don't** slide into terminal or brutalist styling: no mono headlines, no heavy raw borders, no all caps. **Do** keep mono in code.
 - **Don't** squeeze tables into narrow columns or mix alignments. **Do** give tables full width, right-align numbers and their headers.
-- **Don't** color numbers green because they are "good". **Do** state change in `muted-foreground`; emerald is for action and status only.
+- **Don't** color numbers green because they are "good". **Do** state change in `muted-foreground`; emerald is for action and status only. (A surface whose core information is direction may opt in; see Interaction patterns.)
 
 Restraint isn't emptiness. Tension comes from scale contrast in type (a `display` claim over `body` copy), generous space, exact alignment, and the single emerald moment.
