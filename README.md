@@ -32,7 +32,7 @@ specific/      特定框架工程实践
 
 - `ux-writing`：把界面文案改成一眼看懂的日常说法，统一用词，输出原文案→新文案对照表。
 - `improve-ui`：信息呈现、构图、视觉系统、尺寸稳定、动效、浮层与交互质量；原信息审查、布局重构与交互审查统一调用 `$improve-ui`。
-- `design-md-creator`：逐轮访谈品牌、设计规范与应用界面决策，视觉选择交给 `ui-prototyping` 比较，再创建或更新 `design.md`。
+- `design-md-creator`：逐轮访谈品牌、设计规范与应用界面决策，视觉选择在可交互样张上比较，再创建或更新 `design.md`。
 - `ui-prototyping`：用临时可交互原型（单文件 HTML 或 Next.js）比较尚未定案的 UI 方案。
 - `sweet-mode`：Tailwind + shadcn/ui 项目的界面实现规范，Token、字阶、圆角、层叠、反馈与动效的具体取值与禁令，附禁令扫描脚本；与 `improve-ui` 的通用诊断方法分属具体与抽象两层。
 
@@ -49,12 +49,12 @@ specific/      特定框架工程实践
 | 改进既有界面的视觉与交互质量 | `improve-ui` | 按改动读取构图、视觉系统、动效与稳定、浮层或交互 reference |
 | 在 Tailwind + shadcn/ui 项目中编写或修改界面 | `sweet-mode` | 按改动读取层级、布局、表面、字体、稳定或交互 reference |
 | 比较尚未定案的交互方案 | `ui-prototyping` | HTML 模板或 Next.js 脚手架脚本 |
-| 沉淀品牌与设计规范 | `design-md-creator` | 新建／重排时读结构模板；封杀清单轮读套路候选；视觉选择调用 `ui-prototyping` |
+| 沉淀品牌与设计规范 | `design-md-creator` | 新建／重排时读结构模板；封杀清单轮读套路候选 |
 | 规划故事、资产与分镜 | `generation-director` | 当前制作阶段 reference |
 | 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 图片按视觉方向读取 reference；视频只读目标模型 reference |
 | 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
 
-这些入口不默认串联；同一任务确实包含多类问题时再组合。例外是 `design-md-creator`，它在需要看到才能定的视觉选择上调用 `ui-prototyping`。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
+这些入口互不引用，也不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）
 

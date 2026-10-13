@@ -27,7 +27,7 @@ disable-model-invocation: true
 
 按实际触及内容读取，可命中多行；局部问题只读相关 reference。综合审查先定位相关维度，不把某一维度的检查当作全部验收。
 
-纯文案改写由 ux-writing 处理；仅在当前任务需要且该 skill 可用时读取。新建可复用设计规范属于 design-md-creator。
+纯文案改写与新建可复用设计规范不在本 skill 范围。
 
 ## 3. 验证与交付
 

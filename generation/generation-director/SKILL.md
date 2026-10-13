@@ -15,7 +15,7 @@ disable-model-invocation: true
 - 角色、场景、道具档案与状态演变：[asset-breakdown.md](references/asset-breakdown.md)。
 - Scene／Beat／Shot、机位轴线与生成接力：[storyboarding.md](references/storyboarding.md)。
 
-不默认读取所有 reference。需要最终模型 prompt 时，使用可用的 image-prompt 或 video-prompt；当前阶段不重复其完整规范。
+不默认读取所有 reference。单张图片或单次视频的最终模型 prompt 不在本 skill 范围。
 
 ## 跨阶段约束
 

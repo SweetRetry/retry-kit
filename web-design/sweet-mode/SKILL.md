@@ -1,6 +1,6 @@
 ---
 name: sweet-mode
-description: Tailwind + shadcn/ui 项目的界面实现规范：编写或修改界面时，Token、字阶、圆角、z-index、反馈与动效按具体取值与禁令落地，交付前跑禁令扫描脚本。通用的界面诊断方法见 improve-ui。仅供用户显式调用。
+description: Tailwind + shadcn/ui 项目的界面实现规范：编写或修改界面时，Token、字阶、圆角、z-index、反馈与动效按具体取值与禁令落地，交付前跑禁令扫描脚本。仅供用户显式调用。
 disable-model-invocation: true
 ---
 
