@@ -15,6 +15,7 @@ specific/      特定框架工程实践
 ### Engineering
 
 - `find-edgecases`：审查重复、中断、超时、新旧版本并存等可达条件下的系统失效。
+- `raise-ambition`：动手前把任务抬高到真实结果，补齐顶尖做法、跨领域技巧、对抗视角与外部验收，改写成 prompt 后等确认。
 - `simplify-code`：审查并移除不改变行为的复杂度。
 - `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
 
@@ -55,6 +56,7 @@ specific/      特定框架工程实践
 | 策划日本市场 AI 生成情感叙事广告 | `japanese-cinematic-ad` | 自含流程、文化与法规审查 |
 | 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 图片按视觉方向读取 reference；视频只读目标模型 reference |
 | 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
+| 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
 
 这些入口互不引用，也不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
 
