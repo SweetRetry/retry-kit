@@ -33,7 +33,7 @@ When rules compete: facts and constraints › the host project's framework › t
 
 ### Setup
 
-Use `globals.css` as the global stylesheet (it replaces shadcn's). Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>` so every animation inherits Retry's curve and honours reduced motion.
+Use `globals.css` as the global stylesheet (it replaces shadcn's). Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`, so components set no `transition` unless they need a different duration.
 
 ### Voice
 
@@ -105,7 +105,7 @@ Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new va
 - **Direction colors** (up green, down red) are off unless a surface's core information is direction; then always with + or −, declared in that surface's file.
 - **Quiet craft**: a detail earns its place only if it has a job, stays invisible at first glance, lives where the person touches, and falls back to no motion under reduced motion. Adopted: numbers that change roll only the digits that changed (tabular, no layout shift); text links draw their underline in from the left on hover and out to the right.
 - **Blur** only on chrome that content scrolls under: `bg-background/85 backdrop-blur`.
-- **Motion**: CSS transitions for hover, press and color (`duration-150`, `ease-out`). Motion for anything that appears, leaves or changes place: `AnimatePresence` for enter and exit, `layout` / `layoutId` for reflow and shared elements (a thumbnail opening to full view). Same curve everywhere (`ease-out` = `[0.2, 0, 0, 1]`); a spring only as `{ type: "spring", bounce: 0 }`. Animate only `transform` and `opacity`. Motion answers a state change: no decorative entrances, no bounce.
+- **Motion**: CSS transitions for hover, press and color: name the property and nothing else (`transition-colors`, `transition-transform`); the theme already defaults every transition to 150ms on Retry's curve. Add `duration-200` only for movement. Motion for anything that appears, leaves or changes place: `AnimatePresence` for enter and exit, `layout` / `layoutId` for reflow and shared elements (a thumbnail opening to full view). Same curve everywhere (`ease-out` = `[0.2, 0, 0, 1]`); a spring only as `{ type: "spring", bounce: 0 }`. Animate only `transform` and `opacity`. Motion answers a state change: no decorative entrances, no bounce.
 
 ## Surfaces
 

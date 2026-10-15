@@ -21,7 +21,9 @@
   --text-6xl--line-height: 1.05;
   --text-6xl--letter-spacing: -0.025em;
 
-  /* Retry's curve behind the ease-out utility. Durations: duration-150, duration-200. */
+  /* Retry's curve is both the default for every transition-* utility and the
+     ease-out utility; Tailwind's default duration (150ms) is kept. */
+  --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
 
   /* Depth is tone, not shadow: every shadow utility renders nothing. */
