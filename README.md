@@ -23,6 +23,7 @@ specific/      特定框架工程实践
 - `generation-director`：AIGC 叙事导演总控，涵盖世界观设定、剧本创作/诊断、资产建档与分镜装配。
 - `image-prompt`：按交付物与视觉媒介选择专业语言，覆盖摄影、绘画、插画、动漫、游戏美术、像素画、3D、平面设计与材料拼贴。
 - `video-prompt`：按目标模型与入口限制编写单次生成、编辑或延长视频的 prompt。
+- `japanese-cinematic-ad`：日本市场全 AI 生成的情感叙事、电影感广告，覆盖洞察、概念、日文脚本、资产设定、分镜与日本法规文化审查。
 
 ### Product
 
@@ -51,6 +52,7 @@ specific/      特定框架工程实践
 | 比较尚未定案的交互方案 | `ui-prototyping` | HTML 模板或 Next.js 脚手架脚本 |
 | 沉淀品牌与设计规范 | `design-md-creator` | 新建／重排时读结构模板；封杀清单轮读套路候选 |
 | 规划故事、资产与分镜 | `generation-director` | 当前制作阶段 reference |
+| 策划日本市场 AI 生成情感叙事广告 | `japanese-cinematic-ad` | 自含流程、文化与法规审查 |
 | 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 图片按视觉方向读取 reference；视频只读目标模型 reference |
 | 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
 
