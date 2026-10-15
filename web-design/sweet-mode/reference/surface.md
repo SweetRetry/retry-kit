@@ -4,7 +4,7 @@
 
 ## 1. 色彩与表面高度（E0–E3）
 
-高度描述表面的前后关系，Token 表达组件职责；每个表面都归入 E0–E3 之一。色彩与表面的视觉重量遵循 [6:3:1 注意力法则](hierarchy.md#1-631-注意力法则与构图)，焦点色（`primary`、`accent`、`destructive`）不超过 10%。
+高度描述表面的前后关系，Token 表达组件职责；每个表面都归入 E0–E3 之一。色彩与表面的视觉重量遵循 [6:3:1 注意力法则](hierarchy.md#1-631-注意力法则与构图)，焦点色（`primary`、`destructive` 等品牌与状态色）不超过 10%；`accent` 是中性交互高亮，不计入。
 
 | 高度层级 | 语义职责 | 对应 Token | 越界禁令 |
 | :--- | :--- | :--- | :--- |
@@ -23,7 +23,7 @@
   - Dialog、AlertDialog、Sheet 沿用 `background` 配配套遮罩；Tooltip 使用 `foreground` 作为背景、`background` 作为文字色——禁止在调用点强行覆盖为 `popover`。
   - `accent` 仅表达交互高亮，不是通用的“更高一层”；`input` 仅用于输入控件边界，不是内凹表面的通用 Token。
 - **主题表现与 Token 维护**：
-  - 亮暗双主题（`:root` 与 `.dark`）；暗色下 `card` 与 `popover` 略亮于 `background`，层级通过微弱明度差、边框与遮罩表达。
+  - 亮暗双主题（`:root` 与 `.dark`）；暗色下 `card` 与 `popover` 略亮于 `background`，层级通过微弱明度差、边框与遮罩表达；`sidebar` 与 `background` 并列而非叠在其上，可略亮或略暗，不计入明度翻转检查。
   - `forced-colors`（高对比度模式）生效时使用系统颜色，不追踪明度关系。
   - 色值集中在 [globals.css](../../packages/ui/src/styles/globals.css) 维护，业务组件消费语义 Token，严禁硬编码 Hex/OKLCH。
 
