@@ -8,9 +8,9 @@
 
 | 配比层级 | Class 阶梯 | 推荐字重 | 阅读角色 | 越界禁令 |
 | :--- | :--- | :--- | :--- | :--- |
-| **60% 基础阅读** | `text-xs` / `text-sm` / `text-base` | `font-normal` | 正文、表格行、表单说明、辅助标注 | 严禁低于 `text-xs`（12px 下限）；严禁正文大面积加粗 |
+| **60% 基础阅读** | `text-xs` / `text-sm` / `text-base` | `font-normal` | 正文、表格行、表单说明、辅助标注；长文阅读正文可用 `text-lg` | 严禁低于 `text-xs`（12px 下限）；严禁正文大面积加粗 |
 | **30% 结构分层** | `text-lg` / `text-xl` | `font-medium` / `font-semibold` | 模块标题、卡片标题、表单分组 Label | 严禁列表项每行套用标题字号 |
-| **10% 核心焦点** | `text-2xl` 及以上 | `font-bold` | 页面主标题、Hero 文案、核心 KPI（配 `tabular-nums`） | 严禁同一视区多个等权大标题 |
+| **10% 核心焦点** | `text-2xl` 及以上 | `font-semibold` | 页面主标题、Hero 文案、核心 KPI（配 `tabular-nums`） | 严禁同一视区多个等权大标题 |
 
 ### 约束
 
@@ -33,4 +33,4 @@
 - [ ] **字阶合规**：所有文字类名属于标准 utility，无 `text-[*]` 任意值；正文无低于 `text-xs` 的文字。
 - [ ] **字体族合规**：仅使用 `font-sans` / `font-mono` / `font-serif`，无 `font-[*]` 任意值。
 - [ ] **等宽数值**：金额、统计与动态计数器添加了 `tabular-nums` 并右对齐。
-- [ ] **字阶权重**：视区内大标题单一明确，正文无大面积多处 `font-bold`。
+- [ ] **字阶权重**：视区内大标题单一明确，大标题不超过 `font-semibold`，正文无大面积加粗。
