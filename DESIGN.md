@@ -1,310 +1,134 @@
 ---
 version: alpha
 name: Retry
-description: Personal design language for Zimin's site, notes, slides and tools. Dark is the default theme; every color has a `-light` twin for the light theme.
-colors:
-  background: "#1c1c1e"
-  foreground: "#f5f5f7"
-  surface-1: "#242426"
-  surface-2: "#2c2c2e"
-  surface-3: "#363638"
-  card: "#242426"
-  card-foreground: "#f5f5f7"
-  popover: "#2c2c2e"
-  popover-foreground: "#f5f5f7"
-  primary: "#2fbf71"
-  primary-hover: "#45cc83"
-  primary-foreground: "#06120b"
-  secondary: "#2c2c2e"
-  secondary-hover: "#363638"
-  secondary-foreground: "#f5f5f7"
-  muted: "#242426"
-  muted-foreground: "#98989d"
-  subtle-foreground: "#6e6e73"
-  accent: "#2c2c2e"
-  accent-foreground: "#f5f5f7"
-  destructive: "#eb6f66"
-  destructive-soft: "rgba(235,111,102,0.14)"
-  success: "#2fbf71"
-  warning: "#e2a336"
-  warning-soft: "rgba(226,163,54,0.14)"
-  border: "#38383a"
-  input: "#48484a"
-  ring: "#2fbf71"
-  ring-soft: "rgba(47,191,113,0.22)"
-  sidebar: "#161618"
-  sidebar-foreground: "#98989d"
-  sidebar-primary: "#2fbf71"
-  sidebar-primary-foreground: "#06120b"
-  sidebar-accent: "#2a2a2c"
-  sidebar-accent-foreground: "#f5f5f7"
-  sidebar-border: "rgba(0,0,0,0)"
-  sidebar-ring: "#2fbf71"
-  chart-1: "#2fbf71"
-  chart-2: "#6aa9ff"
-  chart-3: "#e2a336"
-  chart-4: "#c58af9"
-  chart-5: "#8e8e93"
-  background-light: "#fbfbfd"
-  foreground-light: "#1d1d1f"
-  surface-1-light: "#f3f3f5"
-  surface-2-light: "#ebebee"
-  surface-3-light: "#e1e1e5"
-  card-light: "#f3f3f5"
-  card-foreground-light: "#1d1d1f"
-  popover-light: "#ffffff"
-  popover-foreground-light: "#1d1d1f"
-  primary-light: "#15804a"
-  primary-hover-light: "#116b3e"
-  primary-foreground-light: "#ffffff"
-  secondary-light: "#ebebee"
-  secondary-hover-light: "#e1e1e5"
-  secondary-foreground-light: "#1d1d1f"
-  muted-light: "#f3f3f5"
-  muted-foreground-light: "#66666b"
-  subtle-foreground-light: "#86868b"
-  accent-light: "#ebebee"
-  accent-foreground-light: "#1d1d1f"
-  destructive-light: "#c4352c"
-  destructive-soft-light: "rgba(196,53,44,0.09)"
-  success-light: "#15804a"
-  warning-light: "#9a6006"
-  warning-soft-light: "rgba(154,96,6,0.10)"
-  border-light: "#e3e3e6"
-  input-light: "#d2d2d7"
-  ring-light: "#15804a"
-  ring-soft-light: "rgba(21,128,74,0.18)"
-  sidebar-light: "#f3f3f5"
-  sidebar-foreground-light: "#66666b"
-  sidebar-primary-light: "#15804a"
-  sidebar-primary-foreground-light: "#ffffff"
-  sidebar-accent-light: "#e6e6ea"
-  sidebar-accent-foreground-light: "#1d1d1f"
-  sidebar-border-light: "rgba(0,0,0,0)"
-  sidebar-ring-light: "#15804a"
-  chart-1-light: "#15804a"
-  chart-2-light: "#2f6fd6"
-  chart-3-light: "#b07a0c"
-  chart-4-light: "#8a4fd0"
-  chart-5-light: "#8e8e93"
-typography:
-  display: { fontFamily: Inter, fontSize: 56px, fontWeight: 600, lineHeight: 60px, letterSpacing: -0.035em, fontFeature: "\"cv11\", \"ss03\"" }
-  h1: { fontFamily: Inter, fontSize: 36px, fontWeight: 600, lineHeight: 42px, letterSpacing: -0.028em, fontFeature: "\"cv11\", \"ss03\"" }
-  h2: { fontFamily: Inter, fontSize: 28px, fontWeight: 600, lineHeight: 34px, letterSpacing: -0.025em, fontFeature: "\"cv11\", \"ss03\"" }
-  h3: { fontFamily: Inter, fontSize: 20px, fontWeight: 600, lineHeight: 28px, letterSpacing: -0.018em, fontFeature: "\"cv11\", \"ss03\"" }
-  prose: { fontFamily: Inter, fontSize: 17px, fontWeight: 400, lineHeight: 28px, letterSpacing: -0.014em, fontFeature: "\"cv11\", \"ss03\"" }
-  body: { fontFamily: Inter, fontSize: 15px, fontWeight: 400, lineHeight: 24px, letterSpacing: -0.011em, fontFeature: "\"cv11\", \"ss03\"" }
-  ui: { fontFamily: Inter, fontSize: 14px, fontWeight: 400, lineHeight: 20px, letterSpacing: -0.008em, fontFeature: "\"cv11\", \"ss03\"" }
-  small: { fontFamily: Inter, fontSize: 13px, fontWeight: 400, lineHeight: 18px, letterSpacing: -0.004em, fontFeature: "\"cv11\", \"ss03\"" }
-  caption: { fontFamily: Inter, fontSize: 12px, fontWeight: 500, lineHeight: 16px, letterSpacing: 0em, fontFeature: "\"cv11\", \"ss03\"" }
-  code: { fontFamily: ui-monospace, fontSize: 13px, fontWeight: 400, lineHeight: 20px, letterSpacing: 0em }
-rounded:
-  sm: 6px
-  md: 8px
-  lg: 12px
-  xl: 16px
-  full: 999px
-spacing:
-  1: 4px
-  2: 8px
-  3: 12px
-  4: 16px
-  5: 24px
-  6: 32px
-  7: 48px
-  8: 64px
-components:
-  button-primary: { backgroundColor: "{colors.primary}", textColor: "{colors.primary-foreground}", typography: "{typography.ui}", rounded: "{rounded.md}", height: "34px", padding: "0 14px" }
-  button-primary-hover: { backgroundColor: "{colors.primary-hover}" }
-  button-secondary: { backgroundColor: "{colors.secondary}", textColor: "{colors.secondary-foreground}", typography: "{typography.ui}", rounded: "{rounded.md}", height: "34px", padding: "0 14px" }
-  button-secondary-hover: { backgroundColor: "{colors.secondary-hover}" }
-  button-ghost: { backgroundColor: "transparent", textColor: "{colors.muted-foreground}", rounded: "{rounded.md}", height: "34px" }
-  button-ghost-hover: { backgroundColor: "{colors.accent}", textColor: "{colors.accent-foreground}" }
-  button-destructive: { backgroundColor: "{colors.destructive-soft}", textColor: "{colors.destructive}", rounded: "{rounded.md}", height: "34px" }
-  button-disabled: { backgroundColor: "{colors.surface-1}", textColor: "{colors.subtle-foreground}" }
-  input: { backgroundColor: "{colors.muted}", textColor: "{colors.foreground}", borderColor: "{colors.input}", rounded: "{rounded.md}", height: "34px", padding: "0 12px", typography: "{typography.ui}" }
-  input-focus: { borderColor: "{colors.ring}", shadow: "0 0 0 3px {colors.ring-soft}" }
-  input-error: { borderColor: "{colors.destructive}" }
-  focus-ring: { outline: "2px solid {colors.ring}", outlineOffset: "2px" }
-  card: { backgroundColor: "{colors.card}", textColor: "{colors.card-foreground}", rounded: "{rounded.lg}", padding: "16px" }
-  popover: { backgroundColor: "{colors.popover}", textColor: "{colors.popover-foreground}", borderColor: "{colors.border}", rounded: "{rounded.lg}", padding: "5px" }
-  menu-item: { height: "30px", rounded: "7px", typography: "{typography.small}" }
-  segmented: { backgroundColor: "{colors.surface-1}", rounded: "{rounded.md}", padding: "2px" }
-  segmented-item-active: { backgroundColor: "{colors.surface-3}", textColor: "{colors.foreground}", rounded: "{rounded.sm}", height: "28px" }
-  tab-active: { backgroundColor: "{colors.surface-2}", textColor: "{colors.foreground}", rounded: "{rounded.md}", height: "32px" }
-  sidebar: { backgroundColor: "{colors.sidebar}", textColor: "{colors.sidebar-foreground}", width: "216px" }
-  sidebar-item-active: { backgroundColor: "{colors.sidebar-accent}", textColor: "{colors.sidebar-accent-foreground}", rounded: "7px", height: "30px" }
-  table-row: { borderColor: "{colors.border}", padding: "11px 12px", typography: "{typography.small}" }
-  table-row-hover: { backgroundColor: "{colors.surface-1}" }
-  notice-warning: { backgroundColor: "{colors.warning-soft}", textColor: "{colors.warning}", rounded: "{rounded.md}" }
-  notice-error: { backgroundColor: "{colors.destructive-soft}", textColor: "{colors.destructive}", rounded: "{rounded.md}" }
-  switch-track: { backgroundColor: "{colors.surface-3}", rounded: "{rounded.full}", width: "34px", height: "20px" }
-  switch-track-on: { backgroundColor: "{colors.primary}" }
+description: Zimin's design language on Tailwind CSS v4 and shadcn/ui, for the site, notes, slides and tools.
 omitted:
-  - section: logo and iconography
-    reason: No logo or icon set yet; the name is set in plain type and icons are 16px stroke icons on actions only.
-  - section: fonts
-    reason: Inter is loaded from Google Fonts with the opsz axis; no font files are vendored.
+  - section: colors
+    reason: In globals.css as oklch (:root light, .dark dark, the default).
+  - section: typography
+    reason: Tailwind v4's scale; Retry's tracking-tight on 3xl and up and the 5xl/6xl line heights are in globals.css @theme.
+  - section: rounded
+    reason: shadcn's default --radius (0.625rem) in globals.css; rounded-* derive from it.
+  - section: spacing
+    reason: Tailwind defaults, used as listed under Layout.
+  - section: motion
+    reason: Motion (motion/react) with MotionConfig defaults; rules under Interaction patterns.
+  - section: components
+    reason: shadcn/ui with the deltas listed under Components.
 ---
+
 # Retry
 
-Values live only in the front matter above. The text below says how to use them and names tokens instead of repeating values.
+Retry is Zimin's design language for the site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something. It grows on Tailwind CSS v4 and shadcn/ui: their scales unchanged, Retry's values in `globals.css`, and a short list of shadcn deltas.
 
 ## Overview
 
-Retry is a personal design language for everything Zimin makes: the site, notes and articles, slides, and small tools. Quiet surfaces, careful type, and one color that only shows up when it means something.
+- **Restrained**: no gradients, glows, decorative glass or shadows to fake polish.
+- **Precise**: exact alignment, numbers and wording. No filler, no fake stats.
+- **Warm**: not corporate. First person, room to breathe.
 
-**Personality**, each word with what it rules out:
+Made for peers and collaborators who judge the thinking, not the packaging. References: Linear's clarity, Apple's quiet finish, and quiet craft: small details with a job, unnoticed at first glance and rewarding on the second. Never: terminal or hacker styling, neo-brutalism, the SaaS template (blue-purple gradient, centered hero, three icon cards), Dribbble showpieces, an untouched shadcn default.
 
-- **Restrained**: never manufactures polish with gradients, glows, decorative glass or big shadows.
-- **Precise**: alignment, numbers and wording are exact. No filler copy, no fake stats.
-- **Warm**: not corporate. Plain first-person voice, room to breathe, an occasional personal touch.
+When rules compete: facts and constraints › the host project's framework › task clarity › Retry's look › polish.
 
-**Audience.** Peers and potential collaborators (hiring managers, clients, people in the same field) who judge the thinking and the work, not the packaging. They should leave thinking: *this person thinks clearly and has taste.*
+### Setup
 
-**References.** Linear's product clarity and Apple's quiet premium feel.
-
-**Never looks like:** terminal or hacker aesthetics, neo-brutalism, the generic SaaS template (blue-purple gradient, centered hero, three icon cards), or Dribbble showpieces.
-
-**When rules compete, protect in this order:** facts and user constraints › the host project's framework and existing components › clarity of the task › Retry's recognisability › finishing polish. Where no rule or token covers a case, decide by this order.
+Use `globals.css` as the global stylesheet (it replaces shadcn's). Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`, so components set no `transition` unless they need a different duration.
 
 ### Voice
 
-- English first. First person on the site and in notes ("I design and build…"); product UI speaks as the product ("Your projects").
-- Short sentences, conclusion first, then the reason.
-- Sentence case everywhere: buttons, headings, tabs, menu items. No terminal punctuation on labels.
-- Buttons are verbs: "Save draft", "Publish", "Get in touch". Never "Submit", "OK" or "Click here".
-- Confirmations in past tense without "successfully": "Note published".
-- Errors say what happened, then what to do: "Couldn't sync. Check your connection."
-- No emoji in UI. No exclamation marks in system copy. Never narrate the design on the page ("This section uses a…").
+- English, sentence case, short sentences, conclusion first.
+- First person on the site and in notes; product UI speaks as the product ("Your projects").
+- Buttons are verbs ("Save draft"), never "Submit" or "OK". Confirmations in past tense, no "successfully".
+- Errors say what happened, then what to do. Empty states name the space and offer one verb.
+- No emoji, no exclamation marks, never narrate the design on the page.
 
 ## Colors
 
-**Themes.** Dark is the default. Each color token `x` has a light-theme twin `x-light`. In CSS, emit the plain names under `:root, [data-theme="dark"]` and the `-light` values under `[data-theme="light"]` with the suffix dropped, so components only ever reference the plain name. Light is a complete theme, not an inversion.
+shadcn names, so every color is a utility (`bg-card`, `text-muted-foreground`). Retry adds `surface-1…3`, `subtle-foreground`, `success`, `warning`, `*-hover` and `*-soft`. Values are `oklch()`; dark (`.dark`) is the default, light (`:root`) a full theme.
 
-**Names follow shadcn/ui** (`background`, `foreground`, `card`, `popover`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`, `input`, `ring`, `sidebar-*`, `chart-1…5`), so they map one to one onto a shadcn `globals.css`. Retry adds `surface-1…3`, `subtle-foreground`, `success`, `warning`, the `*-hover` fills and the `*-soft` tints.
-
-- **Neutrals are Apple gray, and depth is lightness.** `background` is the page. Each level of grouping steps up one tone: `surface-1` (card, muted, input fill), `surface-2` (secondary, accent, selected), `surface-3` (hover on secondary). `card`, `secondary`, `muted` and `accent` equal those steps; when a step changes, change it in all the roles that share it.
-- **Three levels of text.** `foreground` for reading; `muted-foreground` for supporting text (holds 4.5:1 on `background`, `surface-1`, `surface-2` and `popover` in both themes); `subtle-foreground` only for placeholders, timestamps and column headers, and only on `background`, `surface-1` and `sidebar`. Never set body text in `subtle-foreground`, never put it on `popover`, never dim text with opacity.
-- **Emerald (`primary`) is scarce.** One primary button per view, links, checked controls, focus (`ring`) and success. Keep it under 5% of any screen. It never marks "good" numbers, never decorates, never sits on a second action.
-- **On emerald**, text is `primary-foreground`: near-black in dark, white in light.
-- **Status**: `success` (the same emerald), `warning`, `destructive`, always paired with a word. Notice fills use `warning-soft` and `destructive-soft`.
-- **`accent` is neutral.** As in shadcn, it is the hover and selected background, not the brand color.
-- **Charts** use `chart-1…5`. When one series matters, give it `chart-1` and draw the rest in `chart-5`.
+- **Depth is lightness.** `bg-background` › `bg-surface-1` (= card, muted) › `bg-surface-2` (= secondary, accent) › `bg-surface-3`. New neutrals stay on hue 286 and step L only.
+- **Text**: `text-foreground` to read, `text-muted-foreground` to support, `text-subtle-foreground` only for placeholders, timestamps and column headers on background, surface-1 or sidebar. Never set text hierarchy with opacity (a transient state such as stale data while reloading may fade).
+- **Emerald (`primary`) is scarce**: one primary button per view, links, checked controls, focus, success. Under 5% of the screen; never decoration, never "good" numbers.
+- **Status** (`success`, `warning`, `destructive`) always comes with a word; notices use the `*-soft` fills.
+- `accent` is shadcn's neutral hover, not a brand color. Charts: `chart-1` for the series that matters, `chart-5` for the rest.
 
 ## Typography
 
-One family: **Inter** with optical sizing (`font-optical-sizing: auto`), loaded from Google Fonts with the `opsz` axis, features `cv11` and `ss03`. Mono (`ui-monospace`) appears only in code and data, never in headings, labels or decoration.
+Inter (`font-sans`) with optical sizing, which already tightens large text. Sizes are Tailwind's; the theme gives `text-3xl` and up `tracking-tight`, and `text-5xl`/`text-6xl` room between lines, so don't add `tracking-*` or `leading-*` to headings. `font-mono` only for code and data.
 
-| Token | Use |
+| Class | Role |
 |---|---|
-| `display` | Site hero and cover, once per page |
-| `h1` | Page and article titles |
-| `h2` | Section titles |
-| `h3` | Sub-sections, slide subheads |
-| `prose` | Article body, 660px measure |
-| `body` | Site copy |
-| `ui` | Buttons, inputs, menus, list rows (labels at weight 500) |
-| `small` | Table cells, metadata, sidebar items |
-| `caption` | Column headers, group labels, field help |
-| `code` | Code blocks and inline code |
+| `text-6xl` / `text-5xl` | Cover / site hero, once per page |
+| `text-4xl` · `text-3xl` · `text-xl` | h1 · h2 · h3 (`font-semibold`) |
+| `text-2xl` | Slide subheads, stat numbers |
+| `text-lg` | Article body, `max-w-2xl` |
+| `text-base` | Site copy |
+| `text-sm` | Interface text; labels `font-medium` |
+| `text-xs` | Metadata, timestamps, column headers, help |
 
-- Each style carries its own `letterSpacing`; tracking tightens as size grows. Don't override it.
-- Three weights only: 400, 500, 600. Never 700.
-- Numbers that line up (tables, counts, times) use tabular figures.
-- Balance headline wraps (`text-wrap: balance`) so no word sits alone on the last line.
-- Only slides may scale type beyond `display`, where the claim scales with the slide width.
+Weights 400, 500, 600 only. `tabular-nums` on numbers that line up; `text-balance` on headings.
 
 ## Layout
 
-- 4px grid, spacing `1` (4px) to `8` (64px): `2` between buttons and from label to field, `3` inside controls, `4` card padding, `5` tool panel padding, `6` between blocks, `7`–`8` between sections.
-- **Group with space and tone, not boxes.** Related items sit closer; a group that needs a ground takes `surface-1`. Don't draw a border around a group.
-- Left-aligned by default; center only single statements.
-- Article text at most 660px wide; tool sidebar 216px; control heights 28 / 34 / 42px (small, default, site call to action).
+Tailwind spacing, in these steps: `gap-1` icon to label · `gap-2` buttons, label to field · `p-4` cards · `p-6` tool panels · `gap-8` blocks · `py-12` tool sections · `py-16` site sections. Group with space and tone, never a border around a group. Left-aligned by default. Articles `max-w-2xl`, sidebar `w-54`, controls `h-8` / `h-9` / `h-10`.
 
 ## Elevation & Depth
 
-- Depth is lightness: `sidebar` › `background` › `surface-1` › `surface-2` › `surface-3`, each one step lighter.
-- No shadows, except the 1px drop on the switch thumb.
-- Lines exist in exactly two places: `border` hairlines between table rows, and a 1px `border` edge on floating layers (`popover`: menus, toasts, tooltips). Fields add a 1px inset `input` edge on top of their fill.
-- At most two floating layers on screen at once; a third means a dialog.
+No shadows: `globals.css` empties every `shadow-*`, including those inside shadcn components. Lines appear only between table rows and around floating layers (`border`). Popover, menu and toast use `bg-popover`; Dialog and Sheet use `bg-background` over their overlay; Tooltip inverts (`bg-foreground text-background`). The sidebar sits beside the page, not on it, so in dark it is a step darker than `background` on purpose. At most two floating layers at once.
 
 ## Shapes
 
-- Controls `md`, containers `lg`, large frames and slides `xl`.
-- Nested corners are concentric: inner radius = outer radius minus padding (`sm` items inside a 2px-padded `md` track; 7px rows inside a 5px-padded `lg` menu).
-- `full` only for switches, avatars and status dots. Buttons are never pills.
+shadcn's default `--radius` (0.625rem) is the base. `rounded-md` (8px) for controls, popovers, menus and tooltips; `rounded-sm` (6px) for items inside them; `rounded-lg` (10px) for dialogs; `rounded-xl` (14px) for cards; `rounded-2xl` (18px) for emphasised containers and slides. Nested corners follow inner = outer − padding, rounded down to a step. `rounded-full` only for switches, avatars and dots. Change `--radius`, never single classes.
 
 ## Components
 
-**Closed vocabulary.** Use only the component names in the front matter (and, in code, the matching `rt-` classes below). Don't invent aliases. If something is missing, build it from these tokens and add it here before reusing it.
+Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new value goes into the tokens first. Components are shadcn/ui with these deltas, applied once in the component files:
 
-| Front matter | Class | Notes |
-|---|---|---|
-| `button-primary` / `-secondary` / `-ghost` / `-destructive` | `rt-btn` + `--primary` … `--destructive`, sizes `--sm` `--lg` | Filled, never outlined. One primary per view; secondary is the default. |
-| `input`, `input-focus`, `input-error` | `rt-field`, `rt-input`, `rt-help` | Label above, help below. Error via `aria-invalid="true"` plus one sentence of help. |
-| `switch-track` | `rt-check`, `rt-check--radio`, `rt-switch__track` | Native inputs kept for keyboard and screen readers. Switch only for settings that apply immediately. |
-| `segmented`, `segmented-item-active` | `rt-seg` | Two to four views of the same data. Never emerald. |
-| `tab-active` | `rt-tabs` | Sections of one page. No underline bar. |
-| `popover`, `menu-item` | `rt-menu` | Shortcuts right-aligned in `muted-foreground`; destructive items last. |
-| `popover` | `rt-toast` | Past-tense title, one ghost action at most, no icon. |
-| `notice-warning`, `notice-error` | `rt-notice` | Inline, persistent. No border, no left accent bar. |
-| — | `rt-status` | 6px dot plus a word. Never a pill or badge. |
-| `table-row`, `table-row-hover` | `rt-table`, `rt-num` | Full width; numbers and their headers right-aligned. |
-| `sidebar`, `sidebar-item-active` | `rt-sidebar` | Separated by tone, never a line. The workspace mark is its only emerald. |
-
-**States.** Every interactive element is drawn in all four states: rest, hover, focus, disabled. Focus is always `focus-ring` (2px solid `ring`, 2px offset), at least 3:1 on every surface it lands on. Disabled swaps to `surface-1` and `subtle-foreground`; it never uses opacity.
+- **Card**: no border; `bg-card` alone.
+- **Input, Textarea, Select**: filled `bg-muted` with the `border-input` edge; focus `border-ring` plus a soft ring.
+- **Button**: `default` once per view, then `secondary`, `ghost`, `destructive` (`bg-destructive-soft text-destructive`), `link`. No `outline`.
+- **Badge**: not for metadata. Status is a 6px dot plus a word.
+- **Tabs**: active is `bg-surface-2`; no underline, no emerald.
+- **Popover, Dropdown, Toast**: `bg-popover`, `border`, `rounded-md`. **Dialog, Sheet**: `bg-background`, `border`, Dialog `rounded-lg`. **Tooltip**: `bg-foreground text-background`, `rounded-md`.
+- **Table**: `border-t` rows, no outer border or zebra; numbers and their headers `text-right tabular-nums`.
+- **Sidebar**: separated by tone, no line; active `bg-sidebar-accent`.
+- **Switch, Checkbox, Radio**: off `bg-surface-2` / `bg-surface-3`, on `bg-primary`. **Skeleton**: `bg-surface-2`.
 
 ## Interaction patterns
 
-Each rule names its condition, so it holds on every surface. Surface files set parameters or opt in; they don't rewrite these.
-
-**Waiting**
-
-- An action that rarely fails and can be undone (create, rename, move, toggle): update the UI instantly and mark the item with a quiet `subtle-foreground` dot until the server confirms. On failure, revert it and say so in an `rt-toast` with a Retry action.
-- An action that moves money, reaches other people, or can't be undone: show the pending state inside the button (a spinner replaces the label, the button keeps its width). Never update optimistically.
-- First load of a page or list: skeleton rows in the shape of the real content, `surface-2` on `background`. Never a full-page spinner. If it loads in under 300ms, show nothing.
-
-**Revealing actions**
-
-- Secondary row actions may appear on hover only if the same action is reachable another way: a keyboard shortcut, a context menu, or a swipe on touch. Primary actions are always visible.
-
-**Empty states**
-
-- Name the space, add one line on what belongs there, and one verb button ("Create your first note"). Never "No data", never an apology.
-
-**Color that carries direction**
-
-- Up/down coloring is off by default. A surface may turn it on only when direction is the core information (prices, for example), always paired with a + or − sign, and its surface file must say so.
-
-**Translucency**
-
-- Blur is allowed only on chrome that content scrolls underneath (sticky headers, sidebars over content), as `background` at about 85% opacity plus blur. Never on cards, panels or decoration.
-
-## Motion
-
-Quick and quiet. Color changes take 150ms, movement (switches, theme change) 200ms, both on `cubic-bezier(0.2, 0, 0, 1)`. Motion only answers a state change: no entrance animations, no bounce, no parallax.
+- **States**: design rest, hover, focus and disabled. Focus is a 2px `ring` outline, 2px offset. Disabled is `bg-surface-1 text-subtle-foreground`, never `opacity-50`.
+- **Undoable, rarely failing actions** (create, rename, move, toggle): update instantly, show a quiet dot until confirmed, revert with a toast on failure.
+- **Money, other people, or irreversible**: spinner inside the button, no optimistic update.
+- **First loads**: Skeleton in the shape of the content; nothing under 300ms; never a full-page spinner.
+- **Hover-only actions** need a second route: shortcut, context menu or swipe. Primary actions are always visible.
+- **Direction colors** (up green, down red) are off unless a surface's core information is direction; then always with + or −, declared in that surface's file.
+- **Quiet craft**: a detail earns its place only if it has a job, stays invisible at first glance, lives where the person touches, and falls back to no motion under reduced motion. Adopted: numbers that change roll only the digits that changed (tabular, no layout shift); text links draw their underline in from the left on hover and out to the right.
+- **Blur** only on chrome that content scrolls under: `bg-background/85 backdrop-blur`.
+- **Motion**: CSS transitions for hover, press and color: name the property and nothing else (`transition-colors`, `transition-transform`); the theme already defaults every transition to 150ms on Retry's curve. Add `duration-200` only for movement. Motion for anything that appears, leaves or changes place: `AnimatePresence` for enter and exit, `layout` / `layoutId` for reflow and shared elements (a thumbnail opening to full view). Same curve everywhere (`ease-out` = `[0.2, 0, 0, 1]`); a spring only as `{ type: "spring", bounce: 0 }`. Animate only `transform` and `opacity`. Motion answers a state change: no decorative entrances, no bounce.
 
 ## Surfaces
 
-| Surface | First job | Density | Rules |
-|---|---|---|---|
-| Site / portfolio | Show judgment through real work | Low | First screen is a left-aligned claim and the work list. One primary button. |
-| Articles / notes | Reading | Low | `prose` at 660px, `h2` for sections, links in `primary` with a soft underline. |
-| Slides | One claim per slide | Low | One sentence as the headline; emerald highlights at most one phrase or one bar. |
-| Tools / prototypes | Get the task done | Medium | `sidebar` plus main area, `ui` and `small` text, 38px list rows. |
+| Surface | Job | Density |
+|---|---|---|
+| Site | Show the work; left-aligned `text-5xl` claim, one primary button | Low |
+| Articles | Reading; `text-lg` in `max-w-2xl` | Low |
+| Slides | One claim per slide; emerald on one phrase at most | Low |
+| Tools | Get it done; sidebar, `text-sm`, `h-10` rows | Medium |
 
-All four share the color budget: one emerald moment per view.
+A surface that needs other parameters gets `design/<surface>.md`: what it inherits, what it overrides, why.
 
 ## Do's and Don'ts
 
-- **Don't** open with a centered hero and three icon cards. **Do** lead with a real claim or the work, left-aligned.
-- **Don't** box every group or nest cards in cards. **Do** group with space, tone and type size.
-- **Don't** use gradients, glows, decorative glass cards, grid backdrops or large shadows. **Do** use flat tone steps; blur only on chrome that content scrolls under (see Interaction patterns).
-- **Don't** wrap ordinary metadata in badges or pills. **Do** set it in `small`, `muted-foreground`; dots only for real status.
-- **Don't** put decorative icons before headings or on tinted tiles. **Do** use icons only on actions.
-- **Don't** slide into terminal or brutalist styling: no mono headlines, no heavy raw borders, no all caps. **Do** keep mono in code.
-- **Don't** squeeze tables into narrow columns or mix alignments. **Do** give tables full width, right-align numbers and their headers.
-- **Don't** color numbers green because they are "good". **Do** state change in `muted-foreground`; emerald is for action and status only. (A surface whose core information is direction may opt in; see Interaction patterns.)
+- Centered hero with three icon cards → a real claim or the work, left-aligned.
+- Boxes around groups, cards in cards → space, tone, type size.
+- Gradients, glows, glass cards, grid backdrops, shadows → flat tone steps.
+- Untouched shadcn components → the deltas above.
+- Badges on metadata → `text-xs text-muted-foreground`.
+- Decorative icons on headings → icons only on actions.
+- Mono headlines, heavy borders, all caps → mono stays in code.
+- Squeezed tables, mixed alignment → full width, numbers right.
+- Green for good numbers → `text-muted-foreground`.
+- Arbitrary values → theme utilities.
 
-Restraint isn't emptiness. Tension comes from scale contrast in type (a `display` claim over `body` copy), generous space, exact alignment, and the single emerald moment.
+Restraint isn't emptiness: tension comes from type scale contrast, space, exact alignment, and the one emerald moment.
