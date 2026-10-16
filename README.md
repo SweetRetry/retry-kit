@@ -32,7 +32,7 @@ specific/      特定框架工程实践
 
 ### Web Design
 
-- `ux-writing`：把界面文案改成一眼看懂的日常说法，统一用词，输出原文案→新文案对照表。
+- `sass-ux-writing`：先校准 SaaS 产品的组织模型与业务场景，以克制专业的书面产品语体改写界面文案，统一领域词表，输出对照表。
 - `improve-ui`：信息呈现、构图、视觉系统、尺寸稳定、动效、浮层与交互质量；原信息审查、布局重构与交互审查统一调用 `$improve-ui`。
 - `design-md-creator`：逐轮访谈品牌、设计规范与应用界面决策，视觉选择在可交互样张上比较，再创建或更新 `design.md`。
 - `ui-prototyping`：用临时可交互原型（单文件 HTML 或 Next.js）比较尚未定案的 UI 方案。
@@ -47,7 +47,7 @@ specific/      特定框架工程实践
 | 任务 | 入口 | 按需加载 |
 | --- | --- | --- |
 | 决定信息是否出现、何时展开 | `improve-ui` | 信息设计 reference |
-| 改写文案、统一名称 | `ux-writing` | 自含改写规则 |
+| 改写 SaaS 界面文案、统一领域词表 | `sass-ux-writing` | 自含语境校准与改写规则 |
 | 改进既有界面的视觉与交互质量 | `improve-ui` | 按改动读取构图、视觉系统、动效与稳定、浮层或交互 reference |
 | 在 Tailwind + shadcn/ui 项目中编写或修改界面 | `sweet-mode` | 按改动读取层级、布局、表面、字体、稳定或交互 reference |
 | 比较尚未定案的交互方案 | `ui-prototyping` | HTML 模板或 Next.js 脚手架脚本 |

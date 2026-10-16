@@ -1,4 +1,0 @@
-interface:
-  display_name: "UX Writing"
-  short_description: "重写界面微文案与引导词，消除认知摩擦、机器腔与翻译腔，交付人性化文案对照表"
-  default_prompt: "使用 $ux-writing 重写当前界面的文案与提示，消除认知摩擦与机器腔，输出对照表；不确定的先问我。"
