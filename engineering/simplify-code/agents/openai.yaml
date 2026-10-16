@@ -1,7 +1,7 @@
 interface:
   display_name: "Simplify Code"
-  short_description: "找出并移除不改变行为的多余层级与复杂度"
-  default_prompt: "使用 $simplify-code 审查我指定的代码范围，找出有证据支持的多余层级，给出保持行为不变的最小改法。"
+  short_description: "从行为推出理想形状，删除前后端代码中的偶然复杂度"
+  default_prompt: "使用 $simplify-code 审查我指定的代码范围，推出理想形状并与现状对照，按杠杆给出保持行为不变的简化步骤。"
 
 policy:
   allow_implicit_invocation: false

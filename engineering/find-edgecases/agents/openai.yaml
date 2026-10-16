@@ -1,7 +1,7 @@
 interface:
   display_name: "Find Edgecases"
-  short_description: "审查重复、中断、超时、新旧版本并存等可达条件下的系统失效"
-  default_prompt: "使用 $find-edgecases 审查我指定的代码或调用路径，报告可达条件下的系统失效，写明触发条件、最终状态、影响、证据与等级。"
+  short_description: "从不变量与状态出发，按故障模型找出前后端在可达条件下的系统失效"
+  default_prompt: "使用 $find-edgecases 审查我指定的代码或调用路径，先写不变量、状态与参与者，再按故障模型生成场景并反证，报告触发条件、最终状态、缺失机制、证据与等级。"
 
 policy:
   allow_implicit_invocation: false
