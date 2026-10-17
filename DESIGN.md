@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Retry
-description: Zimin's design language on Tailwind CSS v4 and shadcn/ui, for the site, notes, slides and tools.
+description: A personal design language on Tailwind CSS v4 and shadcn/ui (Base UI), for a site, notes, slides and tools.
 omitted:
   - section: colors
     reason: In brand-kit/globals.css as oklch (:root light, .dark dark, the default).
@@ -14,14 +14,14 @@ omitted:
   - section: motion
     reason: Motion (motion/react) with MotionConfig defaults; rules under Interaction patterns.
   - section: components
-    reason: shadcn/ui with the deltas listed under Components.
+    reason: shadcn/ui on Base UI, with the deltas listed under Components.
 ---
 
 # Retry
 
 Decisions live here; values and assets live in `brand-kit/`; how-to craft lives in skills.
 
-Retry is Zimin's design language for the site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something. It grows on Tailwind CSS v4 and shadcn/ui: their scales unchanged, Retry's values in `brand-kit/`, and a short list of shadcn deltas.
+Retry is a personal design language for a site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something. It grows on Tailwind CSS v4 and shadcn/ui on Base UI: their scales unchanged, Retry's values in `brand-kit/`, and a short list of shadcn deltas.
 
 ## Overview
 
@@ -29,13 +29,13 @@ Retry is Zimin's design language for the site, notes, slides and small tools: qu
 - **Precise**: exact alignment, numbers and wording. No filler, no fake stats.
 - **Warm**: not corporate. First person, room to breathe.
 
-Made for peers and collaborators who judge the thinking, not the packaging. References: Linear's clarity, Apple's quiet finish, and quiet craft: small details with a job, unnoticed at first glance and rewarding on the second. Never: terminal or hacker styling, neo-brutalism, the SaaS template (blue-purple gradient, centered hero, three icon cards), Dribbble showpieces, an untouched shadcn default.
+Made for peers and collaborators who judge the thinking, not the packaging. It aims for product clarity, a quiet finish, and quiet craft: small details with a job, unnoticed at first glance and rewarding on the second. Never: terminal or hacker styling, neo-brutalism, the SaaS template (blue-purple gradient, centered hero, three icon cards), showpieces made to be admired rather than used, an untouched shadcn default.
 
 When rules compete: facts and constraints › the host project's framework › task clarity › Retry's look › polish.
 
 ### Setup
 
-Use `brand-kit/globals.css` as the global stylesheet; it replaces shadcn's and is generated from `brand-kit/tokens.json` by `brand-kit/generate-globals.py`. Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`, so components set no `transition` unless they need a different duration.
+Use `brand-kit/globals.css` as the global stylesheet; it replaces shadcn's and is generated from `brand-kit/tokens.json` by `brand-kit/generate-globals.py`. Components are shadcn/ui on Base UI primitives: initialise with `shadcn init --base base` and add no Radix packages. Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`, so components set no `transition` unless they need a different duration.
 
 ### Voice
 
@@ -84,7 +84,7 @@ shadcn's default `--radius` (0.625rem) is the base. `rounded-md` (8px) for contr
 
 ## Components
 
-Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new value goes into the tokens first. Components are shadcn/ui with these deltas, applied once in the component files:
+Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new value goes into the tokens first. Components are shadcn/ui (Base UI) with these deltas, applied once in the component files:
 
 - **Card**: no border; `bg-card` alone.
 - **Input, Textarea, Select**: filled `bg-muted` with the `border-input` edge; focus `border-ring` plus a soft ring.
@@ -102,7 +102,7 @@ Only Retry's own choices are here; general interaction craft (waiting states, ho
 
 - **States**: focus is a 2px `ring` outline with a 2px offset; disabled is `bg-surface-1 text-subtle-foreground`, never faded.
 - **Quiet craft**: a detail earns its place only if it has a job, stays invisible at first glance, lives where the person touches, and disappears under reduced motion. Adopted: changing numbers roll only the digits that changed; text links draw their underline in from the left on hover and out to the right.
-- **Motion**: CSS transitions for hover, press and color, naming only the property (`transition-colors`); the theme defaults them to 150ms on Material 3's standard curve, because Tailwind's default starts slow. `duration-200` for movement. Motion (`motion/react`) for anything that appears, leaves or changes place, with the same curve; springs only with `bounce: 0`. No decorative entrances.
+- **Motion**: CSS transitions for hover, press and color, naming only the property (`transition-colors`); the theme defaults them to 150ms on a standard curve that starts fast and settles gently, because Tailwind's default starts slow. `duration-200` for movement. Motion (`motion/react`) for anything that appears, leaves or changes place, with the same curve; springs only with `bounce: 0`. No decorative entrances.
 - **Direction colors** (up green, down red) are off unless a surface's core information is direction; then always with + or −, declared in that surface's file.
 - **Blur** only on chrome that content scrolls under: `bg-background/85 backdrop-blur`.
 
