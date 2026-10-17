@@ -48,7 +48,7 @@ Use `brand-kit/globals.css` as the global stylesheet; it replaces shadcn's and i
 
 shadcn names, so every color is a utility (`bg-card`, `text-muted-foreground`). Retry adds `surface-1…3`, `subtle-foreground`, `success`, `warning`, `*-hover` and `*-soft`. Values are `oklch()`; dark (`.dark`) is the default, light (`:root`) a full theme.
 
-- **Depth is lightness.** `bg-background` › `bg-surface-1` (= card, muted) › `bg-surface-2` (= secondary, accent) › `bg-surface-3`. New neutrals stay on hue 286 and step L only.
+- **Depth is lightness.** `bg-background` › `bg-surface-1` (= card, muted) › `bg-surface-2` (= secondary, and the popover in dark) › `bg-surface-3`. `accent` is the hover tone and always takes the rung above the surface under it: surface-2 in light, surface-3 in dark, so a menu row reads against its own popover. New neutrals stay on hue 286 and step L only.
 - **Text**: `text-foreground` to read, `text-muted-foreground` to support, `text-subtle-foreground` only for placeholders, timestamps and column headers on background, surface-1 or sidebar. Never set text hierarchy with opacity (a transient state such as stale data while reloading may fade).
 - **Emerald (`primary`) is scarce**: one primary button per view, links, checked controls, focus, success. Under 5% of the screen; never decoration, never "good" numbers.
 - **Status** (`success`, `warning`, `destructive`) always comes with a word; notices use the `*-soft` fills.
