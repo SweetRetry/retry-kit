@@ -42,7 +42,7 @@ reference 引用的 `globals.css`、`packages/ui` 变体与 recipe 指目标项�
 node <skill 目录>/scripts/ui-guardrails.js <目标项目路径>
 ```
 
-脚本跳过组件库（`packages/ui/`、`components/ui/`）、第三方与测试文件。其余清单项（含任意圆角与间距、内联 style 与 CSS 中的色值）以及组件库内的改动按清单人工核对。
+脚本跳过组件库（`packages/ui/`、`components/ui/`）、第三方、测试文件与 agent skill 目录（`.agents/skills/` 等）。其余清单项（含任意圆角与间距、内联 style 与 CSS 中的色值）以及组件库内的改动按清单人工核对。
 
 再在运行界面检查清单中依赖渲染结果的项：眯眼测试、窄屏重排、加载／空值／报错三态、收起与展开两态、键盘操作与减少动态效果。无法运行界面时，交付中标明哪些清单项只做了代码层检查。
 

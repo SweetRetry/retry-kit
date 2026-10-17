@@ -17,9 +17,9 @@ import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 
 const SOURCE_FILE = /\.(?:[cm]?[jt]sx?|css|scss|vue|svelte|astro|html|mdx)$/
-// 组件库（packages/ui、shadcn 的 components/ui）、第三方与测试夹具不属于业务代码
+// 组件库（packages/ui、shadcn 的 components/ui）、第三方、测试夹具与 agent skill（含本脚本的副本）不属于业务代码
 const EXCLUDED =
-  /(?:^|\/)(?:node_modules|vendor|dist|build|\.next|coverage|components\/ui)\/|^packages\/ui\/|\.(?:test|spec)\.[^/]+$/
+  /(?:^|\/)(?:node_modules|vendor|dist|build|\.next|coverage|components\/ui|\.[\w-]+\/skills)\/|^packages\/ui\/|\.(?:test|spec)\.[^/]+$/
 
 // 不在 class 名或 CSS 标识符中间起止
 const L = "(?<![\\w-])"
