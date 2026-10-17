@@ -4,11 +4,11 @@ name: Retry
 description: Zimin's design language on Tailwind CSS v4 and shadcn/ui, for the site, notes, slides and tools.
 omitted:
   - section: colors
-    reason: In globals.css as oklch (:root light, .dark dark, the default).
+    reason: In brand-kit/globals.css as oklch (:root light, .dark dark, the default).
   - section: typography
-    reason: Tailwind v4's scale; Retry's tracking-tight on 3xl and up and the 5xl/6xl line heights are in globals.css @theme.
+    reason: Tailwind v4's scale; Retry's tracking-tight on 3xl and up and the 5xl/6xl line heights are in brand-kit/globals.css @theme.
   - section: rounded
-    reason: shadcn's default --radius (0.625rem) in globals.css; rounded-* derive from it.
+    reason: shadcn's default --radius (0.625rem) in brand-kit/globals.css; rounded-* derive from it.
   - section: spacing
     reason: Tailwind defaults, used as listed under Layout.
   - section: motion
@@ -19,7 +19,9 @@ omitted:
 
 # Retry
 
-Retry is Zimin's design language for the site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something. It grows on Tailwind CSS v4 and shadcn/ui: their scales unchanged, Retry's values in `globals.css`, and a short list of shadcn deltas.
+Decisions live here; values and assets live in `brand-kit/`; how-to craft lives in skills.
+
+Retry is Zimin's design language for the site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something. It grows on Tailwind CSS v4 and shadcn/ui: their scales unchanged, Retry's values in `brand-kit/`, and a short list of shadcn deltas.
 
 ## Overview
 
@@ -33,15 +35,14 @@ When rules compete: facts and constraints › the host project's framework › t
 
 ### Setup
 
-Use `globals.css` as the global stylesheet (it replaces shadcn's). Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`, so components set no `transition` unless they need a different duration.
+Use `brand-kit/globals.css` as the global stylesheet; it replaces shadcn's and is generated from `brand-kit/tokens.json` by `brand-kit/generate-globals.py`. Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`, so components set no `transition` unless they need a different duration.
 
 ### Voice
 
-- English, sentence case, short sentences, conclusion first.
-- First person on the site and in notes; product UI speaks as the product ("Your projects").
-- Buttons are verbs ("Save draft"), never "Submit" or "OK". Confirmations in past tense, no "successfully".
-- Errors say what happened, then what to do. Empty states name the space and offer one verb.
-- No emoji, no exclamation marks, never narrate the design on the page.
+- **Language**: English first. A product shipped in another language keeps the same voice, written natively rather than translated.
+- **By surface**: site, notes and slides speak in the first person ("I design and build…"); product UI speaks as the product, with the object as subject ("Your projects", "Note published").
+- **Rhythm**: short sentences, conclusion first. Short parallel lines ("Fewer things. Better.") only in site and slide headlines; product UI states things plainly.
+- Sentence case everywhere. No emoji, no exclamation marks, never narrate the design on the page.
 
 ## Colors
 
@@ -97,15 +98,13 @@ Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new va
 
 ## Interaction patterns
 
-- **States**: design rest, hover, focus and disabled. Focus is a 2px `ring` outline, 2px offset. Disabled is `bg-surface-1 text-subtle-foreground`, never `opacity-50`.
-- **Undoable, rarely failing actions** (create, rename, move, toggle): update instantly, show a quiet dot until confirmed, revert with a toast on failure.
-- **Money, other people, or irreversible**: spinner inside the button, no optimistic update.
-- **First loads**: Skeleton in the shape of the content; nothing under 300ms; never a full-page spinner.
-- **Hover-only actions** need a second route: shortcut, context menu or swipe. Primary actions are always visible.
+Only Retry's own choices are here; general interaction craft (waiting states, hover alternatives, loading, reduced motion) is assumed.
+
+- **States**: focus is a 2px `ring` outline with a 2px offset; disabled is `bg-surface-1 text-subtle-foreground`, never faded.
+- **Quiet craft**: a detail earns its place only if it has a job, stays invisible at first glance, lives where the person touches, and disappears under reduced motion. Adopted: changing numbers roll only the digits that changed; text links draw their underline in from the left on hover and out to the right.
+- **Motion**: CSS transitions for hover, press and color, naming only the property (`transition-colors`); the theme defaults them to 150ms on Material 3's standard curve, because Tailwind's default starts slow. `duration-200` for movement. Motion (`motion/react`) for anything that appears, leaves or changes place, with the same curve; springs only with `bounce: 0`. No decorative entrances.
 - **Direction colors** (up green, down red) are off unless a surface's core information is direction; then always with + or −, declared in that surface's file.
-- **Quiet craft**: a detail earns its place only if it has a job, stays invisible at first glance, lives where the person touches, and falls back to no motion under reduced motion. Adopted: numbers that change roll only the digits that changed (tabular, no layout shift); text links draw their underline in from the left on hover and out to the right.
 - **Blur** only on chrome that content scrolls under: `bg-background/85 backdrop-blur`.
-- **Motion**: CSS transitions for hover, press and color: name the property and nothing else (`transition-colors`, `transition-transform`); the theme already defaults every transition to 150ms on Retry's curve. Add `duration-200` only for movement. Motion for anything that appears, leaves or changes place: `AnimatePresence` for enter and exit, `layout` / `layoutId` for reflow and shared elements (a thumbnail opening to full view). Same curve everywhere (`ease-out` = `[0.2, 0, 0, 1]`); a spring only as `{ type: "spring", bounce: 0 }`. Animate only `transform` and `opacity`. Motion answers a state change: no decorative entrances, no bounce.
 
 ## Surfaces
 
