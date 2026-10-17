@@ -25,7 +25,7 @@
 - **主题表现与 Token 维护**：
   - 亮暗双主题（`:root` 与 `.dark`）；暗色下 `card` 与 `popover` 略亮于 `background`，层级通过微弱明度差、边框与遮罩表达；`sidebar` 与 `background` 并列而非叠在其上，可略亮或略暗，不计入明度翻转检查。
   - `forced-colors`（高对比度模式）生效时使用系统颜色，不追踪明度关系。
-  - 色值集中在 [globals.css](../../packages/ui/src/styles/globals.css) 维护，业务组件消费语义 Token，严禁硬编码 Hex/OKLCH。
+  - 色值集中在样式入口（`globals.css`）维护，业务组件消费语义 Token，严禁硬编码 Hex/OKLCH。
 
 ## 2. 圆角与几何形态
 

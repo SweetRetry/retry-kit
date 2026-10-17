@@ -1,6 +1,6 @@
 ---
 name: sweet-mode
-description: Tailwind + shadcn/ui 项目的界面实现规范：编写或修改界面时，Token、字阶、圆角、z-index、反馈与动效按具体取值与禁令落地，交付前跑禁令扫描脚本。仅供用户显式调用。
+description: Tailwind + shadcn/ui 界面规范：层级、布局、表面、字体、尺寸稳定与交互反馈的取值、禁令与验收清单，附禁令扫描脚本。编写或修改界面时作为硬约束落地。仅供用户显式调用。
 disable-model-invocation: true
 ---
 
@@ -28,7 +28,7 @@ reference 引用的 `globals.css`、`packages/ui` 变体与 recipe 指目标项�
 | 颜色 Token、表面高度、圆角嵌套、z-index 与 Portal | [surface.md](reference/surface.md) |
 | 字号、字重、字体族与数字字形 | [typography.md](reference/typography.md) |
 | 加载占位、卡片等高、空值、报错、长文本溢出与浮层关闭时的内容稳定 | [stability.md](reference/stability.md) |
-| 错误与结果反馈、toast、等待态、过渡与动画 | [interaction.md](reference/interaction.md) |
+| 错误与结果反馈、toast、等待与取消、防重与竞态、过渡与动画 | [interaction.md](reference/interaction.md) |
 
 改动只落在当前任务触及的范围。范围外发现的违规列在交付里，不顺手修改。
 
