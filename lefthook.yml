@@ -17,6 +17,12 @@ pre-commit:
     - name: rules
       run: pnpm rules:check
 
+# 提交信息本身也是仓库契约：English + Conventional Commits，见 scripts/commit-msg.js。
+commit-msg:
+  jobs:
+    - name: conventional
+      run: node scripts/commit-msg.js {1}
+
 pre-push:
   parallel: true
   jobs:

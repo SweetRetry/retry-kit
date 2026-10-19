@@ -59,6 +59,6 @@ pnpm test
 pnpm verify
 ```
 
-`pnpm install` 会通过 [lefthook](lefthook.yml) 安装 Git hooks：pre-commit 对 staged 文件跑 Biome 并跑机械门禁，pre-push 跑 typecheck 与 test。hook 是本地快速反馈，`pnpm verify` 与 CI 仍是全量门禁。
+`pnpm install` 会通过 [lefthook](lefthook.yml) 安装 Git hooks：pre-commit 对 staged 文件跑 Biome 并跑机械门禁，commit-msg 要求英文 Conventional Commits，pre-push 跑 typecheck 与 test。hook 是本地快速反馈，`pnpm verify` 与 CI 仍是全量门禁。
 
 当前自动化测试覆盖 `packages/request` 的错误契约与 HTTP 客户端、`packages/tracing` 的 trace 契约不变量、`packages/logger` 的日志脱敏、`packages/observability` 的 span 投影、`apps/web` 的 analytics，以及 `apps/server` 的 HTTP 错误出口（需要 PostgreSQL，未提供 `DATABASE_URL` 时跳过）。其余成功响应分支与真实登录流程尚未建立。CI 会启动 PostgreSQL 并执行 `pnpm db:migrate`，随后运行 `pnpm verify`；其完整步骤见根目录 `package.json`。
