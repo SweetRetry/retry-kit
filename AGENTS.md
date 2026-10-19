@@ -6,6 +6,12 @@
 
 每个 skill 单独安装、单独触发，description、正文与 reference 都不提及其他 skill。需要另一项能力的步骤时，把用到的部分写进本 skill；划定范围时只写排除的任务，不写交给谁。
 
+# Commit 约定
+
+提交信息使用 Conventional Commits 英文格式，`<type>(<scope>): <subject>`，type 取 feat / fix / docs / refactor / perf / test / build / ci / chore / style / revert。subject 小写开头、祈使句、不超过 72 字符、不加句号；正文与 subject 之间空一行，每行不超过 100 字符。`sweet-mode：动效规则独立为 motion.md` 这类中文提交会被 `.githooks/commit-msg` 拒绝。
+
+每个新 clone 执行一次 `git config core.hooksPath .githooks`。
+
 # Skill 反馈闭环
 
 用户修正 skill 输出时，先判断反馈是否揭示可复用的决策缺口：当次素材、审美或交付偏好只用于修正当前输出；可复用缺口同时进入以下 loop：
