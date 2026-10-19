@@ -7,7 +7,7 @@
 ```text
 engineering/   代码质量审查与工程任务拆解
 generation/    AI 图片、视频、剧本与分镜生成
-product/       飞书产品需求文档
+product/       产品需求文档
 web-design/    界面设计、文案、原型与交互审查
 specific/      特定框架工程实践
 ```
@@ -28,7 +28,7 @@ specific/      特定框架工程实践
 
 ### Product
 
-- `lark-prd`：用 lark-cli 在飞书云文档撰写 PRD，含流程画板、业界实践与需求变更记录。
+- `write-prd`：编写或修订 PRD，分人看的决策部分与 Agent 看的执行契约，含冷读、流程图与需求变更记录；飞书同步为可选 reference。
 
 ### Web Design
 
@@ -52,6 +52,7 @@ specific/      特定框架工程实践
 | 规划故事、资产与分镜 | `generation-director` | 当前制作阶段 reference |
 | 策划日本市场 AI 生成情感叙事广告 | `japanese-cinematic-ad` | 自含流程、文化与法规审查 |
 | 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 图片按视觉方向读取 reference；视频只读目标模型 reference |
+| 编写或修订 PRD | `write-prd` | 新建／重排读章节 reference；同步飞书读 lark reference |
 | 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
 | 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
 

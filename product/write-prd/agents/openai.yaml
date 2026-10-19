@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write PRD"
+  short_description: "编写 PRD：人看的决策部分与 Agent 看的执行契约，含验收、流程图、冷读与变更记录，可同步飞书"
+  default_prompt: "使用 $write-prd 把这份需求写成 PRD：先确认读者、决策与权威源，写人看的决策部分和 Agent 看的执行契约，冷读消除猜测点，并维护需求变更记录。"
