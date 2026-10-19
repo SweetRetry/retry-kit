@@ -28,9 +28,18 @@
 
 正文叙述与大字号展示保持比例数字；仅需数字等宽时勿滥用 `font-mono`。
 
+## 字体渲染（Font Smoothing）
+
+macOS 默认会加粗字形边缘，浅色字落在深色底上显得比设计字重更重。仅 macOS 生效，其他平台忽略。
+
+1. **全局灰度抗锯齿**：根节点（`<body>` 或样式入口的 `body` 规则）使用 `antialiased`，只设一处，业务代码不重复声明。
+2. **局部还原**：个别区域需要系统默认渲染时用 `subpixel-antialiased`，不在全局撤销。
+3. **深色表面避开细字重**：`font-light` 及更细的字重在深色底上依赖系统加粗才可读，关闭加粗后偏细；深色表面正文与标签取 `font-normal` 及以上。
+
 ## 验收清单
 
 - [ ] **字阶合规**：所有文字类名属于标准 utility，无 `text-[*]` 任意值；正文无低于 `text-xs` 的文字。
 - [ ] **字体族合规**：仅使用 `font-sans` / `font-mono` / `font-serif`，无 `font-[*]` 任意值。
 - [ ] **等宽数值**：金额、统计与动态计数器添加了 `tabular-nums` 并右对齐。
 - [ ] **字阶权重**：视区内大标题单一明确，大标题不超过 `font-semibold`，正文无大面积加粗。
+- [ ] **字体渲染**：根节点已有 `antialiased`；深色表面无 `font-light`、`font-extralight`、`font-thin`。
