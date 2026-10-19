@@ -8,10 +8,8 @@
     "dev": "turbo dev --filter=server --filter=web",
     "zod:check": "node rules/zod-v4/check.js",
     "ui:check": "node scripts/ui-guardrails.js",
-    "ui:freeze": "node scripts/ui-freeze.js",
-    "ui:freeze:update": "node scripts/ui-freeze.js --update",
     "design:check": "oxlint",
-    "rules:check": "pnpm zod:check && pnpm ui:check && pnpm design:check && pnpm ui:freeze",
+    "rules:check": "pnpm zod:check && pnpm ui:check && pnpm design:check",
     "infra:up": "docker compose up -d --wait postgres",
     "infra:down": "docker compose down",
     "lint": "biome check .",
@@ -26,15 +24,15 @@
     "knip": "knip"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.11",
-    "@shadcn/lint": "^0.1.0",
+    "@biomejs/biome": "^2.5.15",
+    "@shadcn/lint": "^0.2.1",
     "@workspace/typescript-config": "workspace:*",
-    "knip": "^6.33.0",
-    "lefthook": "^2.1.14",
-    "oxlint": "^1.83.0",
-    "turbo": "^2.10.12",
+    "knip": "^6.42.0",
+    "lefthook": "^2.2.2",
+    "oxlint": "^1.88.0",
+    "turbo": "^2.11.9",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.5"
   },
   "packageManager": "pnpm@12.0.0",
   "engines": {

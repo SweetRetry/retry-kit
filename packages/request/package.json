@@ -11,12 +11,12 @@
   },
   "dependencies": {
     "@workspace/tracing": "workspace:*",
-    "ky": "^2.1.0"
+    "ky": "^2.2.0"
   },
   "devDependencies": {
     "@workspace/typescript-config": "workspace:*",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.5"
   },
   "exports": {
     "./contract": {

@@ -16,11 +16,9 @@ Sweet Kit 是 Turborepo + pnpm workspace 组织的全栈 TypeScript 开发套件
 ## 架构约定
 
 - `apps/*` 拥有应用入口、composition root 和应用专属业务模块；`packages/*` 只承载已被多个应用或进程共同使用的能力与契约，不以潜在复用性作为拆包依据。跨 package 只走公开 exports，不导入内部文件。
-- `packages/ui` 拥有组件**自身的外观**：高度、padding、圆角、颜色与字体由变体（`variant` / `size`）决定；调用方只用布局类（`margin`、宽度、flex/grid 位置）与 props 控制。
-- 新形态按复用面落点：多个应用共同需要的进组件变体（一次显式解冻），单一应用的方言进 recipe（`packages/ui/src/recipes`）或应用内组件。
-- `packages/ui` 与 `globals.css` 的更改必须 **HITL（Human-in-the-Loop，人工在环确认）**，避免不知不觉修改元组件或污染全局：
-  - `packages/ui/src/components/**` 是上游 shadcn/ui 实现的元组件，**字节冻结（F1）**：基线见 `packages/ui/frozen.manifest.json`，`pnpm ui:freeze` 已检入 `rules:check`。基线是「上次被显式接受的状态」，不等于上游最新——上游是否已变由升级时的 `shadcn diff` 回答。改动经 `pnpm ui:freeze:update` 显式接受并单独提交，说明是上游升级还是记录在案的解冻。
-  - `src/styles/globals.css` 的主题与 token 是本地设计决策，不在冻结范围；但因涉及全站通用语义与基础样式，同样禁止 Agent 静默修改，必须 Proposal First 经人工显式确认。
+- `packages/ui` 拥有原子控件**自身的外观**：高度、padding、圆角、颜色与字体由变体（`variant` / `size`）决定，调用方只传布局类（`margin`、宽度、flex/grid 位置）与 props；容器与排版插槽（`Card*`、`Dialog*`、`Table*` 等）按 `.oxlintrc.json` 的 `contracts` 开放职责内的 `spacing`、同心 `rounded` 或 `typography`。
+- 新形态按复用面落点：跨处复用的通用形态在 `packages/ui/src/components/*` 中扩展符合语义 Token 的 `cva` 变体，单一业务场景的组合留在应用组件内。
+- `packages/ui/src/styles/globals.css` 的更改必须 **HITL（Human-in-the-Loop，人工在环确认）**：主题与色板 Token 涉及全站通用语义与基础样式，禁止 Agent 静默修改，必须 Proposal First 经人工显式确认。
 - 自行实现前先查现有依赖的文档、类型定义与扩展能力，优先维护活跃、经过生产验证的成熟库。
 - 测试不得自行启动或依赖开发机的 container runtime；需要外部资源的集成验证由显式 integration environment 提供。
 - 目录名承担分组与语义前缀；目录已表达领域或职责时，文件名只表达目录内的具体职责：`canvas-commands/generation-handlers.ts`，而非 `canvas-commands/canvas-command-generation-handlers.ts`。

@@ -20,3 +20,7 @@ allowBuilds:
   protobufjs: true
   sharp: false
   ssh2: false
+# 传递依赖的安全修复，上游跟进后可移除
+overrides:
+  "@esbuild-kit/core-utils>esbuild": "^0.25.0"
+  "micromark-extension-math>katex": "^0.18.2"

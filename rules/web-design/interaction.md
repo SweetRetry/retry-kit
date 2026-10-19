@@ -34,7 +34,7 @@
 
 - **缓动起步要快**：进场用 `ease-out`，原地切换用 `ease-in-out`；`ease-in` 启动极慢，造成迟钝感，不用于 UI 动效。
 - **缩放入场基准**：从 `scale(0.95)` + `opacity: 0` 起步，严禁从 `scale(0)` 凭空弹出。
-- **按压物理反馈**：`active:scale-95` 配 150ms `ease-out`（显式过渡 `scale`，禁止 `transition-all`）。缩放仅作用于指针按压，键盘与减少动态效果分支保持原尺寸。按压反馈属于组件外观，由 `packages/ui` 变体或 recipe 提供，调用点不追加。
+- **按压物理反馈**：`active:scale-95` 配 150ms `ease-out`（显式过渡 `scale`，禁止 `transition-all`）。缩放仅作用于指针按压，键盘与减少动态效果分支保持原尺寸。按压反馈属于组件外观，由 `packages/ui` 变体或应用组件封装提供，调用点不追加。
 - **锚点感知**：Popover 与下拉菜单从触发控件方向展开；居中 Dialog 保持视口中心锚点。
 - **Spring 参数**：普通 UI 避免弹性晃荡；`duration + bounce` 与 `stiffness + damping + mass` 不得混写。
 - **布局动效**：优先使用 `layout` / `layoutId`；动画不替代 [尺寸稳定](stability.md) 中的加载占位，避免逐帧更新 React 状态。

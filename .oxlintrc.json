@@ -11,7 +11,17 @@
     "shadcn/no-restyle": [
       "error",
       {
-        "allow": ["layout"]
+        "allow": ["layout"],
+        "contracts": [
+          {
+            "pattern": "^(?:Card|CardHeader|CardContent|CardFooter|DialogContent|DialogHeader|DialogFooter|AlertDialogContent|AlertDialogHeader|AlertDialogFooter|SheetContent|SheetHeader|SheetFooter|DrawerContent|DrawerHeader|DrawerFooter|PopoverContent|HoverCardContent|TabsContent|AccordionContent|CollapsibleContent|ScrollArea|ResizablePanel|SidebarContent|SidebarHeader|SidebarFooter|SidebarGroup|SidebarGroupContent|FormItem|Field|FieldGroup|FieldSet|Alert)$",
+            "allow": ["layout", "spacing", "rounded"]
+          },
+          {
+            "pattern": "^(?:CardTitle|CardDescription|DialogTitle|DialogDescription|AlertDialogTitle|AlertDialogDescription|SheetTitle|SheetDescription|DrawerTitle|DrawerDescription|AlertTitle|AlertDescription|TableHead|TableCell|TableCaption|FormLabel|FormDescription|FieldLabel|FieldDescription|FieldLegend)$",
+            "allow": ["layout", "spacing", "typography"]
+          }
+        ]
       }
     ],
     "shadcn/no-raw-colors": "error",
