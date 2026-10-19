@@ -16,7 +16,7 @@ specific/      特定框架工程实践
 
 - `find-edgecases`：审查重复、中断、超时、新旧版本并存等可达条件下的系统失效。
 - `raise-ambition`：动手前把任务抬高到真实结果，补齐顶尖做法、跨领域技巧、对抗视角与外部验收，改写成 prompt 后等确认。
-- `simplify-code`：审查并移除不改变行为的复杂度。
+- `simplify-code`：审查并移除不改变行为的复杂度，顺带修复预期明确的 bug。
 - `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
 
 ### Generation
