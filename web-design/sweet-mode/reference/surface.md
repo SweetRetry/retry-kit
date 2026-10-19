@@ -11,7 +11,7 @@
 | **E0 基底** | 应用背景、最远连续画布 | `background` / `foreground` | 严禁高彩度铺满底色 |
 | **E1 结构面** | 侧栏、持久功能分区 | `sidebar` / `sidebar-foreground` | 严禁多层同级表面层叠 |
 | **E2 抬升面** | 卡片、从承载面分离的模块 | `card` / `card-foreground` | 嵌套不自动代表抬升 |
-| **E3 浮层** | 临时覆盖的弹窗、菜单 | `popover` / `popover-foreground` | 严禁 `primary` 大面积做背景 |
+| **E3 浮层** | 临时覆盖的菜单、Popover（Dialog、Sheet、Tooltip 的 Token 见下方组件约定） | `popover` / `popover-foreground` | 严禁 `primary` 大面积做背景 |
 
 - **配比例外**（按场景取舍 10% 上限）：
   - **生产创作（编辑器、画布、代码区）**：90%+ 中性基底，强调色仅在光标、选择态与必要反馈微量出现（< 5%）。

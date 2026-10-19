@@ -1,6 +1,6 @@
 /**
  * 只扫描“无判断余地”的 UI 禁令，规则名前缀对应 reference 文件：
- * - interaction：transition-all、布局属性过渡、ease-in、motion 从 scale: 0 入场
+ * - motion：transition-all、布局属性过渡、ease-in、motion 从 scale: 0 入场
  * - surface：z-index 任意值、越出阶梯的 z-index、arbitrary class 中的硬编码色值
  * - typography：任意字号、任意字体族
  *
@@ -35,25 +35,25 @@ const Z_SUGGESTION = "改用 -z-10 / z-0 / z-10 / z-20 / z-30 / z-40 / z-50；�
 
 const CHECKS = [
   {
-    rule: "interaction/transition-all",
+    rule: "motion/transition-all",
     pattern: `${L}transition-all${R}|\\btransition(?:-property|Property)?\\s*:\\s*["'\`]?all\\b`,
     message: "过渡全部属性会连带过渡未计划的属性",
     suggestion: "显式声明属性，如 transition-[transform,opacity]",
   },
   {
-    rule: "interaction/layout-transition",
+    rule: "motion/layout-transition",
     pattern: `${L}transition-\\[[^\\]\\s]*${LAYOUT_PROPERTY}[^\\]\\s]*\\]|\\btransition(?:-property)?\\s*:[^;\\n"'\`]*${LAYOUT_PROPERTY}`,
     message: "过渡布局属性会触发重排",
     suggestion: "位移改用 transform，显隐改用 opacity",
   },
   {
-    rule: "interaction/ease-in",
+    rule: "motion/ease-in",
     pattern: `${L}ease-in${R}|["'\`]easeIn["'\`]`,
     message: "ease-in 起步迟缓，UI 动效显得迟钝",
     suggestion: "进场用 ease-out，原地切换用 ease-in-out",
   },
   {
-    rule: "interaction/scale-zero",
+    rule: "motion/scale-zero",
     pattern: "\\binitial=\\{\\{[^}]{0,200}?\\bscale:\\s*0(?![.\\d])",
     message: "从 scale: 0 入场显得凭空弹出",
     suggestion: "从 scale: 0.95 + opacity: 0 起步",

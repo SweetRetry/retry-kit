@@ -28,7 +28,8 @@ reference 引用的 `globals.css`、`packages/ui` 变体与 recipe 指目标项�
 | 颜色 Token、表面高度、圆角嵌套、z-index 与 Portal | [surface.md](reference/surface.md) |
 | 字号、字重、字体族与数字字形 | [typography.md](reference/typography.md) |
 | 加载占位、卡片等高、空值、报错、长文本溢出与浮层关闭时的内容稳定 | [stability.md](reference/stability.md) |
-| 错误与结果反馈、toast、等待与取消、防重与竞态、过渡与动画 | [interaction.md](reference/interaction.md) |
+| 错误与结果反馈、toast、等待与取消、防重与竞态 | [interaction.md](reference/interaction.md) |
+| 过渡与动画、按压缩放、时长与缓动、减少动态效果 | [motion.md](reference/motion.md) |
 
 改动只落在当前任务触及的范围。范围外发现的违规列在交付里，不顺手修改。
 
