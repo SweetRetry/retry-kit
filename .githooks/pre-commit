@@ -1,0 +1,29 @@
+#!/bin/sh
+# Lint staged Markdown and cap every SKILL.md at 500 lines.
+# Install once per clone: git config core.hooksPath .githooks
+
+MAX_SKILL_LINES=500
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+[ -n "$staged" ] || exit 0
+
+failed=0
+
+# Check the staged blob, not the working tree.
+for f in $(printf '%s\n' "$staged" | grep -E '(^|/)SKILL\.md$'); do
+  lines=$(git show ":$f" | wc -l | tr -d ' ')
+  if [ "$lines" -gt "$MAX_SKILL_LINES" ]; then
+    echo "pre-commit: $f has $lines lines, limit is $MAX_SKILL_LINES. Move detail into reference files." >&2
+    failed=1
+  fi
+done
+
+md=$(printf '%s\n' "$staged" | grep -E '\.md$')
+if [ -n "$md" ]; then
+  # shellcheck disable=SC2086
+  if ! printf '%s\n' $md | xargs npx --yes markdownlint-cli2 >&2; then
+    failed=1
+  fi
+fi
+
+exit $failed

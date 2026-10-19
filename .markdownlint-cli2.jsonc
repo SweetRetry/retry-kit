@@ -1,0 +1,11 @@
+{
+  "config": {
+    "default": true,
+    // Skill prose is long-line CJK, wrapping is not enforced.
+    "MD013": false,
+    // AGENTS.md uses one H1 per rule group.
+    "MD025": false,
+    // <br> is the only line break inside table cells.
+    "MD033": { "allowed_elements": ["br"] }
+  }
+}

@@ -12,6 +12,8 @@
 
 每个新 clone 执行一次 `git config core.hooksPath .githooks`。
 
+`.githooks/pre-commit` 对暂存的 Markdown 运行 markdownlint-cli2（规则见 `.markdownlint-cli2.jsonc`），并拒绝超过 500 行的 `SKILL.md`；超出的细节移入 reference 文件。
+
 # Skill 反馈闭环
 
 用户修正 skill 输出时，先判断反馈是否揭示可复用的决策缺口：当次素材、审美或交付偏好只用于修正当前输出；可复用缺口同时进入以下 loop：
