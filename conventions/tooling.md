@@ -16,6 +16,7 @@
 | Markdown 结构 | markdownlint-cli2，只补 oxfmt 管不到的规则 |
 | 死代码 | knip |
 | 测试 | Vitest，端到端 Playwright |
+| 整站审计 | Unlighthouse，按路由跑 Lighthouse |
 | Git hooks | lefthook |
 | 共享配置 | `typescript-config` 包 |
 
@@ -52,3 +53,4 @@ hook 是 `pnpm verify` 的前置子集，不替代 CI。
 - push 与 PR 到 main 时运行，同一 ref 新运行取消旧运行。
 - `pnpm install --frozen-lockfile`，启用 pnpm 缓存。
 - `pnpm verify` 与端到端并行。
+- 有界面的项目在预览部署就绪后跑 `unlighthouse-ci`，报告存为 CI artifact，不阻断合并；它依赖部署地址，不进 `pnpm verify`。
