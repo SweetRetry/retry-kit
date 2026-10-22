@@ -1,6 +1,6 @@
 # Retry Kit
 
-Retry 的个人工具箱：面向 Agent 的可复用 skill、个人设计语言，以及技术栈选项。skill 放在 `skills/`，按职责领域分组；其余内容各占一个顶层目录。
+Retry 的个人工具箱：面向 Agent 的可复用 skill、个人设计语言，以及技术栈选项（规划中，将放在 `stack/`）。skill 放在 `skills/`，按职责领域分组；其余内容各占一个顶层目录。
 
 ## 目录
 
@@ -13,6 +13,8 @@ skills/            Agent skill，按职责领域分组
   specific/        特定框架工程实践
 design/            Retry 个人设计语言（不是 skill）
 ```
+
+## Skills
 
 ### Engineering
 
@@ -43,10 +45,6 @@ design/            Retry 个人设计语言（不是 skill）
 
 - `reactflow-practices`：React Flow v12+ 开发实践。
 
-### Design
-
-`design/` 是 Retry 的个人设计语言，不是 skill：`DESIGN.md` 记录决策，`brand-kit/` 存放值与资源。`brand-kit/globals.css` 由 `tokens.json` 经 `python3 design/brand-kit/generate-globals.py` 生成，不手改。
-
 ### 相邻能力的边界
 
 | 任务 | 入口 | 按需加载 |
@@ -73,9 +71,18 @@ design/            Retry 个人设计语言（不是 skill）
 - [Matt Pocock Skills](https://github.com/mattpocock/skills)：可组合的工程工作流，覆盖需求对齐、调试、TDD、规格与架构改进。
 - [Impeccable](https://github.com/pbakaus/impeccable)：面向 AI coding agent 的设计工作流，覆盖视觉 critique、a11y / responsive audit、motion 与浏览器迭代。
 
+## Design
+
+`design/` 是 Retry 的个人设计语言，不是 skill。
+
+- `DESIGN.md`：设计决策，包括气质、颜色、字体、布局、组件差异与交互取舍。
+- `brand-kit/`：值与资源。`tokens.json` 是 source of truth，`globals.css` 由 `python3 design/brand-kit/generate-globals.py` 生成，不手改。
+
 ## 维护约定
 
-- 每个 skill 使用独立目录（`design/` 不属于 skill，不受此条约束），位于 `skills/<领域>/`，目录名与 `SKILL.md` 中的 `name` 一致；`name`、`display_name` 和一级标题统一使用英文。
+以下约定适用于 `skills/`；`design/` 与仓库级规则见 [AGENTS.md](AGENTS.md)。
+
+- 每个 skill 使用独立目录，位于 `skills/<领域>/<skill>/`，目录名与 `SKILL.md` 中的 `name` 一致；`name`、`display_name` 和一级标题统一使用英文。
 - skill 专属的按需资料放在该 skill 的 `references/`。
 - 保持 skill 职责独立，避免通过目录分层掩盖能力重叠。
 - 显式调用策略按宿主配置：Claude Code 使用 `SKILL.md` 的 `disable-model-invocation: true`；Codex 使用 `agents/openai.yaml` 的 `policy.allow_implicit_invocation: false`。两者不能互相替代；修改后检查显式可调用、隐式不触发。
@@ -83,4 +90,4 @@ design/            Retry 个人设计语言（不是 skill）
 
 ## Claude Code
 
-将 skill 目录安装到项目级 `.claude/skills/` 或用户级 `~/.claude/skills/`。带有 `disable-model-invocation: true` 的 skill 不会被 Claude 自动加载，只能由用户通过 `/skill-name` 调用。
+把 `skills/<领域>/<skill>/` 整个目录复制或链接到项目级 `.claude/skills/<skill>/` 或用户级 `~/.claude/skills/<skill>/`，领域目录不参与安装路径。带有 `disable-model-invocation: true` 的 skill 不会被 Claude 自动加载，只能由用户通过 `/skill-name` 调用。

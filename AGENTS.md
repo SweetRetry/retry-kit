@@ -1,3 +1,9 @@
+# 仓库结构
+
+- `skills/<领域>/<skill>/`：可单独安装的 skill。下文「Skill 独立」与「Skill 反馈闭环」只约束这里。
+- `design/`：Retry 个人设计语言，不是 skill。`DESIGN.md` 只记决策，值与资源放 `brand-kit/`。修改颜色、字号等取值时改 `brand-kit/tokens.json`，再运行 `python3 design/brand-kit/generate-globals.py` 重新生成 `globals.css`，不手改生成物。
+- skill 内不引用 `design/`：skill 单独安装后看不到它。
+
 # 指令设计
 
 只保留会改变模型决策的指令；删除默认行为、重复语义、可由环境直接查得的事实和非必要示例。
@@ -8,7 +14,7 @@
 
 # Commit 约定
 
-提交信息使用 Conventional Commits 英文格式，`<type>(<scope>): <subject>`，type 取 feat / fix / docs / refactor / perf / test / build / ci / chore / style / revert。subject 小写开头、祈使句、不超过 72 字符、不加句号；正文与 subject 之间空一行，每行不超过 100 字符。`sweet-mode：动效规则独立为 motion.md` 这类中文提交会被 `.githooks/commit-msg` 拒绝。
+提交信息使用 Conventional Commits 英文格式，`<type>(<scope>): <subject>`，type 取 feat / fix / docs / refactor / perf / test / build / ci / chore / style / revert。scope 取 skill 名、`design` 或 `repo`；subject 小写开头、祈使句、不超过 72 字符、不加句号；正文与 subject 之间空一行，每行不超过 100 字符。`sweet-mode：动效规则独立为 motion.md` 这类中文提交会被 `.githooks/commit-msg` 拒绝。
 
 每个新 clone 执行一次 `git config core.hooksPath .githooks`。
 
