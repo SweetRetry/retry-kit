@@ -5,9 +5,11 @@
 | 能力 | Cloudflare | Vercel |
 | --- | --- | --- |
 | 运行时 | Worker，经 Void | Node.js 24，Hono |
-| 数据库 | D1 | PostgreSQL |
+| 数据库 | D1 | PostgreSQL，托管在 Supabase |
 | ORM | Drizzle | Drizzle，node-postgres |
 | 文件 | R2 | 待补 |
+| 队列 | `void/queues`（未接入，用到再 import） | Graphile Worker，跑在 PostgreSQL 上 |
+| Redis | 不使用 | Upstash，仅在必要时引入 |
 | AI | Workers AI，经 AI Gateway | Vercel AI SDK |
 | API 描述 | 不要求 | `@hono/zod-openapi`（OpenAPI 3.1），Scalar 文档页 |
 | 日志 | `console`，平台采集 | Pino，`hono-pino` |
@@ -25,6 +27,24 @@
 - schema 变更走 migration，不手工改库。先 `pnpm db:generate`，再应用。
 - D1 没有交互式事务。真需要时改走 Vercel 栈的 PostgreSQL，或加 Hyperdrive。
 - 集成测试依赖外部资源时，缺少连接配置就跳过。测试不自行启动容器运行时。
+
+## 队列（Vercel 栈）
+
+默认用 Graphile Worker，任务存在 PostgreSQL 里，不引入 Redis。
+
+- 入队用 `add_job`，可以和业务写入放在同一个事务里，要么都提交，要么都回滚。Redis 队列做不到这一点。
+- 并发取任务靠 `FOR UPDATE SKIP LOCKED`。失败的任务按 `e^attempts` 秒退避重试，退避上限约 6 小时，重试耗尽后留在表里，`last_error` 记录最后一次错误。
+- 完成的任务直接删除，不保留历史。需要历史时在任务内部自己写表。
+- worker 是常驻进程，不能跑在 Vercel 函数里，要有单独的常驻宿主，见 [deployment.md](deployment.md)。
+- worker 用专用连接 `LISTEN` 来更早醒来，同时仍在轮询，所以连接断开只会让任务变慢，不会丢任务。
+- 连接 Supabase 要分两种。worker 用 session pooler（5432）或 direct 连接，因为 transaction pooler（6543）不支持 `LISTEN/NOTIFY` 与预处理语句。运行在 Vercel 函数里的应用查询用 transaction pooler，并关闭预处理语句。见 Supabase 文档 [Supavisor FAQ](https://supabase.com/docs/guides/troubleshooting/supavisor-faq-YyP5tI) 与 [连接术语说明](https://supabase.com/docs/guides/troubleshooting/supavisor-and-connection-terminology-explained-9pr_ZO)。
+
+## Redis（Vercel 栈）
+
+默认不用。出现下面的情况再引入 Upstash，并在 ADR 里写明触发原因：
+
+- 需要跨实例共享、读写频繁的缓存或限流计数，PostgreSQL 扛着不合适。
+- 任务吞吐或延迟超出 PostgreSQL 队列能承受的范围，改用 Redis 队列。
 
 ## 环境变量
 

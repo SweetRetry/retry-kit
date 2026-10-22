@@ -28,9 +28,9 @@
 
 ## Vercel
 
-待补。目前没有一个已部署的 Vercel 项目可以提炼。需要确定的事：
+PostgreSQL 托管在 Supabase，Redis 如需引入用 Upstash，见 [backend.md](backend.md)。其余部分待补，目前没有一个已部署的 Vercel 项目可以提炼。需要确定的事：
 
 - Hono 服务在 Vercel 上的部署形态。
-- PostgreSQL 的托管方。
+- Graphile Worker 的常驻宿主。Vercel 函数不能运行常驻进程，worker 需要另找地方运行，并用 Supabase 的 session pooler 或 direct 连接。
 - 环境变量与 secret 的管理方式。
 - Preview 环境与数据库 migration 的衔接。
