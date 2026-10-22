@@ -1,0 +1,7 @@
+interface:
+  display_name: "Task Breakdown"
+  short_description: "将已确认需求拆为含任务边界、验收、看板与变更记录的工程任务包"
+  default_prompt: "使用 $task-breakdown 将已确认需求或契约拆为 docs/tasks/{taskfolder}/ 任务包，明确任务边界、依赖与验收，并初始化进度看板。"
+
+policy:
+  allow_implicit_invocation: false

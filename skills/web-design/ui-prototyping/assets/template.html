@@ -1,0 +1,142 @@
+<!doctype html>
+<!--
+  原型模板。复制为 index.html 后，只改 <main> 里的候选 section 和自己的脚本。
+
+  候选：每个 section[data-prototype-component] 一个候选，id 唯一，data-label 是 sidebar 里的名字。
+        两个以上候选时自动生成 sidebar；只剩一个时 sidebar 自动移除，候选占满页面。淘汰候选就删整个 section。
+  外观：Basecoat（shadcn 风格，Tailwind v4）。class：btn[data-variant=outline|secondary|ghost|destructive][data-size=sm|lg|icon]、
+        input、textarea、label、card、badge、table、alert、tabs、dropdown-menu、select、dialog、toaster。
+        dialog 用原生 <dialog class="dialog">，showModal() / close()。
+        下拉、选择、标签页、toast 由 Basecoat JS 驱动（含键盘与焦点），动态插入的也会自动初始化；
+        标记结构见 https://basecoatui.com/components/ 。toast：document.getElementById('toaster').toast({category, title, description})。
+  状态：Alpine（x-data、x-for、x-show、x-model、@click）。mock 数据与共用逻辑写一份，所有候选复用。
+  取值：shadcn 变量在 :root / .dark 上（--primary、--background、--radius、--font-sans …），
+        Basecoat 组件与 Tailwind utility（bg-primary、text-muted-foreground、rounded-lg）同时跟随；暗色给 html 加 class="dark"。
+  动效：候选入场动画会影响判断时把 body 的 data-motion 设为 true；自定义动画遵守 prefers-reduced-motion。
+-->
+<html lang="zh-CN" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prototype</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+    <style type="text/tailwindcss">
+      /* Basecoat 已带 preflight 与默认主题；这里只编译 utility，并把 shadcn 变量接到 utility 名上。 */
+      @import "tailwindcss/theme" layer(theme);
+      @import "tailwindcss/utilities" layer(utilities);
+
+      @theme inline {
+        --color-background: var(--background);
+        --color-foreground: var(--foreground);
+        --color-card: var(--card);
+        --color-card-foreground: var(--card-foreground);
+        --color-popover: var(--popover);
+        --color-popover-foreground: var(--popover-foreground);
+        --color-primary: var(--primary);
+        --color-primary-foreground: var(--primary-foreground);
+        --color-secondary: var(--secondary);
+        --color-secondary-foreground: var(--secondary-foreground);
+        --color-muted: var(--muted);
+        --color-muted-foreground: var(--muted-foreground);
+        --color-accent: var(--accent);
+        --color-accent-foreground: var(--accent-foreground);
+        --color-destructive: var(--destructive);
+        --color-border: var(--border);
+        --color-input: var(--input);
+        --color-ring: var(--ring);
+        --radius-sm: calc(var(--radius) - 4px);
+        --radius-md: calc(var(--radius) - 2px);
+        --radius-lg: var(--radius);
+        --radius-xl: calc(var(--radius) + 4px);
+      }
+
+      @layer base {
+        html {
+          @apply scroll-smooth;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html {
+            scroll-behavior: auto;
+          }
+        }
+      }
+
+      /* 取值模式：在此覆盖变量，例如 :root { --primary: oklch(55% 0.2 250); --radius: 0.5rem; } */
+    </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/js/all.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
+  </head>
+  <body class="min-h-full bg-background text-foreground antialiased" data-motion="false">
+    <div id="prototype-layout" class="grid min-h-svh grid-cols-[12rem_minmax(0,1fr)] md:grid-cols-[15rem_minmax(0,1fr)]">
+      <aside class="sticky top-0 h-svh overflow-y-auto border-r border-border bg-card p-3 md:p-5">
+        <nav id="component-nav" class="grid gap-1" aria-label="Components"></nav>
+      </aside>
+
+      <main class="min-w-0">
+        <section id="component-a" data-prototype-component data-label="A" class="min-h-svh scroll-mt-0"></section>
+        <section id="component-b" data-prototype-component data-label="B" class="min-h-svh scroll-mt-0"></section>
+        <section id="component-c" data-prototype-component data-label="C" class="min-h-svh scroll-mt-0"></section>
+      </main>
+    </div>
+
+    <div id="toaster" class="toaster"></div>
+
+    <script type="module">
+      const components = [...document.querySelectorAll("[data-prototype-component]")];
+      const layout = document.querySelector("#prototype-layout");
+
+      if (components.length < 2) {
+        layout.querySelector("aside").remove();
+        layout.className = "min-h-svh";
+      } else {
+        mountNav();
+      }
+
+      function mountNav() {
+        const nav = document.querySelector("#component-nav");
+        const idle = ["text-muted-foreground", "hover:bg-muted", "hover:text-foreground"];
+        const active = ["bg-primary", "text-primary-foreground"];
+
+        components.forEach((component) => {
+          const link = document.createElement("a");
+          link.href = `#${component.id}`;
+          link.dataset.target = component.id;
+          link.textContent = component.dataset.label;
+          link.className = "rounded-md px-3 py-2 text-sm " + idle.join(" ");
+          nav.append(link);
+        });
+
+        const links = [...nav.querySelectorAll("a")];
+        const setActive = (id) => {
+          links.forEach((link) => {
+            const on = link.dataset.target === id;
+            active.forEach((c) => link.classList.toggle(c, on));
+            idle.forEach((c) => link.classList.toggle(c, !on));
+            if (on) link.setAttribute("aria-current", "true");
+            else link.removeAttribute("aria-current");
+          });
+        };
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible) setActive(visible.target.id);
+          },
+          { threshold: [0.25, 0.5, 0.75] },
+        );
+
+        components.forEach((component) => observer.observe(component));
+        if (components[0]) setActive(components[0].id);
+      }
+
+      const motionAllowed = document.body.dataset.motion === "true" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (motionAllowed) {
+        const { animate, stagger } = await import("https://cdn.jsdelivr.net/npm/motion@13.1.1/+esm");
+        animate(components, { opacity: [0, 1], y: [16, 0] }, { duration: 0.3, delay: stagger(0.06) });
+      }
+    </script>
+  </body>
+</html>

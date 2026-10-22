@@ -1,0 +1,79 @@
+#!/bin/sh
+# Enforce Conventional Commits with English-only text.
+# Install once per clone: git config core.hooksPath .githooks
+
+msg_file=$1
+[ -f "$msg_file" ] || exit 0
+
+# Drop comment lines and anything below the git scissors line.
+msg=$(sed -e '/^#/d' "$msg_file")
+subject=$(printf '%s\n' "$msg" | sed -n '1p')
+
+# Git-generated messages are already standard.
+case $subject in
+  "Merge "*|'Revert "'*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
+esac
+
+USAGE='Commit message must follow Conventional Commits in English.
+
+  <type>(<scope>): <subject>
+
+  <body>            optional, after one blank line
+  <footer>          optional, after one blank line
+
+  type     feat | fix | docs | refactor | perf | test | build | ci | chore | style | revert
+  scope    optional lowercase area or skill name, e.g. sweet-mode
+  subject  imperative, lowercase start, no trailing period, at most 72 chars
+  body     wrapped at 100 chars, explains why not what
+  text     English only, no CJK and no emoji
+
+Example:
+  feat(sweet-mode): add motion reference for entrance easing'
+
+errors=""
+add_error() {
+  errors="${errors}- ${1}
+"
+}
+
+# Shape: type(scope)!: subject
+if ! printf '%s\n' "$subject" |
+  LC_ALL=C grep -Eq '^(feat|fix|docs|refactor|perf|test|build|ci|chore|style|revert)(\([a-z0-9][a-z0-9._/-]*\))?!?: .+'; then
+  add_error "first line does not match '<type>(<scope>): <subject>'"
+fi
+
+# English only.
+if printf '%s\n' "$msg" | LC_ALL=C grep -q '[^[:print:][:blank:]]'; then
+  add_error "non-ASCII text found, write English only (no CJK, no emoji)"
+fi
+
+if [ "$(printf '%s\n' "$subject" | LC_ALL=C wc -c)" -gt 73 ]; then
+  add_error "subject is longer than 72 characters"
+fi
+
+case $subject in
+  *.) add_error "subject ends with a period" ;;
+esac
+
+rest=$(printf '%s\n' "$subject" | sed -n 's/^[a-z]*\(([a-z0-9._/-]*)\)\{0,1\}!\{0,1\}: //p')
+if printf '%s' "$rest" | cut -c1-2 | LC_ALL=C grep -Eq '^[A-Z][a-z]'; then
+  add_error "subject starts with an uppercase word, use lowercase"
+fi
+
+# Body must start one blank line below the subject and stay wrapped.
+if printf '%s\n' "$msg" | sed -n '2,$p' | LC_ALL=C grep -q '[^[:blank:]]'; then
+  if printf '%s\n' "$msg" | sed -n '2p' | LC_ALL=C grep -q '[^[:blank:]]'; then
+    add_error "second line must be blank, put the body after an empty line"
+  fi
+  if printf '%s\n' "$msg" | sed -n '3,$p' | LC_ALL=C awk 'length > 100 { found = 1 } END { exit !found }'; then
+    add_error "body has lines longer than 100 characters"
+  fi
+fi
+
+if [ -n "$errors" ]; then
+  printf 'Commit message rejected.\n\n%s\n%s\n\nCurrent message:\n\n' "$errors" "$USAGE" >&2
+  printf '%s\n' "$msg" | sed -e 's/^/  /' >&2
+  exit 1
+fi
+
+exit 0

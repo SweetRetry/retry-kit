@@ -1,0 +1,7 @@
+interface:
+  display_name: "Raise Ambition"
+  short_description: "动手前抬高任务目标，定义外部验收，改写成可执行 prompt"
+  default_prompt: "使用 $raise-ambition 处理我接下来的任务：找出真实结果、顶尖做法、跨领域技巧与对抗视角，定义不靠自我判断的验收，改写成 prompt 后等我确认。"
+
+policy:
+  allow_implicit_invocation: false

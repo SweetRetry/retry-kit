@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Prototyping"
+  short_description: "用临时可交互原型并排体验多个 UI 方案"
+  default_prompt: "使用 $ui-prototyping 先说明这个任务的需求与动线里哪些该删或合并，再把剩下的 UI 决策做成临时可交互原型，让我在相同条件下体验并比较各个方案。"
