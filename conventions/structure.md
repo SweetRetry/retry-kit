@@ -32,7 +32,7 @@ DESIGN.md          设计规范
 
 | 内容 | 位置 |
 | --- | --- |
-| 全局取舍与「为什么不选 X」 | `docs/architecture.md` |
+| 全局取舍与偏离默认栈的理由 | `docs/architecture.md` |
 | 局部取舍 | 决策处的一行代码注释 |
 | 未定型的计划 | `docs/future/`，写明问题、候选方案与推进条件 |
 | 需要判断的工程规则 | `docs/rules/`，由评审把关 |

@@ -12,7 +12,7 @@ skills/            Agent skill，按职责领域分组
   web-design/      界面设计、文案、原型与交互审查
   specific/        特定框架工程实践
 design/            Retry 个人设计语言（不是 skill）
-guidelines/        技术选型与工程约定（不是 skill）
+conventions/       技术选型与工程约定（不是 skill）
 ```
 
 ## Skills
@@ -79,9 +79,9 @@ guidelines/        技术选型与工程约定（不是 skill）
 - `DESIGN.md`：设计决策，包括气质、颜色、字体、布局、组件差异与交互取舍。
 - `brand-kit/`：值与资源。`tokens.json` 是 source of truth，`globals.css` 由 `python3 design/brand-kit/generate-globals.py` 生成，不手改。
 
-## Guidelines
+## Conventions
 
-`guidelines/` 记录前端、后端、目录组织、可观测性与工具链的选型，入口见 [guidelines/README.md](guidelines/README.md)。视觉取值不在这里，归 `design/`。
+`conventions/` 记录前端、后端、目录组织、可观测性与工具链的选型，入口见 [conventions/README.md](conventions/README.md)。视觉取值不在这里，归 `design/`。
 
 ## 维护约定
 
