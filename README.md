@@ -1,6 +1,6 @@
 # Retry Kit
 
-Retry 的个人工具箱：面向 Agent 的可复用 skill、个人设计语言，以及技术栈选项（规划中，将放在 `stack/`）。skill 放在 `skills/`，按职责领域分组；其余内容各占一个顶层目录。
+Retry 的个人工具箱：面向 Agent 的可复用 skill、个人设计语言，以及技术选型与工程约定。skill 放在 `skills/`，按职责领域分组；其余内容各占一个顶层目录。
 
 ## 目录
 
@@ -12,6 +12,7 @@ skills/            Agent skill，按职责领域分组
   web-design/      界面设计、文案、原型与交互审查
   specific/        特定框架工程实践
 design/            Retry 个人设计语言（不是 skill）
+guidelines/        技术选型与工程约定（不是 skill）
 ```
 
 ## Skills
@@ -77,6 +78,10 @@ design/            Retry 个人设计语言（不是 skill）
 
 - `DESIGN.md`：设计决策，包括气质、颜色、字体、布局、组件差异与交互取舍。
 - `brand-kit/`：值与资源。`tokens.json` 是 source of truth，`globals.css` 由 `python3 design/brand-kit/generate-globals.py` 生成，不手改。
+
+## Guidelines
+
+`guidelines/` 记录前端、后端、API、可观测性与工程工具链的选型和边界，入口见 [guidelines/README.md](guidelines/README.md)。它提炼自早先的 sweet-kit 全栈仓库，视觉取值不在这里，归 `design/`。
 
 ## 维护约定
 
