@@ -1,73 +1,64 @@
 # 色彩、表面与层叠
 
-表面系统定义界面的三维空间秩序：平面的圆角几何、深度的色彩高度模型，以及 Z 轴的层叠与浮层挂载。只消费语义 Token，禁止任意值。
+只消费语义 Token。色值集中在样式入口，业务代码不写 Hex/OKLCH 与任意值。
 
-## 1. 色彩与表面高度（E0–E3）
+## 1. 表面高度（E0–E3）
 
-高度描述表面的前后关系，Token 表达组件职责；每个表面都归入 E0–E3 之一。色彩与表面的视觉重量遵循 [6:3:1 注意力法则](hierarchy.md#1-631-注意力法则与构图)，焦点色（`primary`、`destructive` 等品牌与状态色）不超过 10%；`accent` 是中性交互高亮，不计入。
+每个表面归入一层：
 
-| 高度层级 | 语义职责 | 对应 Token | 越界禁令 |
-| :--- | :--- | :--- | :--- |
-| **E0 基底** | 应用背景、最远连续画布 | `background` / `foreground` | 严禁高彩度铺满底色 |
-| **E1 结构面** | 侧栏、持久功能分区 | `sidebar` / `sidebar-foreground` | 严禁多层同级表面层叠 |
-| **E2 抬升面** | 卡片、从承载面分离的模块 | `card` / `card-foreground` | 嵌套不自动代表抬升 |
-| **E3 浮层** | 临时覆盖的菜单、Popover（Dialog、Sheet、Tooltip 的 Token 见下方组件约定） | `popover` / `popover-foreground` | 严禁 `primary` 大面积做背景 |
+| 层 | 职责 | Token |
+| :--- | :--- | :--- |
+| E0 基底 | 应用背景、最远的连续画布 | `background` / `foreground` |
+| E1 结构面 | 侧栏、持久功能分区 | `sidebar` / `sidebar-foreground` |
+| E2 抬升面 | 卡片、从承载面分离的模块 | `card` / `card-foreground` |
+| E3 浮层 | 菜单、Popover | `popover` / `popover-foreground` |
 
-- **配比随颜色职责变化**：10% 上限针对只做强调的颜色。颜色本身编码信息（数据分类、状态）或本身就是内容（品牌表达、从内容提取的主题色）时按需放开，经 Token 定义并限定范围；框架基底保持中性，状态语义色与文字对比度不让步。注意力须留给作品的工作区（编辑器、画布、代码区）把强调色收到最少，只留给光标、选择与必要反馈。
+- 嵌套不等于抬升；同级表面不层层叠放。
+- Dialog、AlertDialog、Sheet 用 `background` 加配套遮罩；Tooltip 用 `foreground` 作底、`background` 作字。调用点不改写成 `popover`。
+- `accent` 只表达交互高亮，`input` 只用于输入控件边界，都不是通用的“再高一层”。
+- 亮暗双主题（`:root` / `.dark`）。暗色下 `card`、`popover` 略亮于 `background`，同一局部链上明度与层叠不翻转；`sidebar` 与 `background` 并列，不参与此检查。浮层去掉阴影后仍能靠明度差、边框或遮罩与下层区分。
+- `forced-colors` 下使用系统色，不追踪明度关系。
 
-- **组件特定表面约定**：
-  - Dialog、AlertDialog、Sheet 沿用 `background` 配配套遮罩；Tooltip 使用 `foreground` 作为背景、`background` 作为文字色——禁止在调用点强行覆盖为 `popover`。
-  - `accent` 仅表达交互高亮，不是通用的“更高一层”；`input` 仅用于输入控件边界，不是内凹表面的通用 Token。
-- **主题表现与 Token 维护**：
-  - 亮暗双主题（`:root` 与 `.dark`）；暗色下 `card` 与 `popover` 略亮于 `background`，层级通过微弱明度差、边框与遮罩表达；`sidebar` 与 `background` 并列而非叠在其上，可略亮或略暗，不计入明度翻转检查。
-  - `forced-colors`（高对比度模式）生效时使用系统颜色，不追踪明度关系。
-  - 色值集中在样式入口（`globals.css`）维护，业务组件消费语义 Token，严禁硬编码 Hex/OKLCH。
+## 2. 颜色配比
 
-## 2. 圆角与几何形态
+只做强调的焦点色（`primary`、`destructive` 等品牌与状态色）不超过视区的 10%，不作大面积背景；E0 保持低彩度，`accent` 不计入。颜色本身编码信息（数据分类、状态）或本身就是内容（品牌表达、从内容提取的主题色）时按需放开，经 Token 定义并限定范围，框架保持中性，文字对比度不让步。编辑器、画布、代码区等工作区把强调色收到光标、选择与必要反馈。
 
-只消费 `globals.css` 定义的圆角阶梯，严禁任意值（`rounded-[11px]`）：
+## 3. 圆角
 
-| 阶梯 | Class | 值 | 适用对象 |
-| :--- | :--- | :--- | :--- |
-| **微角** | `rounded-xs` | 2px | 拖拽把手、极小角标、关闭按钮 |
-| **内部元素** | `rounded-sm` | 6px | 菜单项、紧凑控件内的子元素 |
-| **通用控件** | `rounded-md` | 8px | Button、Input、Select、Popover、Tooltip |
-| **浮层窗口** | `rounded-lg` | 10px | Dialog、AlertDialog |
-| **普通容器** | `rounded-xl` | 14px | Card、主面板卡片 |
-| **重点容器** | `rounded-2xl` | 18px | 重点卡片、嵌套视口 |
-| **大模块** | `rounded-3xl` / `4xl` | 22px / 26px | 顶层面板、全屏窗口、设备外框 |
-| **胶囊** | `rounded-full` | — | Avatar、Badge、Pill 按钮 |
+只用样式入口的圆角阶梯：
 
-- **同心定理**：嵌套容器必须满足 $R_{inner} = \max(0, R_{outer} - (\text{Padding} + \text{Border}))$。间隙 $\ge R_{outer}$ 时子元素一律 `rounded-none`。小圆角（≤ 8px）允许 +1~2px 光学补偿，但 $R_{inner}$ 永不超过 $R_{outer}$。
-- **阶梯取整**：计算值不在阶梯上时，内层取**不超过计算值的最大阶梯**，不写任意值。例：`rounded-3xl`（22px）+ `p-2` → 14px → `rounded-xl`；`rounded-2xl`（18px）+ `p-4` → 2px → `rounded-xs`；`rounded-xl`（14px）+ `p-6` → ≤ 0 → `rounded-none`。
-- **形态决断**：固定高度控件必须满足 $R \le H/4$（圆角矩形）或 $R \ge H/2$（完全胶囊），**严禁浮肿禁区（$H/4 < R < H/2$）**。
-- **超椭圆（渐进增强）**：`corner-shape: squircle` 必须包裹在 `@supports` 内，以标准 `border-radius` 回退。
+| Class | 缺省值 | 缺省对象 |
+| :--- | :--- | :--- |
+| `rounded-xs` | 2px | 拖拽把手、极小角标、关闭按钮 |
+| `rounded-sm` | 6px | 菜单项、紧凑控件内的子元素 |
+| `rounded-md` | 8px | Button、Input、Select、Popover、Tooltip |
+| `rounded-lg` | 10px | Dialog、AlertDialog |
+| `rounded-xl` | 14px | Card、主面板 |
+| `rounded-2xl` | 18px | 重点卡片、嵌套视口 |
+| `rounded-3xl` / `4xl` | 22px / 26px | 顶层面板、全屏窗口、设备外框 |
+| `rounded-full` | — | Avatar、Badge、Pill 按钮 |
 
-## 3. 层叠上下文与 Z-Index
+缺省对象与下面两条冲突时，以下面为准：
 
-业务代码上限为 `z-50`，严禁突破或使用任意值（`z-[999]`）：
+- **同心**：$R_{inner} = \max(0, R_{outer} - (\text{Padding} + \text{Border}))$。结果不在阶梯上时取不超过它的最大一档，为 0 时 `rounded-none`。
+- **形态**：固定高度控件取 $R \le H/4$（圆角矩形）或 $R \ge H/2$（胶囊），不落在两者之间。
 
-| 层级 | Class | 数值 | 职责与约束 |
-| :--- | :--- | :--- | :--- |
-| **Below** | `-z-10` | -10 | 背景装饰、水印 |
-| **Base** | `z-0` / `z-auto` | 0 | 普通文档流 |
-| **Elevated** | `z-10` | 1–10 | 局部微层级（Focus 环、头像堆叠、Tab 激活态）；**父容器必须声明 `isolate`** |
-| **Sticky** | `z-20` | 20 | 吸顶表头、吸底操作栏、拖拽把手 |
-| **Navigation** | `z-30` | 30 | 固定导航栏、固定侧边栏 |
-| **Backdrop** | `z-40` | 40 | 业务自建非模态遮罩；Dialog / Sheet 自带遮罩随浮层使用 `z-50` |
-| **Overlay** | `z-50` | 50 | 全部顶层浮层（Dialog、Sheet、Popover、Tooltip 等） |
+`corner-shape: squircle` 包在 `@supports` 内，以 `border-radius` 回退。
 
-- **Portal 挂载规范**：
-  - **强制 Portal 至 `<body>`**：Dialog、Sheet、DropdownMenu、Popover、Select、Tooltip，穿透局部容器防裁剪（避免 `overflow-hidden`）。
-  - **禁止 Portal**：Accordion、Collapsible、Tabs、Sticky 表头（作为内容流一部分随视口滚动）。
-  - **第三方例外**：sonner 的 `<Toaster />` 使用库内置层级并在应用根部挂载，不在业务代码覆盖数值；两个浮层互相遮挡时调整挂载顺序，不比拼数值。
-- **层叠排查机制**：高层级被遮挡时排查祖先触发的独立层叠上下文（`transform`、`opacity < 1`、`filter` / `backdrop-filter`、`contain`、`will-change`、`mix-blend-mode`），通过 Portal 提升，严禁无脑追加更高 `z-index`。
+## 4. 层叠
 
-## 验收清单
+业务代码只用以下阶梯：
 
-- [ ] **Token 合规**：无硬编码 Hex/OKLCH，无 `rounded-[*]` 或 `z-[*]` 任意值。
-- [ ] **高度自洽**：每个表面可归入 E0–E3；同一局部链上明度与层叠不翻转；焦点色占比与颜色职责相符，只做强调的颜色不超过 10%。
-- [ ] **浮层脱离**：浮层去掉阴影后仍能通过明度差或边框与下层区分。
-- [ ] **几何吻合**：每处嵌套容器满足同心公式并已按阶梯取整；固定控件未入 $H/4 < R < H/2$ 浮肿区。
-- [ ] **层叠受控**：`z-10` 局部容器均有 `isolate`；顶层浮层正确通过 Portal 挂载，未超 `z-50`。
-- [ ] **无障碍兼容**：`forced-colors` 生效时使用系统色；超椭圆包裹在 `@supports` 中。
+| Class | 职责 |
+| :--- | :--- |
+| `-z-10` | 背景装饰、水印 |
+| `z-0` / `z-auto` | 普通文档流 |
+| `z-1`…`z-10` | 局部微层级（Focus 环、头像堆叠、Tab 激活态），父容器声明 `isolate` |
+| `z-20` | 吸顶表头、吸底操作栏、拖拽把手 |
+| `z-30` | 固定导航栏、固定侧栏 |
+| `z-40` | 业务自建的非模态遮罩 |
+| `z-50` | 全部顶层浮层，含 Dialog / Sheet 自带的遮罩 |
+
+- Dialog、Sheet、DropdownMenu、Popover、Select、Tooltip Portal 到 `<body>`；随内容流滚动的 Accordion、Collapsible、Tabs、Sticky 表头不 Portal。
+- sonner `<Toaster />` 用库内置层级、挂在应用根部；浮层互相遮挡时调整挂载顺序。
+- 被遮挡时先找祖先建立的层叠上下文（`transform`、`opacity < 1`、`filter` / `backdrop-filter`、`contain`、`will-change`、`mix-blend-mode`），用 Portal 提升，不加大数值。

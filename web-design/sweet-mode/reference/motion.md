@@ -1,57 +1,44 @@
 # 动效
 
-先确认动效的目的，再取时长、缓动与形态；无目的的动效不做。
-
 ## 1. 目的
 
-每个动效必须能归入以下一项，说不出归属的候选直接删除（“好看”不是目的），再进入后续取值：
+每个动效归入一项目的，归不进的删除：
 
 | 目的 | 含义 |
 | :--- | :--- |
-| **反馈** | 确认界面收到了操作（按压缩放、长按填充） |
-| **空间连续** | 交代内容从哪来、到哪去（toast 从同一边进出，面板从触发点长出） |
-| **状态指示** | 让状态变化可读（按钮形变、手风琴展开） |
-| **避免突兀** | 内容凭空出现、消失或瞬移时补上过渡 |
-| **解释** | 演示功能如何工作，仅限营销与引导页 |
-| **愉悦** | 仅限极少触发或首次体验的场景 |
-
-目的框架出自 Emil Kowalski 的 [find-animation-opportunities](https://github.com/emilkowalski/skills/blob/main/skills/find-animation-opportunities/SKILL.md)。
+| 反馈 | 确认收到操作（按压缩放、长按填充） |
+| 空间连续 | 交代内容从哪来、到哪去（toast 同边进出，面板从触发点长出） |
+| 状态指示 | 让状态变化可读（按钮形变、手风琴展开） |
+| 避免突兀 | 内容出现、消失或瞬移时补上过渡 |
+| 解释 | 演示功能如何工作，仅限营销与引导页 |
+| 愉悦 | 仅限极少触发或首次体验 |
 
 ## 2. 时长与缓动
 
-时长由操作频率和承载的空间信息决定，不由产品类型决定：一天重复上百次的操作越接近无感越好，承载空间关系的内容过渡要给眼睛留出跟随时间。常规 UI 交互优先低于 300ms（Dialog / Sheet 与内容空间过渡按下表），退场通常不长于进场：
+越高频越接近无感；承载空间关系的过渡给眼睛留出跟随时间。退场不长于进场。
 
-| 动效场景 | 建议时长 | 推荐缓动 | 禁令 |
-| :--- | :--- | :--- | :--- |
-| **按压与即时确认** | 100–160ms | `ease-out` | 严禁 > 200ms |
-| **Tooltip / 小型 Popover** | 125–200ms | `ease-out` / `cubic-bezier(0.23, 1, 0.32, 1)` | 相邻图标滑移时跳过动画即时切换 |
-| **Dropdown / Select** | 150–250ms | `ease-out` | 严禁无锚点从视口中心展开 |
-| **Dialog / Sheet** | 200–500ms（偏短） | 抽屉 `cubic-bezier(0.32, 0.72, 0, 1)` | 严禁阻塞紧急关闭 |
-| **原地形态切换** | 200–300ms | `ease-in-out` | 禁用 `ease-in` |
-| **内容空间过渡**（如缩略图展开为全屏） | 250–400ms | `ease-out` | 从来源位置展开并回到来源位置；严禁用于高频操作 |
+| 场景 | 时长 | 缓动与约束 |
+| :--- | :--- | :--- |
+| 按压与即时确认 | 100–160ms | `ease-out` |
+| Tooltip / 小型 Popover | 125–200ms | `ease-out` 或 `cubic-bezier(0.23, 1, 0.32, 1)`；在相邻触发点间移动时即时切换 |
+| Dropdown / Select | 150–250ms | `ease-out` |
+| Dialog / Sheet | 200–500ms，取偏短 | 抽屉 `cubic-bezier(0.32, 0.72, 0, 1)`；动画中可随时关闭 |
+| 原地形态切换 | 200–300ms | `ease-in-out` |
+| 内容空间过渡（缩略图展开为全屏） | 250–400ms | `ease-out`；从来源位置展开并回到来源位置；不用于高频操作 |
 
-- **缓动起步要快**：进场用 `ease-out`，原地切换用 `ease-in-out`；`ease-in` 启动极慢，造成迟钝感，不用于 UI 动效。
+进场 `ease-out`，原地切换 `ease-in-out`；`ease-in` 起步慢、显得迟钝，不用于 UI。
 
-## 3. 形态与物理
+## 3. 形态
 
-- **缩放入场基准**：从 `scale(0.95)` + `opacity: 0` 起步，严禁从 `scale(0)` 凭空弹出。
-- **按压物理反馈**：`active:scale-95` 配 150ms `ease-out`（显式过渡 `scale`，禁止 `transition-all`）。缩放仅作用于指针按压，键盘与减少动态效果分支保持原尺寸。按压反馈属于组件外观，由 `packages/ui` 变体或 recipe 提供，调用点不追加。
-- **锚点感知**：Popover 与下拉菜单从触发控件方向展开；居中 Dialog 保持视口中心锚点。
-- **Spring 参数**：普通 UI 避免弹性晃荡；`duration + bounce` 与 `stiffness + damping + mass` 不得混写。
-- **布局动效**：优先使用 `layout` / `layoutId`；动画不替代 [尺寸稳定](stability.md) 中的加载占位，避免逐帧更新 React 状态。
+- 缩放入场从 `scale(0.95)` + `opacity: 0` 起步，不从 `scale(0)`。
+- 按压用 `active:scale-95` 配 150ms `ease-out`，只作用于指针按压。
+- Popover 与下拉从触发控件方向展开；居中 Dialog 以视口中心为锚点。
+- Spring 不做弹跳晃荡；`duration + bounce` 与 `stiffness + damping + mass` 二选一。
+- 布局变化用 `layout` / `layoutId`，不逐帧更新 React 状态。
 
-## 4. 性能防线与可访问性
+## 4. 性能与可访问性
 
-- **合成属性优先**：位移与形变用 `transform`，显隐用 `opacity`；不过渡 `top`、`left`、`margin`、`padding`、`width`、`height` 等布局属性。颜色类状态变化（hover、选中）可显式过渡 `color`、`background-color`、`border-color`。
-- **严禁 `transition-all`**：必须显式声明具体过渡属性（如 `transition-[transform,opacity]`）。
-- **可打断性**：连续操作衔接最新状态，不跳回起点；业务状态逻辑不等待动画结束。
-- **`prefers-reduced-motion`**：彻底移除位移与缩放动画，仅保留轻微透明度或颜色过渡。
-- **触屏防粘连**：悬停动效仅在 `(hover: hover) and (pointer: fine)` 媒体查询下生效。
-- **每种输入方式都可达**：悬停只做增强；悬停才出现的操作，在键盘聚焦与无悬停设备上另有可见入口。
-
-## 验收清单
-
-- [ ] **动效有目的**：每个动效都归入反馈、空间连续、状态指示、避免突兀、解释或愉悦之一，愉悦仅用于极少触发或首次场景。
-- [ ] **时长与缓动**：时长落在对应场景的阶梯内（常规 < 300ms），无 `ease-in`，无 `scale(0)` 起步。
-- [ ] **性能安全**：显式声明过渡属性，无 `transition-all`，无布局属性过渡。
-- [ ] **可访问性**：支持减少动态效果；触屏设备隔离了 `:hover` 动效，悬停才出现的操作在触屏与键盘下可达。
+- 只过渡 `transform`、`opacity` 与颜色类属性（`color`、`background-color`、`border-color`），显式声明（如 `transition-[transform,opacity]`），不用 `transition-all`。折叠展开的高度用组件库的 keyframes（Radix `--radix-*-content-height`）。
+- 可打断：连续操作从当前状态衔接最新目标；业务逻辑不等动画结束。
+- `prefers-reduced-motion` 下移除位移与缩放，只留轻微透明度或颜色过渡。
+- 悬停动效只在 `(hover: hover) and (pointer: fine)` 下生效。
