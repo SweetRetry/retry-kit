@@ -1,5 +1,7 @@
 # Backend
 
+Node 服务形态：独立的 HTTP 后端进程加 PostgreSQL。Edge 与桌面形态见 [edge.md](edge.md)、[desktop.md](desktop.md)。
+
 ## 选型
 
 | 能力 | 选择 | 备注 |

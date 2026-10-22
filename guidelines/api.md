@@ -8,9 +8,9 @@
 2. **成功直接表达结果**：使用符合操作语义的 2xx，JSON 直接返回资源或结果。不加 `{ success, code, message, data }` 包装。
 3. **错误统一格式**：应用控制的 4xx 与 5xx 使用 RFC 9457 Problem Details，媒体类型 `application/problem+json`。
 4. **构建集中在一处**：错误只经一个 `problemResponse(c, input)` 构造，`input` 为 `{ status, title, code?, detail?, type?, invalidParams? }`。
-5. **`status` 同时决定 HTTP 状态码**，body 与状态码严格一致。`instance` 自动取请求路径。
+5. **`status` 同时决定 HTTP 状态码**，body 与状态码严格一致。`instance` 默认取请求路径。部署在 Cloudflare 时改用 `urn:cf-ray:<id>`，用户的错误报告凭它就能在 Workers Logs 里找到那次请求。
 6. **不泄漏内部信息**：`detail` 面向调用方说明问题与纠正方式，不含堆栈、SQL、内部主机名或原始 Zod 错误。
-7. **公开错误类型用绝对 URI**：`https://<域名>/problems/<slug>`，`slug` 一般是 `code` 的小写连字符形式。不对外承诺的类别省略 `type`，落到 `about:blank`。
+7. **公开错误类型用绝对 URI**：`https://<域名>/problems/<slug>`，`slug` 一般是 `code` 的小写连字符形式。不对外承诺的类别省略 `type`，落到 `about:blank`，此时状态码承载语义，`title` 就是状态短语。
 
 ## 成功响应
 

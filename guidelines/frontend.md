@@ -4,13 +4,14 @@
 
 | 能力 | 选择 | 备注 |
 | --- | --- | --- |
-| 框架 | Next.js App Router、React 19 | |
+| 框架 | React 19 | |
+| 路由 | Next.js App Router（Node 服务）、TanStack Start（Edge）、TanStack Router + Vite（桌面） | 随项目形态 |
 | 样式 | Tailwind CSS v4 | 颜色、圆角、字号走语义 Token，业务代码只消费语义名 |
 | 组件 | shadcn/ui on Base UI | 初始化用 `shadcn init --base base`，不引入 Radix 包 |
 | 服务端状态 | TanStack Query | |
 | 客户端状态 | zustand | 只放真正的客户端状态，服务端数据交给 Query |
 | 请求 | ky，封装在共享 request 包 | 错误契约由该包解析，见 [api.md](api.md) |
-| 表单 | react-hook-form + zod + @hookform/resolvers | 配 shadcn/ui 的 Form 组件 |
+| 表单 | react-hook-form + zod + @hookform/resolvers | Base UI 没有 `Form`，用 shadcn/ui 的 `Field` 配 `Controller` |
 | 通知 | sonner | |
 | 动效 | motion（`motion/react`）或 Tailwind 过渡 | 规则见 [design/DESIGN.md](../design/DESIGN.md) |
 | 图标 | [Phosphor](https://phosphoricons.com/)（`@phosphor-icons/react`） | 优先选用。lucide-react 仅作为 shadcn/ui 的默认依赖保留 |

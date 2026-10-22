@@ -1,5 +1,7 @@
 # Observability
 
+本篇主体是 Node 服务形态的 OpenTelemetry 方案。Edge 形态见文末，桌面应用目前没有统一约定。
+
 ## 选型
 
 | 信号 | 选择 | 备注 |
@@ -46,3 +48,16 @@
 - span 投影按 key 语义判定。凭据类 key 整值替换，URL 的 query 与 fragment 剔除。
 - `token` 只有作为独立 key 段（如 `session.token`）才算凭据。`input_tokens`、`token_count` 是指标，保留原值。
 - 两处脱敏都配回归测试。新增字段命中上述语义时，先补测试再合入。
+
+## Edge 形态
+
+Cloudflare Workers 不自己装配 OpenTelemetry SDK，日志与 trace 由平台采集。
+
+- 在 `void.config.ts` 的 `cloudflare.observability` 里开启 `logs` 与 `traces`。
+- 日志直接用 `console.log`、`console.warn`、`console.error`，平台会把它们挂到请求的 trace 上。
+- 事件名用简短的点分键，数据放对象里，如 `console.error("api.failed", { path, error })`。
+- 记录 `Error` 时写成 `{ name, message, stack }`，直接序列化会得到 `{}`。
+- 不记录 secret、cookie、session token、密码和完整请求体。
+- 用户的错误报告靠 `cf-ray` 关联。每个 `/api/*` 错误的 `instance` 都是 `urn:cf-ray:<id>`，见 [api.md](api.md)。
+- 本地开发时 Cloudflare 的 Vite 插件记录每个请求的 span 与日志，可在 `/cdn-cgi/local/explorer/` 浏览，或用 SQL 查询 `spans` 与 `logs` 两张表。本地请求没有 `cf-ray`，按时间或路径查找。
+- 部署后用 `void project logs` 查看实时日志，AI Gateway 的日志里能看到每次模型调用的延迟、token 与缓存状态。

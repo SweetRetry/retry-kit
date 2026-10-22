@@ -8,7 +8,10 @@
 | 包管理 | pnpm workspace | `packageManager` 字段锁定版本 |
 | 构建编排 | Turborepo | |
 | Lint | oxlint | 通过 `@shadcn/lint` 插件承载界面规则：调用点契约、硬编码色值、任意值 |
-| 格式化 | oxfmt | oxlint 不做格式化，由同一 Oxc 工具链的 oxfmt 负责 |
+| 格式化 | oxfmt | oxlint 不做格式化，由同一 Oxc 工具链的 oxfmt 负责，Markdown 也由它排版 |
+| 统一入口 | Vite+（`vp fmt`、`vp lint`、`vp test`） | 一套命令驱动 oxfmt、oxlint 与 Vitest，配置集中在 `vite.config.ts`。不用 Vite+ 的项目直接调用 oxlint 与 oxfmt |
+| Markdown 结构 | markdownlint-cli2 | 只补 oxfmt 管不到的结构规则：围栏语言、标题层级、链接、表格对齐 |
+| 端到端 | Playwright | |
 | 死代码 | knip | |
 | 测试 | Vitest | |
 | Git hooks 管理器 | lefthook | 只负责在 Git 事件上运行命令，也可用 `lefthook run <hook>` 手动触发同一组任务 |
@@ -18,6 +21,7 @@
 
 `pnpm verify` 是唯一的全量验证入口，依次是格式与 lint、规则检查、typecheck、test、build、knip 与 peer 依赖检查。完成代码修改后以它为准。
 
+- Markdown 由一个任务独占：oxfmt 先排版，markdownlint 再补结构规则，不让两个工具写同一个文件。
 - 规则检查只放零判断余地的机械门禁：废弃 API、`transition-all`、任意 `z-index`、硬编码色值。
 - 其余规则由验收清单与人工评审判定，不写启发式正则扫描，避免为了过检查而写代码。
 - 能写成测试或类型的不变量优先写成测试或类型。
