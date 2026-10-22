@@ -81,7 +81,7 @@ guidelines/        技术选型与工程约定（不是 skill）
 
 ## Guidelines
 
-`guidelines/` 记录 Node 服务、Edge、桌面三种项目形态的技术选型，以及共用的前端、API、可观测性与工具链约定，入口见 [guidelines/README.md](guidelines/README.md)。视觉取值不在这里，归 `design/`。
+`guidelines/` 记录部署、前端、后端、目录组织、可观测性与工具链的选型，入口见 [guidelines/README.md](guidelines/README.md)。视觉取值不在这里，归 `design/`。
 
 ## 维护约定
 
