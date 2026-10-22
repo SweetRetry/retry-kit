@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 288" width="960" height="288" role="img" aria-label="Retry">
+  <rect width="960" height="288" fill="#1c1c1e"/>
+  <g transform="translate(480 0)">
+    <rect x="272" y="-12" width="220" height="164" rx="14" fill="#2fbf71"/>
+    <rect x="128" y="120" width="128" height="180" rx="14" fill="#f5f5f7"/>
+    <rect x="272" y="168" width="40" height="40" rx="10" fill="#242426"/>
+    <rect x="320" y="168" width="40" height="40" rx="10" fill="#2c2c2e"/>
+    <rect x="368" y="168" width="40" height="40" rx="10" fill="#363638"/>
+    <rect x="416" y="168" width="64" height="40" rx="10" fill="#2fbf71" fill-opacity="0.22"/>
+    <rect x="272" y="216" width="88" height="40" rx="10" fill="#242426"/>
+    <rect x="368" y="216" width="40" height="40" rx="10" fill="#2c2c2e"/>
+    <rect x="416" y="216" width="40" height="40" rx="10" fill="#363638"/>
+    <rect x="32" y="216" width="40" height="40" rx="10" fill="#2c2c2e"/>
+    <rect x="80" y="216" width="40" height="40" rx="10" fill="#363638"/>
+  </g>
+  <text x="32" y="204" fill="#f5f5f7" font-family="Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif" font-size="120" font-weight="600" letter-spacing="-5.4">Retry</text>
+  <text x="36" y="254" fill="#98989d" font-family="Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif" font-size="14">Quiet surfaces, careful type, one color that means something.</text>
+</svg>
