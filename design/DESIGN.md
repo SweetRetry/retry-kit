@@ -59,7 +59,7 @@ shadcn names, so every color is a utility (`bg-card`, `text-muted-foreground`). 
 Inter (`font-sans`) with optical sizing, which already tightens large text. Sizes are Tailwind's; the theme gives `text-3xl` and up `tracking-tight`, and `text-5xl`/`text-6xl` room between lines, so don't add `tracking-*` or `leading-*` to headings. `font-mono` only for code and data.
 
 | Class | Role |
-|---|---|
+| --- | --- |
 | `text-6xl` / `text-5xl` | Cover / site hero, once per page |
 | `text-4xl` · `text-3xl` · `text-xl` | h1 · h2 · h3 (`font-semibold`) |
 | `text-2xl` | Slide subheads, stat numbers |
@@ -109,13 +109,13 @@ Only Retry's own choices are here; general interaction craft (waiting states, ho
 ## Surfaces
 
 | Surface | Job | Density |
-|---|---|---|
+| --- | --- | --- |
 | Site | Show the work; left-aligned `text-5xl` claim, one primary button | Low |
 | Articles | Reading; `text-lg` in `max-w-2xl` | Low |
 | Slides | One claim per slide; emerald on one phrase at most | Low |
 | Tools | Get it done; sidebar, `text-sm`, `h-10` rows | Medium |
 
-A surface that needs other parameters gets `design/<surface>.md`: what it inherits, what it overrides, why.
+A surface that needs other parameters gets a `<surface>.md` beside this file: what it inherits, what it overrides, why.
 
 ## Do's and Don'ts
 

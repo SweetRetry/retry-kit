@@ -1,6 +1,6 @@
-# SweetRetry Skills
+# Retry Kit
 
-面向 Agent 的可复用 skill 集合。仓库按职责领域组织 skill。
+Retry 的个人工具箱：面向 Agent 的可复用 skill、个人设计语言，以及技术栈选项。skill 按职责领域组织，其余内容各占一个顶层目录。
 
 ## 目录
 
@@ -10,6 +10,7 @@ generation/    AI 图片、视频、剧本与分镜生成
 product/       产品需求文档
 web-design/    界面设计、文案、原型与交互审查
 specific/      特定框架工程实践
+design/        Retry 个人设计语言（不是 skill）
 ```
 
 ### Engineering
@@ -41,6 +42,10 @@ specific/      特定框架工程实践
 
 - `reactflow-practices`：React Flow v12+ 开发实践。
 
+### Design
+
+`design/` 是 Retry 的个人设计语言，不是 skill：`DESIGN.md` 记录决策，`brand-kit/` 存放值与资源。`brand-kit/globals.css` 由 `tokens.json` 经 `python3 design/brand-kit/generate-globals.py` 生成，不手改。
+
 ### 相邻能力的边界
 
 | 任务 | 入口 | 按需加载 |
@@ -69,7 +74,7 @@ specific/      特定框架工程实践
 
 ## 维护约定
 
-- 每个 skill 使用独立目录，目录名与 `SKILL.md` 中的 `name` 一致；`name`、`display_name` 和一级标题统一使用英文。
+- 每个 skill 使用独立目录（`design/` 不属于 skill，不受此条约束），目录名与 `SKILL.md` 中的 `name` 一致；`name`、`display_name` 和一级标题统一使用英文。
 - skill 专属的按需资料放在该 skill 的 `references/`。
 - 保持 skill 职责独立，避免通过目录分层掩盖能力重叠。
 - 显式调用策略按宿主配置：Claude Code 使用 `SKILL.md` 的 `disable-model-invocation: true`；Codex 使用 `agents/openai.yaml` 的 `policy.allow_implicit_invocation: false`。两者不能互相替代；修改后检查显式可调用、隐式不触发。
