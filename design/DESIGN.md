@@ -48,7 +48,7 @@ Use `brand-kit/globals.css` as the global stylesheet; it replaces shadcn's and i
 
 shadcn names, so every color is a utility (`bg-card`, `text-muted-foreground`). Retry adds `surface-1…3`, `subtle-foreground`, `success`, `warning`, `*-hover` and `*-soft`. Values are `oklch()`; dark (`.dark`) is the default, light (`:root`) a full theme.
 
-- **Depth is lightness.** `bg-background` › `bg-surface-1` (= card, muted) › `bg-surface-2` (= secondary, and the popover in dark) › `bg-surface-3`. `accent` is the hover tone and always takes the rung above the surface under it: surface-2 in light, surface-3 in dark, so a menu row reads against its own popover. New neutrals stay on hue 286 and step L only.
+- **Depth is lightness.** `bg-background` › `bg-surface-1` (= card, and the popover in dark) › `bg-surface-2` (= secondary, muted, accent) › `bg-surface-3`. The shadcn roles form two tiers. Background, card and popover are containers; secondary, muted and accent are fills and sit one rung above every container, so a fill or a hover reads on any of them and shadcn/ui components need no recoloring. In light the popover stays white. Stack a container on a fill (a status block, `bg-card`), never a fill on a fill. A disabled control (`bg-surface-1`) reads flat on a container, on purpose. New neutrals stay on hue 286 and step L only.
 - **Text**: `text-foreground` to read, `text-muted-foreground` to support, `text-subtle-foreground` only for placeholders, timestamps and column headers on background, surface-1 or sidebar. Never set text hierarchy with opacity (a transient state such as stale data while reloading may fade).
 - **Emerald (`primary`) is scarce**: one primary button per view, links, checked controls, focus, success. Under 5% of the screen; never decoration, never "good" numbers.
 - **Status** (`success`, `warning`, `destructive`) always comes with a word; notices use the `*-soft` fills.
@@ -90,11 +90,11 @@ Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new va
 - **Input, Textarea, Select**: filled `bg-muted` with the `border-input` edge; focus `border-ring` plus a soft ring.
 - **Button**: `default` once per view, then `secondary`, `ghost`, `destructive` (`bg-destructive-soft text-destructive`), `link`. No `outline`.
 - **Badge**: not for metadata. Status is a 6px dot plus a word.
-- **Tabs**: active is `bg-surface-2`; no underline, no emerald.
+- **Tabs**: the list is `bg-muted`, the active tab `bg-surface-3`, one rung above it; no underline, no emerald.
 - **Popover, Dropdown, Toast**: `bg-popover`, `border`, `rounded-md`. **Dialog, Sheet**: `bg-background`, `border`, Dialog `rounded-lg`. **Tooltip**: `bg-foreground text-background`, `rounded-md`.
 - **Table**: `border-t` rows, no outer border or zebra; numbers and their headers `text-right tabular-nums`.
 - **Sidebar**: separated by tone, no line; active `bg-sidebar-accent`.
-- **Switch, Checkbox, Radio**: off `bg-surface-2` / `bg-surface-3`, on `bg-primary`. **Skeleton**: `bg-surface-2`.
+- **Switch, Checkbox, Radio**: off `bg-surface-2` / `bg-surface-3`, on `bg-primary`. **Skeleton**: shadcn's `bg-accent`.
 
 ## Interaction patterns
 
