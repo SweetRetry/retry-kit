@@ -1,4 +1,0 @@
-interface:
-  display_name: "Japanese Cinematic Ad"
-  short_description: "日本市场 AI 生成的情感叙事、电影感广告：洞察、概念、日文脚本、资产、生成分镜与法规文化审查"
-  default_prompt: "使用 $japanese-cinematic-ad 为日本市场策划全部由生成 AI 制作的情感叙事、电影感广告：从 Brief、洞察与概念出发，完成日文脚本、资产参考、分镜生成单元，并按日本法规、文化与生成质量做审查。"
