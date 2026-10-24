@@ -1,0 +1,7 @@
+interface:
+  display_name: "Produce"
+  short_description: "AIGC 叙事导演总控：逐轮访谈对齐需求，再做世界观、剧本、资产建档与分镜装配"
+  default_prompt: "使用 $produce 进行 AIGC 叙事与制作总控：先逐轮访谈对齐需求并确认制作简报，再按范围进行世界观设定、剧本创作、资产拆解或分镜装配。"
+
+policy:
+  allow_implicit_invocation: false
