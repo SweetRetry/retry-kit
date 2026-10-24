@@ -1,5 +1,6 @@
 /**
  * 只扫描“无判断余地”的 UI 禁令，规则名前缀对应 reference 文件：
+ * - hierarchy：用 · / • 把多个字段拼成一行
  * - motion：transition-all、布局属性过渡、ease-in、motion 从 scale: 0 入场
  * - surface：z-index 任意值、越出阶梯的 z-index、arbitrary class 中的硬编码色值
  * - typography：任意字号、任意字体族
@@ -34,6 +35,13 @@ const isLadderZ = (value) =>
 const Z_SUGGESTION = "改用 -z-10 / z-0 / z-10 / z-20 / z-30 / z-40 / z-50；被遮挡时用 Portal 提升"
 
 const CHECKS = [
+  {
+    rule: "hierarchy/separator-dot",
+    pattern: "[·•]|&(?:middot|bull|#183|#8226|#xb7|#x2022);|\\\\u(?:00b7|2022)",
+    flags: "i",
+    message: "用圆点把多个字段拼成一行",
+    suggestion: "每个字段先判断去留，留下的放进分组、对齐的列或行尾、图标或 Badge",
+  },
   {
     rule: "motion/transition-all",
     pattern: `${L}transition-all${R}|\\btransition(?:-property|Property)?\\s*:\\s*["'\`]?all\\b`,
@@ -103,7 +111,7 @@ const CHECKS = [
 }))
 
 // 一次廉价扫描筛掉绝大多数文件；漏掉的字面量会让对应规则失效，新增规则时同步补充
-const PREFILTER = /transition|ease|scale|z-|z-?index|text-\[|font-\[|-\[/i
+const PREFILTER = /transition|ease|scale|z-|z-?index|text-\[|font-\[|-\[|[·•]|&(?:middot|bull|#183|#8226|#xb7|#x2022);|\\u(?:00b7|2022)/i
 
 function findRepositoryRoot(target) {
   try {
