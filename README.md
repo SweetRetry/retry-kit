@@ -34,6 +34,7 @@ conventions/       技术选型与工程约定（不是 skill）
 - `produce`：逐轮访谈对齐 AIGC 短片需求并确认制作简报，再按范围做世界观、剧本、资产建档与分镜装配。
 - `image-prompt`：按交付物与视觉媒介选择专业语言，覆盖摄影、绘画、插画、动漫、游戏美术、像素画、3D、平面设计与材料拼贴。
 - `video-prompt`：按目标模型与入口限制编写单次生成、编辑或延长视频的 prompt。
+- `fight-prompt`：编写冷热兵器、拳脚、机甲、超凡法术与巨物战的视频 prompt，覆盖单镜精拍、多镜长段与分段接力，锁死攻防力学、实体视效、节奏曲线、空间战损与运镜交接。
 - `video-edit`：把一批无序视频素材剪成一条成片，或按意见修改已有成片。
 
 ### Product
@@ -62,6 +63,7 @@ conventions/       技术选型与工程约定（不是 skill）
 | 规划故事、资产与分镜 | `produce` | 当前制作阶段 reference |
 | 剪辑视频素材成片 | `video-edit` | 按需读剪辑手法与看片 reference |
 | 写单张图片／单次视频 prompt | `image-prompt`／`video-prompt` | 图片按视觉方向读取 reference；视频只读目标模型 reference |
+| 写战斗、交手或出招终爆的视频 prompt | `fight-prompt` | 分粒度封装结构与打击视效实体化 reference |
 | 编写或修订 PRD | `write-prd` | 新建／重排读章节 reference；同步飞书读 lark reference |
 | 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
 | 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
