@@ -1,0 +1,4 @@
+interface:
+  display_name: "Name Domain Terms"
+  short_description: "用户描述、逼近或误用专业名词时，主动说出术语并解释"
+  default_prompt: "使用 $name-domain-terms 在我用自己的话描述、逼近或误用某个专业名词时，说出这个术语、给出一句话定义并指出差别，之后的对话沿用它。"

@@ -7,6 +7,7 @@ Retry 的个人工具箱：面向 Agent 的可复用 skill、个人设计语言�
 ```text
 skills/            Agent skill，按职责领域分组
   engineering/     代码质量审查与工程任务拆解
+  learning/        对话中的术语学习
   media/           AI 图片、视频、剧本、分镜与剪辑
   product/         产品需求文档
   web-design/      界面设计、文案、原型与交互审查
@@ -23,6 +24,10 @@ conventions/       技术选型与工程约定（不是 skill）
 - `raise-ambition`：动手前把任务抬高到真实结果，补齐顶尖做法、跨领域技巧、对抗视角与外部验收，改写成 prompt 后等确认。
 - `simplify-code`：审查并移除不改变行为的复杂度，顺带修复预期明确的 bug。
 - `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
+
+### Learning
+
+- `name-domain-terms`：用户用自己的话描述、逼近或误用专业名词时，主动说出术语、给出一句话定义与差别，之后沿用。
 
 ### Media
 
@@ -60,6 +65,7 @@ conventions/       技术选型与工程约定（不是 skill）
 | 编写或修订 PRD | `write-prd` | 新建／重排读章节 reference；同步飞书读 lark reference |
 | 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
 | 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
+| 对话中说出用户正在描述的专业名词 | `name-domain-terms` | 自含流程 |
 
 这些入口互不引用，也不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
 
