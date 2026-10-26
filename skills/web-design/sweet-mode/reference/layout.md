@@ -5,7 +5,7 @@
 ## 间距
 
 - 8px 网格（`gap-2/4/6/8`）；4px 只用于图标、角标等紧密关联元素。
-- 组间距至少是组内间距的 2 倍。标题上方留白大于下方；标签先与输入框成组，再排表单项间距。
+- 按接近性（Law of Proximity）分组：组间距至少是组内间距的 2 倍。标题上方留白大于下方；标签先与输入框成组，再排表单项间距。
 - 新布局从较宽档位起步，在完整页面中逐档收紧，到分组清楚、阅读顺畅、主操作可达为止；高频工具与密集数据按任务密度取值。
 - 兄弟间距由父容器 `gap-*` / `space-y-*` 控制，可复用组件根节点无外部 margin。`margin` 只用于 `ml-auto` 推挤、负边距通栏与长文本排版流。
 
@@ -31,15 +31,14 @@
 
 ## 控件
 
-- 高度由组件 `size` 变体管理：调用点不给 Button、Input、SelectTrigger 写 `h-*` 或 `py-*`；同一行并排的输入与操作控件传相同 `size`。
+- 高度由组件 `size` 变体管理：调用点不给 Button、Input、SelectTrigger 写 `h-*` 或 `py-*`；同一行并排的输入、只读值容器与操作按钮保持单行且同高（传相同 `size`，带并排按钮的只读值优先用 `<Input readOnly>`）。
 - 输入框宽度跟随预期字符数：表单容器 `max-w-*` 内，验证码、端口、金额、天数等短字段收窄到 `w-24`–`w-48`，长文本字段才占满整行。
 - 选择控件跟随选项数：2–4 个互斥短选项平铺为 RadioGroup 或 ToggleGroup；5–12 项用 Select；超过 12 项用 Combobox。
 - 单独的 Switch 切换即生效，不配保存按钮。
 
 ## 对齐
 
-- 每个区块一条主轴：标题、正文、标签、控件的起始边落在同一条线上，不混用左对齐与居中。
-- 轴线看文字与图形的实际边缘：带内边距的 ghost 按钮、列表项 hover 底色用 `-mx-*` 配 `px-*` 补偿。
+- 每个区块一条主轴：标题、正文、标签、控件的起始边落在同一条线上，不混用左对齐与居中。轴线按光学对齐取边，见下文。
 - 偏离轴线须承载层级或状态（缩进、悬挂图标、居中的空态与主图），否则是缺陷。
 - 图标与文字 `inline-flex items-center gap-2`；大标题伴随辅助操作用 `items-baseline`。
 - 数值列的对齐见 [typography.md](typography.md#数字字形)。
@@ -50,6 +49,10 @@
 - 一处边界只用一种手段：相邻区域已靠明度差区分（`bg-sidebar` 与 `bg-background`、`bg-card` 与 `bg-background`）时不再加分隔线或外框。Table、代码块等自带边界的组件直接放进布局流，不外套带内边距和边框的 Card。
 - 成组列表可用 `divide-y divide-border/40`；菜单用组件库的 `DropdownMenuSeparator` 等子组件分组，工具栏控件组之间用 `<Separator orientation="vertical" />`；其余分区用留白，不放横向 `<Separator />`。
 
-## 光学微调
+## 光学对齐（Optical Alignment）
 
-以视觉重心为准，只在局部封装：不对称图形（Play / Star）`translate-x-px` 微移 1–2px；图标加文字的按钮削减图标侧 1–2px 内边距；引用块首行引号用 `hanging-punctuation: first` 或负缩进。
+对齐文字字面与图形的视觉边缘和重心，不对齐 DOM 边框盒；调整只在局部封装：
+
+- 带内边距的 ghost 按钮、列表项 hover 底色用 `-mx-*` 配 `px-*` 补偿，让文字落回轴线。
+- 不对称图形（Play / Star）`translate-x-px` 微移 1–2px；图标加文字的按钮削减图标侧 1–2px 内边距。
+- 引用块首行引号用 `hanging-punctuation: first` 或负缩进。

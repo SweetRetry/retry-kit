@@ -2,7 +2,7 @@
 
 只消费语义 Token。色值集中在样式入口，业务代码不写 Hex/OKLCH、任意值、Tailwind 原生色板（`slate-500`、`emerald-500/10`、`white`）；只有遮罩、媒体播放底色与媒体上的渐变遮罩用 `black` / `white` 及其透明度。媒体上的文字等不随主题变化的颜色，在样式入口定义专用 Token。
 
-## 1. 表面高度（E0–E3）
+## 1. 表面层级 Elevation（E0–E3）
 
 每个表面归入一层：
 
@@ -45,7 +45,7 @@
 
 缺省对象与下面两条冲突时，以下面为准：
 
-- **同心**：$R_{inner} = \max(0, R_{outer} - (\text{Padding} + \text{Border}))$。结果不在阶梯上时取不超过它的最大一档，为 0 时 `rounded-none`。
+- **同心圆角（concentric corners）**：$R_{inner} = \max(0, R_{outer} - (\text{Padding} + \text{Border}))$。结果不在阶梯上时取不超过它的最大一档，为 0 时 `rounded-none`。
 - **形态**：固定高度控件取 $R \le H/4$（圆角矩形）或 $R \ge H/2$（胶囊），不落在两者之间。
 
 `corner-shape: squircle` 包在 `@supports` 内，以 `border-radius` 回退。

@@ -3,7 +3,7 @@
  * - overflow：内容宽于视口；元素越出视口且没有横向滚动或裁切的祖先（body / html 上的
  *   overflow-x-hidden 不算）；子项越出 flex / grid 容器
  * - text-overflow：文字溢出自身盒子，或被裁切却没有省略号与 line-clamp
- * - row-height：同一行的卡片（grid 子项中带背景或边框、高于 48px 的盒子）高度不一致
+ * - row-height：同一行的卡片或水平并排的控件（按钮与输入 / 只读值容器）高度不一致
  * - font-size：计算字号小于 12px
  *
  * 整个文件是一个无参函数，用浏览器工具的 evaluate 执行；
@@ -167,6 +167,29 @@
           detail: `同排卡片高度 ${heights.map(Math.round).join(" / ")}px`,
         })
       }
+    }
+  }
+
+  const CONTROL = 'button, input, select, code, [role="combobox"], [data-slot="input"], [data-slot="select-trigger"], [data-slot="button"]'
+  for (const row of elements.filter((element) => {
+    const style = styleOf(element)
+    return style.display.endsWith("flex") && style.flexDirection === "row"
+  })) {
+    const controls = [...row.children]
+      .filter((child) => isRendered(child) && child.matches(CONTROL))
+      .map((child) => child.getBoundingClientRect())
+    if (controls.length < 2) continue
+    // 排除 flex-wrap 折到下一行的子项，只比较纵向投影重叠的同行控件
+    const first = controls[0]
+    const sameLine = controls.filter((rect) => rect.top < first.bottom && first.top < rect.bottom)
+    if (sameLine.length < 2) continue
+    const heights = sameLine.map((rect) => rect.height)
+    if (Math.max(...heights) - Math.min(...heights) > 2) {
+      violations.push({
+        rule: "row-height",
+        element: describe(row),
+        detail: `同行控件高度 ${heights.map(Math.round).join(" / ")}px`,
+      })
     }
   }
 
