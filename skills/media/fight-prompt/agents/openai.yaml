@@ -1,4 +1,0 @@
-interface:
-  display_name: "Fight Prompt"
-  short_description: "编写冷热兵器、拳脚、机甲与超凡战斗的视频生成 prompt"
-  default_prompt: "使用 $fight-prompt 结合当前素材与目标入口，按生成粒度定攻防力学与节奏曲线，实体化打击与视效，写出锁死色彩、空间、战损、运镜交接与负面约束的可粘贴 prompt。"

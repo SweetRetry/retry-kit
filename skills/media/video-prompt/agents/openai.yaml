@@ -1,4 +1,0 @@
-interface:
-  display_name: "Video Prompt"
-  short_description: "编写可执行的单镜或单次多镜视频生成 prompt"
-  default_prompt: "使用 $video-prompt 结合当前画面意图、目标模型与可用素材，按对应 reference 编写一次 generation 可直接粘贴的视频 prompt。"

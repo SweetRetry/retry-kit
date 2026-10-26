@@ -1,4 +1,0 @@
-interface:
-  display_name: "Image Prompt"
-  short_description: "按交付物与视觉媒介选择专业术语，编写可直接使用的图片 prompt"
-  default_prompt: "使用 $image-prompt 按当前交付物与视觉方向检索一手来源确认专业术语，把需求和参考整理成可直接使用的图片生成或编辑 prompt。"
