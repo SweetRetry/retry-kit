@@ -1,6 +1,6 @@
 # 色彩、表面与层叠
 
-只消费语义 Token。色值集中在样式入口，业务代码不写 Hex/OKLCH 与任意值。
+只消费语义 Token。色值集中在样式入口，业务代码不写 Hex/OKLCH、任意值、Tailwind 原生色板（`slate-500`、`emerald-500/10`、`white`）；只有遮罩、媒体播放底色与媒体上的渐变遮罩用 `black` / `white` 及其透明度。媒体上的文字等不随主题变化的颜色，在样式入口定义专用 Token。
 
 ## 1. 表面高度（E0–E3）
 
@@ -14,6 +14,7 @@
 | E3 浮层 | 菜单、Popover | `popover` / `popover-foreground` |
 
 - 嵌套不等于抬升；同级表面不层层叠放。
+- 表面分离靠明度差。阴影只在组件库的浮层变体里定义，调用点只用 `shadow-none`。
 - Dialog、AlertDialog、Sheet 用 `background` 加配套遮罩；Tooltip 用 `foreground` 作底、`background` 作字。调用点不改写成 `popover`。
 - `accent` 只表达交互高亮，`input` 只用于输入控件边界，都不是通用的“再高一层”。
 - 亮暗双主题（`:root` / `.dark`）。暗色下 `card`、`popover` 略亮于 `background`，同一局部链上明度与层叠不翻转；`sidebar` 与 `background` 并列，不参与此检查。浮层去掉阴影后仍能靠明度差、边框或遮罩与下层区分。
@@ -22,6 +23,10 @@
 ## 2. 颜色配比
 
 只做强调的焦点色（`primary`、`destructive` 等品牌与状态色）不超过视区的 10%，不作大面积背景；E0 保持低彩度，`accent` 不计入。颜色本身编码信息（数据分类、状态）或本身就是内容（品牌表达、从内容提取的主题色）时按需放开，经 Token 定义并限定范围，框架保持中性，文字对比度不让步。编辑器、画布、代码区等工作区把强调色收到光标、选择与必要反馈。
+
+- **次要文字**：用 `text-muted-foreground`，不用 `text-foreground/60` 这类透明度或 `opacity-*` 降低静态文字对比度；刷新时整体变暗的旧数据不在此列。
+- **状态**：表格与列表中的状态用 6px 语义色圆点配文字，或低透明度软底（`bg-destructive/10 text-destructive`），不用实心高饱和 Badge；实心 `primary` 只留给视区唯一的主按钮。
+- **涨跌**：行情与监控核心面之外，统计数字不加红绿涨跌色；需要表达增减时写出 `+` 或 `−` 符号。
 
 ## 3. 圆角
 

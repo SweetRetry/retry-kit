@@ -1,9 +1,14 @@
 /**
  * 只扫描“无判断余地”的 UI 禁令，规则名前缀对应 reference 文件：
- * - hierarchy：用 · / • 把多个字段拼成一行
+ * - hierarchy：用 · / • 把多个字段拼成一行、Card 嵌套 Card
+ * - layout：横向 <Separator /> 分区
  * - motion：transition-all、布局属性过渡、ease-in、motion 从 scale: 0 入场
- * - surface：z-index 任意值、越出阶梯的 z-index、arbitrary class 中的硬编码色值
- * - typography：任意字号、任意字体族
+ * - surface：z-index 任意值与越出阶梯、硬编码色值、Tailwind 原生色板、调用点阴影、
+ *   彩色渐变与渐变文字、大半径模糊光晕、静态文字的透明度
+ * - typography：任意字号、任意字体族、阶梯外字重
+ *
+ * 组件库（packages/ui、shadcn 的 components/ui）同样扫描；阴影、Separator 与 Card 嵌套
+ * 只约束调用点，组件库豁免。
  *
  * 圆角与间距的任意值**不在此列**：规则本身有判断余地（公式推导的转角、
  * 行高托底与光学微调值域），扫描会产生误报，交由审查判断。
@@ -18,15 +23,23 @@ import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 
 const SOURCE_FILE = /\.(?:[cm]?[jt]sx?|css|scss|vue|svelte|astro|html|mdx)$/
-// 组件库（packages/ui、shadcn 的 components/ui）、第三方、测试夹具与 agent skill（含本脚本的副本）不属于业务代码
+// 第三方、构建产物、测试夹具与 agent skill（含本脚本的副本）不属于项目界面代码
 const EXCLUDED =
-  /(?:^|\/)(?:node_modules|vendor|dist|build|\.next|coverage|components\/ui|\.[\w-]+\/skills)\/|^packages\/ui\/|\.(?:test|spec)\.[^/]+$/
+  /(?:^|\/)(?:node_modules|vendor|dist|build|\.next|coverage|\.[\w-]+\/skills)\/|\.(?:test|spec)\.[^/]+$/
+const LIBRARY = /(?:^|\/)components\/ui\/|^packages\/ui\//
 
 // 不在 class 名或 CSS 标识符中间起止
 const L = "(?<![\\w-])"
 const R = "(?![\\w-])"
 const LAYOUT_PROPERTY = `${L}(?:top|left|right|bottom|inset|(?:margin|padding)(?:-[a-z]+)?|(?:(?:min|max)-)?(?:width|height))${R}`
 const COLOR_LITERAL = "(?:#[0-9a-fA-F]{3,8}(?![\\w])|(?<![a-z])(?:rgba?|hsla?|oklch|oklab|lab|lch|hwb|color)\\()"
+const COLOR_UTILITY =
+  "(?:bg|text|border(?:-[xytrblse])?|ring(?:-offset)?|outline|divide|fill|stroke|from|via|to|placeholder|caret|accent|decoration|shadow|inset-shadow|inset-ring|drop-shadow)"
+// 语义强调色与前景色作为渐变色标即为装饰渐变
+const GRADIENT_ACCENT_STOP =
+  "(?:primary|secondary|accent|destructive|foreground|ring|border|input|success|warning|info|brand|chart-\\d+|[a-z]+-foreground)"
+const PALETTE =
+  "(?:(?:slate|gray|zinc|neutral|stone|mauve|olive|mist|taupe|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|[1-9]00|950)|white|black)"
 
 // 业务代码可用的 z-index 阶梯：-z-10 / z-0 / z-1…10 / z-20 / z-30 / z-40 / z-50
 const isLadderZ = (value) =>
@@ -88,6 +101,41 @@ const CHECKS = [
     suggestion: Z_SUGGESTION,
   },
   {
+    rule: "surface/palette-color",
+    pattern: `${L}${COLOR_UTILITY}-${PALETTE}(?:\\/[\\w.]+)?${R}`,
+    // 遮罩、媒体播放底色与压在媒体上的渐变色标不随主题变化
+    accept: (match) => /^(?:bg|from|via|to)-black(?:\/\d+)?$|^(?:from|via|to)-white(?:\/\d+)?$/.test(match[0]),
+    message: "Tailwind 原生色板绕过语义 Token，亮暗主题下不跟随",
+    suggestion: "改用 bg-muted / text-muted-foreground / border-border 等语义 Token；缺 Token 时在样式入口补充",
+  },
+  {
+    rule: "surface/shadow",
+    // 跳过 CSS 选择器（.shadow-lg { box-shadow: none }）
+    pattern: `(?<![\\w.-])(?:drop-|inset-)?shadow-(?!none${R})(?:\\[[^\\]\\s]*\\]|[\\w./-]+)`,
+    appOnly: true,
+    message: "调用点加阴影或光晕",
+    suggestion: "分离表面靠明度差；浮层阴影只在组件库变体里定义",
+  },
+  {
+    rule: "surface/decoration",
+    // 原生彩色色标由 palette-color 报告；中性色标（transparent、black、white、表面 Token）是遮罩与淡出
+    pattern: `${L}(?:bg-clip-text|(?:from|via|to)-${GRADIENT_ACCENT_STOP}(?:\\/[\\w.]+)?|blur-(?:xl|2xl|3xl|\\[[^\\]\\s]*\\]))${R}`,
+    message: "渐变文字、彩色渐变或模糊光晕属于装饰",
+    suggestion: "渐变色标只用 transparent、black / white 透明度或表面 Token；模糊只用 backdrop-blur-*",
+  },
+  {
+    rule: "surface/text-opacity",
+    pattern: `${L}((?:[\\w-]+(?:-\\[[^\\]\\s]*\\])?:)*)text-([a-z][a-z-]*)\\/(?:\\d+|\\[[^\\]\\s]+\\])`,
+    // 交互态与占位符可以降低对比度；text-sm/6 是字号加行高；原生色板由 palette-color 报告
+    accept: (match) =>
+      /(?:^|:)(?:hover|focus[\w-]*|active|disabled|placeholder|aria-[^:]*|data-[^:]*|group-[^:]*|peer-[^:]*):/.test(match[1]) ||
+      /^(?:xs|sm|base|lg|[2-9]?xl)$/.test(match[2]) ||
+      new RegExp(`^${PALETTE}$`).test(match[2]) ||
+      /^(?:white|black)$/.test(match[2]),
+    message: "用透明度降低静态文字对比度",
+    suggestion: "次要文字改用 text-muted-foreground",
+  },
+  {
     rule: "surface/color-literal",
     pattern: `${L}[a-z][\\w-]*-\\[[^\\]\\s]*?${COLOR_LITERAL}[^\\]\\s]*\\]`,
     message: "class 中硬编码色值，绕过语义 Token",
@@ -105,13 +153,45 @@ const CHECKS = [
     message: "任意字体族绕过字体 Token",
     suggestion: "改用 font-sans / font-mono / font-serif",
   },
-].map((check) => ({
-  ...check,
-  regex: new RegExp(check.pattern, `g${check.flags ?? ""}`),
-}))
+  {
+    rule: "typography/font-weight",
+    pattern: `${L}font-(?:thin|extralight|light|bold|extrabold|black|\\[\\d+\\])${R}`,
+    message: "字重越出阶梯",
+    suggestion: "只用 font-normal / font-medium / font-semibold",
+  },
+  {
+    rule: "layout/separator",
+    pattern: `<Separator(?![\\w.])(?![^>]*\\borientation\\s*=\\s*\\{?\\s*["'\`]vertical)[^>]*>`,
+    appOnly: true,
+    message: "用横向 Separator 分区",
+    suggestion: "分区改用留白与对齐轴；菜单用组件库的 *MenuSeparator，工具栏控件组之间用 orientation=\"vertical\"",
+  },
+  {
+    rule: "hierarchy/nested-card",
+    find: findNestedCards,
+    appOnly: true,
+    message: "卡片套卡片",
+    suggestion: "内层改用留白、分组或 bg-muted 填充区块，只保留外层 Card",
+  },
+].map((check) => {
+  if (check.find) return check
+  const regex = new RegExp(check.pattern, `g${check.flags ?? ""}`)
+  return { ...check, find: (content) => content.matchAll(regex) }
+})
 
-// 一次廉价扫描筛掉绝大多数文件；漏掉的字面量会让对应规则失效，新增规则时同步补充
-const PREFILTER = /transition|ease|scale|z-|z-?index|text-\[|font-\[|-\[|[·•]|&(?:middot|bull|#183|#8226|#xb7|#x2022);|\\u(?:00b7|2022)/i
+// 只匹配 <Card>，不含 CardHeader 等子组件；自闭合的 <Card /> 不开启嵌套
+function findNestedCards(content) {
+  const nested = []
+  let depth = 0
+  for (const match of content.matchAll(/(?<![\w$.])<(\/?)Card(?=[\s>/])([^>]*)>/g)) {
+    if (match[1]) depth = Math.max(0, depth - 1)
+    else if (!match[2].endsWith("/")) {
+      if (depth > 0) nested.push(match)
+      depth += 1
+    }
+  }
+  return nested
+}
 
 function findRepositoryRoot(target) {
   try {
@@ -168,13 +248,13 @@ function locate(starts, offset) {
 }
 
 function scanContent(content, file) {
-  if (!PREFILTER.test(content)) return []
-
   const findings = []
+  const isLibrary = LIBRARY.test(file)
   let starts = null
 
   for (const check of CHECKS) {
-    for (const match of content.matchAll(check.regex)) {
+    if (check.appOnly && isLibrary) continue
+    for (const match of check.find(content)) {
       if (check.accept?.(match)) continue
       starts ??= lineStarts(content)
       findings.push({

@@ -29,6 +29,13 @@
 
 跨多列的子项在移动端默认 `col-span-12`。
 
+## 控件
+
+- 高度由组件 `size` 变体管理：调用点不给 Button、Input、SelectTrigger 写 `h-*` 或 `py-*`；同一行并排的输入与操作控件传相同 `size`。
+- 输入框宽度跟随预期字符数：表单容器 `max-w-*` 内，验证码、端口、金额、天数等短字段收窄到 `w-24`–`w-48`，长文本字段才占满整行。
+- 选择控件跟随选项数：2–4 个互斥短选项平铺为 RadioGroup 或 ToggleGroup；5–12 项用 Select；超过 12 项用 Combobox。
+- 单独的 Switch 切换即生效，不配保存按钮。
+
 ## 对齐
 
 - 每个区块一条主轴：标题、正文、标签、控件的起始边落在同一条线上，不混用左对齐与居中。
@@ -40,7 +47,8 @@
 ## 边界
 
 - 分区先靠留白与共享对齐轴，再用微弱明度差，不用高对比度 1px 边框。
-- 成组列表可用 `divide-y divide-border/40`；菜单等紧凑容器留白拉不开组间距时，用分隔线标组边界。`<Separator />` 不作默认分区手段。
+- 一处边界只用一种手段：相邻区域已靠明度差区分（`bg-sidebar` 与 `bg-background`、`bg-card` 与 `bg-background`）时不再加分隔线或外框。Table、代码块等自带边界的组件直接放进布局流，不外套带内边距和边框的 Card。
+- 成组列表可用 `divide-y divide-border/40`；菜单用组件库的 `DropdownMenuSeparator` 等子组件分组，工具栏控件组之间用 `<Separator orientation="vertical" />`；其余分区用留白，不放横向 `<Separator />`。
 
 ## 光学微调
 

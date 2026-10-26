@@ -4,15 +4,20 @@
 
 ## 字阶
 
-文字篇幅与视觉重量按 6:3:1 分配：
+应用界面以 `text-sm` 为基准，层级先靠字重与颜色拉开，字号只在页面级标题处放大：
 
-| 配比 | 字号 | 字重 | 角色 |
-| :--- | :--- | :--- | :--- |
-| 60% 阅读 | `text-xs`–`text-base`（长文正文可 `text-lg`） | `font-normal` | 正文、表格行、表单说明、辅助标注 |
-| 30% 结构 | `text-lg` / `text-xl` | `font-medium` / `font-semibold` | 模块与卡片标题、表单分组 Label |
-| 10% 焦点 | `text-2xl` 及以上 | `font-semibold` | 页面主标题、Hero、核心 KPI |
+| 角色 | 字号 | 字重 |
+| :--- | :--- | :--- |
+| 元数据、时间戳、辅助标注 | `text-xs` | `font-normal` |
+| 正文、表格行、表单说明 | `text-sm`；长文阅读 `text-base` / `text-lg` | `font-normal` |
+| 控件文字（Button、Tab、菜单项）、字段 Label、表头 | `text-sm`，紧凑控件 `text-xs` | `font-medium` |
+| 卡片、模块与表单分组标题 | `text-sm` / `text-base` | `text-sm` 配 `font-medium`，`text-base` 配 `font-semibold` |
+| 页面内分区标题 | `text-base` / `text-lg` | `font-semibold` |
+| 页面主标题 | `text-xl` / `text-2xl` | `font-semibold` |
+| Hero、核心 KPI | `text-2xl` 及以上 | `font-semibold` |
 
-- 下限 `text-xs`；正文不大面积加粗；列表项不套标题字号。
+- 字重只用 `font-normal` / `font-medium` / `font-semibold`。营销与长文页面按阅读距离整体上调标题字号，字重不变。
+- 下限 `text-xs`；正文段落用 `font-normal`；列表项不套标题字号。
 - 同一视区只有一个最高级标题。
 - 内容装不下时重组布局，不缩字号。
 
@@ -24,5 +29,4 @@
 
 ## 字体渲染（仅 macOS 生效）
 
-- 根节点 `antialiased`，只设一处；个别区域需要系统渲染时局部 `subpixel-antialiased`。
-- 关闭系统加粗后细字重在深色底上偏细，深色表面的正文与标签取 `font-normal` 及以上。
+根节点 `antialiased`，只设一处；个别区域需要系统渲染时局部 `subpixel-antialiased`。

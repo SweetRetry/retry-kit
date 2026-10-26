@@ -1,6 +1,6 @@
 ---
 name: sweet-mode
-description: Tailwind + shadcn/ui 界面规范：层级、布局、表面、字体、尺寸稳定、交互反馈与动效的取值、禁令与验收，附禁令扫描脚本。编写或修改界面时作为硬约束落地。仅供用户显式调用。
+description: Tailwind + shadcn/ui 界面规范：层级、布局、表面、字体、尺寸稳定、交互反馈与动效的取值、禁令与验收，附禁令扫描与渲染检查脚本。编写或修改界面时作为硬约束落地。仅供用户显式调用。
 disable-model-invocation: true
 ---
 
@@ -15,35 +15,38 @@ disable-model-invocation: true
 reference 中的 `globals.css`、`packages/ui` 指目标项目里的对应位置。先找到：
 
 - 样式入口：定义颜色、圆角、字号与字体族 Token 的文件。阶梯以它为准，reference 表格里的 px 值只是缺省；缺少语义 Token 时在这里补，业务代码只消费语义名。
-- 组件外观归属（`packages/ui` 或 `components/ui`）：圆角、表面、按压反馈等外观改在变体里，调用点只负责布局。
+- 组件库（`packages/ui` 或 `components/ui`）：圆角、表面、按压反馈等外观改在变体里，调用点只负责布局。改动用到的组件先对照下表，未达标的在变体里改，再写调用点：
 
-## 2. 按改动读取规则
-
-新建页面或重组信息时先读 `hierarchy.md`，定好主次与收纳再选组件和样式。其余按触及内容读取，可命中多行：
-
-| 涉及内容 | Reference |
+| 组件 | 基线 |
 | --- | --- |
-| 信息取舍、主次焦点、首屏呈现、折叠与浮层载体、菜单与导航等容器内的归属与排序 | [hierarchy.md](reference/hierarchy.md) |
-| 间距、对齐、宽度、栅格与分区边界 | [layout.md](reference/layout.md) |
-| 颜色 Token 与配比、表面高度、圆角、z-index 与 Portal | [surface.md](reference/surface.md) |
-| 字号、字重、字体族、数字字形与字体渲染 | [typography.md](reference/typography.md) |
-| 加载占位、卡片等高、空值、长文本溢出与退出过渡期间的内容稳定 | [stability.md](reference/stability.md) |
-| 错误与结果反馈、toast、等待与取消、防重与竞态 | [interaction.md](reference/interaction.md) |
-| 过渡与动画、按压缩放、时长与缓动、减少动态效果 | [motion.md](reference/motion.md) |
+| Button | `motion-safe:active:scale-95`，`duration-150 ease-out`，过渡只列颜色与 `transform` |
+| Card | 无阴影；`card` 与 `background` 有明度差时无边框，同色时用低对比边框 |
+| Skeleton | `bg-muted` |
+| Sheet | 缓动 `cubic-bezier(0.32, 0.72, 0, 1)`，时长取 200–500ms 中偏短 |
+| Popover / DropdownMenu / Tooltip | 从触发控件方向展开（`origin-(--radix-*-content-transform-origin)`） |
+
+## 2. 读取规则
+
+开工前读完 `reference/` 全部 7 个文件：规则跨文件交叉，一个带删除弹窗的表格同时受层级、字形、稳定与交互约束。新建页面或重组信息时先按 `hierarchy.md` 定主次与收纳，再选组件和样式。
 
 只改当前任务触及的范围，范围外的违规列入交付。
 
 ## 3. 验收
 
-已读 reference 的每个小节都是完成标准，逐节给出通过、修复或不适用。
+reference 的每个小节都是完成标准，逐节给出通过、修复或不适用。
 
-1. 运行脚本扫描无判断余地的禁令，修复到改动文件不再出现在输出中：
+1. 静态扫描，修复到改动文件不再出现在输出中：
 
    ```bash
    node <skill 目录>/scripts/ui-guardrails.js <目标项目路径>
    ```
 
-   脚本跳过组件库（`packages/ui/`、`components/ui/`）、第三方、测试与 skill 目录。组件库内的改动，以及任意圆角与间距、内联 style 与 CSS 中的色值，人工核对。
-2. 在运行界面检查依赖渲染的项：`hierarchy.md` 的检验、窄屏重排、加载／空值／报错三态、收起与展开两态、键盘操作与减少动态效果。无法运行界面时，标明哪些只做了代码层检查。
+   脚本覆盖组件库，只在阴影、Separator 与 Card 嵌套上豁免它；跳过第三方、测试与 skill 目录。任意圆角与间距、内联 style 与 CSS 中的色值人工核对。
+2. 渲染检查。启动开发服务器，打开改动页面，在 375×812 与 1280×800 两个视口各做一遍：
+   - 用浏览器工具的 evaluate 执行 `scripts/render-audit.js`（整个文件是一个无参函数），修复到 `violations` 为空。
+   - 截整页图并查看，按 `hierarchy.md` §4 逐项判断。
+   - 触发加载、空值、报错三态与收起、展开两态，用键盘走完主流程，开启减少动态效果再看一遍。
 
-交付改动位置、各小节结论、范围外的违规与未验证项。
+   启动受阻时先排除可修复的原因：依赖、端口、环境变量；缺后端或登录时用临时 mock 渲染改动页面，交付前移除。仍无法运行时，渲染检查记为未通过，交付失败的命令与报错。
+
+交付改动位置、各小节结论、两个视口的 audit 输出与截图路径、范围外的违规。

@@ -1,7 +1,7 @@
 interface:
   display_name: "Sweet Mode"
-  short_description: "Tailwind + shadcn/ui 界面规范：取值、禁令、验收与扫描脚本"
-  default_prompt: "使用 $sweet-mode 按界面实现规范编写或修改当前界面，按改动读取 reference，逐节给出验收结论并交付。"
+  short_description: "Tailwind + shadcn/ui 界面规范：取值、禁令、验收与检查脚本"
+  default_prompt: "使用 $sweet-mode 按界面实现规范编写或修改当前界面，读完全部 reference，逐节给出验收结论，跑完静态扫描与渲染检查后交付。"
 
 policy:
   allow_implicit_invocation: false
