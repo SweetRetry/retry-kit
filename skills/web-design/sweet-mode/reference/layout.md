@@ -46,6 +46,7 @@
 ## 边界
 
 - 分区先靠留白与共享对齐轴，再用微弱明度差，不用高对比度 1px 边框。
+- 同色相邻要留缝：填充色相同且有别于底色的相邻元素（并排按钮、卡片、标签、色块、选中行）零间距相接时，按统一连接性（uniform connectedness）读成一个整体。留出 `gap-*` 就打断了连接，不必再换颜色或加边框；只有有意读成一件控件（ButtonGroup、分段控件）时才相接。
 - 一处边界只用一种手段：相邻区域已靠明度差区分（`bg-sidebar` 与 `bg-background`、`bg-card` 与 `bg-background`）时不再加分隔线或外框。Table、代码块等自带边界的组件直接放进布局流，不外套带内边距和边框的 Card。
 - 成组列表可用 `divide-y divide-border/40`；菜单用组件库的 `DropdownMenuSeparator` 等子组件分组，工具栏控件组之间用 `<Separator orientation="vertical" />`；其余分区用留白，不放横向 `<Separator />`。
 

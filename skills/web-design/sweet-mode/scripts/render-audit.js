@@ -4,6 +4,7 @@
  *   overflow-x-hidden 不算）；子项越出 flex / grid 容器
  * - text-overflow：文字溢出自身盒子，或被裁切却没有省略号与 line-clamp
  * - row-height：同一行的卡片或水平并排的控件（按钮与输入 / 只读值容器）高度不一致
+ * - adjacent-fill：相邻兄弟元素填充色相同且有别于底色，彼此相接且交界处没有边框
  * - font-size：计算字号小于 12px
  *
  * 整个文件是一个无参函数，用浏览器工具的 evaluate 执行；
@@ -193,5 +194,37 @@
     }
   }
 
-  return { viewport: `${window.innerWidth}×${window.innerHeight}`, scrollWidth, violations }
+  // 同色填充块零间距相接会读成一个整体；与底色相同的填充不可见，不算；
+  // 有意合成的控件组与交界处带边框的成组列表（divide-y）本就要读成一组，豁免
+  const isTransparent = (color) => /rgba\(0, 0, 0, 0\)|transparent/.test(color)
+  const backdropOf = (element) => {
+    for (let parent = element.parentElement; parent; parent = parent.parentElement) {
+      const color = styleOf(parent).backgroundColor
+      if (!isTransparent(color)) return color
+    }
+    return "rgb(255, 255, 255)"
+  }
+  const GROUP = '[role="group"], [role="radiogroup"], [role="tablist"], [role="toolbar"], [data-slot$="group"]'
+  const edgeBorder = (element, side) => {
+    const style = styleOf(element)
+    return parseFloat(style[`border${side}Width`]) > 0 || style.boxShadow !== "none"
+  }
+  for (const element of elements) {
+    const fill = styleOf(element).backgroundColor
+    const next = element.nextElementSibling
+    if (isTransparent(fill) || !next || !isRendered(next) || styleOf(next).backgroundColor !== fill) continue
+    if (fill === backdropOf(element) || element.parentElement?.closest(GROUP)) continue
+    const a = element.getBoundingClientRect()
+    const b = next.getBoundingClientRect()
+    const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left)
+    const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
+    let touching = false
+    if (overlapY > 1 && Math.abs(b.left - a.right) <= 1) touching = !edgeBorder(element, "Right") && !edgeBorder(next, "Left")
+    else if (overlapX > 1 && Math.abs(b.top - a.bottom) <= 1) touching = !edgeBorder(element, "Bottom") && !edgeBorder(next, "Top")
+    if (touching) {
+      violations.push({ rule: "adjacent-fill", element: describe(element), detail: `与下一个兄弟元素同为 ${fill} 且零间距相接` })
+    }
+  }
+
+  return { viewport:`${window.innerWidth}×${window.innerHeight}`, scrollWidth, violations }
 }
