@@ -1,7 +1,7 @@
 interface:
   display_name: "UX Audit"
-  short_description: "按 Nielsen 十条原则做启发式评估，含最小惊讶走查与设计漂移盘点"
-  default_prompt: "使用 $ux-audit 审查我指定的页面或流程，先定用户画像与核心任务，逐步预测再操作，盘点同类物的设计漂移，逐条套用十条原则，按严重度报告发现、覆盖表与漂移盘点表。"
+  short_description: "盘点设计漂移，走查最小惊讶，按八个体验维度审查并给出护栏"
+  default_prompt: "使用 $ux-audit 审查我指定的产品或流程，先用代码与渲染盘点六层设计漂移，再逐步预测后操作走完核心任务，按八个维度检验，按严重度报告发现、漂移盘点表、覆盖表与防复发护栏。"
 
 policy:
   allow_implicit_invocation: false
