@@ -39,13 +39,25 @@
 - 规则检查只放零判断余地的机械门禁，其余交给验收与评审，不写启发式正则。
 - 同一文件只由一个工具写入：oxfmt 先排版，markdownlint 只检查。
 
+## 文件体积
+
+Agent 按文件整体读入与改写，单文件越大越占上下文、越容易改出遗漏。用 tokenizer 与行数双阈值限制单文件体积，阈值按项目定，集中写在一处配置。
+
+- token 是硬上限，超出阻断提交；行数是软上限，超出只警告。例如单文件 5000 token 硬、500 行软。
+- token 用离线 tokenizer 计数（如 tiktoken `o200k_base`），不调用模型 API，保证结果确定且无网络依赖。
+- 检查 staged 内容，不读工作区。
+- 生成物、lockfile、快照与数据文件不计入，排除清单写进同一配置。
+- 超限时按职责拆分文件，不靠压缩格式、删注释或改成长行绕过。
+- 检查是 `scripts/` 里的一个脚本，pre-commit 与 `pnpm verify` 共用；`--no-verify` 跳过 hook 时由 CI 兜底。
+- 报错信息写明文件、实测值、阈值与「按职责拆分」，让 Agent 直接据此修正。
+
 ## Git hooks
 
 hook 是 `pnpm verify` 的前置子集，不替代 CI。
 
 | 阶段 | 内容 |
 | --- | --- |
-| pre-commit | staged 文件跑 oxfmt 并重新入 stage，再跑 markdownlint 与规则检查 |
+| pre-commit | staged 文件跑 oxfmt 并重新入 stage，再跑 markdownlint、规则检查与文件体积检查 |
 | commit-msg | 英文 Conventional Commits |
 | pre-push | typecheck 与 test |
 
