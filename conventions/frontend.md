@@ -8,8 +8,6 @@
 | Vercel | Next.js App Router |
 | 通用机器 | TanStack Start 或 Next.js，开工前询问 |
 
-渲染模式（SSR、SSG、CSR）在选定框架内配置，部署按平台当前推荐的方式。用 Payload 时例外，见「按场景」。
-
 ## 选型
 
 以下是默认倾向，框架原生能力够用时优先原生。

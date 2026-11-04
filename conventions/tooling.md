@@ -23,12 +23,9 @@
 
 ## Zod v4
 
-只写 v4 API：
+只写 v4 API。[scripts/check-zod.mjs](scripts/check-zod.mjs) 拦截能从源码文本判定的 v3 写法：`z.string().email()` 这类格式链、`.deepPartial()`、单参数 `z.record()`。以下需要类型信息，靠评审：
 
-- 字符串格式用 `z.email()`、`z.url()`、`z.uuid()`、`z.iso.datetime()`，不用 `z.string().email()`。
 - 错误消息用 `error`，不用 `message`。
-- `z.record()` 必须给 key 与 value 两个 schema，key 不穷尽时用 `z.partialRecord()`。
-- 用 `z.deepPartial(schema)`，不用 `.deepPartial()`。
 - `.default()` 的值匹配 output 类型，需经过 transform 时用 `.prefault()`。
 - 环境变量解析用 `z.stringbool()` 与 `z.coerce.*`。
 
@@ -37,19 +34,16 @@
 `pnpm verify` 是唯一的全量验证入口，依次跑格式、lint、规则检查、Markdown、typecheck、test、build、knip。
 
 - 规则检查只放零判断余地的机械门禁，其余交给验收与评审，不写启发式正则。
+- 检查脚本放 `scripts/`，pre-commit 传 `--staged` 检查暂存内容，`pnpm verify` 检查全部已跟踪文件；`--no-verify` 跳过 hook 时由 CI 兜底。示范见 [scripts/](scripts/)，共用的文件读取在 `git-files.mjs`。
 - 同一文件只由一个工具写入：oxfmt 先排版，markdownlint 只检查。
 
 ## 文件体积
 
-Agent 按文件整体读入与改写，单文件越大越占上下文、越容易改出遗漏。用 tokenizer 与行数双阈值限制单文件体积，阈值按项目定，集中写在一处配置。
+Agent 按文件整体读入与改写，单文件越大越占上下文、越容易改出遗漏。[scripts/check-file-size.mjs](scripts/check-file-size.mjs) 是示范实现，阈值与排除清单集中在脚本顶部。脚本里的 5000 token、500 行只是前端 TS 项目的起点，按语言与工程实测调整。
 
-- token 是硬上限，超出阻断提交；行数是软上限，超出只警告。例如单文件 5000 token 硬、500 行软。
-- token 用离线 tokenizer 计数（如 tiktoken `o200k_base`），不调用模型 API，保证结果确定且无网络依赖。
-- 检查 staged 内容，不读工作区。
-- 生成物、lockfile、快照与数据文件不计入，排除清单写进同一配置。
+- token 是硬上限，超出阻断提交；行数是软上限，超出只警告。
+- token 用离线 tokenizer（`gpt-tokenizer` 的 `o200k_base`）计数，不调用模型 API。
 - 超限时按职责拆分文件，不靠压缩格式、删注释或改成长行绕过。
-- 检查是 `scripts/` 里的一个脚本，pre-commit 与 `pnpm verify` 共用；`--no-verify` 跳过 hook 时由 CI 兜底。
-- 报错信息写明文件、实测值、阈值与「按职责拆分」，让 Agent 直接据此修正。
 
 ## Git hooks
 

@@ -78,7 +78,7 @@ conventions/       技术选型与工程约定（不是 skill）
 
 ## Conventions
 
-`conventions/` 记录前端、后端、目录组织、可观测性与工具链的选型，入口见 [conventions/README.md](conventions/README.md)。视觉取值不在这里，归 `design/`。
+`conventions/` 记录前端、后端、目录组织、可观测性、工具链与测试的约定，可机械检查的部分附 `scripts/` 示范，入口见 [conventions/README.md](conventions/README.md)。视觉取值不在这里，归 `design/`。
 
 ## 维护约定
 

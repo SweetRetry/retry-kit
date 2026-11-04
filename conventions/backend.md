@@ -2,8 +2,6 @@
 
 ## API 约定
 
-与语言无关，任何后端都遵守。
-
 - 业务接口放在所在平台的 API 层，Cloudflare 上是 TanStack Start 的 server function 与 server route，其他平台是独立的 Hono 应用。
 - 有独立 Hono 时，前端框架的服务端能力只做 BFF，克制使用，只为当前前端聚合、持有服务端凭据、裁剪数据。
 - 路径是资源加 HTTP 方法，非 CRUD 操作用子资源（`POST /orders/{id}/cancel`）。
@@ -14,22 +12,7 @@
 - 可重试的 `POST` 由调用方带幂等键或由唯一约束兜底。
 - 不加版本前缀，以新增字段或新资源路径兼容演进。
 - 客户端只按 `code` 与 `status` 分支，不解析 `message`。
-- 约定由 HTTP 测试断言状态码与 body。
-
-| code | 语义 |
-| --- | --- |
-| `VALIDATION_ERROR` | 输入不符合 schema，字段错误放进 `issues` |
-| `UNAUTHORIZED` | 凭据缺失、无效或过期 |
-| `FORBIDDEN` | 资源可见，但当前身份无权执行该操作 |
-| `NOT_FOUND` | 资源不存在，或身份无权知道其存在 |
-| `CONFLICT` | 与当前资源状态冲突 |
-| `TOO_MANY_REQUESTS` | 超过限流阈值，配合 `Retry-After` |
-| `SERVICE_UNAVAILABLE` | 依赖未配置或暂时不可用 |
-| `INTERNAL_SERVER_ERROR` | 未预期的服务端失败，带 `traceId` |
-
 - 无权知道资源是否存在时返回 `404`，不用 `403` 泄漏存在性。
-- 状态码已能说清的错误不新增 `code`。
-- 改名或删除已发布的 `code` 是破坏性变更。
 
 ## 选型
 
@@ -50,7 +33,6 @@
 
 共用 Drizzle、Better Auth（应用要有账号时再加）与 Vitest。
 
-- 校验失败统一转成 `VALIDATION_ERROR` 错误体，不透出校验库的原始错误。
 - 只在接口提供给外部客户时输出 OpenAPI。
 - 业务配额记在数据库里，不算限流。
 - Void 部署到自己的 Cloudflare 账号，提交 `void.config.ts` 与 `void.lock.json`；回滚不撤销 migration，migration 要兼容上一版代码。
@@ -78,5 +60,4 @@
 - Node 应用在 `src/env.ts` 用 Zod 校验，由入口显式传给下游；Void 项目在 `env.ts` 声明、经 `void/env` 读取，本地只认根目录 `.env`。
 - 变量与 secret 由平台 CLI 管理：Cloudflare 用 `void secret put`，Vercel 用 `vercel env`（本地 `vercel env pull`）。
 - 通用机器本地放 `.env.local`，生产变量列在相邻的 `.env.example`。
-- 生产环境必须提供高熵的鉴权密钥。
-- AI provider 的 key 未配置时，相关 endpoint 返回 `503 SERVICE_UNAVAILABLE`。
+- AI provider 的 key 未配置时，相关 endpoint 返回 `503`。
