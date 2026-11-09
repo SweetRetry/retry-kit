@@ -7,8 +7,8 @@
  *   彩色渐变与渐变文字、大半径模糊光晕、静态文字的透明度
  * - typography：任意字号、任意字体族、阶梯外字重
  *
- * 组件库（packages/ui、shadcn 的 components/ui）同样扫描；阴影、Separator 与 Card 嵌套
- * 只约束调用点，组件库豁免。
+ * 组件库（packages/ui、shadcn 的 components/ui）不扫描：其中的过渡与尺寸多是组件机制，
+ * 外观按 SKILL.md 的基线表人工核对。
  *
  * 圆角与间距的任意值**不在此列**：规则本身有判断余地（公式推导的转角、
  * 行高托底与光学微调值域），扫描会产生误报，交由审查判断。
@@ -23,10 +23,9 @@ import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 
 const SOURCE_FILE = /\.(?:[cm]?[jt]sx?|css|scss|vue|svelte|astro|html|mdx)$/
-// 第三方、构建产物、测试夹具与 agent skill（含本脚本的副本）不属于项目界面代码
+// 组件库、第三方、构建产物、测试夹具与 agent skill（含本脚本的副本）不属于调用点代码
 const EXCLUDED =
-  /(?:^|\/)(?:node_modules|vendor|dist|build|\.next|coverage|\.[\w-]+\/skills)\/|\.(?:test|spec)\.[^/]+$/
-const LIBRARY = /(?:^|\/)components\/ui\/|^packages\/ui\//
+  /(?:^|\/)(?:node_modules|vendor|dist|build|\.next|coverage|components\/ui|\.[\w-]+\/skills)\/|^packages\/ui\/|\.(?:test|spec)\.[^/]+$/
 
 // 不在 class 名或 CSS 标识符中间起止
 const L = "(?<![\\w-])"
@@ -112,7 +111,6 @@ const CHECKS = [
     rule: "surface/shadow",
     // 跳过 CSS 选择器（.shadow-lg { box-shadow: none }）
     pattern: `(?<![\\w.-])(?:drop-|inset-)?shadow-(?!none${R})(?:\\[[^\\]\\s]*\\]|[\\w./-]+)`,
-    appOnly: true,
     message: "调用点加阴影或光晕",
     suggestion: "分离表面靠明度差；浮层阴影只在组件库变体里定义",
   },
@@ -162,14 +160,12 @@ const CHECKS = [
   {
     rule: "layout/separator",
     pattern: `<Separator(?![\\w.])(?![^>]*\\borientation\\s*=\\s*\\{?\\s*["'\`]vertical)[^>]*>`,
-    appOnly: true,
     message: "用横向 Separator 分区",
     suggestion: "分区改用留白与对齐轴；菜单用组件库的 *MenuSeparator，工具栏控件组之间用 orientation=\"vertical\"",
   },
   {
     rule: "hierarchy/nested-card",
     find: findNestedCards,
-    appOnly: true,
     message: "卡片套卡片",
     suggestion: "内层改用留白、分组或 bg-muted 填充区块，只保留外层 Card",
   },
@@ -249,11 +245,9 @@ function locate(starts, offset) {
 
 function scanContent(content, file) {
   const findings = []
-  const isLibrary = LIBRARY.test(file)
   let starts = null
 
   for (const check of CHECKS) {
-    if (check.appOnly && isLibrary) continue
     for (const match of check.find(content)) {
       if (check.accept?.(match)) continue
       starts ??= lineStarts(content)
