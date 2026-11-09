@@ -42,7 +42,7 @@ reference 的每个小节都是完成标准，逐节给出通过、修复或不�
    node <skill 目录>/scripts/ui-guardrails.js <目标项目路径>
    ```
 
-   脚本覆盖组件库，只在阴影、Separator 与 Card 嵌套上豁免它；跳过第三方、测试与 skill 目录。任意圆角与间距、内联 style 与 CSS 中的色值人工核对。
+   脚本跳过组件库、第三方、测试与 skill 目录；组件库的外观按 §1 基线表核对。任意圆角与间距、内联 style 与 CSS 中的色值人工核对。
 2. 渲染检查。启动开发服务器，打开改动页面，在 375×812 与 1280×800 两个视口各做一遍：
    - 用浏览器工具的 evaluate 执行 `scripts/render-audit.js`（整个文件是一个无参函数），修复到 `violations` 为空。
    - 截整页图并查看，按 `hierarchy.md` §4 逐项判断。
