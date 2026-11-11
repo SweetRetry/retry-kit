@@ -31,8 +31,8 @@
 ## 3. 形态
 
 - 缩放入场从 `scale(0.95)` + `opacity: 0` 起步，不从 `scale(0)`。
-- 按压用 `active:scale-95` 配 150ms `ease-out`，只作用于指针按压。
-- Popover 与下拉从触发控件方向展开；居中 Dialog 以视口中心为锚点。
+- 按压用 `motion-safe:active:scale-95`，只作用于指针按压。
+- Popover 与下拉从触发控件方向展开（`origin-(--radix-*-content-transform-origin)`）；居中 Dialog 以视口中心为锚点。
 - Spring 不做弹跳晃荡；`duration + bounce` 与 `stiffness + damping + mass` 二选一。
 - 布局变化用 `layout` / `layoutId`，不逐帧更新 React 状态。
 

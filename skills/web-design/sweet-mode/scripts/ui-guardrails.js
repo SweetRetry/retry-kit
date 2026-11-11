@@ -14,8 +14,9 @@
  * 行高托底与光学微调值域），扫描会产生误报，交由审查判断。
  * 内联 style 与 CSS 中的色值同理（图表、画布与 Token 定义合法使用色值）。
  *
- * 用法：node <skill>/scripts/ui-guardrails.js [目标项目路径]
- * 省略路径时扫描当前目录所在的 git 仓库。
+ * 用法：node <skill>/scripts/ui-guardrails.js [--changed[=<基准 ref>]] [目标项目路径]
+ * 省略路径时扫描当前目录所在的 git 仓库。--changed 只扫描相对基准（缺省 HEAD）有改动的
+ * 文件与未跟踪文件；改动已提交时传入分支起点，如 --changed=main。
  */
 
 import { execFileSync } from "node:child_process"
@@ -202,12 +203,14 @@ function findRepositoryRoot(target) {
   }
 }
 
-function listSourceFiles(repositoryRoot) {
-  const output = execFileSync(
-    "git",
-    ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
-    { cwd: repositoryRoot, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 }
-  )
+function listSourceFiles(repositoryRoot, base) {
+  const git = (args) =>
+    execFileSync("git", args, { cwd: repositoryRoot, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 })
+  const output =
+    base === null
+      ? git(["ls-files", "--cached", "--others", "--exclude-standard", "-z"])
+      : git(["diff", "--name-only", "--diff-filter=d", "-z", base, "--"]) +
+        git(["ls-files", "--others", "--exclude-standard", "-z"])
 
   return output
     .split("\0")
@@ -266,8 +269,11 @@ function scanContent(content, file) {
 }
 
 function main() {
-  const repositoryRoot = findRepositoryRoot(resolve(process.argv[2] ?? "."))
-  const files = listSourceFiles(repositoryRoot)
+  const args = process.argv.slice(2)
+  const changed = args.find((arg) => /^--changed(?:=|$)/.test(arg))
+  const base = changed ? changed.split("=")[1] || "HEAD" : null
+  const repositoryRoot = findRepositoryRoot(resolve(args.find((arg) => !arg.startsWith("--")) ?? "."))
+  const files = listSourceFiles(repositoryRoot, base)
   const allFindings = []
 
   for (const file of files) {

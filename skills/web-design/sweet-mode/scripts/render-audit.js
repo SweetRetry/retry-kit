@@ -6,6 +6,11 @@
  * - row-height：同一行的卡片或水平并排的控件（按钮与输入 / 只读值容器）高度不一致
  * - adjacent-fill：相邻兄弟元素填充色相同且有别于底色，彼此相接且交界处没有边框
  * - font-size：计算字号小于 12px
+ * - secondary-text：重复结构的单个条目内，次要色（--muted-foreground）文字块超过 1 处；
+ *   控件自身的文字（按钮、链接、表头、Tab、菜单项）不计
+ *
+ * 返回值的 secondary 不是违规，随交付报告：share 是次要色文字占可见文字的字符比例，
+ * descriptions 是紧跟标题或字段名的说明文字。样式入口没有 --muted-foreground 时为 null。
  *
  * 整个文件是一个无参函数，用浏览器工具的 evaluate 执行；
  * Playwright：await page.evaluate(`(${source})()`)。
@@ -60,6 +65,12 @@
     return null
   }
 
+  const SECONDARY_PER_ITEM = 1
+  const probe = document.body.appendChild(document.createElement("span"))
+  probe.style.color = "var(--muted-foreground)"
+  const mutedColor = styleOf(document.documentElement).getPropertyValue("--muted-foreground").trim() ? styleOf(probe).color : null
+  probe.remove()
+
   const elements = [...document.body.querySelectorAll("*")].filter(
     (element) => !["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE"].includes(element.tagName) && isRendered(element)
   )
@@ -109,6 +120,11 @@
     while (node.parentElement && /^(?:inline|contents)$/.test(styleOf(node).display)) node = node.parentElement
     return node
   }
+  const CONTROL_TEXT = 'a, button, th, [role="tab"], [role="menuitem"], [role="option"], [role="combobox"]'
+  const textBlocks = new Set()
+  const secondaryBlocks = new Set()
+  let textChars = 0
+  let secondaryChars = 0
   const smallText = new Set()
   const brokenText = new Set()
   const range = document.createRange()
@@ -125,6 +141,14 @@
     }
 
     const container = blockOf(parent)
+    const length = node.textContent.trim().length
+    textChars += length
+    textBlocks.add(container)
+    if (styleOf(parent).color === mutedColor && !parent.closest(CONTROL_TEXT)) {
+      secondaryChars += length
+      secondaryBlocks.add(container)
+    }
+
     if (brokenText.has(container)) continue
     range.selectNodeContents(node)
     const text = range.getBoundingClientRect()
@@ -149,6 +173,50 @@
       violations.push({ rule: "text-overflow", element: describe(container), detail })
     }
   }
+
+  // 条目：同一父元素下标签与类名相同的兄弟不少于 3 个，且自身含至少两个文字块
+  //（图标加一段文字的包装不算条目）。文字块只计入最近的条目祖先
+  const items = new Set()
+  for (const parent of elements) {
+    const groups = new Map()
+    for (const child of parent.children) {
+      const key = `${child.tagName} ${child.getAttribute("class") ?? ""}`
+      groups.set(key, [...(groups.get(key) ?? []), child])
+    }
+    for (const group of groups.values()) {
+      if (group.length < 3) continue
+      for (const child of group) {
+        if ([...textBlocks].filter((block) => child.contains(block)).length >= 2) items.add(child)
+      }
+    }
+  }
+  const secondaryPerItem = new Map()
+  for (const block of secondaryBlocks) {
+    let item = block
+    while (item && !items.has(item)) item = item.parentElement
+    if (item) secondaryPerItem.set(item, (secondaryPerItem.get(item) ?? 0) + 1)
+  }
+  const reportedLists = new Set()
+  for (const [item, count] of [...secondaryPerItem].sort((a, b) => b[1] - a[1])) {
+    if (count <= SECONDARY_PER_ITEM || reportedLists.has(item.parentElement)) continue
+    reportedLists.add(item.parentElement)
+    violations.push({
+      rule: "secondary-text",
+      element: describe(item),
+      detail: `条目内 ${count} 处次要文字，上限 ${SECONDARY_PER_ITEM}`,
+    })
+  }
+
+  const TITLE = 'h1, h2, h3, h4, h5, h6, legend, label, [data-slot$="title"], [data-slot$="label"]'
+  const descriptions = elements
+    .filter(
+      (element) =>
+        element.textContent.trim() &&
+        (element.matches('[data-slot$="description"]') ||
+          (secondaryBlocks.has(element) && element.previousElementSibling?.matches(TITLE)))
+    )
+    .map(describe)
+  const secondary = mutedColor ? { share: Math.round((secondaryChars / (textChars || 1)) * 100) / 100, descriptions } : null
 
   for (const grid of elements.filter((element) => styleOf(element).display.endsWith("grid"))) {
     const rows = new Map()
@@ -226,5 +294,5 @@
     }
   }
 
-  return { viewport:`${window.innerWidth}×${window.innerHeight}`, scrollWidth, violations }
+  return { viewport:`${window.innerWidth}×${window.innerHeight}`, scrollWidth, violations, secondary }
 }
