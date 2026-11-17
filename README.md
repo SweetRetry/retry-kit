@@ -27,10 +27,6 @@ conventions/       技术选型与工程约定（不是 skill）
 
 - `name-domain-terms`：用户用自己的话描述、逼近或误用专业名词时，主动说出术语、给出一句话定义与差别，之后沿用。
 
-### Product
-
-- `write-prd`：编写或修订 PRD，分人看的决策部分与 Agent 看的执行契约，含冷读、流程图与需求变更记录；飞书同步为可选 reference。
-
 ### Web Design
 
 - `sass-ux-writing`：先校准 SaaS 产品的组织模型与业务场景，以克制专业的书面产品语体改写界面文案，统一领域词表，输出对照表。
@@ -52,7 +48,6 @@ conventions/       技术选型与工程约定（不是 skill）
 | 设计新功能或改进既有界面：改需求、比动线与 UI 方案 | `ui-prototyping` | HTML 模板；比视觉取值时读取值模式 reference |
 | 审查界面或流程的可用性：一致性、设计漂移、信噪比、最小惊讶 | `ux-audit` | 盘点漂移读一致性 reference 并跑代码与渲染盘点脚本；逐维检验读维度 reference |
 | 沉淀品牌与设计规范 | `design-md-creator` | 新建／重排时读结构模板；封杀清单轮读套路候选 |
-| 编写或修订 PRD | `write-prd` | 新建／重排读章节 reference；同步飞书读 lark reference |
 | 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
 | 对话中说出用户正在描述的专业名词 | `name-domain-terms` | 自含流程 |
 
