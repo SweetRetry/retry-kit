@@ -22,7 +22,6 @@ conventions/       技术选型与工程约定（不是 skill）
 - `find-edgecases`：审查重复、中断、超时、新旧版本并存等可达条件下的系统失效。
 - `raise-ambition`：动手前把任务抬高到真实结果，补齐顶尖做法、跨领域技巧、对抗视角与外部验收，改写成 prompt 后等确认。
 - `simplify-code`：审查并移除不改变行为的复杂度，顺带修复预期明确的 bug。
-- `task-breakdown`：基于需求或契约拆解为工程任务包（自含任务上下文、务实批判性审查、Git Worktree 隔离、变更记录 changes.md 与老代码包袱处理）。
 
 ### Learning
 
@@ -54,7 +53,6 @@ conventions/       技术选型与工程约定（不是 skill）
 | 审查界面或流程的可用性：一致性、设计漂移、信噪比、最小惊讶 | `ux-audit` | 盘点漂移读一致性 reference 并跑代码与渲染盘点脚本；逐维检验读维度 reference |
 | 沉淀品牌与设计规范 | `design-md-creator` | 新建／重排时读结构模板；封杀清单轮读套路候选 |
 | 编写或修订 PRD | `write-prd` | 新建／重排读章节 reference；同步飞书读 lark reference |
-| 拆解工程任务 | `task-breakdown` | 任务执行契约与模板 |
 | 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
 | 对话中说出用户正在描述的专业名词 | `name-domain-terms` | 自含流程 |
 
