@@ -1,0 +1,7 @@
+interface:
+  display_name: "Codex Review"
+  short_description: "从外部 agent 调用 Codex CLI 审查改动，并逐条核实其发现"
+  default_prompt: "使用 $codex-review 让 Codex 审查当前改动，核实每条发现后汇报。"
+
+policy:
+  allow_implicit_invocation: false

@@ -22,6 +22,7 @@ conventions/       技术选型与工程约定（不是 skill）
 - `find-edgecases`：审查重复、中断、超时、新旧版本并存等可达条件下的系统失效。
 - `raise-ambition`：动手前把任务抬高到真实结果，补齐顶尖做法、跨领域技巧、对抗视角与外部验收，改写成 prompt 后等确认。
 - `simplify-code`：审查并移除不改变行为的复杂度，顺带修复预期明确的 bug。
+- `codex-review`：从 Claude 手动调用本机 Codex CLI 审查改动，只读运行、追问续接同一会话以节省额度，并逐条核实 Codex 的发现。
 
 ### Learning
 
