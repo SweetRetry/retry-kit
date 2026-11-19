@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" class="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retry specimen</title>
+<link rel="stylesheet" href="globals.css">
+<style>
+*{box-sizing:border-box;margin:0;border:0;font:inherit}
+html{font-family:Inter,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-optical-sizing:auto;font-feature-settings:"cv11","ss03";-webkit-font-smoothing:antialiased}
+body{background:var(--surface-1);color:var(--foreground);min-height:100vh;display:flex;flex-direction:column;padding:12px 16px 16px;gap:12px;font-size:14px;line-height:1.43}
+button{cursor:pointer;color:inherit;background:none}
+svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.top,.panes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.top{align-items:center;height:32px}
+.lab{font-size:12px;line-height:1.33;color:var(--muted-foreground)}
+.top .r{display:flex;justify-content:space-between;align-items:center}
+.seg{display:flex;background:var(--muted);border-radius:8px;padding:2px;gap:2px}
+.seg button{height:28px;padding:0 12px;border-radius:6px;font-size:12px;font-weight:500;color:var(--muted-foreground)}
+.seg button[aria-pressed=true]{background:var(--surface-3);color:var(--foreground)}
+.pane{border-radius:14px;overflow:hidden;display:grid;grid-template-columns:104px 1fr;height:716px}
+.main{padding:24px 20px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.head{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:30px;line-height:1.2;font-weight:600;letter-spacing:-.025em}
+.btn{height:36px;padding:0 16px;border-radius:8px;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:8px;position:relative}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative}
+.stat .k{font-size:12px;line-height:1.33}
+.stat .v{font-size:24px;line-height:1.33;font-weight:600;font-variant-numeric:tabular-nums;margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;line-height:1.33;font-weight:500;text-align:left;padding:8px}
+td{padding:10px 8px;white-space:nowrap;vertical-align:middle}
+th:first-child,td:first-child{padding-left:0}
+th:last-child,td:last-child{padding-right:0}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.act{text-align:right;white-space:nowrap}
+.act>*{vertical-align:middle}
+.t{font-size:14px;font-weight:500}
+.meta{font-size:12px;line-height:1.33;display:flex;gap:6px;align-items:center;margin-top:2px}
+.ib{width:32px;height:32px;border-radius:8px;display:inline-grid;place-items:center}
+.field{position:relative;margin-top:auto}
+.field textarea{display:block;width:100%;resize:none;height:76px;font-size:14px;color:inherit;outline:0;padding:10px 12px;border-radius:8px}
+.m{position:absolute;top:-9px;right:-9px;z-index:2;width:18px;height:18px;border-radius:9px;background:var(--foreground);color:var(--background);font-size:11px;font-weight:600;display:grid;place-items:center;line-height:1;font-variant-numeric:tabular-nums}
+.m.inline{position:static;display:inline-grid;vertical-align:middle;margin-left:8px}
+.m.tl{right:auto;left:-9px}
+.legend{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;padding:4px 4px 0}
+.legend div{display:flex;gap:10px;font-size:14px;line-height:1.43;align-items:flex-start}
+.legend .m{position:static;flex:none;margin-top:2px}
+
+/* Retry: tokens only */
+.rt{background:var(--background);color:var(--foreground)}
+.rt .side{background:var(--sidebar);padding:20px 8px;display:flex;flex-direction:column;gap:2px}
+.rt .proj{padding:0 8px 12px;font-weight:600;white-space:nowrap;color:var(--foreground)}
+.rt .nav{padding:6px 8px;border-radius:6px;color:var(--sidebar-foreground)}
+.rt .nav.on{background:var(--sidebar-accent);color:var(--sidebar-accent-foreground)}
+.rt .btn.p{background:var(--primary);color:var(--primary-foreground)}
+.rt .btn.p:hover{background:var(--primary-hover)}
+.rt .stat{background:var(--card);border-radius:14px;padding:16px}
+.rt .stat .k,.rt .meta,.rt .lab{color:var(--muted-foreground)}
+.rt th{color:var(--subtle-foreground)}
+.rt td{border-top:1px solid var(--border);padding-top:14px;padding-bottom:14px}
+.rt th{border:0}
+.rt .st{display:inline-flex;align-items:center;gap:8px}
+.rt .dot{width:6px;height:6px;border-radius:9999px;background:var(--subtle-foreground)}
+.rt .dot.ok{background:var(--success)}.rt .dot.warn{background:var(--warning)}.rt .dot.bad{background:var(--destructive)}
+.rt .ib{color:var(--muted-foreground)}
+.rt .ib:hover{background:var(--surface-3);color:var(--foreground)}
+.rt .field{background:var(--muted);border:1px solid var(--input);border-radius:8px;height:116px}
+.rt .field:focus-within{border-color:var(--ring);box-shadow:0 0 0 3px var(--ring-soft)}
+.rt .field textarea{background:none;height:72px;color:var(--foreground)}
+.rt .field textarea::placeholder{color:var(--subtle-foreground)}
+.rt .field .bar{position:absolute;left:4px;right:4px;bottom:4px;display:flex;justify-content:space-between}
+.rt .field .bar .ib{position:relative}
+
+/* Neighbor: shadcn/ui default, neutral, literals */
+.nb{--bg:#0a0a0a;--fg:#fafafa;--card:#171717;--bd:rgba(255,255,255,.1);--inp:rgba(255,255,255,.15);--mut:#a1a1aa;--acc:#262626;--pri:#e5e5e5;--prif:#171717;--sec:#262626;--dst:#ff6467;--dstbg:rgba(255,100,103,.15);--okc:#4ade80;--wc:#fbbf24;
+background:var(--bg);color:var(--fg)}
+.nb.lt{--bg:#fff;--fg:#0a0a0a;--card:#fff;--bd:#e5e5e5;--inp:#e5e5e5;--mut:#737373;--acc:#f5f5f5;--pri:#171717;--prif:#fafafa;--sec:#f5f5f5;--dst:#e7000b;--dstbg:rgba(231,0,11,.08);--okc:#15803d;--wc:#b45309}
+.nb .side{border-right:1px solid var(--bd);padding:20px 8px;display:flex;flex-direction:column;gap:2px}
+.nb .proj{padding:0 8px 12px;font-weight:600;white-space:nowrap}
+.nb .nav{padding:6px 8px;border-radius:6px;color:var(--mut)}
+.nb .nav.on{background:var(--acc);color:var(--fg);font-weight:500}
+.nb .btn{border-radius:8px}
+.nb .btn.p{background:var(--pri);color:var(--prif)}
+.nb .btn.o{background:transparent;border:1px solid var(--inp);box-shadow:0 1px 2px rgba(0,0,0,.05);color:var(--fg)}
+.nb .btn.sm{height:32px;padding:0 12px}
+.nb .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.nb .stat{padding:16px}
+.nb .stat .k,.nb .meta{color:var(--mut)}
+.nb .stat .k{font-size:14px}
+.nb th{color:var(--mut);font-weight:500;font-size:14px}
+.nb .tbl{padding:4px 12px}
+.nb th:first-child,.nb td:first-child{padding-left:0}
+.nb tr+tr td{border-top:1px solid var(--bd)}
+.nb thead th{border-bottom:1px solid var(--bd)}
+.nb .bd{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--bd);white-space:nowrap}
+.nb .bd.o{color:var(--fg)}.nb .bd.s{background:var(--sec);border-color:transparent;color:var(--fg)}
+.nb .bd.ok{color:var(--okc);border-color:currentColor}.nb .bd.warn{color:var(--wc);border-color:currentColor}
+.nb .bd.bad{color:var(--dst);background:var(--dstbg);border-color:transparent}.nb .bd.idle{color:var(--fg);background:var(--sec);border-color:transparent}
+.nb .ib{color:var(--fg)}.nb .ib:hover{background:var(--acc)}
+.nb .field{display:flex;flex-direction:column;gap:8px}
+.nb .field textarea{background:transparent;border:1px solid var(--inp);box-shadow:0 1px 2px rgba(0,0,0,.05);color:var(--fg);height:64px}
+.nb .field textarea::placeholder{color:var(--mut)}
+.nb .field textarea:focus{border-color:#737373;box-shadow:0 0 0 3px rgba(115,115,115,.4)}
+.nb .row{display:flex;gap:8px;justify-content:flex-end;position:relative}
+.nb .field .m{top:-9px}
+</style></head><body>
+<div class="top"><div class="lab">shadcn/ui default</div><div class="r"><div class="lab" style="color:var(--foreground);font-weight:500">Retry</div>
+<div class="seg" role="group" aria-label="Theme"><button aria-pressed="true" data-t="dark">Dark</button><button aria-pressed="false" data-t="light">Light</button></div></div></div>
+<div class="panes">
+<section class="pane nb" id="nb" aria-label="shadcn/ui default"><aside class="side"><div class="proj">harbor-api</div><div class="nav">Overview</div><div class="nav on">Deploys</div><div class="nav">Logs</div><div class="nav">Domains</div><div class="nav">Settings</div></aside><div class="main">
+<div class="head"><h1>Deploys</h1><button class="btn p">New Deploy<span class="m">2</span></button></div>
+<div class="stats"><div class="stat card"><div class="k">Deploys this week</div><div class="v">14</div></div><div class="stat card"><div class="k">Median build time</div><div class="v">1m 42s</div></div><div class="stat card"><div class="k">Failed</div><div class="v">2</div></div><span class="m tl">1</span></div>
+<div class="card tbl"><table><thead><tr><th>Deploy</th><th>Status</th><th class="num">Build Time</th><th></th></tr></thead><tbody><tr><td><div class="t">fix: retry on 429 from billing</div><div class="meta"><span class="bd o">main</span><span class="bd s">a3f9c21</span>12 min ago</div></td><td><span class="bd ok">Succeeded</span><span class="m inline">3</span></td><td class="num">1m 38s</td><td class="act"><button class="btn o sm">Redeploy</button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr><tr><td><div class="t">feat: add webhook signing</div><div class="meta"><span class="bd o">main</span><span class="bd s">7be04d8</span>1 h ago</div></td><td><span class="bd warn">Degraded</span></td><td class="num">2m 11s</td><td class="act"><button class="btn o sm">Redeploy</button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr><tr><td><div class="t">chore: bump drizzle to 0.44</div><div class="meta"><span class="bd o">main</span><span class="bd s">c91d5e0</span>3 h ago</div></td><td><span class="bd bad">Failed</span></td><td class="num">0m 47s</td><td class="act"><button class="btn o sm">Redeploy</button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr><tr><td><div class="t">docs: update rate limit notes</div><div class="meta"><span class="bd o">main</span><span class="bd s">e20a7b4</span>Just now</div></td><td><span class="bd idle">Queued</span></td><td class="num">Not started</td><td class="act"><button class="btn o sm">Redeploy</button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr></tbody></table></div>
+<div class="field"><textarea placeholder="Add a note to this deploy" aria-label="Note"></textarea><span class="m tl">5</span><div class="row"><button class="btn o sm">Attach</button><button class="btn o sm">Send<span class="m">4</span></button></div></div>
+</div></section>
+<section class="pane rt" aria-label="Retry"><aside class="side"><div class="proj">harbor-api</div><div class="nav">Overview</div><div class="nav on">Deploys</div><div class="nav">Logs</div><div class="nav">Domains</div><div class="nav">Settings</div></aside><div class="main">
+<div class="head"><h1>Deploys</h1><button class="btn p">New deploy<span class="m">2</span></button></div>
+<div class="stats"><div class="stat"><div class="k">Deploys this week</div><div class="v">14</div></div><div class="stat"><div class="k">Median build time</div><div class="v">1m 42s</div></div><div class="stat"><div class="k">Failed</div><div class="v">2</div></div><span class="m tl">1</span></div>
+<table><thead><tr><th>Deploy</th><th>Status</th><th class="num">Build time</th><th></th></tr></thead><tbody><tr><td><div class="t">fix: retry on 429 from billing</div><div class="meta">main · a3f9c21 · 12 min ago</div></td><td><span class="st"><i class="dot ok"></i>Succeeded</span><span class="m inline">3</span></td><td class="num">1m 38s</td><td class="act"><button class="ib" aria-label="Redeploy"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr><tr><td><div class="t">feat: add webhook signing</div><div class="meta">main · 7be04d8 · 1 h ago</div></td><td><span class="st"><i class="dot warn"></i>Degraded</span></td><td class="num">2m 11s</td><td class="act"><button class="ib" aria-label="Redeploy"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr><tr><td><div class="t">chore: bump drizzle to 0.44</div><div class="meta">main · c91d5e0 · 3 h ago</div></td><td><span class="st"><i class="dot bad"></i>Failed</span></td><td class="num">0m 47s</td><td class="act"><button class="ib" aria-label="Redeploy"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr><tr><td><div class="t">docs: update rate limit notes</div><div class="meta">main · e20a7b4 · Just now</div></td><td><span class="st"><i class="dot idle"></i>Queued</span></td><td class="num">Not started</td><td class="act"><button class="ib" aria-label="Redeploy"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="ib" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td></tr></tbody></table>
+<div class="field"><textarea placeholder="Add a note to this deploy" aria-label="Note"></textarea><span class="m tl">5</span><div class="bar"><button class="ib" aria-label="Attach"><svg viewBox="0 0 24 24"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button><button class="ib" aria-label="Send"><svg viewBox="0 0 24 24"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg><span class="m">4</span></button></div></div>
+</div></section>
+</div>
+<div class="legend">
+<div><span class="m">1</span><span>Groups are set apart by tone and space, with no border and no shadow.</span></div>
+<div><span class="m">2</span><span>Emerald appears once per view, where it means something.</span></div>
+<div><span class="m">3</span><span>Status is a dot plus a word, never a badge.</span></div>
+<div><span class="m">4</span><span>An action sits on its object, as an icon when the icon is universal.</span></div>
+<div><span class="m">5</span><span>Fields are filled, not outlined.</span></div>
+</div>
+<script>
+(function(){var h=document.documentElement,n=document.getElementById('nb'),b=document.querySelectorAll('.seg button');
+b.forEach(function(x){x.addEventListener('click',function(){var d=x.dataset.t==='dark';h.classList.toggle('dark',d);n.classList.toggle('lt',!d);b.forEach(function(y){y.setAttribute('aria-pressed',String(y===x))})})});
+})();
+</script></body></html>

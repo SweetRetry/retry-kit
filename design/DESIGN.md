@@ -12,16 +12,16 @@ omitted:
   - section: spacing
     reason: Tailwind defaults, used as listed under Layout.
   - section: motion
-    reason: Motion (motion/react) with MotionConfig defaults; rules under Interaction patterns.
+    reason: Motion (motion/react) with MotionConfig defaults; rules under Motion.
   - section: components
-    reason: shadcn/ui on Base UI, with the deltas listed under Components.
+    reason: shadcn/ui on Base UI; the deltas are in brand-kit/SETUP.md.
 ---
 
 # Retry
 
-Decisions live here; values and assets live in `brand-kit/`; how-to craft lives in skills.
+Decisions live here. Values live in `brand-kit/globals.css` and are not repeated; setup and the shadcn component deltas live in `brand-kit/SETUP.md`, applied once in the component files.
 
-Retry is a personal design language for a site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something. It grows on Tailwind CSS v4 and shadcn/ui on Base UI: their scales unchanged, Retry's values in `brand-kit/`, and a short list of shadcn deltas.
+Retry is a personal design language for a site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something.
 
 ## Overview
 
@@ -31,32 +31,38 @@ Retry is a personal design language for a site, notes, slides and small tools: q
 
 Made for peers and collaborators who judge the thinking, not the packaging. It aims for product clarity, a quiet finish, and quiet craft: small details with a job, unnoticed at first glance and rewarding on the second. Never: terminal or hacker styling, neo-brutalism, the SaaS template (blue-purple gradient, centered hero, three feature cards), showpieces made to be admired rather than used, an untouched shadcn default.
 
+**Signature.** Its nearest neighbor is an untouched dark shadcn; a page is Retry when these five hold:
+
+1. Groups are set apart by tone steps and space, with no border and no shadow.
+2. Emerald appears once per view, where it means something.
+3. Status is a dot plus a word, never a badge.
+4. An action sits on its object, as an icon when the icon is universal.
+5. Fields are filled, not outlined.
+
 When rules compete: facts and constraints › the host project's framework › task clarity › Retry's look › polish.
 
-### Setup
+**Floor**, which no surface overrides: the three traits and the never list, the signature, the voice, the order above, the Don'ts, the closed vocabulary under Components, and access (text contrast as recorded in `brand-kit/tokens.json`, a visible focus ring, status never by color alone, motion off under reduced motion). Everything else is a default, and a surface file may override it with a reason.
 
-Use `brand-kit/globals.css` as the global stylesheet; it replaces shadcn's and is generated from `brand-kit/tokens.json` by `brand-kit/generate-globals.py`. Components are shadcn/ui on Base UI primitives: initialise with `shadcn init --base base` and add no Radix packages. Put `class="dark"` on `<html>`. Load Inter with the `opsz` axis. Animate with Motion (`motion/react`), with the app wrapped once in `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`, so components set no `transition` unless they need a different duration.
-
-### Voice
+## Voice
 
 - **Language**: English first. A product shipped in another language keeps the same voice, written natively rather than translated.
 - **By surface**: site, notes and slides speak in the first person ("I design and build…"); product UI speaks as the product, with the object as subject ("Your projects", "Note published").
 - **Rhythm**: short sentences, conclusion first. Short parallel lines ("Fewer things. Better.") only in site and slide headlines; product UI states things plainly.
+- **Tone** moves with what is at stake for the person; the voice does not. A moment with room for warmth (a start, an empty state, a first success) may say one human thing: "Nothing here yet. Start with a note." A moment that must stay plain (an error, a permission, billing, deletion) says what happened and what to do next, with no apology and no cheer: "Couldn't save. Check your connection and try again."
 - Sentence case everywhere. No emoji, no exclamation marks, never narrate the design on the page.
 
 ## Colors
 
-shadcn names, so every color is a utility (`bg-card`, `text-muted-foreground`). Retry adds `surface-1…3`, `subtle-foreground`, `success`, `warning`, `*-hover` and `*-soft`. Values are `oklch()`; dark (`.dark`) is the default, light (`:root`) a full theme.
-
-- **Depth is lightness.** `bg-background` › `bg-surface-1` (= card, and the popover in dark) › `bg-surface-2` (= secondary, muted, accent) › `bg-surface-3`. The shadcn roles form two tiers. Background, card and popover are containers; secondary, muted and accent are fills and sit one rung above every container, so a fill or a hover reads on any of them and shadcn/ui components need no recoloring. In light the popover stays white. Stack a container on a fill (a status block, `bg-card`), never a fill on a fill. A disabled control (`bg-surface-1`) reads flat on a container, on purpose. New neutrals stay on hue 286 and step L only.
+- **Depth is lightness.** Background, card and popover are containers; secondary, muted and accent are fills and sit one rung above every container, so a fill or a hover reads on any of them. Stack a container on a fill, never a fill on a fill. New neutrals stay on hue 286 and step L only.
 - **Text**: `text-foreground` to read, `text-muted-foreground` to support, `text-subtle-foreground` only for placeholders, timestamps and column headers on background, surface-1 or sidebar. Never set text hierarchy with opacity (a transient state such as stale data while reloading may fade).
 - **Emerald (`primary`) is scarce**: one primary button per view, links, checked controls, focus, success. Under 5% of the screen; never decoration, never "good" numbers.
 - **Status** (`success`, `warning`, `destructive`) always comes with a word; notices use the `*-soft` fills.
+- **Direction colors** (up green, down red) are off unless a surface's core information is direction; then always with + or −, declared in that surface's file.
 - `accent` is shadcn's neutral hover, not a brand color. Charts: `chart-1` for the series that matters, `chart-5` for the rest.
 
 ## Typography
 
-Inter (`font-sans`) with optical sizing, which already tightens large text. Sizes are Tailwind's; the theme gives `text-3xl` and up `tracking-tight`, and `text-5xl`/`text-6xl` room between lines, so don't add `tracking-*` or `leading-*` to headings. `font-mono` only for code and data.
+The theme already sets tracking and line height on large sizes, so headings take no `tracking-*` or `leading-*`. `font-mono` only for code and data.
 
 | Class | Role |
 | --- | --- |
@@ -72,30 +78,25 @@ Weights 400, 500, 600 only. `tabular-nums` on numbers that line up; `text-balanc
 
 ## Layout
 
-Tailwind spacing, in these steps: `gap-1` icon to label · `gap-2` buttons, label to field · `p-4` cards · `p-6` tool panels · `gap-8` blocks · `py-12` tool sections · `py-16` site sections. Group with space and tone, never a border around a group. Left-aligned by default. Articles `max-w-2xl`, sidebar `w-54`, controls `h-8` / `h-9` / `h-10`.
+Tailwind spacing, in these steps: `gap-1` icon to label · `gap-2` buttons, label to field · `p-4` cards · `p-6` tool panels · `gap-8` blocks · `py-12` tool sections · `py-16` site sections. Group with space and tone, never a border around a group. Left-aligned by default. Articles `max-w-2xl`, sidebar `w-54`, controls `h-8` / `h-9` / `h-10`. On a narrow screen the sidebar gives way first, into a Sheet, then secondary columns; type sizes and the reading width hold.
 
 ## Elevation & Depth
 
-No shadows: `globals.css` empties every `shadow-*`, including those inside shadcn components. Lines appear only between table rows and around floating layers (`border`). Popover, menu and toast use `bg-popover`; Dialog and Sheet use `bg-background` over their overlay; Tooltip inverts (`bg-foreground text-background`). The sidebar sits beside the page, not on it, so in dark it is a step darker than `background` on purpose. At most two floating layers at once.
+Lines appear only between table rows and around floating layers. At most two floating layers at once. Blur only on chrome that content scrolls under: `bg-background/85 backdrop-blur`.
 
 ## Shapes
 
-shadcn's default `--radius` (0.625rem) is the base. `rounded-md` (8px) for controls, popovers, menus and tooltips; `rounded-sm` (6px) for items inside them; `rounded-lg` (10px) for dialogs; `rounded-xl` (14px) for cards; `rounded-2xl` (18px) for emphasised containers and slides. Nested corners follow inner = outer − padding, rounded down to a step. `rounded-full` only for switches, avatars and dots. Change `--radius`, never single classes.
+`rounded-md` for controls, popovers, menus and tooltips; `rounded-sm` for items inside them; `rounded-lg` for dialogs; `rounded-xl` for cards; `rounded-2xl` for emphasised containers and slides. Nested corners follow inner = outer − padding, rounded down to a step. `rounded-full` only for switches, avatars and dots. Change `--radius`, never single classes.
 
 ## Components
 
-Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new value goes into the tokens first. Components are shadcn/ui (Base UI) with these deltas, applied once in the component files:
+Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new value goes into the tokens first. Use the shadcn/ui components as they stand in the project; their look is already Retry's.
 
-- **Card**: no border; `bg-card` alone.
-- **Input, Textarea, Select**: filled `bg-muted` with the `border-input` edge; focus `border-ring` plus a soft ring.
-- **Input group**: a field with things inside it (a submit, a chip line, a unit). The field delta applies to the group and the control inside is bare; a `ghost` button inside hovers to `surface-3`, one rung above the field.
-- **Button**: `default` once per view, then `secondary`, `ghost`, `destructive` (`bg-destructive-soft text-destructive`), `link`. No `outline`. Icon-only buttons use the square `icon` sizes, matched to the control height around them.
+- **States**: hover is one rung up the tone ladder; disabled reads flat, never faded. Empty is a line of words and the one action that fills it. An error is `text-destructive` words beside the thing that failed.
+- **Button**: `default` once per view, then `secondary`, `ghost`, `destructive`, `link`. No `outline`. Icon-only buttons use the square `icon` sizes, matched to the control height around them.
+- **Input group**: a field with things inside it (a submit, a chip line, a unit) is one field; the control inside is bare.
 - **Badge**: not for metadata. Status is a 6px dot plus a word.
-- **Tabs**: the list is `bg-muted`, the active tab `bg-surface-3`, one rung above it; no underline, no emerald.
-- **Popover, Dropdown, Toast**: `bg-popover`, `border`, `rounded-md`. **Dialog, Sheet**: `bg-background`, `border`, Dialog `rounded-lg`. **Tooltip**: `bg-foreground text-background`, `rounded-md`.
-- **Table**: `border-t` rows, no outer border or zebra; numbers and their headers `text-right tabular-nums`.
-- **Sidebar**: separated by tone, no line; active `bg-sidebar-accent`.
-- **Switch, Checkbox, Radio**: off `bg-surface-2` / `bg-surface-3`, on `bg-primary`. **Skeleton**: shadcn's `bg-accent`.
+- **Table**: numbers and their headers `text-right tabular-nums`; full width.
 
 ## Iconography
 
@@ -104,16 +105,14 @@ Icons are part of the language, like type: they carry actions and meaning, never
 - **An action's face follows how well its icon is known and how often it is met.** A universal action (send, close, play and pause, add, remove from a list, copy, search, more, previous and next, expand) is an icon-only button wherever it sits in a field, a row, a toolbar or a repeated item. Its `aria-label` names it, and a tooltip names it and gives the shortcut. An action whose icon a newcomer could misread gets a word, with the icon in front when it helps recognition. Removing the one item in front of you stays an icon; an action that can't be undone on something bigger than that item (an account, a project, a whole batch) is a word. The one decision a view exists for is a word on the single `default` button.
 - **An action sits on its object.** A field that sends on its own (a message, a comment, a search) holds its submit inside, bottom right, as an input group; a form's submit follows the form. A row's actions are at the row's end. A media control is on the media. Actions lined up in a separate row of text buttons, away from what they act on, are placed by default rather than by design.
 - **Meaning, not ornament.** An icon may stand for a kind (file type, media kind) or a state (playing, recording) where a word won't fit. Status stays a dot plus a word.
+- **No illustration.** No spot art, mascots or empty-state graphics; the words carry those moments.
 
-## Interaction patterns
+## Motion
 
 Only Retry's own choices are here; general interaction craft (waiting states, hover alternatives, loading, reduced motion) is assumed.
 
-- **States**: focus is a 2px `ring` outline with a 2px offset; disabled is `bg-surface-1 text-subtle-foreground`, never faded.
 - **Quiet craft**: a detail earns its place only if it has a job, stays invisible at first glance, lives where the person touches, and disappears under reduced motion. Adopted: changing numbers roll only the digits that changed; text links draw their underline in from the left on hover and out to the right.
-- **Motion**: CSS transitions for hover, press and color, naming only the property (`transition-colors`); the theme defaults them to 150ms on a standard curve that starts fast and settles gently, because Tailwind's default starts slow. `duration-200` for movement. Motion (`motion/react`) for anything that appears, leaves or changes place, with the same curve; springs only with `bounce: 0`. No decorative entrances.
-- **Direction colors** (up green, down red) are off unless a surface's core information is direction; then always with + or −, declared in that surface's file.
-- **Blur** only on chrome that content scrolls under: `bg-background/85 backdrop-blur`.
+- **Motion**: CSS transitions for hover, press and color, naming only the property (`transition-colors`); `duration-200` for movement. Motion (`motion/react`) for anything that appears, leaves or changes place; springs only with `bounce: 0`. No decorative entrances.
 
 ## Surfaces
 
