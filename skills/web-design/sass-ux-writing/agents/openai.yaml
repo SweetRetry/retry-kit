@@ -1,4 +1,4 @@
 interface:
   display_name: "SaaS UX Writing"
-  short_description: "从 SaaS 组织模型与操作边界推导界面文案，以克制精准的书面产品语体消除口头语与机器腔，交付封闭词表与对照表"
-  default_prompt: "使用 $sass-ux-writing 审查并改写当前 SaaS 界面的文案：先确认组织模型与封闭词表，补齐操作边界，消除口头语与机器腔，输出对照表；不确定的先问我。"
+  short_description: "结合代码行为与产品形态编写或改写 SaaS 界面文案，统一术语并去除 AI 腔、营销套话与翻译腔"
+  default_prompt: "使用 $sass-ux-writing 审查并改写当前 SaaS 界面的文案：先核对代码行为、产品形态与核心术语，删去零增量废话，补齐高风险操作后果，用平实具体的原生表达重写，不确定的先问我。"
