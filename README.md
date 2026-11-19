@@ -31,7 +31,7 @@ conventions/       技术选型与工程约定（不是 skill）
 ### Web Design
 
 - `sass-ux-writing`：结合代码行为与产品形态编写或改写 SaaS 界面文案，统一术语，删去零增量废话并去除 AI 腔、营销套话与翻译腔。
-- `design-md-creator`：逐轮访谈品牌、设计规范与应用界面决策，视觉选择在可交互样张上比较，再创建或更新 `design.md`。
+- `design-md-creator`：通过逐轮访谈与可交互 HTML 样张确定品牌立场、视觉物理层、组件动作语法、文案语调与界面分型，创建或更新 `DESIGN.md`。
 - `ui-prototyping`：先改需求与动线，再用临时可交互原型比较尚未定案的 UI 方案或视觉取值；模板内置 shadcn 风格组件与 Alpine，改既有界面时以现状为基线候选。
 - `ux-audit`：审查体验质量，用代码与渲染盘点长期迭代造成的设计漂移，先预测再操作走查核心任务（最小惊讶），按理解、行动、反馈、恢复、专注、一致、信任、可达八个维度检验，报告严重度与防复发护栏。
 - `sweet-mode`：Tailwind + shadcn/ui 界面规范，层级、布局、表面、字体、尺寸稳定、交互反馈与动效的取值、禁令、验收与扫描脚本；面向原则，作为原型定案后实现的硬约束。
@@ -44,7 +44,7 @@ conventions/       技术选型与工程约定（不是 skill）
 | 在 Tailwind + shadcn/ui 项目中编写或修改界面，或需要界面规则与取值 | `sweet-mode` | 按改动读取层级、布局、表面、字体、稳定或交互 reference |
 | 设计新功能或改进既有界面：改需求、比动线与 UI 方案 | `ui-prototyping` | HTML 模板；比视觉取值时读取值模式 reference |
 | 审查界面或流程的可用性：一致性、设计漂移、信噪比、最小惊讶 | `ux-audit` | 盘点漂移读一致性 reference 并跑代码与渲染盘点脚本；逐维检验读维度 reference |
-| 沉淀品牌与设计规范 | `design-md-creator` | 新建／重排时读结构模板；封杀清单轮读套路候选 |
+| 沉淀品牌与设计规范 | `design-md-creator` | 自含流程 |
 | 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
 | 对话中说出用户正在描述的专业名词 | `name-domain-terms` | 自含流程 |
 
