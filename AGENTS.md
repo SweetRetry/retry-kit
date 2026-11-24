@@ -15,11 +15,11 @@
 
 # Commit 约定
 
-提交信息使用 Conventional Commits 英文格式，`<type>(<scope>): <subject>`，type 取 feat / fix / docs / refactor / perf / test / build / ci / chore / style / revert。scope 取 skill 名、`design`、`conventions` 或 `repo`；subject 小写开头、祈使句、不超过 72 字符、不加句号；正文与 subject 之间空一行，每行不超过 100 字符。`sweet-mode：动效规则独立为 motion.md` 这类中文提交会被 `.githooks/commit-msg` 拒绝。
+提交信息使用 Conventional Commits 英文格式，`<type>(<scope>): <subject>`，type 取 feat / fix / docs / refactor / perf / test / build / ci / chore / style / revert。scope 取 skill 名、`design`、`conventions` 或 `repo`；subject 小写开头、祈使句、不超过 72 字符、不加句号；正文与 subject 之间空一行，每行不超过 100 字符。`sweet-mode：动效规则独立为 motion.md` 这类中文提交会被 `scripts/check-commit-msg.sh` 拒绝。
 
-每个新 clone 执行一次 `git config core.hooksPath .githooks`。
+hook 由 `lefthook.yml` 管理，每个新 clone 执行一次 `lefthook install`。
 
-`.githooks/pre-commit` 对暂存的 Markdown 运行 markdownlint-cli2（规则见 `.markdownlint-cli2.jsonc`），并拒绝超过 500 行的 `SKILL.md`；超出的细节移入 reference 文件。
+pre-commit 对暂存的 Markdown 运行 markdownlint-cli2（规则见 `.markdownlint-cli2.jsonc`），并拒绝超过 500 行的 `SKILL.md`；超出的细节移入 reference 文件。
 
 # Skill 反馈闭环
 

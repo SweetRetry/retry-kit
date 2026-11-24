@@ -1,0 +1,14 @@
+pre-commit:
+  parallel: true
+  commands:
+    markdownlint:
+      glob: "*.md"
+      run: npx --yes markdownlint-cli2 {staged_files}
+    skill-lines:
+      glob: "**/SKILL.md"
+      run: scripts/check-skill-lines.sh {staged_files}
+
+commit-msg:
+  commands:
+    conventional-commits:
+      run: scripts/check-commit-msg.sh {1}

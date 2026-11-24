@@ -1,6 +1,5 @@
 #!/bin/sh
 # Enforce Conventional Commits with English-only text.
-# Install once per clone: git config core.hooksPath .githooks
 
 msg_file=$1
 [ -f "$msg_file" ] || exit 0
