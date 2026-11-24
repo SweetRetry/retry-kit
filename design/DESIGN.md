@@ -1,142 +1,78 @@
----
-version: alpha
-name: Retry
-description: A personal design language on Tailwind CSS v4 and shadcn/ui (Base UI), for a site, notes, slides and tools.
-omitted:
-  - section: colors
-    reason: In brand-kit/globals.css as oklch (:root light, .dark dark, the default).
-  - section: typography
-    reason: Tailwind v4's scale; Retry's tracking-tight on 3xl and up and the 5xl/6xl line heights are in brand-kit/globals.css @theme.
-  - section: rounded
-    reason: shadcn's default --radius (0.625rem) in brand-kit/globals.css; rounded-* derive from it.
-  - section: spacing
-    reason: Tailwind defaults, used as listed under Layout.
-  - section: motion
-    reason: Motion (motion/react) with MotionConfig defaults; rules under Motion.
-  - section: components
-    reason: shadcn/ui on Base UI; the deltas are in brand-kit/SETUP.md.
----
-
 # Retry
 
-Decisions live here. Values live in `brand-kit/globals.css` and are not repeated; setup and the shadcn component deltas live in `brand-kit/SETUP.md`, applied once in the component files.
+具体取值都在 `theme.css`（项目全局样式表），本文不重复。
 
-Retry is a personal design language for a site, notes, slides and small tools: quiet surfaces, careful type, and one color that only shows up when it means something.
+## 概览
 
-## Overview
+- **气质**：克制（无渐变、光斑、网格、装饰性毛玻璃与阴影）、精准（对齐、数字与措辞准确，不注水）、有温度（第一人称，留呼吸感，不端企业腔）。
+- **定位与排除**：面向看重思考而非包装的同行与协作者；细节各有其职，初看隐形、再看有回报。禁用终端/黑客风、新粗野主义、套路 SaaS 模版（蓝紫渐变等）、炫技展示品与未改动的 shadcn 默认样式。
+- **冲突优先级**：事实与约束 › 宿主项目框架 › 任务清晰度 › Retry 外观 › 精细打磨。
+- **底线**（任何界面不得覆盖）：气质与排除项、以下五条辨识点、声线、冲突优先级、文末禁用项、组件封闭词表，以及无障碍下限（正文与辅助文字对比度 ≥ 4.5:1、可见焦点环、状态不只靠颜色、开启减少动效时关闭动效）。其余均为默认值，界面文件说明理由后可覆盖。
 
-- **Restrained**: no gradients, glows, decorative glass or shadows to fake polish.
-- **Precise**: exact alignment, numbers and wording. No filler, no fake stats.
-- **Warm**: not corporate. First person, room to breathe.
+**辨识点**（区别于未经改动的深色 shadcn，五条同时成立才是 Retry）：
 
-Made for peers and collaborators who judge the thinking, not the packaging. It aims for product clarity, a quiet finish, and quiet craft: small details with a job, unnoticed at first glance and rewarding on the second. Never: terminal or hacker styling, neo-brutalism, the SaaS template (blue-purple gradient, centered hero, three feature cards), showpieces made to be admired rather than used, an untouched shadcn default.
+1. 分组靠明度阶梯与留白拉开，无边框、无阴影。
+2. 祖母绿每个视图只出现一次，且必有语义。
+3. 状态用圆点加文字表达，绝不用徽章。
+4. 操作贴在对象上，通用图标不配文字。
+5. 输入控件采用填充态，而非描边态。
 
-**Signature.** Its nearest neighbor is an untouched dark shadcn; a page is Retry when these five hold:
+## 语气
 
-1. Groups are set apart by tone steps and space, with no border and no shadow.
-2. Emerald appears once per view, where it means something.
-3. Status is a dot plus a word, never a badge.
-4. An action sits on its object, as an icon when the icon is universal.
-5. Fields are filled, not outlined.
+英文优先，其他语言按母语重写而非直译；英文一律句首大写，不用 emoji 与感叹号，绝不在页面解说设计本身。站点、文章与幻灯片用第一人称（"I design and build…"），产品界面以对象作主语（"Your projects"、"Note published"）。短句、结论先行，短促排比（"Fewer things. Better."）仅用于站点与幻灯片大标题。声线不变，语调随利害变化：起步、空态、首次成功可带一句温度（"Nothing here yet. Start with a note."）；报错、权限、计费、删除只讲事实与下一步，不道歉也不打气（"Couldn't save. Check your connection and try again."）。
 
-When rules compete: facts and constraints › the host project's framework › task clarity › Retry's look › polish.
+## 色彩
 
-**Floor**, which no surface overrides: the three traits and the never list, the signature, the voice, the order above, the Don'ts, the closed vocabulary under Components, and access (text contrast as recorded in `brand-kit/tokens.json`, a visible focus ring, status never by color alone, motion off under reduced motion). Everything else is a default, and a surface file may override it with a reason.
+- **明度即深度**：`background`、`card`、`popover` 是容器，`secondary`、`muted`、`accent` 是高一阶的填充；容器可叠在填充上，填充绝不叠在填充上。新增中性色保持色相 286，只调明度 L。
+- **文字**：正文 `text-foreground`，辅助 `text-muted-foreground`，`text-subtle-foreground` 仅用于 `background`/`surface-1`/`sidebar` 上的占位符、时间戳与表头；绝不用透明度做文字层级（重载时的旧数据等瞬态除外）。
+- **强调色与语义**：祖母绿（`primary`）面积低于 5%，只给每视图唯一主按钮、链接、选中控件、焦点与成功态，不作装饰，向好的数字仍用 `text-muted-foreground`。状态色（`success`/`warning`/`destructive`）必配文字，提示条用 `*-soft`。涨跌色默认关闭，仅当方向为核心信息时在界面文件声明启用并配 `+`/`−`。`accent` 是中性悬停色；图表主序列用 `chart-1`，其余用 `chart-5`。
 
-## Voice
+## 排版
 
-- **Language**: English first. A product shipped in another language keeps the same voice, written natively rather than translated.
-- **By surface**: site, notes and slides speak in the first person ("I design and build…"); product UI speaks as the product, with the object as subject ("Your projects", "Note published").
-- **Rhythm**: short sentences, conclusion first. Short parallel lines ("Fewer things. Better.") only in site and slide headlines; product UI states things plainly.
-- **Tone** moves with what is at stake for the person; the voice does not. A moment with room for warmth (a start, an empty state, a first success) may say one human thing: "Nothing here yet. Start with a note." A moment that must stay plain (an error, a permission, billing, deletion) says what happened and what to do next, with no apology and no cheer: "Couldn't save. Check your connection and try again."
-- Sentence case everywhere. No emoji, no exclamation marks, never narrate the design on the page.
+使用带 `opsz` 轴的 Inter，字重只用 400、500、600；主题已接管大字号字距行高，标题不手写 `tracking-*`、`leading-*`。沿用 Tailwind 常规字阶（首屏主标题 `text-5xl`/`text-6xl` 每页至多一次，文章正文 `text-lg`，界面 `text-sm`，元数据 `text-xs`）。`font-mono` 只用于代码与数据，对齐数字加 `tabular-nums`，标题加 `text-balance`。
 
-## Colors
+## 布局
 
-- **Depth is lightness.** Background, card and popover are containers; secondary, muted and accent are fills and sit one rung above every container, so a fill or a hover reads on any of them. Stack a container on a fill, never a fill on a fill. New neutrals stay on hue 286 and step L only.
-- **Text**: `text-foreground` to read, `text-muted-foreground` to support, `text-subtle-foreground` only for placeholders, timestamps and column headers on background, surface-1 or sidebar. Never set text hierarchy with opacity (a transient state such as stale data while reloading may fade).
-- **Emerald (`primary`) is scarce**: one primary button per view, links, checked controls, focus, success. Under 5% of the screen; never decoration, never "good" numbers.
-- **Status** (`success`, `warning`, `destructive`) always comes with a word; notices use the `*-soft` fills.
-- **Direction colors** (up green, down red) are off unless a surface's core information is direction; then always with + or −, declared in that surface's file.
-- `accent` is shadcn's neutral hover, not a brand color. Charts: `chart-1` for the series that matters, `chart-5` for the rest.
+默认左对齐，沿用 Tailwind 常规间距与控件高度；文章限宽 `max-w-2xl`，侧边栏 `w-54`，分组靠留白与明度差而非边框。窄屏下先将侧边栏收进 Sheet，再让出次要列，字号与阅读宽度保持不变。
 
-## Typography
+## 表面与圆角
 
-The theme already sets tracking and line height on large sizes, so headings take no `tracking-*` or `leading-*`. `font-mono` only for code and data.
+线条只出现在表格行间与浮层外缘，同时最多两层浮层；毛玻璃只用于下方有滚动内容穿过的界面壳层（`bg-background/85 backdrop-blur`）。圆角只改全局 `--radius` 而非单改类名：控件与浮层用 `rounded-md`（内项 `rounded-sm`），Dialog 用 `rounded-lg`，卡片用 `rounded-xl`，强调容器与幻灯片用 `rounded-2xl`；嵌套圆角按 `外圆角 − 内边距` 向下取档，`rounded-full` 只用于开关、头像与状态圆点。
 
-| Class | Role |
-| --- | --- |
-| `text-6xl` / `text-5xl` | Cover / site hero, once per page |
-| `text-4xl` · `text-3xl` · `text-xl` | h1 · h2 · h3 (`font-semibold`) |
-| `text-2xl` | Slide subheads, stat numbers |
-| `text-lg` | Article body, `max-w-2xl` |
-| `text-base` | Site copy |
-| `text-sm` | Interface text; labels `font-medium` |
-| `text-xs` | Metadata, timestamps, column headers, help |
+## 组件
 
-Weights 400, 500, 600 only. `tabular-nums` on numbers that line up; `text-balance` on headings.
+基于 Base UI 的 shadcn/ui（`shadcn init --base base`，不引入 Radix），`<html>` 挂 `class="dark"`；只用主题工具类，禁止任意值（新增取值先写入 `theme.css`）。添加组件后在其文件内一次性按以下规则覆写，之后直接使用：
 
-## Layout
+- **Card**：无边框，仅 `bg-card`。
+- **Input / Textarea / Select**：填充 `bg-muted` 配 `border-input`，焦点为 `border-ring` 加 `ring-soft`。内嵌提交按钮、标签行或单位时整体作一个 input group，内部控件裸态，`ghost` 按钮悬停至 `surface-3`。
+- **Button**：每视图一个 `default`，其余用 `secondary`、`ghost`、`destructive`（`bg-destructive-soft text-destructive`）、`link`，禁用 `outline`；纯图标按钮用方形 `icon` 尺寸对齐相邻控件高度。
+- **Badge**：不用于元数据（元数据用 `text-xs text-muted-foreground`）；状态用 6px 圆点加文字。
+- **Tabs**：列表 `bg-muted`，激活项 `bg-surface-3`，无下划线、不用祖母绿。
+- **浮层**：Popover / Dropdown / Toast 用 `bg-popover border rounded-md`；Dialog / Sheet 用 `bg-background border`；Tooltip 用 `bg-foreground text-background`。
+- **Table**：全宽、`border-t` 行分隔，无外框与斑马纹；数字及表头 `text-right tabular-nums`。
+- **Sidebar 与开关**：Sidebar 靠明度区分无分隔线，激活 `bg-sidebar-accent`；Switch / Checkbox / Radio 关闭 `bg-surface-2`/`surface-3`，开启 `bg-primary`。
+- **交互状态**：悬停升一阶明度；禁用 `bg-surface-1 text-subtle-foreground` 且不降透明度；空态由一句说明加唯一填充操作构成；错误用 `text-destructive` 写在出错对象旁。
 
-Tailwind spacing, in these steps: `gap-1` icon to label · `gap-2` buttons, label to field · `p-4` cards · `p-6` tool panels · `gap-8` blocks · `py-12` tool sections · `py-16` site sections. Group with space and tone, never a border around a group. Left-aligned by default. Articles `max-w-2xl`, sidebar `w-54`, controls `h-8` / `h-9` / `h-10`. On a narrow screen the sidebar gives way first, into a Sheet, then secondary columns; type sizes and the reading width hold.
+## 图标
 
-## Elevation & Depth
+使用默认描边的 Lucide（`lucide-react`），尺寸随所在控件（`icon` 按钮或 `data-icon`）；只承担操作或表意（如放不下文字时的类型与状态），绝不作装饰，不用插画、吉祥物与空态配图。
 
-Lines appear only between table rows and around floating layers. At most two floating layers at once. Blur only on chrome that content scrolls under: `bg-background/85 backdrop-blur`.
+- **图标与文字**：通用操作（发送、关闭、播放/暂停、增删单项、复制、搜索、更多、切换、展开）一律用纯图标按钮，配 `aria-label` 与带快捷键的 Tooltip；易误读的操作、作用于大对象的不可逆操作（账号、项目、整批数据）及视图核心决策的 `default` 按钮必须配文字。
+- **就近放置**：独立发送的输入框将提交内置右下角（input group），表单提交跟在表单下方，行操作在行尾，媒体控制在媒体上，绝不在远离对象处另起一行文字按钮。
 
-## Shapes
+## 动效
 
-`rounded-md` for controls, popovers, menus and tooltips; `rounded-sm` for items inside them; `rounded-lg` for dialogs; `rounded-xl` for cards; `rounded-2xl` for emphasised containers and slides. Nested corners follow inner = outer − padding, rounded down to a step. `rounded-full` only for switches, avatars and dots. Change `--radius`, never single classes.
+悬停、按压与变色用 CSS 过渡且只指明属性（如 `transition-colors`），位移用 `duration-200`。出入场与位置变化用 Motion（`motion/react`），顶层统一包裹一次 `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`，组件不单写 `transition`；弹簧一律 `bounce: 0`，不做装饰性入场。细节只保留有职责、初看隐形、在交互触点且开启减少动效时消失的微交互（已采用：数字只滚动变化位、链接下划线左入右出）。
 
-## Components
+## 界面
 
-Theme utilities only: no arbitrary values (`bg-[#…]`, `text-[13px]`). A new value goes into the tokens first. Use the shadcn/ui components as they stand in the project; their look is already Retry's.
+站点（低密度，左对齐核心主张与一个主按钮）、文章（低密度，`max-w-2xl` 专注阅读）、幻灯片（低密度，每页一个主张、祖母绿至多一处短语）、工具（中密度，侧边栏配 `text-sm` 与 `h-10` 行高）。需要覆写默认值的界面在本文件旁建 `<surface>.md`，写明继承、覆盖项与理由。
 
-- **States**: hover is one rung up the tone ladder; disabled reads flat, never faded. Empty is a line of words and the one action that fills it. An error is `text-destructive` words beside the thing that failed.
-- **Button**: `default` once per view, then `secondary`, `ghost`, `destructive`, `link`. No `outline`. Icon-only buttons use the square `icon` sizes, matched to the control height around them.
-- **Input group**: a field with things inside it (a submit, a chip line, a unit) is one field; the control inside is bare.
-- **Badge**: not for metadata. Status is a 6px dot plus a word.
-- **Table**: numbers and their headers `text-right tabular-nums`; full width.
+## 推荐与禁止
 
-## Iconography
+- 居中 Hero 配三张特性卡片 → 左对齐的真实主张或作品本身。
+- 卡片套卡片 → 留白、明度差与字号。
+- 标题配装饰图标、为对称凑图标 → 图标只用于操作或表意。
+- 等宽字体标题、粗边框、全大写 → 等宽字体留在代码里。
 
-Icons are part of the language, like type: they carry actions and meaning, never decoration. Lucide (`lucide-react`) at its default stroke, sized by the control it sits in (the `icon` button sizes, `data-icon` beside a label).
-
-- **An action's face follows how well its icon is known and how often it is met.** A universal action (send, close, play and pause, add, remove from a list, copy, search, more, previous and next, expand) is an icon-only button wherever it sits in a field, a row, a toolbar or a repeated item. Its `aria-label` names it, and a tooltip names it and gives the shortcut. An action whose icon a newcomer could misread gets a word, with the icon in front when it helps recognition. Removing the one item in front of you stays an icon; an action that can't be undone on something bigger than that item (an account, a project, a whole batch) is a word. The one decision a view exists for is a word on the single `default` button.
-- **An action sits on its object.** A field that sends on its own (a message, a comment, a search) holds its submit inside, bottom right, as an input group; a form's submit follows the form. A row's actions are at the row's end. A media control is on the media. Actions lined up in a separate row of text buttons, away from what they act on, are placed by default rather than by design.
-- **Meaning, not ornament.** An icon may stand for a kind (file type, media kind) or a state (playing, recording) where a word won't fit. Status stays a dot plus a word.
-- **No illustration.** No spot art, mascots or empty-state graphics; the words carry those moments.
-
-## Motion
-
-Only Retry's own choices are here; general interaction craft (waiting states, hover alternatives, loading, reduced motion) is assumed.
-
-- **Quiet craft**: a detail earns its place only if it has a job, stays invisible at first glance, lives where the person touches, and disappears under reduced motion. Adopted: changing numbers roll only the digits that changed; text links draw their underline in from the left on hover and out to the right.
-- **Motion**: CSS transitions for hover, press and color, naming only the property (`transition-colors`); `duration-200` for movement. Motion (`motion/react`) for anything that appears, leaves or changes place; springs only with `bounce: 0`. No decorative entrances.
-
-## Surfaces
-
-| Surface | Job | Density |
-| --- | --- | --- |
-| Site | Show the work; left-aligned `text-5xl` claim, one primary button | Low |
-| Articles | Reading; `text-lg` in `max-w-2xl` | Low |
-| Slides | One claim per slide; emerald on one phrase at most | Low |
-| Tools | Get it done; sidebar, `text-sm`, `h-10` rows | Medium |
-
-A surface that needs other parameters gets a `<surface>.md` beside this file: what it inherits, what it overrides, why.
-
-## Do's and Don'ts
-
-- Centered hero with three feature cards → a real claim or the work, left-aligned.
-- Boxes around groups, cards in cards → space, tone, type size.
-- Gradients, glows, glass cards, grid backdrops, shadows → flat tone steps.
-- Untouched shadcn components → the deltas above.
-- Badges on metadata → `text-xs text-muted-foreground`.
-- Icons on headings, icons for symmetry → icons only where they act or carry meaning.
-- Universal actions spelled out, a row of text buttons under a field → icon buttons where the object is.
-- Mono headlines, heavy borders, all caps → mono stays in code.
-- Squeezed tables, mixed alignment → full width, numbers right.
-- Green for good numbers → `text-muted-foreground`.
-- Arbitrary values → theme utilities.
-
-Restraint isn't emptiness: tension comes from type scale contrast, space, exact alignment, and the one emerald moment.
+克制不是空白：视觉张力来自字阶对比、留白、精准对齐，以及唯一那处祖母绿。

@@ -1,7 +1,7 @@
 # 仓库结构
 
 - `skills/<领域>/<skill>/`：可单独安装的 skill。下文「Skill 独立」与「Skill 反馈闭环」只约束这里。
-- `design/`：Retry 个人设计语言，不是 skill。`DESIGN.md` 只记决策，值与资源放 `brand-kit/`。修改颜色、字号等取值时改 `brand-kit/tokens.json`，再运行 `python3 design/brand-kit/generate-globals.py` 重新生成 `globals.css`，不手改生成物。
+- `design/`：Retry 个人设计语言，不是 skill。`DESIGN.md` 只记决策，取值只在 `theme.css`，两边不重复。
 - `conventions/`：技术选型与工程约定，不是 skill。每篇写清选什么与适用边界，同一能力只留一个方案；视觉取值归 `design/`，不在这里重复。
 - skill 内不引用 `design/` 与 `conventions/`：skill 单独安装后看不到它们。
 

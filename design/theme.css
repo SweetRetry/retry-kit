@@ -1,4 +1,4 @@
-/* Retry — generated from tokens.json. Tailwind CSS v4 + shadcn/ui.
+/* Retry theme for Tailwind CSS v4 + shadcn/ui: the single source of values.
    Load Inter with the opsz axis (next/font/google: Inter({ axes: ["opsz"] }),
    or <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..600&display=swap">).
    Dark is the default: put class="dark" on <html>. */
@@ -43,24 +43,24 @@
   --surface-1: oklch(0.965 0.003 286.3);
   --surface-2: oklch(0.941 0.004 286.3);
   --surface-3: oklch(0.911 0.005 286.3);
-  --card: oklch(0.965 0.003 286.3); /* = surface-1 */
-  --card-foreground: oklch(0.232 0.004 286.1); /* = foreground */
+  --card: var(--surface-1);
+  --card-foreground: var(--foreground);
   --popover: oklch(1.000 0 0);
-  --popover-foreground: oklch(0.232 0.004 286.1); /* = foreground */
+  --popover-foreground: var(--foreground);
   --primary: oklch(0.530 0.125 154.8);
   --primary-hover: oklch(0.466 0.108 155.2);
   --primary-foreground: oklch(1.000 0 0);
-  --secondary: oklch(0.941 0.004 286.3); /* = surface-2 */
-  --secondary-hover: oklch(0.911 0.005 286.3); /* = surface-3 */
-  --secondary-foreground: oklch(0.232 0.004 286.1); /* = foreground */
-  --muted: oklch(0.941 0.004 286.3); /* = surface-2 */
+  --secondary: var(--surface-2);
+  --secondary-hover: var(--surface-3);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--surface-2);
   --muted-foreground: oklch(0.512 0.008 286.1);
   --subtle-foreground: oklch(0.622 0.007 286.2);
-  --accent: oklch(0.941 0.004 286.3); /* = surface-2 */
-  --accent-foreground: oklch(0.232 0.004 286.1); /* = foreground */
+  --accent: var(--surface-2);
+  --accent-foreground: var(--foreground);
   --destructive: oklch(0.546 0.181 28.3);
   --destructive-soft: oklch(0.546 0.181 28.3 / 0.09);
-  --success: oklch(0.530 0.125 154.8); /* = primary */
+  --success: var(--primary);
   --warning: oklch(0.541 0.116 68.5);
   --warning-soft: oklch(0.541 0.116 68.5 / 0.1);
   --border: oklch(0.917 0.004 286.3);
@@ -69,12 +69,12 @@
   --ring-soft: oklch(0.530 0.125 154.8 / 0.18);
   --sidebar: oklch(0.965 0.003 286.3);
   --sidebar-foreground: oklch(0.512 0.008 286.1);
-  --sidebar-primary: oklch(0.530 0.125 154.8); /* = primary */
-  --sidebar-primary-foreground: oklch(1.000 0 0); /* = primary-foreground */
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent: oklch(0.926 0.005 286.3);
-  --sidebar-accent-foreground: oklch(0.232 0.004 286.1); /* = foreground */
+  --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: oklch(0 0 0 / 0);
-  --sidebar-ring: oklch(0.530 0.125 154.8); /* = ring */
+  --sidebar-ring: var(--ring);
   --chart-1: oklch(0.530 0.125 154.8);
   --chart-2: oklch(0.557 0.172 259.7);
   --chart-3: oklch(0.619 0.127 77.0);
@@ -88,24 +88,24 @@
   --surface-1: oklch(0.261 0.004 286.1);
   --surface-2: oklch(0.294 0.004 286.2);
   --surface-3: oklch(0.334 0.003 286.2);
-  --card: oklch(0.261 0.004 286.1); /* = surface-1 */
-  --card-foreground: oklch(0.971 0.003 286.4); /* = foreground */
+  --card: var(--surface-1);
+  --card-foreground: var(--foreground);
   --popover: oklch(0.261 0.004 286.1);
-  --popover-foreground: oklch(0.971 0.003 286.4); /* = foreground */
+  --popover-foreground: var(--foreground);
   --primary: oklch(0.712 0.164 154.1);
   --primary-hover: oklch(0.754 0.158 155.6);
   --primary-foreground: oklch(0.168 0.023 158.2);
-  --secondary: oklch(0.294 0.004 286.2); /* = surface-2 */
-  --secondary-hover: oklch(0.334 0.003 286.2); /* = surface-3 */
-  --secondary-foreground: oklch(0.971 0.003 286.4); /* = foreground */
-  --muted: oklch(0.294 0.004 286.2); /* = surface-2 */
+  --secondary: var(--surface-2);
+  --secondary-hover: var(--surface-3);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--surface-2);
   --muted-foreground: oklch(0.681 0.007 286.2);
   --subtle-foreground: oklch(0.540 0.008 286.1);
-  --accent: oklch(0.294 0.004 286.2); /* = surface-2 */
-  --accent-foreground: oklch(0.971 0.003 286.4); /* = foreground */
+  --accent: var(--surface-2);
+  --accent-foreground: var(--foreground);
   --destructive: oklch(0.687 0.155 26.1);
   --destructive-soft: oklch(0.687 0.155 26.1 / 0.14);
-  --success: oklch(0.712 0.164 154.1); /* = primary */
+  --success: var(--primary);
   --warning: oklch(0.758 0.140 76.7);
   --warning-soft: oklch(0.758 0.140 76.7 / 0.14);
   --border: oklch(0.341 0.003 286.2);
@@ -114,12 +114,12 @@
   --ring-soft: oklch(0.712 0.164 154.1 / 0.22);
   --sidebar: oklch(0.201 0.004 286.0);
   --sidebar-foreground: oklch(0.681 0.007 286.2);
-  --sidebar-primary: oklch(0.712 0.164 154.1); /* = primary */
-  --sidebar-primary-foreground: oklch(0.168 0.023 158.2); /* = primary-foreground */
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent: oklch(0.286 0.004 286.2);
-  --sidebar-accent-foreground: oklch(0.971 0.003 286.4); /* = foreground */
+  --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: oklch(0 0 0 / 0);
-  --sidebar-ring: oklch(0.712 0.164 154.1); /* = ring */
+  --sidebar-ring: var(--ring);
   --chart-1: oklch(0.712 0.164 154.1);
   --chart-2: oklch(0.729 0.142 256.5);
   --chart-3: oklch(0.758 0.140 76.7);
