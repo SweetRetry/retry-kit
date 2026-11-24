@@ -64,7 +64,7 @@ conventions/       技术选型与工程约定（不是 skill）
 `design/` 是 Retry 的个人设计语言，不是 skill。
 
 - `DESIGN.md`：代码表达不了的设计判断，包括气质、辨识点、文案语气与颜色、字体、布局、组件的用法。
-- `brand-kit/`：值与资源。`tokens.json` 是 source of truth，`globals.css` 由 `python3 design/brand-kit/generate-globals.py` 生成，不手改。`SETUP.md` 记接入步骤与 shadcn 组件差异，`specimen.html` 是与 shadcn 默认并排的风格样张。
+- `brand-kit/`：值与资源。`tokens.json` 是 source of truth，`globals.css` 由 `python3 design/brand-kit/generate-globals.py` 生成，不手改。`SETUP.md` 记接入步骤与 shadcn 组件差异。
 
 ## Conventions
 
