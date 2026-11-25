@@ -62,7 +62,7 @@
 
 ## 动效
 
-悬停、按压与变色用 CSS 过渡且只指明属性（如 `transition-colors`），位移用 `duration-200`。出入场与位置变化用 Motion（`motion/react`），顶层统一包裹一次 `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`，组件不单写 `transition`；弹簧一律 `bounce: 0`，不做装饰性入场。细节只保留有职责、初看隐形、在交互触点且开启减少动效时消失的微交互（已采用：数字只滚动变化位、链接下划线左入右出）。
+悬停、按压与变色用 CSS 过渡且只指明属性（如 `transition-colors`），位移用 `duration-200`。出入场与位置变化用 Motion（`motion/react`），顶层统一包裹一次 `<MotionConfig reducedMotion="user" transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}>`，组件不单写 `transition`；弹簧一律 `bounce: 0`，不做装饰性入场。细节只保留有职责、初看隐形、在交互触点且开启减少动效时消失的微动效（已采用：数字只滚动变化位、链接下划线左入右出）。
 
 ## 界面
 

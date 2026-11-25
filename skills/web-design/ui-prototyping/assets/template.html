@@ -2,8 +2,9 @@
 <!--
   原型模板。复制为 index.html 后，只改 <main> 里的候选 section 和自己的脚本。
 
-  候选：每个 section[data-prototype-component] 一个候选，id 唯一，data-label 是 sidebar 里的名字。
-        两个以上候选时自动生成 sidebar；只剩一个时 sidebar 自动移除，候选占满页面。淘汰候选就删整个 section。
+  候选：每个 section[data-prototype-component] 一个候选，id 唯一，data-label 是底部标签栏里的名字。
+        两个以上候选时底部居中生成悬浮标签栏，一次只显示一个候选，数字键 1 到 9 也能切换；当前候选写进 URL hash，刷新后不变。
+        只剩一个时标签栏自动移除。淘汰候选就删整个 section。
   外观：Basecoat（shadcn 风格，Tailwind v4）。class：btn[data-variant=outline|secondary|ghost|destructive][data-size=sm|lg|icon]、
         input、textarea、label、card、badge、table、alert、tabs、dropdown-menu、select、dialog、toaster。
         dialog 用原生 <dialog class="dialog">，showModal() / close()。
@@ -68,74 +69,74 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
   </head>
   <body class="min-h-full bg-background text-foreground antialiased" data-motion="false">
-    <div id="prototype-layout" class="grid min-h-svh grid-cols-[12rem_minmax(0,1fr)] md:grid-cols-[15rem_minmax(0,1fr)]">
-      <aside class="sticky top-0 h-svh overflow-y-auto border-r border-border bg-card p-3 md:p-5">
-        <nav id="component-nav" class="grid gap-1" aria-label="Components"></nav>
-      </aside>
+    <main class="min-h-svh">
+      <section id="component-a" data-prototype-component data-label="A" class="min-h-svh"></section>
+      <section id="component-b" data-prototype-component data-label="B" class="min-h-svh"></section>
+      <section id="component-c" data-prototype-component data-label="C" class="min-h-svh"></section>
+    </main>
 
-      <main class="min-w-0">
-        <section id="component-a" data-prototype-component data-label="A" class="min-h-svh scroll-mt-0"></section>
-        <section id="component-b" data-prototype-component data-label="B" class="min-h-svh scroll-mt-0"></section>
-        <section id="component-c" data-prototype-component data-label="C" class="min-h-svh scroll-mt-0"></section>
-      </main>
-    </div>
+    <nav
+      id="component-nav"
+      role="tablist"
+      aria-label="Components"
+      class="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 gap-1 rounded-full border border-border/60 bg-background/60 p-1 shadow-lg backdrop-blur-xl"
+    ></nav>
 
     <div id="toaster" class="toaster"></div>
 
     <script type="module">
       const components = [...document.querySelectorAll("[data-prototype-component]")];
-      const layout = document.querySelector("#prototype-layout");
+      const nav = document.querySelector("#component-nav");
+      const motionAllowed = document.body.dataset.motion === "true" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const { animate } = motionAllowed ? await import("https://cdn.jsdelivr.net/npm/motion@13.1.1/+esm") : {};
 
       if (components.length < 2) {
-        layout.querySelector("aside").remove();
-        layout.className = "min-h-svh";
+        nav.remove();
+        if (animate) animate(components, { opacity: [0, 1], y: [16, 0] }, { duration: 0.3 });
       } else {
-        mountNav();
+        mountTabs();
       }
 
-      function mountNav() {
-        const nav = document.querySelector("#component-nav");
-        const idle = ["text-muted-foreground", "hover:bg-muted", "hover:text-foreground"];
+      function mountTabs() {
+        document.querySelector("main").classList.add("pb-24");
+        const idle = ["text-muted-foreground", "hover:text-foreground"];
         const active = ["bg-primary", "text-primary-foreground"];
 
-        components.forEach((component) => {
-          const link = document.createElement("a");
-          link.href = `#${component.id}`;
-          link.dataset.target = component.id;
-          link.textContent = component.dataset.label;
-          link.className = "rounded-md px-3 py-2 text-sm " + idle.join(" ");
-          nav.append(link);
+        const tabs = components.map((component, i) => {
+          const tab = document.createElement("button");
+          tab.type = "button";
+          tab.setAttribute("role", "tab");
+          tab.title = String(i + 1);
+          tab.textContent = component.dataset.label;
+          tab.className = "rounded-full px-4 py-1.5 text-sm transition-colors";
+          tab.addEventListener("click", () => show(component.id));
+          component.setAttribute("role", "tabpanel");
+          nav.append(tab);
+          return tab;
         });
 
-        const links = [...nav.querySelectorAll("a")];
-        const setActive = (id) => {
-          links.forEach((link) => {
-            const on = link.dataset.target === id;
-            active.forEach((c) => link.classList.toggle(c, on));
-            idle.forEach((c) => link.classList.toggle(c, !on));
-            if (on) link.setAttribute("aria-current", "true");
-            else link.removeAttribute("aria-current");
+        function show(id) {
+          components.forEach((component, i) => {
+            const on = component.id === id;
+            component.hidden = !on;
+            tabs[i].setAttribute("aria-selected", String(on));
+            active.forEach((c) => tabs[i].classList.toggle(c, on));
+            idle.forEach((c) => tabs[i].classList.toggle(c, !on));
           });
-        };
+          history.replaceState(null, "", `#${id}`);
+          window.scrollTo(0, 0);
+          if (animate) animate(document.getElementById(id), { opacity: [0, 1], y: [16, 0] }, { duration: 0.3 });
+        }
 
-        const observer = new IntersectionObserver(
-          (entries) => {
-            const visible = entries
-              .filter((entry) => entry.isIntersecting)
-              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-            if (visible) setActive(visible.target.id);
-          },
-          { threshold: [0.25, 0.5, 0.75] },
-        );
+        addEventListener("keydown", (event) => {
+          if (event.metaKey || event.ctrlKey || event.altKey) return;
+          if (event.target.closest?.("input, textarea, select, [contenteditable]")) return;
+          const component = components[Number(event.key) - 1];
+          if (component) show(component.id);
+        });
 
-        components.forEach((component) => observer.observe(component));
-        if (components[0]) setActive(components[0].id);
-      }
-
-      const motionAllowed = document.body.dataset.motion === "true" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (motionAllowed) {
-        const { animate, stagger } = await import("https://cdn.jsdelivr.net/npm/motion@13.1.1/+esm");
-        animate(components, { opacity: [0, 1], y: [16, 0] }, { duration: 0.3, delay: stagger(0.06) });
+        const fromHash = components.find((component) => `#${component.id}` === location.hash);
+        show((fromHash ?? components[0]).id);
       }
     </script>
   </body>

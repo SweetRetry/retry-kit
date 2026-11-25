@@ -1,6 +1,7 @@
 /**
  * 只扫描“无判断余地”的 UI 禁令，规则名前缀对应 reference 文件：
  * - hierarchy：用 · / • 把多个字段拼成一行、Card 嵌套 Card
+ * - interaction：非交互标签裸挂 onClick、正数 tabIndex
  * - layout：横向 <Separator /> 分区
  * - motion：transition-all、布局属性过渡、ease-in、motion 从 scale: 0 入场
  * - surface：z-index 任意值与越出阶梯、硬编码色值、Tailwind 原生色板、调用点阴影、
@@ -165,6 +166,18 @@ const CHECKS = [
     suggestion: "分区改用留白与对齐轴；菜单用组件库的 *MenuSeparator，工具栏控件组之间用 orientation=\"vertical\"",
   },
   {
+    rule: "interaction/clickable-non-interactive",
+    find: findClickableNonInteractive,
+    message: "非交互标签裸挂 onClick，缺少原生键盘与聚焦语义",
+    suggestion: "改用原生 <button type=\"button\"> 或 <a href>；确需自定义容器时补齐 role、tabIndex 与键盘事件",
+  },
+  {
+    rule: "interaction/positive-tabindex",
+    pattern: `${L}tab[Ii]ndex\\s*=\\s*(?:["']\\s*[1-9]\\d*\\s*["']|\\{\\s*[1-9]\\d*\\s*\\})`,
+    message: "正数 tabIndex 会打乱自然焦点顺序",
+    suggestion: "只用 tabIndex={0}（纳入顺序）或 tabIndex={-1}（程序聚焦），靠 DOM 顺序排焦",
+  },
+  {
     rule: "hierarchy/nested-card",
     find: findNestedCards,
     message: "卡片套卡片",
@@ -175,6 +188,47 @@ const CHECKS = [
   const regex = new RegExp(check.pattern, `g${check.flags ?? ""}`)
   return { ...check, find: (content) => content.matchAll(regex) }
 })
+
+const NON_INTERACTIVE_TAG = /(?<![\w$.])<(div|span|p|li|img|svg|article|section|header|footer|main|aside)(?=[\s>/])/g
+const STOP_PROPAGATION_ONLY =
+  /\bonClick\s*=\s*\{\s*(?:\(\s*[\w$]*\s*\)|[\w$]+)\s*=>\s*\{?\s*[\w$]+\.stopPropagation\(\)\s*;?\s*\}?\s*\}/
+
+// 解析 JSX 开标签（处理嵌套花括号与引号，避免箭头函数中的 > 提前截断）
+function readOpeningTag(content, start) {
+  let braceDepth = 0
+  let quote = null
+  const limit = Math.min(content.length, start + 2000)
+  for (let i = start; i < limit; i += 1) {
+    const ch = content[i]
+    if (quote) {
+      if (ch === "\\") i += 1
+      else if (ch === quote) quote = null
+      continue
+    }
+    if (ch === '"' || ch === "'" || ch === "`") {
+      quote = ch
+    } else if (ch === "{") {
+      braceDepth += 1
+    } else if (ch === "}") {
+      braceDepth = Math.max(0, braceDepth - 1)
+    } else if (ch === ">" && braceDepth === 0) {
+      return content.slice(start, i + 1)
+    }
+  }
+  return null
+}
+
+function findClickableNonInteractive(content) {
+  const hits = []
+  for (const match of content.matchAll(NON_INTERACTIVE_TAG)) {
+    const tag = readOpeningTag(content, match.index)
+    if (!tag || !/\bonClick\s*=/.test(tag)) continue
+    if (STOP_PROPAGATION_ONLY.test(tag)) continue
+    if (/\b(?:role|tab[Ii]ndex)\s*=|\baria-hidden\b|\{\s*\.\.\./.test(tag)) continue
+    hits.push({ 0: tag.length > 80 ? `${tag.slice(0, 77)}...` : tag, index: match.index })
+  }
+  return hits
+}
 
 // 只匹配 <Card>，不含 CardHeader 等子组件；自闭合的 <Card /> 不开启嵌套
 function findNestedCards(content) {

@@ -6,6 +6,8 @@
  * - row-height：同一行的卡片或水平并排的控件（按钮与输入 / 只读值容器）高度不一致
  * - adjacent-fill：相邻兄弟元素填充色相同且有别于底色，彼此相接且交界处没有边框
  * - font-size：计算字号小于 12px
+ * - hit-target：独立可交互控件的有效热区小于 24×24px（含伪元素扩区与关联 label，不含段落行内链接）
+ * - accessible-name：无可见文字的按钮或链接缺少 aria-label / aria-labelledby / title 或图片替代文本
  * - secondary-text：重复结构的单个条目内，次要色（--muted-foreground）文字块超过 1 处；
  *   控件自身的文字（按钮、链接、表头、Tab、菜单项）不计
  *
@@ -291,6 +293,82 @@
     else if (overlapX > 1 && Math.abs(b.top - a.bottom) <= 1) touching = !edgeBorder(element, "Bottom") && !edgeBorder(next, "Top")
     if (touching) {
       violations.push({ rule: "adjacent-fill", element: describe(element), detail: `与下一个兄弟元素同为 ${fill} 且零间距相接` })
+    }
+  }
+
+  const INTERACTIVE =
+    'button, a[href], input:not([type="hidden"]), select, textarea, summary, [role="button"], [role="link"], [role="checkbox"], [role="radio"], [role="switch"], [role="tab"], [role="menuitem"], [role="combobox"]'
+  const NAMED_CONTROL = 'button, a[href], [role="button"], [role="link"]'
+  const MIN_HIT_TARGET = 24
+  const pseudoHitSize = (element, pseudo) => {
+    const style = getComputedStyle(element, pseudo)
+    if (style.content === "none" || style.content === "normal" || style.position !== "absolute" || style.pointerEvents === "none") {
+      return { width: 0, height: 0 }
+    }
+    return { width: parseFloat(style.width) || 0, height: parseFloat(style.height) || 0 }
+  }
+  const associatedLabel = (element) => {
+    const ancestor = element.closest("label")
+    if (ancestor && isRendered(ancestor)) return ancestor
+    if (element.id && typeof CSS !== "undefined" && CSS.escape) {
+      const linked = document.querySelector(`label[for="${CSS.escape(element.id)}"]`)
+      if (linked && isRendered(linked)) return linked
+    }
+    return null
+  }
+  const hasAccessibleName = (element) => {
+    if ((element.getAttribute("aria-label") ?? "").trim()) return true
+    const labelledBy = (element.getAttribute("aria-labelledby") ?? "").trim()
+    if (labelledBy) {
+      const text = labelledBy
+        .split(/\s+/)
+        .map((id) => document.getElementById(id)?.textContent?.trim() ?? "")
+        .join("")
+      if (text) return true
+    }
+    if ((element.getAttribute("title") ?? "").trim()) return true
+    if ((element.textContent ?? "").trim()) return true
+    for (const media of element.querySelectorAll("img[alt], svg[aria-label], svg title")) {
+      const text =
+        media.tagName.toUpperCase() === "IMG"
+          ? media.getAttribute("alt")
+          : media.getAttribute("aria-label") ?? media.textContent
+      if ((text ?? "").trim()) return true
+    }
+    return false
+  }
+  for (const element of elements) {
+    if (element.closest('[aria-hidden="true"]')) continue
+    if (element.matches(NAMED_CONTROL) && !hasAccessibleName(element)) {
+      violations.push({
+        rule: "accessible-name",
+        element: describe(element),
+        detail: "无可见文字且缺少 aria-label / aria-labelledby",
+      })
+    }
+    if (!element.matches(INTERACTIVE)) continue
+    const style = styleOf(element)
+    if (
+      element.matches(":disabled") ||
+      element.getAttribute("aria-disabled") === "true" ||
+      style.pointerEvents === "none"
+    ) {
+      continue
+    }
+    if (element.tagName === "A" && style.display === "inline") continue
+    const rect = element.getBoundingClientRect()
+    const before = pseudoHitSize(element, "::before")
+    const after = pseudoHitSize(element, "::after")
+    const label = associatedLabel(element)
+    const labelRect = label ? label.getBoundingClientRect() : null
+    const width = Math.max(rect.width, before.width, after.width, labelRect?.width ?? 0)
+    const height = Math.max(rect.height, before.height, after.height, labelRect?.height ?? 0)
+    if (width < MIN_HIT_TARGET - 0.5 || height < MIN_HIT_TARGET - 0.5) {
+      violations.push({
+        rule: "hit-target",
+        element: describe(element),
+        detail: `交互热区 ${Math.round(width)}×${Math.round(height)}px，小于 ${MIN_HIT_TARGET}×${MIN_HIT_TARGET}px 下限`,
+      })
     }
   }
 
