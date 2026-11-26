@@ -101,7 +101,7 @@
   --muted: var(--surface-2);
   --muted-foreground: oklch(0.681 0.007 286.2);
   --subtle-foreground: oklch(0.540 0.008 286.1);
-  --accent: var(--surface-2);
+  --accent: var(--surface-3);
   --accent-foreground: var(--foreground);
   --destructive: oklch(0.687 0.155 26.1);
   --destructive-soft: oklch(0.687 0.155 26.1 / 0.14);
@@ -193,7 +193,7 @@
     @apply bg-background text-foreground font-sans;
   }
   :focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
+    outline: 3px solid color-mix(in oklch, var(--ring) 50%, transparent);
+    outline-offset: 0;
   }
 }
