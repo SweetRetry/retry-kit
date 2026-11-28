@@ -18,4 +18,4 @@ Retry 的技术选型与适用边界。
 - 同一项目内同一能力不并存两个库，要换时整体迁移。
 - 能写成脚本的约束给出 `scripts/` 示范，文档只留脚本判定不了的部分。脚本是举例，语言、文件范围、阈值与排除清单以实际工程为准；例如 Java 单文件普遍较长，体积阈值按项目实测放宽。
 - 版本只记主版本，以 `package.json` 与 lockfile 为准。
-- 视觉取值看 [design/DESIGN.md](../design/DESIGN.md)，界面实现约束看 `sweet-mode` skill。
+- 视觉取值看 [design/theme.css](../design/theme.css)，设计判断看 [design/DESIGN.md](../design/DESIGN.md)，界面实现约束看 `sweet-mode` skill。

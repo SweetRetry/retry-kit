@@ -22,7 +22,7 @@
 | 表单 | react-hook-form + zod，用 shadcn/ui 的 `Field` 配 `Controller` |
 | 通知 | sonner |
 | 动效 | motion（`motion/react`）或 Tailwind 过渡 |
-| 图标 | 优先 [Phosphor](https://phosphoricons.com/)（`@phosphor-icons/react`），lucide-react 随 shadcn/ui 保留 |
+| 图标 | lucide-react（shadcn/ui 自带）；需要它缺失的图形或多档字重时，应用代码整体改用 [Phosphor](https://phosphoricons.com/)（`@phosphor-icons/react`），组件库内的 lucide 保留 |
 | 日期 | date-fns，随 shadcn/ui 的 Calendar（react-day-picker）引入 |
 | 鉴权客户端 | better-auth client |
 
