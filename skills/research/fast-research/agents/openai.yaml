@@ -1,0 +1,7 @@
+interface:
+  display_name: "Fast Research"
+  short_description: "按问题宽度定规模，并行派 worker 查一手来源，交付带内联链接的简短报告"
+  default_prompt: "使用 $fast-research 调研我的问题：简单问题直接查，宽问题拆 3-5 个角度并行查，只认原始文件与 PDF，开头两句给结论，正文内联链接并标出来源冲突。"
+
+policy:
+  allow_implicit_invocation: true

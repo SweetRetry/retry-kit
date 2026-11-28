@@ -8,6 +8,7 @@ Retry 的个人工具箱：面向 Agent 的可复用 skill（AIGC 媒体类 skil
 skills/            Agent skill，按职责领域分组
   engineering/     代码质量审查与工程任务拆解
   learning/        对话中的术语学习
+  research/        联网调研
   product/         产品需求文档
   web-design/      界面设计、文案、原型与交互审查
   specific/        特定框架工程实践
@@ -28,6 +29,10 @@ conventions/       技术选型与工程约定（不是 skill）
 
 - `name-domain-terms`：用户用自己的话描述、逼近或误用专业名词时，主动说出术语、给出一句话定义与差别，之后沿用。
 
+### Research
+
+- `fast-research`：按问题宽度定规模，宽问题拆 3-5 个角度并行派 worker，每个限 8-12 步、只认一手来源，停滞即取消、最多补查一轮，报告开头两句给结论并内联链接、标注冲突。
+
 ### Web Design
 
 - `sass-ux-writing`：结合代码行为与产品形态编写或改写 SaaS 界面文案，统一术语，删去零增量废话并去除 AI 腔、营销套话与翻译腔。
@@ -46,6 +51,7 @@ conventions/       技术选型与工程约定（不是 skill）
 | 审查界面或流程的可用性：一致性、设计漂移、信噪比、最小惊讶 | `ux-audit` | 盘点漂移读一致性 reference 并跑代码与渲染盘点脚本；逐维检验读维度 reference |
 | 沉淀品牌与设计规范 | `design-md-creator` | 自含流程 |
 | 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
+| 联网调研问题并给出带一手来源的简短报告 | `fast-research` | 自含流程 |
 | 对话中说出用户正在描述的专业名词 | `name-domain-terms` | 自含流程 |
 
 这些入口互不引用，也不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
