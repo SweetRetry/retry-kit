@@ -6,12 +6,10 @@ Retry 的个人工具箱：面向 Agent 的可复用 skill（AIGC 媒体类 skil
 
 ```text
 skills/            Agent skill，按职责领域分组
-  engineering/     代码质量审查与工程任务拆解
+  engineering/     代码质量审查
   learning/        对话中的术语学习
   research/        联网调研
-  product/         产品需求文档
-  web-design/      界面设计、文案、原型与交互审查
-  specific/        特定框架工程实践
+  web-design/      界面设计、文案与原型
 design/            Retry 个人设计语言（不是 skill）
 conventions/       技术选型与工程约定（不是 skill）
 ```
@@ -20,8 +18,7 @@ conventions/       技术选型与工程约定（不是 skill）
 
 ### Engineering
 
-- `find-edgecases`：审查重复、中断、超时、新旧版本并存等可达条件下的系统失效。
-- `raise-ambition`：动手前把任务抬高到真实结果，补齐顶尖做法、跨领域技巧、对抗视角与外部验收，改写成 prompt 后等确认。
+- `find-edgecases`：审查重复、中断、超时、新旧版本并存等可达条件下，系统停在违反不变量且无法自愈的终态。
 - `simplify-code`：审查并移除不改变行为的复杂度，顺带修复预期明确的 bug。
 - `codex-review`：从 Claude 手动调用本机 Codex CLI 审查改动，只读运行、追问续接同一会话以节省额度，并逐条核实 Codex 的发现。
 
@@ -36,25 +33,9 @@ conventions/       技术选型与工程约定（不是 skill）
 ### Web Design
 
 - `sass-ux-writing`：结合代码行为与产品形态编写或改写 SaaS 界面文案，统一术语，删去零增量废话并去除 AI 腔、营销套话与翻译腔。
-- `design-md-creator`：通过逐轮访谈与可交互 HTML 样张确定品牌立场、视觉物理层、组件动作语法、文案语调与界面分型，创建或更新 `DESIGN.md`。
+- `design-md-creator`：通过逐轮访谈确定品牌立场、视觉物理层、组件动作语法、文案语调与界面分型，创建或更新 `DESIGN.md`。
 - `ui-prototyping`：先改需求与动线，再用临时可交互原型比较尚未定案的 UI 方案或视觉取值；模板内置 shadcn 风格组件与 Alpine，改既有界面时以现状为基线候选。
-- `ux-audit`：审查体验质量，用代码与渲染盘点长期迭代造成的设计漂移，先预测再操作走查核心任务（最小惊讶），按理解、行动、反馈、恢复、专注、一致、信任、可达八个维度检验，报告严重度与防复发护栏。
 - `sweet-mode`：Tailwind + shadcn/ui 界面规范，层级、布局、表面、字体、尺寸稳定、微交互与动效的取值、禁令、验收与扫描脚本；面向原则，作为原型定案后实现的硬约束。
-
-### 相邻能力的边界
-
-| 任务 | 入口 | 按需加载 |
-| --- | --- | --- |
-| 编写或改写 SaaS 界面文案、统一术语与去 AI 腔 | `sass-ux-writing` | 落字具体控件与校准 AI 腔时读组件 reference |
-| 在 Tailwind + shadcn/ui 项目中编写或修改界面，或需要界面规则与取值 | `sweet-mode` | 按改动读取层级、布局、表面、字体、稳定或交互 reference |
-| 设计新功能或改进既有界面：改需求、比动线与 UI 方案 | `ui-prototyping` | HTML 模板；比视觉取值时读取值模式 reference |
-| 审查界面或流程的可用性：一致性、设计漂移、信噪比、最小惊讶 | `ux-audit` | 盘点漂移读一致性 reference 并跑代码与渲染盘点脚本；逐维检验读维度 reference |
-| 沉淀品牌与设计规范 | `design-md-creator` | 自含流程 |
-| 动手前抬高任务目标、定义外部验收 | `raise-ambition` | 自含流程 |
-| 联网调研问题并给出带一手来源的简短报告 | `fast-research` | 自含流程 |
-| 对话中说出用户正在描述的专业名词 | `name-domain-terms` | 自含流程 |
-
-这些入口互不引用，也不默认串联；同一任务确实包含多类问题时再组合。`find-edgecases` 检查系统在可达扰动下的失效，`simplify-code` 检查保持行为不变的复杂度，两者保留独立入口。
 
 ### 外部 Skills（按需使用，不在本仓库手写维护）
 
