@@ -1,0 +1,7 @@
+interface:
+  display_name: "State Graph"
+  short_description: "把并发或有状态的逻辑穷举成白话状态图，标出走向违规或卡死的路径"
+  default_prompt: "使用 $state-graph 为我指定的流程建模快照、动作与规矩，穷举所有执行顺序，画出白话状态图并讲清出错路径与修法。"
+
+policy:
+  allow_implicit_invocation: false
